@@ -27,7 +27,7 @@ class _EmpContactListState extends State<EmpContactList> {
 
   bool _isSearching = false;
   late final GlobalKey<FormFieldState> _key = GlobalKey();
-  int _currentPage = 0;
+  int _currentPage = 0, _maxPages = 0;
   late int _contactOwnerId;
   String? _contactOwnerIdName;
 
@@ -170,14 +170,16 @@ class _EmpContactListState extends State<EmpContactList> {
                     }
                   },
                   onLoading: () async{
-                    setState(() {
-                      _currentPage++;
-                    });
-
-                    if(_contactOwnerIdName == null){
-                      _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: widget.account.accountId!);
-                    } else {
-                      _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                    if(_currentPage - 1 < _maxPages){
+                      setState(() {
+                        _currentPage++;
+                      });
+                      print(_currentPage);
+                      if(_contactOwnerIdName == null){
+                        _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: widget.account.accountId!);
+                      } else {
+                        _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                      }
                     }
 
                     if(_futureContacts.toString().isNotEmpty){
@@ -219,121 +221,6 @@ class _EmpContactListState extends State<EmpContactList> {
                       itemCount: _contacts.length,
                   ),
                 ) :  const Center(child: CircularProgressIndicator())
-
-                // FutureBuilder<List<Contact>>(
-                //     future: futureContacts,
-                //     builder: (context, snapshot){
-                //       if(snapshot.hasData){
-                //         contacts = snapshot.data!;
-                //          return ListView.separated(
-                //              itemCount: contacts.length,
-                //              itemBuilder: (context, index) {
-                //                final contact = contacts[index];
-                //                if(index < contacts.length){
-                //                  return ListTile(
-                //                    onTap: () {
-                //                      Navigator.push(context, MaterialPageRoute(
-                //                          builder: (context) => EmpContactDetail(contact: contacts[index], account: widget.account,),
-                //                      )).then(onGoBack);
-                //                    },
-                //                    title: const Text('Tên khách hàng:'),
-                //                    subtitle: Text(contacts[index].fullname),
-                //                    dense: true,
-                //                    trailing: Column(
-                //                      children: [
-                //                        const SizedBox(height: 8.0,),
-                //                        Text('Email: ${contacts[index].email}', style: const TextStyle(fontSize: 12.0)),
-                //                        const SizedBox(
-                //                          height: 5.0,
-                //                        ),
-                //                        Text('SĐT: ${contacts[index].phoneNumber}', style: const TextStyle(fontSize: 12.0)),
-                //                      ],
-                //                    ),
-                //                  );
-                //                } else {
-                //                  return SizedBox(
-                //                    width: MediaQuery.of(context).size.width,
-                //                    height: 50,
-                //                    child: const Center(
-                //                        child: Text(
-                //                            'Bạn đã đến cuối danh sách')),
-                //                  );
-                //                }
-                //              },
-                //              separatorBuilder: (context, index) {
-                //                return const Divider(
-                //                  height: 1,
-                //                  thickness: 2,
-                //                );
-                //              },
-                //          );
-                //
-                //         // ListView.builder(
-                //         //     itemCount: contacts.length,
-                //         //     itemBuilder: (BuildContext context, index){
-                //         //       return Padding(
-                //         //         padding: EdgeInsets.only(left: leftRight, right: leftRight, bottom: leftRight),
-                //         //         child: Container(
-                //         //           decoration: BoxDecoration(
-                //         //             color: Colors.white,
-                //         //             borderRadius: const BorderRadius.all(
-                //         //               Radius.circular(15.0),
-                //         //             ),
-                //         //             border: Border.all(color: Colors.grey.shade400),
-                //         //           ),
-                //         //           child: ListTile(
-                //         //             title: Padding(
-                //         //               padding: const EdgeInsets.only(top: 5.0),
-                //         //               child: Column(
-                //         //                 children: <Widget>[
-                //         //                   const Text('Tên KH:', style: TextStyle(fontSize: 12.0),),
-                //         //                   const SizedBox(height: 2.0,),
-                //         //                   Text(contacts[index].fullname, style: const TextStyle(fontSize: 12.0),),
-                //         //                 ],
-                //         //               ),
-                //         //             ),
-                //         //             trailing: Row(
-                //         //               mainAxisSize: MainAxisSize.min,
-                //         //               children: <Widget>[
-                //         //                 Padding(
-                //         //                   padding: const EdgeInsets.only(top: 10.0, right: 20.0),
-                //         //                   child: Column(
-                //         //                     children: <Widget>[
-                //         //                       const Text('Email KH:', style: TextStyle(fontSize: 12.0),),
-                //         //                       const SizedBox(height: 2.0,),
-                //         //                       Text(contacts[index].email, style: const TextStyle(fontSize: 12.0),),
-                //         //                     ],
-                //         //                   ),
-                //         //                 ),
-                //         //                 Padding(
-                //         //                   padding: const EdgeInsets.only(top: 10.0),
-                //         //                   child: Column(
-                //         //                     children: <Widget>[
-                //         //                       const Text('SĐT:', style: TextStyle(fontSize: 12.0),),
-                //         //                       const SizedBox(height: 2.0,),
-                //         //                       Text(contacts[index].phoneNumber, style: const TextStyle(fontSize: 12.0),),
-                //         //                     ],
-                //         //                   ),
-                //         //                 )
-                //         //               ],
-                //         //             ),
-                //         //             dense: true,
-                //         //             onTap: () {
-                //         //               Navigator.push(context, MaterialPageRoute(
-                //         //                 builder: (context) => EmpContactDetail(contact: contacts[index], account: widget.account,),
-                //         //               )).then(onGoBack);
-                //         //             },
-                //         //           ),
-                //         //         ),
-                //         //       );
-                //         //     }
-                //         // );
-                //       } else if(snapshot.hasError){
-                //         return Text('${snapshot.error}');
-                //       }
-                //       return const Center(child: CircularProgressIndicator());
-                //     }
-                // ),
               ),
             ),
           ),
@@ -407,16 +294,17 @@ class _EmpContactListState extends State<EmpContactList> {
     _futureContacts.then((value) {
      setState(() {
        _contacts.addAll(value);
-       _getAllContactIdFullname();
+       _maxPages = _contacts[0].maxPage!;
      });
-   });
+     });
+    print('Max page: $_maxPages');
+    _getAllContactIdFullname();
   }
 
   void _getAllContactIdFullname(){
     if(_contactIdFullnames.isNotEmpty){
       _contactIdFullnames.clear();
     }
-
     for(int i = 0; i < _contacts.length; i++){
       String idAndName = ('${_contacts[i].contactId}_${_contacts[i].fullname}');
       String split = '${idAndName.split('_')}';
@@ -472,6 +360,7 @@ class _EmpContactListState extends State<EmpContactList> {
       _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
     }
     setState(() {
+      _currentPage = 0;
       _key.currentState?.reset();
     });
   }
@@ -497,7 +386,9 @@ class _EmpContactListState extends State<EmpContactList> {
     _futureContacts.then((value) {
       setState(() {
         _contacts.addAll(value);
+        _maxPages = _contacts[0].maxPage!;
       });
+      print('Max page: $_maxPages');
       _getAllContactIdFullname();
     });
   }

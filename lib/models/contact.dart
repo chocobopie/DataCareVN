@@ -15,6 +15,7 @@ class Contact {
     required this.leadSourceId,
     required this.genderId,
     required this.statusId,
+    this.maxPage,
   });
 
   int contactId;
@@ -26,6 +27,7 @@ class Contact {
   int leadSourceId;
   int genderId;
   int statusId;
+  int? maxPage;
 
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(
     contactId: json["contactId"],
@@ -37,6 +39,7 @@ class Contact {
     leadSourceId: json["leadSourceId"],
     genderId: json["genderId"],
     statusId: json["statusId"],
+    maxPage: json["maxPage"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -49,5 +52,6 @@ class Contact {
     "leadSourceId": leadSourceId,
     "genderId": genderId,
     "statusId": statusId,
+    "maxPage": maxPage,
   };
 }
