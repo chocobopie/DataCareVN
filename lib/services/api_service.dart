@@ -238,6 +238,19 @@ class ApiService {
   }
 
   //Accounts
+  Future<Account> getAccountById(int accountId) async{
+    String url = stockUrl + 'accounts/$accountId';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      print('Got account by accountId | 200');
+      return Account.fromJson(jsonResponse);
+    } else {
+      throw Exception("Failed to account by accountId");
+    }
+  }
+
   Future<List<Account>> getAllAccounts() async {
     String url = 'https://trungpd2022.azurewebsites.net/api/v1/accounts';
 
@@ -251,17 +264,20 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllAccountByBlockIdDepartmentId(int blockId, int departmentId) async {
-    String url =
-        'https://trungpd2022.azurewebsites.net/api/v1/accounts?block-id=$blockId&department-id=$departmentId&limit=999';
+  Future<List<Account>> getAllAccountByBlockIdDepartmentId(bool isRefresh, int currentPage, int accountId, int blockId, int departmentId) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'accounts/sales?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=10';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      print('Got all accounts by id | 200');
+      print('Got all accounts by BlockId, DepartmentId | 200');
       return jsonResponse.map((data) => Account.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get all deals");
+      throw Exception("Failed to get all accounts by BlockId, DepartmentId");
     }
   }
 
@@ -275,6 +291,23 @@ class ApiService {
       return jsonResponse.map((data) => Account.fromJson(data)).toList();
     } else {
       throw Exception("Failed to get all sales employee accounts");
+    }
+  }
+
+  Future<List<Account>> getAccountByFullname(bool isRefresh, int currentPage, int accountId, String fullname) async{
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'accounts?account-id=$accountId&fullname=$fullname&page=$currentPage&limit=10';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print('Got all accounts by fullname| 200');
+      return jsonResponse.map((data) => Account.fromJson(data)).toList();
+    } else {
+      throw Exception("Failed to get all accounts by fullname");
     }
   }
 
@@ -294,7 +327,7 @@ class ApiService {
 
   //Team
   Future<List<Team>> getAllTeam() async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/teams';
+    String url = stockUrl + 'teams';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -386,7 +419,7 @@ class ApiService {
       print('Got all genders | 200');
       return jsonResponse.map((data) => Gender.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get excuse late genders");
+      throw Exception("Failed to get genders");
     }
   }
 

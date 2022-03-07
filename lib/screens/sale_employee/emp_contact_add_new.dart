@@ -32,7 +32,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
   @override
   void initState() {
     super.initState();
-    _getOverallInfo();
+    // _getOverallInfo();
   }
 
   @override
@@ -210,28 +210,28 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
     );
   }
 
-  void _getOverallInfo(){
-    _getAccountListByBlockIdDepartmentId();
-  }
+  // void _getOverallInfo(){
+  //   _getAccountListByBlockIdDepartmentId();
+  // }
   
-  void _getAccountListByBlockIdDepartmentId(){
-    futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(widget.account.blockId!, widget.account.departmentId!);
-
-    futureAccounts.then((value) {
-      if(accounts.isNotEmpty){
-        accounts.clear();
-      }
-      setState(() {
-        accounts.addAll(value);
-        for(int i = 0; i < accounts.length; i++){
-          if( accounts[i].roleId! < 3 || accounts[i].roleId! > 5){
-            accounts.removeAt(i);
-          }
-        }
-        _getAccountIdNames();
-      });
-    });
-  }
+  // void _getAccountListByBlockIdDepartmentId(){
+  //   futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(widget.account.accountId!, widget.account.blockId!, widget.account.departmentId!);
+  //
+  //   futureAccounts.then((value) {
+  //     if(accounts.isNotEmpty){
+  //       accounts.clear();
+  //     }
+  //     setState(() {
+  //       accounts.addAll(value);
+  //       for(int i = 0; i < accounts.length; i++){
+  //         if( accounts[i].roleId! < 3 || accounts[i].roleId! > 5){
+  //           accounts.removeAt(i);
+  //         }
+  //       }
+  //       _getAccountIdNames();
+  //     });
+  //   });
+  // }
 
   void _getAccountIdNames(){
     if(accountIdFullnames.isNotEmpty){

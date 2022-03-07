@@ -8,6 +8,7 @@ import 'package:login_sample/models/lead_source.dart';
 import 'package:login_sample/models/permission_status.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/service.dart';
+import 'package:login_sample/models/team.dart';
 import 'package:login_sample/models/vat.dart';
 
 const mainBgColor = Color(0xFFFFC000);
@@ -27,6 +28,7 @@ List<Role> roles = [];
 List<LeadSource> leadSources = [];
 List<ExcuseLateStatus> excuseLateStatuses = [];
 List<Gender> genders = [];
+List<Team> teams = [];
 //List String
 List<String> dealServicesNameUtilities = [];
 List<String> dealVatsNameUtilities = [];

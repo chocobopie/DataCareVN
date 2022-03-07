@@ -1,14 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:login_sample/services/api_service.dart';
-import 'package:login_sample/screens/providers/authenticate.dart';
-import 'package:provider/provider.dart';
 
 Account accountFromJson(String str) => Account.fromJson(json.decode(str));
 
 String accountToJson(Account data) => json.encode(data.toJson());
 
-class Account extends ChangeNotifier{
+class Account {
   Account({
     this.accountId,
     this.email,
@@ -28,6 +24,7 @@ class Account extends ChangeNotifier{
     this.statusId,
     this.genderId,
     this.dateOfBirth,
+    this.maxPage,
   });
 
   int? accountId;
@@ -48,6 +45,7 @@ class Account extends ChangeNotifier{
   int? statusId;
   int? genderId;
   DateTime? dateOfBirth;
+  int? maxPage;
 
   factory Account.fromJson(Map<String, dynamic> json) => Account(
     accountId: json["accountId"],
@@ -57,7 +55,7 @@ class Account extends ChangeNotifier{
     address: json["address"],
     citizenIdentityCardNumber: json["citizenIdentityCardNumber"],
     nationality: json["nationality"],
-    bankName: json["bankName"] ?? '',
+    bankName: json["bankName"],
     bankAccountName: json["bankAccountName"],
     bankAccountNumber: json["bankAccountNumber"],
     roleId: json["roleId"],
@@ -68,6 +66,7 @@ class Account extends ChangeNotifier{
     statusId: json["statusId"],
     genderId: json["genderId"],
     dateOfBirth: DateTime?.tryParse(json["dateOfBirth"].toString()),
+    maxPage: json["maxPage"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -88,6 +87,7 @@ class Account extends ChangeNotifier{
     "permissionId": permissionId,
     "statusId": statusId,
     "genderId": genderId,
-    "dateOfBirth": dateOfBirth?.toIso8601String(),
+    "dateOfBirth": dateOfBirth!.toIso8601String(),
+    "maxPage": maxPage,
   };
 }

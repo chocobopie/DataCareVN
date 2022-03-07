@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/screens/providers/account_provider.dart';
+import 'package:login_sample/screens/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
@@ -27,7 +28,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
   final TextEditingController _contactEmail = TextEditingController();
   final TextEditingController _contactPhoneNumber = TextEditingController();
   final TextEditingController _contactCompanyName = TextEditingController();
-  final TextEditingController _contactOwnerId = TextEditingController();
+  late TextEditingController _contactOwnerId = TextEditingController();
   final TextEditingController _contactGender = TextEditingController();
 
   late List<Account> accounts = [];
@@ -37,7 +38,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
   @override
   void initState() {
     super.initState();
-    _getOverallInfo(widget.account);
+    // _getOverallInfo(widget.account);
   }
 
   @override
@@ -76,7 +77,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: accounts.isNotEmpty && accountIdNames.isNotEmpty ? ListView(
+                child: ListView(
                   children: <Widget>[
                     //Id khách hàng
                     CustomReadOnlyTextField(text: '${widget.contact.contactId}', title: 'ID khách hàng'),
@@ -137,17 +138,30 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                     ),
                     const SizedBox(height: 20.0,),
 
-                    CustomDropdownFormField2(
-                        label: 'Khách hàng của',
-                        hintText: Text(_getContactOwnerName(widget.contact.contactOwnerId)),
-                        items: accountIdNames,
-                        onChanged: _readOnly != true ? (value){
-                          _contactOwnerId.text = value.toString().substring(0, value.toString().indexOf(','));
-                          print(value.toString());
-                          print(_contactOwnerId.text);
+                    OutlinedButton(
+                        onPressed: _readOnly != true ? () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => SaleEmpFilter(account: _account,),
+                          ));
+                          if(data != null){
+                            setState(() {
+                              _contactOwnerId = data;
+                            });
+                          }
                         } : null,
+                        child: const Text('Khách hàng của:'),
                     ),
                     const SizedBox(height: 20.0,),
+                    // CustomDropdownFormField2(
+                    //     label: 'Khách hàng của',
+                    //     hintText: Text(_getContactOwnerName(widget.contact.contactOwnerId)),
+                    //     items: accountIdNames,
+                    //     onChanged: _readOnly != true ? (value){
+                    //       _contactOwnerId.text = value.toString().substring(0, value.toString().indexOf(','));
+                    //       print(value.toString());
+                    //       print(_contactOwnerId.text);
+                    //     } : null,
+                    // ),
 
 
                     Padding(
@@ -239,7 +253,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                       ),
                     ),
                   ],
-                ) : const Center(child: CircularProgressIndicator()),
+                )
               )
           ),
           Positioned(
@@ -265,49 +279,49 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
     );
   }
 
-  void _getOverallInfo(Account account){
-    _getAllAccountByBlockIdDepartmentId(account.blockId!, account.departmentId!);
-  }
+  // void _getOverallInfo(Account account){
+  //   _getAllAccountByBlockIdDepartmentId(account.accountId!, account.blockId!, account.departmentId!);
+  // }
 
-  void _getAllAccountByBlockIdDepartmentId(int blockId, int departmentId){
-    futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(blockId, departmentId);
+  // void _getAllAccountByBlockIdDepartmentId(int accountId, int blockId, int departmentId){
+  //   futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(accountId ,blockId, departmentId);
+  //
+  //   futureAccounts.then((value) {
+  //     if(accounts.isNotEmpty){
+  //       accounts.clear();
+  //     }
+  //     setState(() {
+  //       accounts.addAll(value);
+  //       for(int i = 0; i < accounts.length; i++){
+  //         if( accounts[i].roleId! < 3 || accounts[i].roleId! > 5){
+  //           accounts.removeAt(i);
+  //         }
+  //       }
+  //       _getAllAccountIdNames();
+  //     });
+  //   });
+  // }
 
-    futureAccounts.then((value) {
-      if(accounts.isNotEmpty){
-        accounts.clear();
-      }
-      setState(() {
-        accounts.addAll(value);
-        for(int i = 0; i < accounts.length; i++){
-          if( accounts[i].roleId! < 3 || accounts[i].roleId! > 5){
-            accounts.removeAt(i);
-          }
-        }
-        _getAllAccountIdNames();
-      });
-    });
-  }
+  // void _getAllAccountIdNames(){
+  //   if(accountIdNames.isNotEmpty){
+  //     accountIdNames.clear();
+  //   }
+  //
+  //   for(int i = 0; i < accounts.length; i++){
+  //     String idAndName = ('${accounts[i].accountId}_${accounts[i].fullname}');
+  //     String split = '${idAndName.split('_')}';
+  //     accountIdNames.add(split.substring(1, split.length-1));
+  //   }
+  //   print(accountIdNames);
+  // }
 
-  void _getAllAccountIdNames(){
-    if(accountIdNames.isNotEmpty){
-      accountIdNames.clear();
-    }
-
-    for(int i = 0; i < accounts.length; i++){
-      String idAndName = ('${accounts[i].accountId}_${accounts[i].fullname}');
-      String split = '${idAndName.split('_')}';
-      accountIdNames.add(split.substring(1, split.length-1));
-    }
-    print(accountIdNames);
-  }
-
-  String _getContactOwnerName(int contactOwnerId){
-    String contactOwnerName = '';
-    for(int i = 0; i < accountIdNames.length; i++){
-      if(contactOwnerId == int.parse(accountIdNames[i].substring(0,  accountIdNames[i].indexOf(',')))){
-        contactOwnerName = accountIdNames[i].substring(accountIdNames[i].indexOf(',')+2, accountIdNames[i].length);
-      }
-    }
-    return contactOwnerName;
-  }
+  // String _getContactOwnerName(int contactOwnerId){
+  //   String contactOwnerName = '';
+  //   for(int i = 0; i < accountIdNames.length; i++){
+  //     if(contactOwnerId == int.parse(accountIdNames[i].substring(0,  accountIdNames[i].indexOf(',')))){
+  //       contactOwnerName = accountIdNames[i].substring(accountIdNames[i].indexOf(',')+2, accountIdNames[i].length);
+  //     }
+  //   }
+  //   return contactOwnerName;
+  // }
 }

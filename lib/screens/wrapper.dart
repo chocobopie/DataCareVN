@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/models/account.dart';
 import 'package:login_sample/screens/providers/login.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:provider/provider.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -17,8 +15,8 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   void initState() {
-    getOverallInfor();
     super.initState();
+    getOverallInfor();
   }
 
   @override
@@ -36,6 +34,7 @@ class _WrapperState extends State<Wrapper> {
     getAllPermissionStatusName();
     getAllRoleName();
     getAllGendersName();
+    getAllTeams();
   }
 
   //Convert Future<List<Model> to List<Model> to List<String>
@@ -180,6 +179,15 @@ class _WrapperState extends State<Wrapper> {
       for(int i = 0; i < genders.length; i++){
         gendersUtilities.add(genders[i].name);
       }
+    });
+  }
+
+  void getAllTeams(){
+    ApiService().getAllTeam().then((value) {
+      if(teams.isNotEmpty){
+        teams.clear();
+      }
+      teams.addAll(value);
     });
   }
 

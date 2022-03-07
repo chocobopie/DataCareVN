@@ -39,7 +39,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                   topRight: Radius.circular(50),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
+              margin: const EdgeInsets.only(top: 100.0),
               child: ListView(
                 padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
                 children: <Widget>[
