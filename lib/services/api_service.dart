@@ -264,7 +264,7 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllAccountByBlockIdDepartmentId(bool isRefresh, int currentPage, int accountId, int blockId, int departmentId) async {
+  Future<List<Account>> getAllAccountByBlockIdDepartmentId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
@@ -294,12 +294,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAccountByFullname(bool isRefresh, int currentPage, int accountId, String fullname) async{
+  Future<List<Account>> getAccountByFullname({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, required String fullname}) async{
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'accounts?account-id=$accountId&fullname=$fullname&page=$currentPage&limit=10';
+    String url = stockUrl + 'accounts/sales?fullname=$fullname&block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=10';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {

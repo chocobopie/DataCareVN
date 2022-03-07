@@ -25,7 +25,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   @override
   void initState() {
     super.initState();
-    _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.accountId!, widget.account.blockId!, widget.account.departmentId!);
+    _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.blockId!, widget.account.departmentId!);
   }
 
   @override
@@ -71,7 +71,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                             _salesEmployees.clear();
                           }
                           _currentPage = 0;
-                          _getAccountsByFullname(true, _currentPage, widget.account.accountId!, _searchEmployeeName.text);
+                          _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId: widget.account.departmentId!, blockId:  widget.account.blockId!, fullname: _searchEmployeeName.text);
                         },
                         decoration: InputDecoration(
                           icon: const Icon(Icons.search,
@@ -83,7 +83,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                                 _salesEmployees.clear();
                               }
                               _searchEmployeeName.clear();
-                              _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.accountId!, widget.account.blockId!, widget.account.departmentId!);
+                              _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.blockId!, widget.account.departmentId!);
                             },
                             icon: const Icon(Icons.clear),
                           ),
@@ -133,9 +133,9 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                       }
                       _currentPage = 0;
                       if(_searchEmployeeName.text.isNotEmpty){
-                        _getAccountsByFullname(true, _currentPage, widget.account.accountId!, _searchEmployeeName.text);
+                        _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId:  widget.account.departmentId!, blockId:  widget.account.blockId!, fullname: _searchEmployeeName.text);
                       }else{
-                        _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.accountId!, widget.account.blockId!, widget.account.departmentId!);
+                        _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.blockId!, widget.account.departmentId!);
                       }
 
                       if(_salesEmployees.isNotEmpty){
@@ -151,9 +151,9 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                         });
                         print('Current page: $_currentPage');
                         if(_searchEmployeeName.text.isNotEmpty){
-                          _getAccountsByFullname(false, _currentPage, widget.account.accountId!, _searchEmployeeName.text);
+                          _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  widget.account.departmentId!, blockId:  widget.account.blockId!, fullname: _searchEmployeeName.text);
                         }else{
-                          _getAllSalesEmployeesByBlockIdDepartmentId(false, _currentPage, widget.account.accountId!, widget.account.blockId!, widget.account.departmentId!);
+                          _getAllSalesEmployeesByBlockIdDepartmentId(false, _currentPage, widget.account.blockId!, widget.account.departmentId!);
                         }
                       }
 
@@ -218,14 +218,10 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
     );
   }
 
-  void _getAllSalesEmployeesByBlockIdDepartmentId(bool isRefresh, int currentPage, int accountId, int blockId, int departmentId){
-    _futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(isRefresh, currentPage, accountId, blockId, departmentId);
+  void _getAllSalesEmployeesByBlockIdDepartmentId(bool isRefresh, int currentPage, int blockId, int departmentId){
+    _futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId);
 
     _futureAccounts.then((value) {
-      if(_searchEmployeeName.text.isEmpty){
-        widget.account.fullname = 'Của bản thân';
-        _salesEmployees.add(widget.account);
-      }
       setState(() {
         _salesEmployees.addAll(value);
       });
@@ -234,13 +230,13 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
           _salesEmployees.removeAt(i);
         }
       }
-      _maxPages = _salesEmployees[1].maxPage!;
+      _maxPages = _salesEmployees[0].maxPage!;
       print('Max Page1: $_maxPages');
     });
   }
 
-  void _getAccountsByFullname(bool isRefresh, int currentPage, int accountId, String fullname){
-    _futureAccounts = ApiService().getAccountByFullname(isRefresh, currentPage, accountId, fullname);
+  void _getAccountsByFullname({required bool isRefresh, required int currentPage, required int departmentId, required int blockId, required String fullname}){
+    _futureAccounts = ApiService().getAccountByFullname(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, fullname: fullname);
 
     _futureAccounts.then((value) {
       setState(() {
@@ -251,7 +247,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
           _salesEmployees.removeAt(i);
         }
       }
-      _maxPages = _salesEmployees[1].maxPage!;
+      _maxPages = _salesEmployees[0].maxPage!;
       print('Max Page2: $_maxPages');
     });
   }
