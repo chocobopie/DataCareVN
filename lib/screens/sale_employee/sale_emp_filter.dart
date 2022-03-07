@@ -225,11 +225,6 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
       setState(() {
         _salesEmployees.addAll(value);
       });
-      for(int i = 0; i < _salesEmployees.length; i++){
-        if( _salesEmployees[i].roleId! < 3 || _salesEmployees[i].roleId! > 5){
-          _salesEmployees.removeAt(i);
-        }
-      }
       _maxPages = _salesEmployees[0].maxPage!;
       print('Max Page1: $_maxPages');
     });
@@ -242,11 +237,6 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
       setState(() {
         _salesEmployees.addAll(value);
       });
-      for(int i = 0; i < _salesEmployees.length; i++){
-        if( _salesEmployees[i].roleId! < 3 || _salesEmployees[i].roleId! > 5){
-          _salesEmployees.removeAt(i);
-        }
-      }
       _maxPages = _salesEmployees[0].maxPage!;
       print('Max Page2: $_maxPages');
     });

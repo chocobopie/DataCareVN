@@ -22,23 +22,25 @@ class EmpContactDetail extends StatefulWidget {
 
 class _EmpContactDetailState extends State<EmpContactDetail> {
 
+  int _currentPage = 0, _maxPages = 0;
+  String fullname = '';
   bool _readOnly = true;
 
   final TextEditingController _contactName = TextEditingController();
   final TextEditingController _contactEmail = TextEditingController();
   final TextEditingController _contactPhoneNumber = TextEditingController();
   final TextEditingController _contactCompanyName = TextEditingController();
-  late TextEditingController _contactOwnerId = TextEditingController();
+  final TextEditingController _contactOwnerId = TextEditingController();
   final TextEditingController _contactGender = TextEditingController();
 
-  late List<Account> accounts = [];
-  late List<String> accountIdNames = [];
-  late Future<List<Account>> futureAccounts;
+  late Future<Account> _futureAccount;
 
   @override
   void initState() {
     super.initState();
-    // _getOverallInfo(widget.account);
+    if(_contactOwnerId.text.isEmpty){
+      _getAccountFullnameById(widget.contact.contactOwnerId);
+    }
   }
 
   @override
@@ -77,7 +79,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: ListView(
+                child: fullname.isNotEmpty ? ListView(
                   children: <Widget>[
                     //Id khách hàng
                     CustomReadOnlyTextField(text: '${widget.contact.contactId}', title: 'ID khách hàng'),
@@ -136,20 +138,29 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                         readonly: _readOnly,
                         textEditingController: _contactCompanyName
                     ),
-                    const SizedBox(height: 20.0,),
+                    const SizedBox(height: 10.0,),
 
-                    OutlinedButton(
+                    //Khách hàng của
+                    if(fullname.isNotEmpty) OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          primary: defaultFontColor,
+                          side: BorderSide(width: 2.0, color: Colors.grey.shade300),
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        ),
                         onPressed: _readOnly != true ? () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
                             builder: (context) => SaleEmpFilter(account: _account,),
                           ));
                           if(data != null){
+                            _currentPage = 0;
                             setState(() {
-                              _contactOwnerId = data;
+                              _contactOwnerId.text = data.toString();
                             });
+                            _getAccountFullnameById(int.parse(_contactOwnerId.text));
+                            print('Contact owner Id: ${_contactOwnerId.text}');
                           }
                         } : null,
-                        child: const Text('Khách hàng của:'),
+                        child: Text('Khách hàng của: $fullname')
                     ),
                     const SizedBox(height: 20.0,),
                     // CustomDropdownFormField2(
@@ -253,7 +264,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                       ),
                     ),
                   ],
-                )
+                ) : const Center(child: CircularProgressIndicator())
               )
           ),
           Positioned(
@@ -279,41 +290,14 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
     );
   }
 
-  // void _getOverallInfo(Account account){
-  //   _getAllAccountByBlockIdDepartmentId(account.accountId!, account.blockId!, account.departmentId!);
-  // }
-
-  // void _getAllAccountByBlockIdDepartmentId(int accountId, int blockId, int departmentId){
-  //   futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(accountId ,blockId, departmentId);
-  //
-  //   futureAccounts.then((value) {
-  //     if(accounts.isNotEmpty){
-  //       accounts.clear();
-  //     }
-  //     setState(() {
-  //       accounts.addAll(value);
-  //       for(int i = 0; i < accounts.length; i++){
-  //         if( accounts[i].roleId! < 3 || accounts[i].roleId! > 5){
-  //           accounts.removeAt(i);
-  //         }
-  //       }
-  //       _getAllAccountIdNames();
-  //     });
-  //   });
-  // }
-
-  // void _getAllAccountIdNames(){
-  //   if(accountIdNames.isNotEmpty){
-  //     accountIdNames.clear();
-  //   }
-  //
-  //   for(int i = 0; i < accounts.length; i++){
-  //     String idAndName = ('${accounts[i].accountId}_${accounts[i].fullname}');
-  //     String split = '${idAndName.split('_')}';
-  //     accountIdNames.add(split.substring(1, split.length-1));
-  //   }
-  //   print(accountIdNames);
-  // }
+  void _getAccountFullnameById(int accountId){
+    _futureAccount = ApiService().getAccountById(accountId);
+    _futureAccount.then((value) {
+      setState(() {
+        fullname = value.fullname!;
+      });
+    });
+  }
 
   // String _getContactOwnerName(int contactOwnerId){
   //   String contactOwnerName = '';

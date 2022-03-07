@@ -318,6 +318,11 @@ class _EmpContactListState extends State<EmpContactList> {
        _maxPages = _contacts[0].maxPage!;
      });
      });
+    for(int i = 0; i < _contacts.length; i++){
+      if(_contacts[i].statusId == 1){
+        _contacts.removeAt(i);
+      }
+    }
     print('Max page: $_maxPages');
   }
 
@@ -368,8 +373,13 @@ class _EmpContactListState extends State<EmpContactList> {
         _contacts.addAll(value);
         _maxPages = _contacts[0].maxPage!;
       });
-      print('Max page: $_maxPages');
     });
+    for(int i = 0; i < _contacts.length; i++){
+      if(_contacts[i].statusId == 1){
+        _contacts.removeAt(i);
+      }
+    }
+    print('Max page: $_maxPages');
   }
 
 }
