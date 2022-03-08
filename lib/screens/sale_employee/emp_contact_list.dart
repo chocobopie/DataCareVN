@@ -116,25 +116,18 @@ class _EmpContactListState extends State<EmpContactList> {
                           },
                           child:  _contactOwnerId == -1 ? const Text('Tên nhân viên') : Text(fullname)
                       ),
-                      // CustomFilterFormField(
-                      //   key: _key,
-                      //   items: _contactOwnerIdNames,
-                      //   titleWidth: 120,
-                      //   dropdownWidth: 250,
-                      //   hint: 'Nhân viên',
-                      //   selectedValue: _contactOwnerIdName,
-                      //   onChanged: (value) {
-                      //     if(_contacts.isNotEmpty){
-                      //       _contacts.clear();
-                      //     }
-                      //     setState(() {
-                      //       _contactOwnerIdName = value.toString();
-                      //       String split = _contactOwnerIdName!.substring(0, _contactOwnerIdName!.indexOf(','));
-                      //       _contactOwnerId = int.parse(split);
-                      //     });
-                      //     _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-                      //   },
-                      // ),
+                      IconButton(
+                          onPressed: (){
+                            setState(() {
+                              _currentPage = 0;
+                              fullname = 'Tên nhân viên';
+                              _contactOwnerId == -1;
+                              _contacts.clear();
+                              getOverallInfo(_currentPage, widget.account);
+                            });
+                          },
+                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
+                      ),
                     ],
                   ),
                 ),
@@ -178,11 +171,13 @@ class _EmpContactListState extends State<EmpContactList> {
                       _contacts.clear();
                     }
                     _currentPage = 0;
+                    print('Current page: $_currentPage');
                     if(_contactOwnerId == -1){
                       _getAllContactByAccountId(isRefresh: true ,currentPage: _currentPage, accountId: widget.account.accountId!);
                     } else {
                       _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                     }
+                    print('Contact count: ${_contacts.length}');
 
                     if(_contacts.isNotEmpty){
                       _refreshController.refreshCompleted();
@@ -201,6 +196,7 @@ class _EmpContactListState extends State<EmpContactList> {
                       } else {
                         _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                       }
+                      print('Contact count: ${_contacts.length}');
                     }
 
                     if(_contacts.isNotEmpty){
@@ -315,15 +311,15 @@ class _EmpContactListState extends State<EmpContactList> {
     _futureContacts.then((value) {
      setState(() {
        _contacts.addAll(value);
-       _maxPages = _contacts[0].maxPage!;
+       if(_contacts.isNotEmpty){
+         _maxPages = _contacts[0].maxPage!;
+       }
+        });
      });
-     });
-    for(int i = 0; i < _contacts.length; i++){
-      if(_contacts[i].statusId == 1){
-        _contacts.removeAt(i);
-      }
+    if(_contacts.isNotEmpty){
+      _maxPages = _contacts[0].maxPage!;
     }
-    print('Max page: $_maxPages');
+    print('Max pages: $_maxPages');
   }
 
   void _getAccountFullnameById(int accountId){
@@ -371,15 +367,12 @@ class _EmpContactListState extends State<EmpContactList> {
     _futureContacts.then((value) {
       setState(() {
         _contacts.addAll(value);
-        _maxPages = _contacts[0].maxPage!;
+        if(_contacts.isNotEmpty){
+          _maxPages = _contacts[0].maxPage!;
+        }
       });
     });
-    for(int i = 0; i < _contacts.length; i++){
-      if(_contacts[i].statusId == 1){
-        _contacts.removeAt(i);
-      }
-    }
-    print('Max page: $_maxPages');
+    print('Max pages: $_maxPages');
   }
 
 }

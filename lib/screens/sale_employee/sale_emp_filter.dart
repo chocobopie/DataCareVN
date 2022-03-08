@@ -77,7 +77,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                           icon: const Icon(Icons.search,
                             color: Colors.blueGrey,
                           ),
-                          suffixIcon: IconButton(
+                          suffixIcon: _searchEmployeeName.text.isNotEmpty ? IconButton(
                             onPressed: (){
                               if(_salesEmployees.isNotEmpty){
                                 _salesEmployees.clear();
@@ -86,7 +86,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                               _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.blockId!, widget.account.departmentId!);
                             },
                             icon: const Icon(Icons.clear),
-                          ),
+                          ) : null,
                           hintText: "Tìm theo tên nhân viên",
                           hintStyle: const TextStyle(
                             color: Colors.blueGrey,

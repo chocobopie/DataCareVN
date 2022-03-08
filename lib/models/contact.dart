@@ -14,7 +14,7 @@ class Contact {
     required this.companyName,
     required this.leadSourceId,
     required this.genderId,
-    required this.statusId,
+    this.statusId,
     this.maxPage,
   });
 
@@ -26,7 +26,7 @@ class Contact {
   String companyName;
   int leadSourceId;
   int genderId;
-  int statusId;
+  int? statusId;
   int? maxPage;
 
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(

@@ -22,7 +22,6 @@ class EmpContactDetail extends StatefulWidget {
 
 class _EmpContactDetailState extends State<EmpContactDetail> {
 
-  int _currentPage = 0, _maxPages = 0;
   String fullname = '';
   bool _readOnly = true;
 
@@ -152,7 +151,6 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                             builder: (context) => SaleEmpFilter(account: _account,),
                           ));
                           if(data != null){
-                            _currentPage = 0;
                             setState(() {
                               _contactOwnerId.text = data.toString();
                             });
@@ -163,16 +161,6 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                         child: Text('Khách hàng của: $fullname')
                     ),
                     const SizedBox(height: 20.0,),
-                    // CustomDropdownFormField2(
-                    //     label: 'Khách hàng của',
-                    //     hintText: Text(_getContactOwnerName(widget.contact.contactOwnerId)),
-                    //     items: accountIdNames,
-                    //     onChanged: _readOnly != true ? (value){
-                    //       _contactOwnerId.text = value.toString().substring(0, value.toString().indexOf(','));
-                    //       print(value.toString());
-                    //       print(_contactOwnerId.text);
-                    //     } : null,
-                    // ),
 
 
                     Padding(
@@ -247,7 +235,6 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                                           contactOwnerId: _contactOwnerId.text.isEmpty ? widget.contact.contactOwnerId : int.parse(_contactOwnerId.text),
                                           genderId: _contactGender.text.isEmpty ? widget.contact.genderId : int.parse(_contactGender.text),
                                           leadSourceId: 0,
-                                          statusId: 0
                                       );
                                       ApiService().updateAContact(contact);
                                       _readOnly = true;

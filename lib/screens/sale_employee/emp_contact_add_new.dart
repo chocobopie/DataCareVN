@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
+import 'package:login_sample/screens/providers/account_provider.dart';
+import 'package:login_sample/screens/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
+import 'package:provider/provider.dart';
 
 class EmpContactAddNew extends StatefulWidget {
   const EmpContactAddNew({Key? key, required this.account}) : super(key: key);
@@ -16,11 +19,8 @@ class EmpContactAddNew extends StatefulWidget {
 }
 
 class _EmpContactAddNewState extends State<EmpContactAddNew> {
-  
-  late Future<List<Account>> futureAccounts;
-  
-  late List<Account> accounts = [];
-  late List<String> accountIdFullnames = [];
+
+  String fullname = '';
 
   final TextEditingController _contactName = TextEditingController();
   final TextEditingController _contactEmail = TextEditingController();
@@ -29,11 +29,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
   final TextEditingController _contactOwnerId = TextEditingController();
   final TextEditingController _contactGender = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    // _getOverallInfo();
-  }
+  late Future<Account> _futureAccount;
 
   @override
   void dispose() {
@@ -46,9 +42,18 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    if(_contactOwnerId.text.isEmpty){
+      _getAccountFullnameById(widget.account.accountId!);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    final _account = Provider.of<AccountProvider>(context).account;
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -85,7 +90,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
 
                     CustomDropdownFormField2(
                         label: 'Giới tính',
-                        hintText: const Text('Giới tính khách hàng'),
+                        hintText: const Text(''),
                         items: gendersUtilities,
                         onChanged: (value){
                           if(value.toString() == gendersUtilities[0]){
@@ -128,15 +133,25 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                     const SizedBox(height: 20.0,),
 
                     //Contact Owner Id
-                    CustomDropdownFormField2(
-                        label: 'Khách hàng của',
-                        hintText: Text(_getAccountFullname(widget.account.accountId!)),
-                        items: accountIdFullnames,
-                        onChanged: (value){
-                          _contactOwnerId.text = value.toString().substring(0, value.toString().indexOf(','));
-                          print(value.toString());
-                          print(_contactOwnerId.text);
-                        }
+                    if(fullname.isNotEmpty) OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          primary: defaultFontColor,
+                          side: BorderSide(width: 2.0, color: Colors.grey.shade300),
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        ),
+                        onPressed: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => SaleEmpFilter(account: _account,),
+                          ));
+                          if(data != null){
+                            setState(() {
+                              _contactOwnerId.text = data.toString();
+                            });
+                            _getAccountFullnameById(int.parse(_contactOwnerId.text));
+                            print('Contact owner Id: ${_contactOwnerId.text}');
+                          }
+                        },
+                        child: Text('Khách hàng của: $fullname')
                     ),
                     const SizedBox(height: 20.0,),
                     
@@ -164,12 +179,11 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                               contactId: 0,
                               fullname: _contactName.text,
                               companyName: _contactCompanyName.text,
-                              contactOwnerId: _contactOwnerId.text.isEmpty ? widget.account.accountId! : int.parse(_contactOwnerId.text),
+                              contactOwnerId: _contactOwnerId.text.isEmpty ? _account.accountId! : int.parse(_contactOwnerId.text),
                               phoneNumber: _contactPhoneNumber.text,
                               email: _contactEmail.text,
                               genderId: int.parse(_contactGender.text),
                               leadSourceId: 0,
-                              statusId: 0
                             );
                             ApiService().createNewContact(contact);
                             Future.delayed(const Duration(seconds: 3), (){
@@ -210,6 +224,15 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
     );
   }
 
+  void _getAccountFullnameById(int accountId){
+    _futureAccount = ApiService().getAccountById(accountId);
+    _futureAccount.then((value) {
+      setState(() {
+        fullname = value.fullname!;
+      });
+    });
+  }
+
   // void _getOverallInfo(){
   //   _getAccountListByBlockIdDepartmentId();
   // }
@@ -233,26 +256,26 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
   //   });
   // }
 
-  void _getAccountIdNames(){
-    if(accountIdFullnames.isNotEmpty){
-      accountIdFullnames.clear();
-    }
-
-    for(int i = 0; i < accounts.length; i++){
-      String idAndName = ('${accounts[i].accountId}_${accounts[i].fullname}');
-      String split = '${idAndName.split('_')}';
-      accountIdFullnames.add(split.substring(1, split.length-1));
-    }
-    print(accountIdFullnames);
-  }
-  
-  String _getAccountFullname(int accountId){
-    String accountFullname = '';
-    for(int i = 0; i < accountIdFullnames.length; i++){
-      if(accountId == int.parse(accountIdFullnames[i].substring(0,  accountIdFullnames[i].indexOf(',')))){
-        accountFullname = accountIdFullnames[i].substring(accountIdFullnames[i].indexOf(',')+2, accountIdFullnames[i].length);
-      }
-    }
-    return accountFullname;
-  }
+  // void _getAccountIdNames(){
+  //   if(accountIdFullnames.isNotEmpty){
+  //     accountIdFullnames.clear();
+  //   }
+  //
+  //   for(int i = 0; i < accounts.length; i++){
+  //     String idAndName = ('${accounts[i].accountId}_${accounts[i].fullname}');
+  //     String split = '${idAndName.split('_')}';
+  //     accountIdFullnames.add(split.substring(1, split.length-1));
+  //   }
+  //   print(accountIdFullnames);
+  // }
+  //
+  // String _getAccountFullname(int accountId){
+  //   String accountFullname = '';
+  //   for(int i = 0; i < accountIdFullnames.length; i++){
+  //     if(accountId == int.parse(accountIdFullnames[i].substring(0,  accountIdFullnames[i].indexOf(',')))){
+  //       accountFullname = accountIdFullnames[i].substring(accountIdFullnames[i].indexOf(',')+2, accountIdFullnames[i].length);
+  //     }
+  //   }
+  //   return accountFullname;
+  // }
 }

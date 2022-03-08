@@ -132,8 +132,7 @@ class ApiService {
         'contactOwnerId': contact.contactOwnerId,
         'companyName': contact.companyName,
         'leadSourceId': 0,
-        'genderId': contact.genderId,
-        'statusId': 0
+        'genderId': contact.genderId
       }),
 
     );
