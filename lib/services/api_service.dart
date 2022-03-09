@@ -152,6 +152,40 @@ class ApiService {
     }
   }
 
+  Future<List<Deal>> getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'deals?account-id=$accountId&page=$currentPage&limit=10';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Got all deals by account id | 200');
+      return jsonResponse.map((data) => Deal.fromJson(data)).toList();
+    } else {
+      throw Exception("Failed to get all deals by account id | 500 | 404");
+    }
+  }
+
+  Future<List<Deal>> getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'deals?deal-owner=$dealOwnerId&page=$currentPage&limit=10';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Got all deals by deal owner id | 200');
+      return jsonResponse.map((data) => Deal.fromJson(data)).toList();
+    } else {
+      throw Exception("Failed to get all deals by deal owner id | 500 | 404");
+    }
+  }
+
   Future<http.Response> createNewDeal(Deal deal) {
     String url = 'https://trungpd2022.azurewebsites.net/api/v1/deals';
     return http.post(
@@ -164,9 +198,9 @@ class ApiService {
         'dealStageId': deal.dealStageId,
         'amount': deal.amount,
         'closedDate' :deal.closedDate.toIso8601String(),
-        'dealOwner': deal.dealOwner,
+        'dealOwner': deal.dealOwnerId,
         'linkTrello': deal.linkTrello,
-        'vatid': deal.vatid,
+        'vatid': deal.vatId,
         'serviceId': deal.serviceId,
         'dealTypeId': deal.dealTypeId,
         'contactId': deal.contactId
@@ -211,9 +245,9 @@ class ApiService {
         'dealStageId': deal.dealStageId,
         'amount': deal.amount,
         'closedDate': deal.closedDate.toIso8601String(),
-        'dealOwner': deal.dealOwner,
+        'dealOwnerId': deal.dealOwnerId,
         'linkTrello': deal.linkTrello,
-        'vatid': deal.vatid,
+        'vatId': deal.vatId,
         'serviceId': deal.serviceId,
         'dealTypeId': deal.dealTypeId,
         'contactId': deal.contactId

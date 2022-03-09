@@ -152,11 +152,13 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                           final data = await Navigator.push(context, MaterialPageRoute(
                             builder: (context) => SaleEmpFilter(account: _account,),
                           ));
+                          late Account filterAccount;
                           if(data != null){
                             setState(() {
-                              _contactOwnerId.text = data.toString();
+                              filterAccount = data;
+                              _contactOwnerId.text = filterAccount.accountId!.toString();
+                              fullname = filterAccount.fullname!;
                             });
-                            _getAccountFullnameById(int.parse(_contactOwnerId.text));
                             print('Contact owner Id: ${_contactOwnerId.text}');
                           }
                         } : null,

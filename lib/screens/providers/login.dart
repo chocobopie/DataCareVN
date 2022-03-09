@@ -4,7 +4,7 @@ import 'package:login_sample/screens/admin/admin_home.dart';
 import 'package:login_sample/screens/hr_manager/hr_manager_home.dart';
 import 'package:login_sample/screens/providers/account_provider.dart';
 import 'package:login_sample/screens/sale_leader/sale_leader_home.dart';
-import 'package:login_sample/screens/sale_employee/emp_home.dart';
+import 'package:login_sample/screens/sale_employee/sale_emp_home.dart';
 import 'package:login_sample/screens/sale_manager/sale_manager_home.dart';
 import 'package:login_sample/screens/providers/authenticate.dart';
 import 'package:login_sample/utilities/utils.dart';

@@ -24,7 +24,7 @@ class EmpDealDetail extends StatefulWidget {
 
 class _EmpDealDetailState extends State<EmpDealDetail> {
 
-  late int vat = widget.deal.vatid;
+  late int vat = widget.deal.vatId;
   late DateTime closeDate = widget.deal.closedDate;
   String _closeDate = '';
   String? selectedValue;
@@ -232,7 +232,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                           ),
                           isExpanded: true,
-                          hint: widget.deal.vatid == 0
+                          hint: widget.deal.vatId == 0
                               ? const Text(
                             'Có',
                             style: TextStyle(fontSize: 14),
@@ -442,9 +442,9 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                                           dealStageId: _dealStage.text.isEmpty ? widget.deal.dealId : int.parse(_dealStage.text),
                                           amount: _dealAmount.text.isEmpty ? widget.deal.amount : int.parse(_dealAmount.text),
                                           closedDate: closeDate,
-                                          dealOwner: widget.deal.dealOwner,
+                                          dealOwnerId: widget.deal.dealOwnerId,
                                           linkTrello: '',
-                                          vatid: vat.toString().isEmpty ? widget.deal.dealId : vat,
+                                          vatId: vat.toString().isEmpty ? widget.deal.dealId : vat,
                                           serviceId: _dealService.text.isEmpty ? widget.deal.serviceId : int.parse(_dealService.text),
                                           dealTypeId: _dealType.text.isEmpty ? widget.deal.dealTypeId : int.parse(_dealType.text),
                                           contactId: widget.deal.contactId
@@ -535,7 +535,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
 
   String? _getDealOwnerName() {
     for (int i = 0; i < accounts.length; i++) {
-      if (widget.deal.dealOwner == accounts[i].accountId) {
+      if (widget.deal.dealOwnerId == accounts[i].accountId) {
         setState(() {
           _currentAccountDepartmentId = accounts[i].departmentId;
           _currentAccountTeamId = accounts[i].teamId;

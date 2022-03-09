@@ -3,20 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/screens/providers/account_provider.dart';
-import 'package:login_sample/screens/sale_employee/emp_contact_add_new.dart';
-import 'package:login_sample/screens/sale_employee/emp_contact_detail.dart';
+import 'package:login_sample/screens/sale_employee/sale_emp_contact_add_new.dart';
+import 'package:login_sample/screens/sale_employee/sale_emp_contact_detail.dart';
 import 'package:login_sample/screens/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 
 
 class EmpContactList extends StatefulWidget {
-  const EmpContactList({Key? key, required this.account}) : super(key: key);
-
-  final Account account;
+  const EmpContactList({Key? key}) : super(key: key);
 
   @override
   _EmpContactListState createState() => _EmpContactListState();
@@ -25,21 +24,21 @@ class EmpContactList extends StatefulWidget {
 class _EmpContactListState extends State<EmpContactList> {
 
   bool _isSearching = false;
-  String fullname = 'Tên nhân viên';
+  String fullname = 'Nhân viên';
   late final GlobalKey<FormFieldState> _key = GlobalKey();
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
   final RefreshController _refreshController = RefreshController();
 
   late Future<List<Contact>> _futureContacts;
-  late Future<Account> _futureAccount;
   late final List<Contact> _contacts = [];
-
+  late Account currentAccount, filterAccount = Account();
 
   @override
-  void initState() {
-    super.initState();
-    getOverallInfo(_currentPage, widget.account);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    currentAccount = Provider.of<AccountProvider>(context).account;
+    getOverallInfo(_currentPage, currentAccount);
   }
 
   @override
@@ -51,12 +50,11 @@ class _EmpContactListState extends State<EmpContactList> {
 
   @override
   Widget build(BuildContext context) {
-    var _account = Provider.of<AccountProvider>(context).account;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
-            builder: (context) => EmpContactAddNew(account: widget.account,),
+            builder: (context) => EmpContactAddNew(account: currentAccount,),
           )).then(onGoBack);
         },
         backgroundColor: Colors.green,
@@ -89,41 +87,40 @@ class _EmpContactListState extends State<EmpContactList> {
                     children: <Widget>[
                       const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       const SizedBox(width: 10,),
-                      OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            primary: defaultFontColor,
-                            side: const BorderSide(width: 3.0, color: mainBgColor),
-                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                          ),
-                          onPressed: () async {
-                            final data = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => SaleEmpFilter(account: _account,),
-                            ));
-                            if(data != null){
+                      CustomOutlinedButton(
+                        color: mainBgColor,
+                        title: fullname,
+                        radius: 30,
+                        onPressed: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => SaleEmpFilter(account: currentAccount,),
+                          ));
+                          if(data != null){
+                            _currentPage = 0;
 
-                              _currentPage = 0;
-                              setState(() {
-                                _contactOwnerId = data;
-                              });
+                            setState(() {
+                              filterAccount = data;
+                              _contactOwnerId = filterAccount.accountId!;
+                              fullname = filterAccount.fullname!;
+                            });
 
-                              if(_contacts.isNotEmpty){
-                                _contacts.clear();
-                              }
-
-                              _getAccountFullnameById(_contactOwnerId);
-                              _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                            if(_contacts.isNotEmpty){
+                              _contacts.clear();
                             }
-                          },
-                          child: Text(fullname)
+
+                            _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                          }
+                        },
                       ),
                       IconButton(
                           onPressed: (){
                             setState(() {
+                              filterAccount = Account();
                               _currentPage = 0;
-                              fullname = 'Tên nhân viên';
+                              fullname = 'Nhân viên';
                               _contactOwnerId = -1;
                               _contacts.clear();
-                              getOverallInfo(_currentPage, widget.account);
+                              getOverallInfo(_currentPage, currentAccount);
                             });
                           },
                           icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
@@ -173,7 +170,7 @@ class _EmpContactListState extends State<EmpContactList> {
                     _currentPage = 0;
                     print('Current page: $_currentPage');
                     if(_contactOwnerId == -1){
-                      _getAllContactByAccountId(isRefresh: true ,currentPage: _currentPage, accountId: widget.account.accountId!);
+                      _getAllContactByAccountId(isRefresh: true ,currentPage: _currentPage, accountId: currentAccount.accountId!);
                     } else {
                       _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                     }
@@ -191,7 +188,7 @@ class _EmpContactListState extends State<EmpContactList> {
                       });
                       print('Current page: $_currentPage');
                       if(_contactOwnerId == -1){
-                        _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: widget.account.accountId!);
+                        _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: currentAccount.accountId!);
                       } else {
                         _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                       }
@@ -209,7 +206,7 @@ class _EmpContactListState extends State<EmpContactList> {
                         return ListTile(
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => EmpContactDetail(contact: contact, account: _account,),
+                              builder: (context) => EmpContactDetail(contact: contact, account: currentAccount,),
                             )).then(onGoBack);
                           },
                          title: const Text('Tên khách hàng:'),
@@ -278,7 +275,7 @@ class _EmpContactListState extends State<EmpContactList> {
                     }
                     setState(() {
                       _isSearching = false;
-                      getOverallInfo(_currentPage, widget.account);
+                      getOverallInfo(_currentPage, currentAccount);
                     });
                   },
                 ) : IconButton(
@@ -312,51 +309,9 @@ class _EmpContactListState extends State<EmpContactList> {
        if(_contacts.isNotEmpty){
          _maxPages = _contacts[0].maxPage!;
        }
-        });
      });
-    if(_contacts.isNotEmpty){
-      _maxPages = _contacts[0].maxPage!;
-    }
+     });
     print('Max pages: $_maxPages');
-  }
-
-  void _getAccountFullnameById(int accountId){
-    _futureAccount = ApiService().getAccountById(accountId);
-    _futureAccount.then((value) {
-      setState(() {
-        fullname = value.fullname!;
-      });
-    });
-  }
-
-  onGoBack(dynamic value) {
-    if(_contacts.isNotEmpty){
-      _contacts.clear();
-    }
-    if(_contactOwnerId == -1){
-      getOverallInfo(_currentPage, widget.account);
-    }else{
-      _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-    }
-    setState(() {
-      _currentPage = 0;
-      _key.currentState?.reset();
-    });
-  }
-
-  void searchNameAndEmail(String query){
-    if(query.isNotEmpty){
-      _futureContacts = ApiService().getAllContactByFullnameOrEmail(widget.account.accountId!, query.toLowerCase());
-
-      _futureContacts.then((value) {
-        if(_contacts.isNotEmpty){
-          _contacts.clear();
-        }
-        setState(() {
-          _contacts.addAll(value);
-        });
-      });
-    }
   }
 
   void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage}){
@@ -371,6 +326,38 @@ class _EmpContactListState extends State<EmpContactList> {
       });
     });
     print('Max pages: $_maxPages');
+  }
+
+  void searchNameAndEmail(String query){
+    if(query.isNotEmpty){
+      _futureContacts = ApiService().getAllContactByFullnameOrEmail(currentAccount.accountId!, query.toLowerCase());
+
+      _futureContacts.then((value) {
+        if(_contacts.isNotEmpty){
+          _contacts.clear();
+        }
+        setState(() {
+          _contacts.addAll(value);
+        });
+      });
+    }
+  }
+
+  onGoBack(dynamic value) {
+    if(_contacts.isNotEmpty){
+      _contacts.clear();
+    }
+
+    setState(() {
+      _currentPage = 0;
+      _key.currentState?.reset();
+    });
+
+    if(_contactOwnerId == -1){
+      getOverallInfo(_currentPage, currentAccount);
+    }else{
+      _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+    }
   }
 
 }

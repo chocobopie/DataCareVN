@@ -3,7 +3,6 @@ import 'package:login_sample/screens/providers/account_provider.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/screens/admin/admin_account_list.dart';
-import 'package:login_sample/screens/hr_manager/hr_manager_attendance_report.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +14,7 @@ class HomeAdmin extends StatelessWidget {
     var _account = Provider.of<AccountProvider>(context).account;
     return Scaffold(
       drawer: SideBar(context,
-        name: _account.fullname!,
+        name: 'Admin',
         role: rolesNameUtilities[_account.roleId!],
         imageUrl: 'assets/images/logo.png',
       ),
@@ -45,7 +44,7 @@ class HomeAdmin extends StatelessWidget {
                     children: [
                       ImageTextButton(
                           imageUrl: 'assets/images/account_list.png',
-                          text: 'Danh sách tài khoản của tất cả nhân viên',
+                          text: 'Xem danh sách nhân viên',
                           buttonColors: const [Colors.blue, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(

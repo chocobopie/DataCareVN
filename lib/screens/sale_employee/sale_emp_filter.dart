@@ -179,7 +179,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                               ],
                             ),
                             onTap: (){
-                              Navigator.pop(context, _account.accountId);
+                              Navigator.pop(context, _account);
                             },
                           );
                         },
@@ -204,7 +204,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Lọc theo tên nhân viên",
+                "Lọc nhân viên",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,
@@ -224,10 +224,10 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
     _futureAccounts.then((value) {
       setState(() {
         _salesEmployees.addAll(value);
+        _maxPages = _salesEmployees[0].maxPage!;
       });
-      _maxPages = _salesEmployees[0].maxPage!;
-      print('Max Page1: $_maxPages');
     });
+    print('Max Page1: $_maxPages');
   }
 
   void _getAccountsByFullname({required bool isRefresh, required int currentPage, required int departmentId, required int blockId, required String fullname}){
@@ -236,10 +236,10 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
     _futureAccounts.then((value) {
       setState(() {
         _salesEmployees.addAll(value);
+        _maxPages = _salesEmployees[0].maxPage!;
       });
-      _maxPages = _salesEmployees[0].maxPage!;
-      print('Max Page2: $_maxPages');
     });
+    print('Max Page2: $_maxPages');
   }
 
 

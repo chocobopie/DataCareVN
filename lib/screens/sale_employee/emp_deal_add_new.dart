@@ -329,9 +329,9 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
                                 dealStageId: int.parse(_dealStageId.text),
                                 amount: int.parse(_dealAmount.text),
                                 closedDate: _dealCloseDate.toString().isEmpty ? DateTime.now() : _dealCloseDate,
-                                dealOwner: int.parse(_dealOwnerId.text),
+                                dealOwnerId: int.parse(_dealOwnerId.text),
                                 linkTrello: _linkTrello.text,
-                                vatid: int.parse(_dealVatId.text),
+                                vatId: int.parse(_dealVatId.text),
                                 serviceId: int.parse(_dealServiceId.text),
                                 dealTypeId: int.parse(_dealTypeId.text),
                                 contactId: int.parse(_dealContactId.text)

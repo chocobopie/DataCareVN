@@ -1,70 +1,65 @@
+import 'dart:convert';
+
+Deal dealFromJson(String str) => Deal.fromJson(json.decode(str));
+
+String dealToJson(Deal data) => json.encode(data.toJson());
+
 class Deal {
+  Deal({
+    required this.dealId,
+    required this.title,
+    required this.dealStageId,
+    required this.amount,
+    required this.closedDate,
+    required this.dealOwnerId,
+    this.linkTrello,
+    required this.vatId,
+    required this.serviceId,
+    required this.dealTypeId,
+    required this.contactId,
+    this.maxPage,
+  });
+
   int dealId;
   String title;
   int dealStageId;
   int amount;
   DateTime closedDate;
-  int? dealOwner;
+  int dealOwnerId;
   String? linkTrello;
-  int vatid;
+  int vatId;
   int serviceId;
   int dealTypeId;
   int contactId;
-
-  Deal({
-      required this.dealId,
-      required this.title,
-      required this.dealStageId,
-      required this.amount,
-      required this.closedDate,
-      required this.dealOwner,
-      this.linkTrello,
-      required this.vatid,
-      required this.serviceId,
-      required this.dealTypeId,
-      required this.contactId
-  });
+  int? maxPage;
 
   factory Deal.fromJson(Map<String, dynamic> json) => Deal(
-        dealId: json["dealId"],
-        title: json["title"] ?? '',
-        dealStageId: json["dealStageId"],
-        amount: json["amount"],
-        closedDate: DateTime.parse(json["closedDate"]),
-        dealOwner: json["dealOwner"],
-        linkTrello: json["linkTrello"] ?? '',
-        vatid: json["vatid"],
-        serviceId: json["serviceId"],
-        dealTypeId: json["dealTypeId"],
-        contactId: json["contactId"],
-      );
+    dealId: json["dealId"],
+    title: json["title"],
+    dealStageId: json["dealStageId"],
+    amount: json["amount"],
+    closedDate: DateTime.parse(json["closedDate"]),
+    dealOwnerId: json["dealOwnerId"],
+    linkTrello: json["linkTrello"],
+    vatId: json["vatId"],
+    serviceId: json["serviceId"],
+    dealTypeId: json["dealTypeId"],
+    contactId: json["contactId"],
+    maxPage: json["maxPage"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "dealId": dealId,
-        "title": title,
-        "dealStageId": dealStageId,
-        "amount": amount,
-        "closedDate": closedDate.toIso8601String(),
-        "dealOwner": dealOwner,
-        "linkTrello": linkTrello,
-        "vatid": vatid,
-        "serviceId": serviceId,
-        "dealTypeId": dealTypeId,
-        "contactId": contactId,
-      };
-
-  @override
-  String toString() {
-    return 'dealId: $dealId, '
-        'title: $title, '
-        'dealStageId: $dealStageId, '
-        'amount: $amount, '
-        'closedDate: $closedDate, '
-        'dealOwner: $dealOwner, '
-        'linkTrello: $linkTrello,'
-        'vatid: $vatid,'
-        'serviceId: $serviceId,'
-        'dealTypeId: $dealTypeId,'
-        'contactId: $contactId';
-  }
+    "dealId": dealId,
+    "title": title,
+    "dealStageId": dealStageId,
+    "amount": amount,
+    "closedDate": closedDate.toIso8601String(),
+    "dealOwnerId": dealOwnerId,
+    "linkTrello": linkTrello,
+    "vatId": vatId,
+    "serviceId": serviceId,
+    "dealTypeId": dealTypeId,
+    "contactId": contactId,
+    "maxPage": maxPage,
+  };
 }

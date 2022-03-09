@@ -78,7 +78,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                     children: <Widget>[
                       ImageTextButton(
                           imageUrl: 'assets/images/account_list.png',
-                          text: 'Danh sách tài khoản của tất cả nhân viên',
+                          text: 'Xem danh sách nhân viên',
                           buttonColors: const [Colors.yellow, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
@@ -90,7 +90,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                       const SizedBox(width: 30.0,),
                       ImageTextButton(
                           imageUrl: 'assets/images/attendance-report.png',
-                          text: 'Báo cáo điểm danh của các nhân viên',
+                          text: 'Xem báo cáo điểm danh',
                           buttonColors: const [Colors.green, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
@@ -114,7 +114,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Trưởng phòng quản lý nhân sự",
+                "Quản lý nhân sự",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

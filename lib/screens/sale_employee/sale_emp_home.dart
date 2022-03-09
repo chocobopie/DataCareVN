@@ -6,7 +6,7 @@ import 'package:login_sample/screens/sale_employee/emp_issue.dart';
 import 'package:login_sample/screens/sale_employee/emp_payroll.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
-import 'emp_contact_list.dart';
+import 'sale_emp_contact_list.dart';
 import 'emp_deal_list.dart';
 import 'emp_take_attendance.dart';
 
@@ -65,7 +65,7 @@ class _HomeEmployeeState extends State<HomeEmployee> {
                             child: TextButton(
                                 onPressed: () {
                                   Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => EmpContactList(account: _account,),
+                                    builder: (context) => const EmpContactList(),
                                   ));
                                 },
                                 child: Padding(
