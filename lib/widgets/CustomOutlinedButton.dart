@@ -9,6 +9,7 @@ class CustomOutlinedButton extends StatelessWidget {
   final double radius;
   final Color color;
 
+
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
@@ -18,7 +19,7 @@ class CustomOutlinedButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radius))),
         ),
         onPressed: onPressed,
-        child: Text(title, style: const TextStyle(fontSize: 16),)
+        child: Text(title, style: const TextStyle(fontSize: 12),)
     );
   }
 }
