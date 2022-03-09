@@ -152,12 +152,16 @@ class ApiService {
     }
   }
 
-  Future<List<Deal>> getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
+  Future<List<Deal>> getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
-
     String url = stockUrl + 'deals?account-id=$accountId&page=$currentPage&limit=10';
+
+    if(fromDate != null && toDate != null){
+      url = stockUrl + 'deals?account-id=$accountId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=10';
+    }
+
 
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
@@ -169,12 +173,16 @@ class ApiService {
     }
   }
 
-  Future<List<Deal>> getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage}) async {
+  Future<List<Deal>> getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
     String url = stockUrl + 'deals?deal-owner=$dealOwnerId&page=$currentPage&limit=10';
+
+    if(fromDate != null && toDate != null){
+      url = stockUrl + 'deals?deal-owner=$dealOwnerId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=10';
+    }
 
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){

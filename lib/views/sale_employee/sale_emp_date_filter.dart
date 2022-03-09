@@ -63,7 +63,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                             );
                             if(date != null){
                               setState(() {
-                                fromDateString = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
+                                fromDateString = DateFormat('dd-MM-yyyy').format(date);
                                 fromDate = date;
                               });
                               print('Từ ngày $date');
@@ -73,7 +73,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             contentPadding: const EdgeInsets.only(left: 20.0),
                             labelText: 'Từ ngày',
-                            hintText: fromDateString.isNotEmpty ? fromDateString : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
+                            hintText: fromDateString.isNotEmpty ? 'Ngày $fromDateString' : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
                             labelStyle: const TextStyle(
                               color: Color.fromARGB(255, 107, 106, 144),
                               fontSize: 18,
@@ -112,7 +112,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                             );
                             if(date != null){
                               setState(() {
-                                toDateString = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
+                                toDateString = DateFormat('dd-MM-yyyy').format(date);
                                 toDate = date;
                               });
                               print('Đến ngày $date');
@@ -122,7 +122,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             contentPadding: const EdgeInsets.only(left: 20.0),
                             labelText: 'Đến ngày',
-                            hintText: toDateString.isNotEmpty ? toDateString : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
+                            hintText: toDateString.isNotEmpty ? 'Ngày $toDateString' : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
                             labelStyle: const TextStyle(
                               color: Color.fromARGB(255, 107, 106, 144),
                               fontSize: 18,
@@ -164,10 +164,10 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                         child: TextButton(
                           onPressed: (){
                             if(fromDateString.isEmpty){
-                              fromDateString = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
+                              fromDateString = DateFormat('dd-MM-yyyy').format(DateTime.now());
                             }
                             if(toDateString.isEmpty){
-                              toDateString = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
+                              toDateString = DateFormat('dd-MM-yyyy').format(DateTime.now());
                             }
                             if(fromDate.isBefore(toDate) && toDate.isAfter(fromDate)){
                               FromDateToDate fromDateToDate =  FromDateToDate(fromDateString: fromDateString, toDateString: toDateString, fromDate: fromDate, toDate: toDate);

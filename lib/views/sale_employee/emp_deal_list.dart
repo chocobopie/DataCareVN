@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/deal.dart';
@@ -34,6 +35,11 @@ class _EmpDealListState extends State<EmpDealList> {
   late Future<List<Deal>> _futureDeals;
   late final List<Deal> _deals = [];
   late Account currentAccount, filterAccount = Account();
+
+  late DateTime? fromDate;
+  late DateTime? toDate;
+  String fromDateToDateString = 'Ngày';
+
 
   @override
   void didChangeDependencies() {
@@ -78,14 +84,14 @@ class _EmpDealListState extends State<EmpDealList> {
                 topRight: Radius.circular(25),
               ),
             ),
-            margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
+            margin: const EdgeInsets.only(top: 100.0),
             child: ListView(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0,),
                   child: Row(
                     children: <Widget>[
-                      const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                      if(fromDateToDateString == 'Ngày') const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       const SizedBox(width: 5,),
                       //Lọc theo nhân viên
                       CustomOutlinedButton(
@@ -111,7 +117,7 @@ class _EmpDealListState extends State<EmpDealList> {
                       const SizedBox(width: 5,),
                       //Lọc theo ngày
                       CustomOutlinedButton(
-                          title: 'Ngày',
+                          title: fromDateToDateString,
                           radius: 30,
                           color: mainBgColor,
                           onPressed: () async {
@@ -120,6 +126,17 @@ class _EmpDealListState extends State<EmpDealList> {
                             ));
                             if(data != null){
                               FromDateToDate fromDateToDate = data;
+                              setState(() {
+                                fromDate = fromDateToDate.fromDate;
+                                toDate = fromDateToDate.toDate;
+                                fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                              });
+                              _deals.clear();
+                              if(filterAccount.accountId == null){
+                                _getAllDealByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
+                              }else{
+                                _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
+                              }
                             }
                           },
                       ),
@@ -132,6 +149,9 @@ class _EmpDealListState extends State<EmpDealList> {
                               _currentPage = 0;
                               _fullname = 'Nhân viên';
                               filterAccount = Account();
+                              fromDate = null;
+                              toDate = null;
+                              fromDateToDateString = 'Ngày';
                             });
                             _getOverallInfo(_currentPage, currentAccount);
                           },
@@ -181,10 +201,14 @@ class _EmpDealListState extends State<EmpDealList> {
                       _deals.clear();
                     }
                     _currentPage = 0;
-                    if(filterAccount.accountId == null){
+                    if(filterAccount.accountId == null && fromDate == null && toDate == null){
                       _getAllDealByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
-                    } else {
+                    } else if (filterAccount.accountId != null && fromDate == null && toDate == null){
                       _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage);
+                    } else if (filterAccount.accountId == null && fromDate != null && toDate != null ){
+                      _getAllDealByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
+                    } else if( filterAccount.accountId != null && fromDate != null && toDate != null ){
+                      _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
                     }
 
                     if(_deals.isNotEmpty){
@@ -199,10 +223,14 @@ class _EmpDealListState extends State<EmpDealList> {
                         _currentPage++;
                       });
                       print('Current page: $_currentPage');
-                      if(filterAccount.accountId == null){
+                      if(filterAccount.accountId == null && fromDate == null && toDate == null){
                         _getAllDealByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
-                      } else {
+                      } else if (filterAccount.accountId != null && fromDate == null && toDate == null){
                         _getAllDealByDealOwnerId(isRefresh: false, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage);
+                      } else if (filterAccount.accountId == null && fromDate != null && toDate != null ){
+                        _getAllDealByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
+                      } else if( filterAccount.accountId != null && fromDate != null && toDate != null ){
+                        _getAllDealByDealOwnerId(isRefresh: false, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
                       }
                     }
 
@@ -304,8 +332,14 @@ class _EmpDealListState extends State<EmpDealList> {
     _getAllDealByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
   }
 
-  void _getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage}){
-    _futureDeals = ApiService().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
+  void _getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, DateTime? fromDate, DateTime? toDate}){
+
+    if(fromDate != null && toDate != null ){
+      _futureDeals = ApiService().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
+    }else{
+      _futureDeals = ApiService().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
+    }
+
 
     _futureDeals.then((value) {
       setState(() {
@@ -316,8 +350,13 @@ class _EmpDealListState extends State<EmpDealList> {
     print('Max pages: $_maxPages');
   }
 
-  void _getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage}){
-    _futureDeals = ApiService().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage);
+  void _getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}){
+
+    if(fromDate != null && toDate != null){
+      _futureDeals = ApiService().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
+    } else {
+      _futureDeals = ApiService().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage,);
+    }
 
     _futureDeals.then((value) {
       setState(() {
@@ -343,5 +382,6 @@ class _EmpDealListState extends State<EmpDealList> {
       _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage);
     }
   }
+
 
 }
