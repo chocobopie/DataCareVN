@@ -6,20 +6,20 @@ String leadSourceToJson(LeadSource data) => json.encode(data.toJson());
 
 class LeadSource {
   LeadSource({
-    required this.dealStageId,
+    required this.leadSourceId,
     required this.name,
   });
 
-  int dealStageId;
+  int leadSourceId;
   String name;
 
   factory LeadSource.fromJson(Map<String, dynamic> json) => LeadSource(
-    dealStageId: json["dealStageId"],
+    leadSourceId: json["leadSourceId"],
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
-    "dealStageId": dealStageId,
+    "leadSourceId": leadSourceId,
     "name": name,
   };
 }

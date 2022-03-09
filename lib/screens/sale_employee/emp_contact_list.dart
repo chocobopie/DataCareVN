@@ -25,7 +25,7 @@ class EmpContactList extends StatefulWidget {
 class _EmpContactListState extends State<EmpContactList> {
 
   bool _isSearching = false;
-  String fullname = '';
+  String fullname = 'Tên nhân viên';
   late final GlobalKey<FormFieldState> _key = GlobalKey();
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
@@ -114,14 +114,14 @@ class _EmpContactListState extends State<EmpContactList> {
                               _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                             }
                           },
-                          child:  _contactOwnerId == -1 ? const Text('Tên nhân viên') : Text(fullname)
+                          child: Text(fullname)
                       ),
                       IconButton(
                           onPressed: (){
                             setState(() {
                               _currentPage = 0;
                               fullname = 'Tên nhân viên';
-                              _contactOwnerId == -1;
+                              _contactOwnerId = -1;
                               _contacts.clear();
                               getOverallInfo(_currentPage, widget.account);
                             });
@@ -177,7 +177,6 @@ class _EmpContactListState extends State<EmpContactList> {
                     } else {
                       _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                     }
-                    print('Contact count: ${_contacts.length}');
 
                     if(_contacts.isNotEmpty){
                       _refreshController.refreshCompleted();
@@ -196,7 +195,6 @@ class _EmpContactListState extends State<EmpContactList> {
                       } else {
                         _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                       }
-                      print('Contact count: ${_contacts.length}');
                     }
 
                     if(_contacts.isNotEmpty){

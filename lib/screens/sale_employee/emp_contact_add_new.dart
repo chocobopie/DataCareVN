@@ -28,6 +28,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
   final TextEditingController _contactCompanyName = TextEditingController();
   final TextEditingController _contactOwnerId = TextEditingController();
   final TextEditingController _contactGender = TextEditingController();
+  final TextEditingController _contactLeadSourceId = TextEditingController();
 
   late Future<Account> _futureAccount;
 
@@ -39,6 +40,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
     _contactCompanyName.dispose();
     _contactOwnerId.dispose();
     _contactGender.dispose();
+    _contactLeadSourceId.dispose();
     super.dispose();
   }
 
@@ -76,7 +78,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: ListView(
+                child: fullname.isNotEmpty ? ListView(
                   children: <Widget>[
 
                     //Tên khách hàng
@@ -154,6 +156,24 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                         child: Text('Khách hàng của: $fullname')
                     ),
                     const SizedBox(height: 20.0,),
+
+                    //Nguồn
+                    CustomDropdownFormField2(
+                        label: 'Nguồn',
+                        hintText: const Text(''),
+                        items: leadSourceNameUtilities,
+                        onChanged: (value){
+                          if(value.toString() == leadSourceNameUtilities[0]){
+                            _contactLeadSourceId.text = '0';
+                          }else if(value.toString() == leadSourceNameUtilities[1]){
+                            _contactLeadSourceId.text = '1';
+                          }else if(value.toString() == leadSourceNameUtilities[2]){
+                            _contactLeadSourceId.text = '2';
+                          }
+                          print(_contactLeadSourceId.text);
+                        }
+                    ),
+                    const SizedBox(height: 20.0,),
                     
 
                     Container(
@@ -174,7 +194,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                       child: TextButton(
                         onPressed: (){
                           if(_contactName.text.isNotEmpty && _contactCompanyName.text.isNotEmpty && _contactPhoneNumber.text.isNotEmpty
-                             && _contactEmail.text.isNotEmpty && _contactGender.text.isNotEmpty){
+                             && _contactEmail.text.isNotEmpty && _contactGender.text.isNotEmpty && _contactLeadSourceId.text.isNotEmpty){
                             Contact contact = Contact(
                               contactId: 0,
                               fullname: _contactName.text,
@@ -183,7 +203,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                               phoneNumber: _contactPhoneNumber.text,
                               email: _contactEmail.text,
                               genderId: int.parse(_contactGender.text),
-                              leadSourceId: 0,
+                              leadSourceId: int.parse(_contactLeadSourceId.text)
                             );
                             ApiService().createNewContact(contact);
                             Future.delayed(const Duration(seconds: 3), (){
@@ -198,7 +218,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                       ),
                     ),
                   ],
-                ),
+                ) : const Center(child: CircularProgressIndicator())
               )
           ),
           Positioned(
@@ -232,50 +252,4 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
       });
     });
   }
-
-  // void _getOverallInfo(){
-  //   _getAccountListByBlockIdDepartmentId();
-  // }
-  
-  // void _getAccountListByBlockIdDepartmentId(){
-  //   futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(widget.account.accountId!, widget.account.blockId!, widget.account.departmentId!);
-  //
-  //   futureAccounts.then((value) {
-  //     if(accounts.isNotEmpty){
-  //       accounts.clear();
-  //     }
-  //     setState(() {
-  //       accounts.addAll(value);
-  //       for(int i = 0; i < accounts.length; i++){
-  //         if( accounts[i].roleId! < 3 || accounts[i].roleId! > 5){
-  //           accounts.removeAt(i);
-  //         }
-  //       }
-  //       _getAccountIdNames();
-  //     });
-  //   });
-  // }
-
-  // void _getAccountIdNames(){
-  //   if(accountIdFullnames.isNotEmpty){
-  //     accountIdFullnames.clear();
-  //   }
-  //
-  //   for(int i = 0; i < accounts.length; i++){
-  //     String idAndName = ('${accounts[i].accountId}_${accounts[i].fullname}');
-  //     String split = '${idAndName.split('_')}';
-  //     accountIdFullnames.add(split.substring(1, split.length-1));
-  //   }
-  //   print(accountIdFullnames);
-  // }
-  //
-  // String _getAccountFullname(int accountId){
-  //   String accountFullname = '';
-  //   for(int i = 0; i < accountIdFullnames.length; i++){
-  //     if(accountId == int.parse(accountIdFullnames[i].substring(0,  accountIdFullnames[i].indexOf(',')))){
-  //       accountFullname = accountIdFullnames[i].substring(accountIdFullnames[i].indexOf(',')+2, accountIdFullnames[i].length);
-  //     }
-  //   }
-  //   return accountFullname;
-  // }
 }

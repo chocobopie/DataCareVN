@@ -31,6 +31,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
   final TextEditingController _contactCompanyName = TextEditingController();
   final TextEditingController _contactOwnerId = TextEditingController();
   final TextEditingController _contactGender = TextEditingController();
+  final TextEditingController _contactLeadSourceId = TextEditingController();
 
   late Future<Account> _futureAccount;
 
@@ -50,6 +51,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
     _contactCompanyName.dispose();
     _contactOwnerId.dispose();
     _contactGender.dispose();
+    _contactLeadSourceId.dispose();
     super.dispose();
   }
 
@@ -162,6 +164,24 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                     ),
                     const SizedBox(height: 20.0,),
 
+                    //Nguồn
+                    CustomDropdownFormField2(
+                        label: 'Nguồn',
+                        hintText: Text(leadSourceNameUtilities[int.parse('${widget.contact.leadSourceId}')]),
+                        items: leadSourceNameUtilities,
+                        onChanged: _readOnly != true ? (value){
+                          if(value.toString() == leadSourceNameUtilities[0]){
+                            _contactLeadSourceId.text = '0';
+                          }else if(value.toString() == leadSourceNameUtilities[1]){
+                            _contactLeadSourceId.text = '1';
+                          }else if(value.toString() == leadSourceNameUtilities[2]){
+                            _contactLeadSourceId.text = '2';
+                          }
+                          print(_contactLeadSourceId.text);
+                        } : null
+                    ),
+                    const SizedBox(height: 20.0,),
+
 
                     Padding(
                       padding: const EdgeInsets.only(left: 5.0),
@@ -234,7 +254,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                                           companyName: _contactCompanyName.text.isEmpty ? widget.contact.companyName : _contactCompanyName.text,
                                           contactOwnerId: _contactOwnerId.text.isEmpty ? widget.contact.contactOwnerId : int.parse(_contactOwnerId.text),
                                           genderId: _contactGender.text.isEmpty ? widget.contact.genderId : int.parse(_contactGender.text),
-                                          leadSourceId: 0,
+                                          leadSourceId: _contactLeadSourceId.text.isEmpty ? widget.contact.leadSourceId : int.parse(_contactLeadSourceId.text),
                                       );
                                       ApiService().updateAContact(contact);
                                       _readOnly = true;
@@ -285,14 +305,4 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
       });
     });
   }
-
-  // String _getContactOwnerName(int contactOwnerId){
-  //   String contactOwnerName = '';
-  //   for(int i = 0; i < accountIdNames.length; i++){
-  //     if(contactOwnerId == int.parse(accountIdNames[i].substring(0,  accountIdNames[i].indexOf(',')))){
-  //       contactOwnerName = accountIdNames[i].substring(accountIdNames[i].indexOf(',')+2, accountIdNames[i].length);
-  //     }
-  //   }
-  //   return contactOwnerName;
-  // }
 }

@@ -111,8 +111,7 @@ class ApiService {
         'contactOwnerId': contact.contactOwnerId,
         'companyName': contact.companyName,
         'leadSourceId': contact.leadSourceId,
-        'genderId': contact.genderId,
-        'statusId': contact.statusId
+        'genderId': contact.genderId
       }),
     );
   }
@@ -131,7 +130,7 @@ class ApiService {
         'phoneNumber': contact.phoneNumber,
         'contactOwnerId': contact.contactOwnerId,
         'companyName': contact.companyName,
-        'leadSourceId': 0,
+        'leadSourceId': contact.leadSourceId,
         'genderId': contact.genderId
       }),
 
