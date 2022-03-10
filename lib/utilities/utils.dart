@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/deal_stage.dart';
 import 'package:login_sample/models/deal_type.dart';
+import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/excuse_late_status.dart';
 import 'package:login_sample/models/gender.dart';
 import 'package:login_sample/models/lead_source.dart';
@@ -29,6 +30,7 @@ List<LeadSource> leadSources = [];
 List<ExcuseLateStatus> excuseLateStatuses = [];
 List<Gender> genders = [];
 List<Team> teams = [];
+List<Department> departments = [];
 //List String
 List<String> dealServicesNameUtilities = [];
 List<String> dealVatsNameUtilities = [];

@@ -137,6 +137,20 @@ class ApiService {
     );
   }
 
+  Future<Contact> getContactByContactId(int contactId) async {
+    String url = stockUrl + 'contacts/$contactId';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      print('Got contact by contact id | 200');
+      return Contact.fromJson(jsonResponse);
+    } else {
+      throw Exception("Failed to get contact by contact id | 500 | 404");
+    }
+
+  }
+
 
   //Deals
   Future<List<Deal>> getAllDeals() async {

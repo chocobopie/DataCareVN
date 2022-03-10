@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
+import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_add_new.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_detail.dart';
@@ -37,8 +38,10 @@ class _EmpContactListState extends State<EmpContactList> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    currentAccount = Provider.of<AccountProvider>(context).account;
-    getOverallInfo(_currentPage, currentAccount);
+    if(_contacts.isEmpty){
+      currentAccount = Provider.of<AccountProvider>(context).account;
+      getOverallInfo(_currentPage, currentAccount);
+    }
   }
 
   @override
@@ -300,32 +303,24 @@ class _EmpContactListState extends State<EmpContactList> {
       _getAllContactByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
   }
 
-  void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}){
-    _futureContacts = ApiService().getAllContactsByAccountId(isRefresh: isRefresh,accountId: accountId, currentPage: currentPage);
-
-    _futureContacts.then((value) {
-     setState(() {
-       _contacts.addAll(value);
-       if(_contacts.isNotEmpty){
-         _maxPages = _contacts[0].maxPage!;
-       }
-     });
-     });
-    print('Max pages: $_maxPages');
+  Future<void> _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
+    List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
+    setState(() {
+      _contacts.addAll(contactList);
+      if(_contacts.isNotEmpty){
+        _maxPages = _contacts[0].maxPage!;
+      }
+    });
   }
 
-  void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage}){
-    _futureContacts = ApiService().getAllContactByContactOwnerId(isRefresh: isRefresh, currentPage: currentPage, contactOwnerId: contactOwnerId);
-
-    _futureContacts.then((value) {
-      setState(() {
-        _contacts.addAll(value);
-        if(_contacts.isNotEmpty){
-          _maxPages = _contacts[0].maxPage!;
-        }
-      });
+  void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage}) async {
+    List<Contact> contactList = await ContactListViewModel().getAllContactByOwnerId(isRefresh: isRefresh, contactOwnerId: contactOwnerId, currentPage: currentPage);
+    setState(() {
+      if(_contacts.isNotEmpty){
+        _contacts.addAll(contactList);
+        _maxPages = _contacts[0].maxPage!;
+      }
     });
-    print('Max pages: $_maxPages');
   }
 
   void searchNameAndEmail(String query){

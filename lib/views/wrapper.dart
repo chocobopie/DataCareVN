@@ -37,6 +37,7 @@ class _WrapperState extends State<Wrapper> {
     getAllRoleName();
     getAllGendersName();
     getAllTeams();
+    geAllDepartment();
   }
 
   //Convert Future<List<Model> to List<Model> to List<String>
@@ -53,6 +54,15 @@ class _WrapperState extends State<Wrapper> {
         for(int i = 0; i < dealServices.length; i++){
           dealServicesNameUtilities.add(dealServices[i].name);
         }
+    });
+  }
+
+  void geAllDepartment(){
+    ApiService().getAllDepartment().then((value) {
+      if(departments.isNotEmpty){
+        departments.clear();
+      }
+      departments.addAll(value);
     });
   }
 

@@ -5,13 +5,16 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
-import 'package:login_sample/models/department.dart';
-import 'package:login_sample/models/team.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
+import 'package:provider/provider.dart';
+
 
 class EmpDealDetail extends StatefulWidget {
   const EmpDealDetail({Key? key, required this.deal}) : super(key: key);
@@ -24,14 +27,10 @@ class EmpDealDetail extends StatefulWidget {
 
 class _EmpDealDetailState extends State<EmpDealDetail> {
 
-  late int vat = widget.deal.vatId;
   late DateTime closeDate = widget.deal.closedDate;
   String _closeDate = '';
-  String? selectedValue;
 
   bool _readOnly = true;
-  late int? _currentAccountDepartmentId = 0;
-  late int? _currentAccountTeamId = 0;
 
   final TextEditingController _dealTitle = TextEditingController();
   final TextEditingController _dealStage = TextEditingController();
@@ -40,23 +39,26 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
   final TextEditingController _dealService = TextEditingController();
   final TextEditingController _dealOwner = TextEditingController();
   final TextEditingController _dealLinkTrello = TextEditingController();
-  final TextEditingController _dealClosedDate = TextEditingController();
+  late final TextEditingController _dealClosedDate = TextEditingController();
+  final TextEditingController _dealVatId = TextEditingController();
 
-  late List<Account> accounts = [];
-  late List<Department> departments = [];
-  late List<Team> teams = [];
-  late List<Contact> contacts = [];
-  late Future<List<Account>> futureAccounts;
-  late Future<List<Department>> futureDepartments;
-  late Future<List<Team>> futureTeams;
-  late Future<List<Contact>> futureContacts;
-  late List<String?> dealOwnerIdNames = [];
-
+  late Future<Contact> futureContact;
+  late Future<Account> futureAccount;
+  Contact? contact;
+  Account? account;
+  late Account currentAccount;
 
   @override
   void initState() {
-    _getOverallInfo();
     super.initState();
+    _getContactByContactId(widget.deal.dealOwnerId);
+    _getAccountByAccountId(widget.deal.dealOwnerId);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
   }
 
   @override
@@ -69,32 +71,9 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
     _dealOwner.dispose();
     _dealLinkTrello.dispose();
     _dealClosedDate.dispose();
+    _dealVatId.dispose();
     super.dispose();
   }
-
-  List<String> services = [
-    'Đào tạo',
-    'Website Content',
-    'Facebook Content',
-    'Chạy Ads',
-    'Thiết kế Website',
-    'TMDT',
-    'Setup Ads'
-  ];
-
-  List<String> vats = ['Có', 'Không'];
-
-  List<String> dealStages = [
-    'Gửi báo giá',
-    'Đang suy nghĩ',
-    'Gặp trao đổi',
-    'Đồng ý mua',
-    'Gửi hợp đồng',
-    'Xuống tiền',
-    'Thất bại'
-  ];
-
-  List<String> dealTypes = ['Ký mới', 'Tái ký'];
 
   @override
   Widget build(BuildContext context) {
@@ -120,50 +99,47 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                 margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: contacts.isNotEmpty && accounts.isNotEmpty && departments.isNotEmpty && teams.isNotEmpty ? ListView(
+                  child: contact != null && account != null ? ListView(
                     children: <Widget>[
-                      CustomReadOnlyTextField(
-                          text: '${widget.deal.dealId}', title: 'ID hợp đồng'),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
+                      CustomReadOnlyTextField(text: '${widget.deal.dealId}', title: 'ID hợp đồng'),
+                      const SizedBox(height: 20.0,),
 
                       //Tên hợp đồng
                       CustomEditableTextField(
                         text: widget.deal.title,
-                        title: 'Tên hợp đồng',
+                        title: 'Tiêu đề',
                         readonly: _readOnly,
                         textEditingController: _dealTitle,
                       ),
                       const SizedBox(height: 20.0,),
 
                       //Tên khách hàng
-                      CustomReadOnlyTextField(text: '${_getContactName(widget.deal.contactId)}', title: 'Tên khách hàng'),
+                      CustomReadOnlyTextField(text: contact!.fullname, title: 'Tên khách hàng'),
                       const SizedBox(height: 20.0,),
 
                       //Tên công ty khách hàng
-                      CustomReadOnlyTextField(text: '${_getCompanyName(widget.deal.contactId)}', title: 'Tên công ty khách hàng'),
+                      CustomReadOnlyTextField(text: contact!.companyName, title: 'Tên công ty khách hàng'),
                       const SizedBox(height: 20.0,),
 
                       //Tiến trình hợp đồng
                       CustomDropdownFormField2(
                           label: 'Tiến trình hợp đồng',
-                          hintText: Text(dealStages[widget.deal.dealStageId].toString(), style: const TextStyle(fontSize: 14),),
-                          items: dealStages,
+                          hintText: Text(dealStagesNameUtilities[widget.deal.dealStageId].toString(), style: const TextStyle(fontSize: 14),),
+                          items: dealStagesNameUtilities,
                           onChanged: widget.deal.dealStageId != 5 ? _readOnly != true ? (value){
-                            if(value.toString() == dealStages[0].toString()){
+                            if(value.toString() == dealStagesNameUtilities[0].toString()){
                               _dealStage.text = '0';
-                            }else if(value.toString() == dealStages[1].toString()){
+                            }else if(value.toString() == dealStagesNameUtilities[1].toString()){
                               _dealStage.text = '1';
-                            }else if(value.toString() == dealStages[2].toString()){
+                            }else if(value.toString() == dealStagesNameUtilities[2].toString()){
                               _dealStage.text = '2';
-                            }else if(value.toString() == dealStages[3].toString()){
+                            }else if(value.toString() == dealStagesNameUtilities[3].toString()){
                               _dealStage.text = '3';
-                            }else if(value.toString() == dealStages[4].toString()){
+                            }else if(value.toString() == dealStagesNameUtilities[4].toString()){
                               _dealStage.text = '4';
-                            }else if(value.toString() == dealStages[5].toString()){
+                            }else if(value.toString() == dealStagesNameUtilities[5].toString()){
                               _dealStage.text = '5';
-                            }else if(value.toString() == dealStages[6].toString()){
+                            }else if(value.toString() == dealStagesNameUtilities[6].toString()){
                               _dealStage.text = '6';
                             }
                           print(_dealStage.text);
@@ -174,18 +150,10 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                       //Loại hợp đồng
                       CustomDropdownFormField2(
                           label: 'Loại hợp đồng',
-                          hintText: widget.deal.dealStageId == 0
-                              ? Text(
-                            dealTypes[0].toString(),
-                            style: const TextStyle(fontSize: 14),
-                          )
-                              : Text(
-                            dealTypes[1].toString(),
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          items: dealTypes,
+                          hintText: Text(dealTypesNameUtilities[widget.deal.dealTypeId].toString(), style: const TextStyle(fontSize: 14),),
+                          items: dealTypesNameUtilities,
                           onChanged: _readOnly != true ? (value){
-                            if(value.toString() == dealTypes[0].toString()){
+                            if(value.toString() == dealTypesNameUtilities[0].toString()){
                               _dealType.text = '0';
                             }else{
                               _dealType.text = '1';
@@ -232,15 +200,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                           ),
                           isExpanded: true,
-                          hint: widget.deal.vatId == 0
-                              ? const Text(
-                            'Có',
-                            style: TextStyle(fontSize: 14),
-                          )
-                              : const Text(
-                            'Không',
-                            style: TextStyle(fontSize: 14),
-                          ),
+                          hint: Text( dealVatsNameUtilities[widget.deal.vatId], style: const TextStyle(fontSize: 14),),
                           icon: const Icon(
                             Icons.arrow_drop_down,
                             color: Colors.black45,
@@ -250,7 +210,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                           dropdownDecoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          items: vats
+                          items: dealVatsNameUtilities
                               .map((item) => DropdownMenuItem<String>(
                             value: item,
                             child: Text(
@@ -267,16 +227,12 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                             }
                           },
                           onChanged: _readOnly != true ? (value) {
-                            if (value.toString().contains('Có')) {
-                              vat = 0;
-                            } else {
-                              vat = 1;
+                            if(value.toString() == dealVatsNameUtilities[0].toString()){
+                              _dealVatId.text = '0';
+                            }else{
+                              _dealVatId.text = '1';
                             }
-                            print(vat.toString());
                           } : null,
-                          onSaved: (value) {
-                            selectedValue = value.toString();
-                          },
                         ),
                       ),
                       const SizedBox(height: 20.0,),
@@ -297,7 +253,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                             );
                             if (date != null) {
                               setState(() {
-                                closeDate = date;
+                                _dealClosedDate.text = date.toString();
                                 _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(closeDate)}';
                                 print(date);
                               });
@@ -307,9 +263,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             contentPadding: const EdgeInsets.only(left: 20.0),
                             labelText: 'Ngày đóng',
-                            hintText: _closeDate.isNotEmpty
-                                ? _closeDate
-                                : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
+                            hintText: _closeDate.isNotEmpty ? _closeDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
                             labelStyle: const TextStyle(
                               color: Color.fromARGB(255, 107, 106, 144),
                               fontSize: 18,
@@ -334,22 +288,22 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                       //Loại dịch vụ
                       CustomDropdownFormField2(
                           label: 'Loại dịch vụ',
-                          hintText: Text(services[widget.deal.serviceId].toString(), style: const TextStyle(fontSize: 14),),
-                          items: services,
+                          hintText: Text(dealServicesNameUtilities[widget.deal.serviceId].toString(), style: const TextStyle(fontSize: 14),),
+                          items: dealServicesNameUtilities,
                         onChanged: _readOnly != true ? (value){
-                            if(value.toString() == services[0].toString()){
+                            if(value.toString() == dealServicesNameUtilities[0].toString()){
                               _dealService.text = '0';
-                            }else if(value.toString() == services[1].toString()){
+                            }else if(value.toString() == dealServicesNameUtilities[1].toString()){
                               _dealService.text = '1';
-                            }else if(value.toString() == services[2].toString()){
+                            }else if(value.toString() == dealServicesNameUtilities[2].toString()){
                               _dealService.text = '2';
-                            }else if(value.toString() == services[3].toString()){
+                            }else if(value.toString() == dealServicesNameUtilities[3].toString()){
                               _dealService.text = '3';
-                            }else if(value.toString() == services[4].toString()){
+                            }else if(value.toString() == dealServicesNameUtilities[4].toString()){
                               _dealService.text = '4';
-                            }else if(value.toString() == services[5].toString()){
+                            }else if(value.toString() == dealServicesNameUtilities[5].toString()){
                               _dealService.text = '5';
-                            }else if(value.toString() == services[6].toString()){
+                            }else if(value.toString() == dealServicesNameUtilities[6].toString()){
                               _dealService.text = '6';
                             }
                           print(_dealService.text);
@@ -360,16 +314,21 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                       ),
 
                       //Chủ hợp đồng
-                      CustomReadOnlyTextField(text: '${_getDealOwnerName()}', title: 'Chủ hợp đồng'),
+                      CustomOutlinedButton(
+                          fontSize: 16.0,
+                          title: 'Hợp đồng của: ${account?.fullname}',
+                          radius: 10,
+                          color: Colors.grey.shade300,
+                      ),
                       const SizedBox(height: 20.0,),
 
                       //Phòng ban
-                      CustomReadOnlyTextField(text: '${_getDepartmentName()}', title: 'Phòng'),
-                      const SizedBox(height: 20.0,),
+                      if(account?.departmentId != null) CustomReadOnlyTextField(text: _getDepartmentName(account!.departmentId!), title: 'Phòng'),
+                      if(account?.departmentId! != null) const SizedBox(height: 20.0,),
 
                       //Nhóm
-                      CustomReadOnlyTextField(text: '${_getTeamName()}', title: 'Nhóm'),
-                      const SizedBox(height: 20.0,),
+                      if(account?.teamId != null) CustomReadOnlyTextField(text: _getTeamNamwe(account!.teamId!), title: 'Nhóm'),
+                      if(account?.teamId != null) const SizedBox(height: 20.0,),
 
                       //Button
                       const SizedBox(height: 20.0,),
@@ -436,20 +395,20 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                                 ) : TextButton(
                                   onPressed: () {
                                     setState(() {
-                                      Deal deal = Deal(
-                                          dealId: widget.deal.dealId,
-                                          title: _dealTitle.text.isEmpty ? widget.deal.title : _dealTitle.text,
-                                          dealStageId: _dealStage.text.isEmpty ? widget.deal.dealId : int.parse(_dealStage.text),
-                                          amount: _dealAmount.text.isEmpty ? widget.deal.amount : int.parse(_dealAmount.text),
-                                          closedDate: closeDate,
-                                          dealOwnerId: widget.deal.dealOwnerId,
-                                          linkTrello: '',
-                                          vatId: vat.toString().isEmpty ? widget.deal.dealId : vat,
-                                          serviceId: _dealService.text.isEmpty ? widget.deal.serviceId : int.parse(_dealService.text),
-                                          dealTypeId: _dealType.text.isEmpty ? widget.deal.dealTypeId : int.parse(_dealType.text),
-                                          contactId: widget.deal.contactId
-                                      );
-                                      ApiService().updateADeal(deal);
+                                      // Deal deal = Deal(
+                                      //     dealId: widget.deal.dealId,
+                                      //     title: _dealTitle.text.isEmpty ? widget.deal.title : _dealTitle.text,
+                                      //     dealStageId: _dealStage.text.isEmpty ? widget.deal.dealId : int.parse(_dealStage.text),
+                                      //     amount: _dealAmount.text.isEmpty ? widget.deal.amount : int.parse(_dealAmount.text),
+                                      //     closedDate: closeDate,
+                                      //     dealOwnerId: widget.deal.dealOwnerId,
+                                      //     linkTrello: '',
+                                      //     vatId: vat.toString().isEmpty ? widget.deal.dealId : vat,
+                                      //     serviceId: _dealService.text.isEmpty ? widget.deal.serviceId : int.parse(_dealService.text),
+                                      //     dealTypeId: _dealType.text.isEmpty ? widget.deal.dealTypeId : int.parse(_dealType.text),
+                                      //     contactId: widget.deal.contactId
+                                      // );
+                                      // ApiService().updateADeal(deal);
                                       _readOnly = true;
                                       Future.delayed(const Duration(seconds: 3), (){
                                         Navigator.pop(context);
@@ -464,7 +423,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                         ),
                       ),
                     ],
-                  ) : const Center(child: CircularProgressIndicator()),
+                  ) : const Center(child: CircularProgressIndicator())
                 )),
             Positioned(
               top: 0.0,
@@ -489,103 +448,46 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
         ),
       );
   }
-  void _getOverallInfo(){
-    futureContacts = ApiService().getAllContacts();
-    futureAccounts = ApiService().getAllAccounts();
-    futureDepartments = ApiService().getAllDepartment();
-    futureTeams = ApiService().getAllTeam();
 
-    futureContacts.then((value) {
+  void _getContactByContactId(int contactId){
+    futureContact = ApiService().getContactByContactId(contactId);
+    futureContact.then((value) {
       setState(() {
-        if(contacts.isNotEmpty){
-          contacts.clear();
-        }
-        contacts.addAll(value);
-      });
-    });
-
-    futureAccounts.then((value) {
-      setState(() {
-        if(accounts.isNotEmpty){
-          accounts.clear();
-        }
-        accounts.addAll(value);
-        _getdealOwnerIdNames();
-      });
-    });
-
-    futureDepartments.then((value) {
-      setState(() {
-        if(departments.isNotEmpty){
-          departments.clear();
-        }
-        departments.addAll(value);
-      });
-    });
-
-    futureTeams.then((value) {
-      setState(() {
-        if(teams.isNotEmpty){
-          teams.clear();
-        }
-        teams.addAll(value);
+        contact = value;
       });
     });
   }
 
-  String? _getDealOwnerName() {
-    for (int i = 0; i < accounts.length; i++) {
-      if (widget.deal.dealOwnerId == accounts[i].accountId) {
+  void _getAccountByAccountId(int accountId){
+    futureAccount = ApiService().getAccountById(accountId);
+    futureAccount.then((value) {
+      setState(() {
+        account = value;
+      });
+    });
+  }
+
+  String _getDepartmentName(int departmentId){
+    String name = '';
+    for(int i = 0; i < departments.length; i++){
+      if(departmentId == departments[i].departmentId){
         setState(() {
-          _currentAccountDepartmentId = accounts[i].departmentId;
-          _currentAccountTeamId = accounts[i].teamId;
+          name = departments[i].name;
         });
-        return accounts[i].fullname;
       }
     }
+    return name;
   }
 
-  void _getdealOwnerIdNames(){
-    if(dealOwnerIdNames.isNotEmpty){
-      dealOwnerIdNames.clear();
-    }
-    for(int i = 0; i < accounts.length; i++){
-      String idAndName = ('${accounts[i].accountId}_${accounts[i].fullname}');
-      String split = '${idAndName.split('_')}';
-      dealOwnerIdNames.add(split.substring(1, split.length-1));
-      print(dealOwnerIdNames);
-    }
-  }
-
-  String? _getDepartmentName(){
-    for (int i = 0; i < departments.length; i++) {
-      if (_currentAccountDepartmentId == departments[i].departmentId) {
-        return departments[i].name;
+  String _getTeamNamwe(int teamId){
+    String name = '';
+    for(int i = 0; i < teams.length; i++){
+      if(teamId == teams[i].teamId){
+        setState(() {
+          name = teams[i].name;
+        });
       }
     }
-  }
-
-  String? _getTeamName(){
-    for (int i = 0; i < teams.length; i++) {
-      if (_currentAccountTeamId == teams[i].teamId) {
-        return teams[i].name;
-      }
-    }
-  }
-
-  String? _getContactName(int contactId){
-    for (int i = 0; i < contacts.length; i++) {
-      if (contactId == contacts[i].contactId) {
-        return contacts[i].fullname;
-      }
-    }
-  }
-
-  String? _getCompanyName(int contactId){
-    for (int i = 0; i < contacts.length; i++) {
-      if (contactId == contacts[i].contactId) {
-        return contacts[i].companyName;
-      }
-    }
+    return name;
   }
 }

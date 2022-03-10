@@ -18,6 +18,7 @@ class Contact {
     this.maxPage,
   });
 
+
   int contactId;
   String fullname;
   String email;

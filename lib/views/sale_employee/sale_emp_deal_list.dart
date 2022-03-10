@@ -8,7 +8,6 @@ import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/emp_deal_add_new.dart';
 import 'package:login_sample/views/sale_employee/emp_deal_detail.dart';
-import 'package:login_sample/views/sale_employee/sale_emp_contact_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';

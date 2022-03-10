@@ -7,7 +7,7 @@ import 'package:login_sample/views/sale_employee/emp_payroll.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
 import 'sale_emp_contact_list.dart';
-import 'emp_deal_list.dart';
+import 'sale_emp_deal_list.dart';
 import 'emp_take_attendance.dart';
 
 class HomeEmployee extends StatefulWidget {
