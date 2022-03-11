@@ -264,7 +264,7 @@ class _EmpContactListState extends State<EmpContactList> {
                 ),
                 onChanged: (value){
                   _currentPage = 0;
-                  searchNameAndEmail(value.toString());
+                  searchNameAndEmail(currentAccount: currentAccount, query: value.toString());
                 }
               ),
               actions: <Widget>[
@@ -303,8 +303,9 @@ class _EmpContactListState extends State<EmpContactList> {
       _getAllContactByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
   }
 
-  Future<void> _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
+  void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
     List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
+
     setState(() {
       _contacts.addAll(contactList);
       if(_contacts.isNotEmpty){
@@ -315,25 +316,21 @@ class _EmpContactListState extends State<EmpContactList> {
 
   void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage}) async {
     List<Contact> contactList = await ContactListViewModel().getAllContactByOwnerId(isRefresh: isRefresh, contactOwnerId: contactOwnerId, currentPage: currentPage);
+
     setState(() {
+      _contacts.addAll(contactList);
       if(_contacts.isNotEmpty){
-        _contacts.addAll(contactList);
         _maxPages = _contacts[0].maxPage!;
       }
     });
   }
 
-  void searchNameAndEmail(String query){
+  void searchNameAndEmail({required Account currentAccount, required String query}) async {
     if(query.isNotEmpty){
-      _futureContacts = ApiService().getAllContactByFullnameOrEmail(currentAccount.accountId!, query.toLowerCase());
+      List<Contact> contactList = await ContactListViewModel().searchNameAndEmail(currentAccount: currentAccount, query: query);
 
-      _futureContacts.then((value) {
-        if(_contacts.isNotEmpty){
-          _contacts.clear();
-        }
-        setState(() {
-          _contacts.addAll(value);
-        });
+      setState(() {
+        _contacts.addAll(contactList);
       });
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
+import 'package:login_sample/view_models/account_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';
@@ -39,7 +40,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
   void initState() {
     super.initState();
     if(_contactOwnerId.text.isEmpty){
-      _getAccountFullnameById(widget.contact.contactOwnerId);
+      _getAccountFullnameById(accountId: widget.contact.contactOwnerId);
     }
   }
 
@@ -260,7 +261,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                                       );
                                       ApiService().updateAContact(contact);
                                       _readOnly = true;
-                                      Future.delayed(const Duration(seconds: 3), (){
+                                      Future.delayed(const Duration(seconds: 2), (){
                                         Navigator.pop(context);
                                       });
                                     print('Lưu');
@@ -299,12 +300,10 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
     );
   }
 
-  void _getAccountFullnameById(int accountId){
-    _futureAccount = ApiService().getAccountById(accountId);
-    _futureAccount.then((value) {
-      setState(() {
-        fullname = value.fullname!;
-      });
+  void _getAccountFullnameById({required accountId}) async {
+    Account account = await AccountViewModel().getAccountFullnameById(accountId: accountId);
+    setState(() {
+      fullname = account.fullname!;
     });
   }
 }

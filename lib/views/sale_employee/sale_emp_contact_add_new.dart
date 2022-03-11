@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
+import 'package:login_sample/view_models/account_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';
@@ -48,7 +49,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
   void initState() {
     super.initState();
     if(_contactOwnerId.text.isEmpty){
-      _getAccountFullnameById(widget.account.accountId!);
+      _getAccountFullnameById(accountId: widget.account.accountId!);
     }
   }
 
@@ -246,12 +247,10 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
     );
   }
 
-  void _getAccountFullnameById(int accountId){
-    _futureAccount = ApiService().getAccountById(accountId);
-    _futureAccount.then((value) {
-      setState(() {
-        fullname = value.fullname!;
-      });
+  void _getAccountFullnameById({required accountId}) async {
+    Account account = await AccountViewModel().getAccountFullnameById(accountId: accountId);
+    setState(() {
+      fullname = account.fullname!;
     });
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SaleEmpFilter extends StatefulWidget {
@@ -17,7 +18,6 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
 
   int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
-  late Future<List<Account>> _futureAccounts;
   late final List<Account> _salesEmployees = [];
 
   final TextEditingController _searchEmployeeName = TextEditingController();
@@ -25,7 +25,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   @override
   void initState() {
     super.initState();
-    _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.blockId!, widget.account.departmentId!);
+    _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: widget.account.blockId!, departmentId:  widget.account.departmentId!);
   }
 
   @override
@@ -83,7 +83,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                                 _salesEmployees.clear();
                               }
                               _searchEmployeeName.clear();
-                              _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.blockId!, widget.account.departmentId!);
+                              _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: widget.account.blockId!, departmentId:  widget.account.departmentId!);
                             },
                             icon: const Icon(Icons.clear),
                           ) : null,
@@ -135,7 +135,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                       if(_searchEmployeeName.text.isNotEmpty){
                         _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId:  widget.account.departmentId!, blockId:  widget.account.blockId!, fullname: _searchEmployeeName.text);
                       }else{
-                        _getAllSalesEmployeesByBlockIdDepartmentId(true, _currentPage, widget.account.blockId!, widget.account.departmentId!);
+                        _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: widget.account.blockId!, departmentId:  widget.account.departmentId!);
                       }
 
                       if(_salesEmployees.isNotEmpty){
@@ -153,7 +153,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                         if(_searchEmployeeName.text.isNotEmpty){
                           _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  widget.account.departmentId!, blockId:  widget.account.blockId!, fullname: _searchEmployeeName.text);
                         }else{
-                          _getAllSalesEmployeesByBlockIdDepartmentId(false, _currentPage, widget.account.blockId!, widget.account.departmentId!);
+                          _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: false, currentPage: _currentPage, blockId: widget.account.blockId!, departmentId:  widget.account.departmentId!);
                         }
                       }
 
@@ -218,28 +218,22 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
     );
   }
 
-  void _getAllSalesEmployeesByBlockIdDepartmentId(bool isRefresh, int currentPage, int blockId, int departmentId){
-    _futureAccounts = ApiService().getAllAccountByBlockIdDepartmentId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId);
+  void _getAllSalesEmployeesByBlockIdDepartmentId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId}) async {
+    List<Account> accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId);
 
-    _futureAccounts.then((value) {
-      setState(() {
-        _salesEmployees.addAll(value);
-        _maxPages = _salesEmployees[0].maxPage!;
-      });
+    setState(() {
+      _salesEmployees.addAll(accountList);
+      _maxPages = _salesEmployees[0].maxPage!;
     });
-    print('Max Page1: $_maxPages');
   }
 
-  void _getAccountsByFullname({required bool isRefresh, required int currentPage, required int departmentId, required int blockId, required String fullname}){
-    _futureAccounts = ApiService().getAccountByFullname(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, fullname: fullname);
+  void _getAccountsByFullname({required bool isRefresh, required int currentPage, required int departmentId, required int blockId, required String fullname}) async {
+    List<Account> accountList = await AccountListViewModel().getAccountsByFullname(isRefresh: isRefresh, currentPage: currentPage, departmentId: departmentId, blockId: blockId, fullname: fullname);
 
-    _futureAccounts.then((value) {
-      setState(() {
-        _salesEmployees.addAll(value);
-        _maxPages = _salesEmployees[0].maxPage!;
-      });
+    setState(() {
+      _salesEmployees.addAll(accountList);
+      _maxPages = _salesEmployees[0].maxPage!;
     });
-    print('Max Page2: $_maxPages');
   }
 
 

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/services/api_service.dart';
 
@@ -22,5 +23,13 @@ class ContactListViewModel with ChangeNotifier{
     return contactList;
   }
 
+  Future<List<Contact>> searchNameAndEmail({required Account currentAccount, required String query}) async {
+
+    List<Contact> contactList = await ApiService().getAllContactByFullnameOrEmail(currentAccount.accountId!, query.toLowerCase());
+
+    notifyListeners();
+
+    return contactList;
+  }
 
 }
