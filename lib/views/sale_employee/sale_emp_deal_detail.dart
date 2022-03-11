@@ -7,6 +7,7 @@ import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/account_view_model.dart';
 import 'package:login_sample/view_models/contact_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
@@ -44,17 +45,15 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
   late final TextEditingController _dealClosedDate = TextEditingController();
   final TextEditingController _dealVatId = TextEditingController();
 
-  late Future<Contact> futureContact;
-  late Future<Account> futureAccount;
   Contact? contact;
   Account? account;
-  late Account currentAccount;
+  late Account currentAccount, filterAccount = Account();
 
   @override
   void initState() {
     super.initState();
     _getContactByContactId(widget.deal.dealOwnerId);
-    _getAccountByAccountId(widget.deal.dealOwnerId);
+    _getAccountByAccountId(accountId: widget.deal.dealOwnerId,);
   }
 
   @override
@@ -276,20 +275,38 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                       const SizedBox(height: 20.0,),
 
                       //Chủ hợp đồng
-                      CustomOutlinedButton(
-                          fontSize: 16.0,
-                          title: 'Hợp đồng của: ${account?.fullname}',
-                          radius: 10,
-                          color: Colors.grey.shade300,
-                          onPressed: _readOnly != true ? () async {
+                      // CustomOutlinedButton(
+                      //     fontSize: 16.0,
+                      //     title: 'Hợp đồng của: ${account?.fullname}',
+                      //     radius: 10,
+                      //     color: Colors.grey.shade300,
+                      //     onPressed: _readOnly != true ? () async {
+                      //     final data = await Navigator.push(context, MaterialPageRoute(
+                      //       builder: (context) => const SaleEmpFilter(),
+                      //     ));
+                      //     if(data != null){
+                      //       setState(() {
+                      //         account = data;
+                      //       });
+                      //       _dealOwnerId.text = '${account!.accountId}';
+                      //     }
+                      //   } : null,
+                      // ),
+                      CustomEditableTextField(
+                        borderColor: Colors.red,
+                        text: account!.fullname!,
+                        title: 'Chủ hợp đồng',
+                        readonly: true,
+                        textEditingController: _dealOwnerId,
+                        onTap: _readOnly != true ? () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const SaleEmpFilter(),
                           ));
                           if(data != null){
                             setState(() {
                               account = data;
+                              _dealOwnerId.text = '${account!.accountId}';
                             });
-                            _dealOwnerId.text = '${account!.accountId}';
                           }
                         } : null,
                       ),
@@ -429,12 +446,10 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
     });
   }
 
-  void _getAccountByAccountId(int accountId){
-    futureAccount = ApiService().getAccountById(accountId);
-    futureAccount.then((value) {
-      setState(() {
-        account = value;
-      });
+  void _getAccountByAccountId({required accountId}) async {
+    final _account = await AccountViewModel().getAccountByAccountId(accountId: accountId);
+    setState(() {
+      account = _account;
     });
   }
 

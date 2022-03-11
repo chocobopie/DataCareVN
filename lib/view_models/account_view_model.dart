@@ -5,7 +5,6 @@ import 'package:login_sample/services/api_service.dart';
 class AccountViewModel with ChangeNotifier{
 
   Future<Account> getAccountFullnameById({required accountId}) async {
-
     Account account = await ApiService().getAccountById(accountId);
 
     notifyListeners();
@@ -13,5 +12,11 @@ class AccountViewModel with ChangeNotifier{
     return account;
   }
 
+  Future<Account> getAccountByAccountId({required accountId}) async {
+    Account account = await ApiService().getAccountById(accountId);
 
+    notifyListeners();
+
+    return account;
+  }
 }
