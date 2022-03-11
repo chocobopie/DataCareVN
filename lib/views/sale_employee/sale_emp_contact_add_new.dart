@@ -31,7 +31,6 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
   final TextEditingController _contactGender = TextEditingController();
   final TextEditingController _contactLeadSourceId = TextEditingController();
 
-  late Future<Account> _futureAccount;
 
   @override
   void dispose() {
@@ -209,7 +208,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                               leadSourceId: int.parse(_contactLeadSourceId.text)
                             );
                             ApiService().createNewContact(contact);
-                            Future.delayed(const Duration(seconds: 3), (){
+                            Future.delayed(const Duration(seconds: 2), (){
                               Navigator.pop(context);
                             });
                           }

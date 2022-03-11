@@ -33,8 +33,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
   final TextEditingController _contactOwnerId = TextEditingController();
   final TextEditingController _contactGender = TextEditingController();
   final TextEditingController _contactLeadSourceId = TextEditingController();
-
-  late Future<Account> _futureAccount;
+  
 
   @override
   void initState() {

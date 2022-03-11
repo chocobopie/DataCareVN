@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/view_models/deal_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/emp_deal_add_new.dart';
 import 'package:login_sample/views/sale_employee/emp_deal_detail.dart';
@@ -331,39 +332,24 @@ class _EmpDealListState extends State<EmpDealList> {
     _getAllDealByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
   }
 
-  void _getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, DateTime? fromDate, DateTime? toDate}){
+  void _getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
+    List<Deal> dealList = await DealListViewModel().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
-    if(fromDate != null && toDate != null ){
-      _futureDeals = ApiService().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
-    }else{
-      _futureDeals = ApiService().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
-    }
-
-
-    _futureDeals.then((value) {
-      setState(() {
-        _deals.addAll(value);
-        _maxPages = _deals[0].maxPage!;
-      });
+    setState(() {
+      _deals.addAll(dealList);
+      _maxPages = _deals[0].maxPage!;
     });
-    print('Max pages: $_maxPages');
+
   }
 
-  void _getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}){
+  void _getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
+    List<Deal> dealList = await DealListViewModel().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
-    if(fromDate != null && toDate != null){
-      _futureDeals = ApiService().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
-    } else {
-      _futureDeals = ApiService().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage,);
-    }
-
-    _futureDeals.then((value) {
-      setState(() {
-        _deals.addAll(value);
-        _maxPages = _deals[0].maxPage!;
-      });
+    setState(() {
+      _deals.addAll(dealList);
+      _maxPages = _deals[0].maxPage!;
     });
-    print('Max pages: $_maxPages');
+
   }
 
   void _onGoBack(dynamic value){
