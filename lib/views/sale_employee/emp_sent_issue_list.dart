@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/models/temp/deal_temp.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/sale_employee/emp_deal_detail.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/views/sale_employee/emp_issue_add_new.dart';
 import 'package:login_sample/views/sale_employee/emp_issue_detail.dart';
 

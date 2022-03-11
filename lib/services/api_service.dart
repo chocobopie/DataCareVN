@@ -220,9 +220,9 @@ class ApiService {
         'dealStageId': deal.dealStageId,
         'amount': deal.amount,
         'closedDate' :deal.closedDate.toIso8601String(),
-        'dealOwner': deal.dealOwnerId,
+        'dealOwnerId': deal.dealOwnerId,
         'linkTrello': deal.linkTrello,
-        'vatid': deal.vatId,
+        'vatId': deal.vatId,
         'serviceId': deal.serviceId,
         'dealTypeId': deal.dealTypeId,
         'contactId': deal.contactId

@@ -15,14 +15,14 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 
 
-class EmpContactList extends StatefulWidget {
-  const EmpContactList({Key? key}) : super(key: key);
+class SaleEmpContactList extends StatefulWidget {
+  const SaleEmpContactList({Key? key}) : super(key: key);
 
   @override
-  _EmpContactListState createState() => _EmpContactListState();
+  _SaleEmpContactListState createState() => _SaleEmpContactListState();
 }
 
-class _EmpContactListState extends State<EmpContactList> {
+class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   bool _isSearching = false;
   String fullname = 'Nhân viên';
@@ -57,7 +57,7 @@ class _EmpContactListState extends State<EmpContactList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
-            builder: (context) => EmpContactAddNew(account: currentAccount,),
+            builder: (context) => SaleEmpContactAddNew(account: currentAccount,),
           )).then(onGoBack);
         },
         backgroundColor: Colors.green,
@@ -96,7 +96,7 @@ class _EmpContactListState extends State<EmpContactList> {
                         radius: 30,
                         onPressed: () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => SaleEmpFilter(account: currentAccount,),
+                            builder: (context) => const SaleEmpFilter(),
                           ));
                           if(data != null){
                             _currentPage = 0;
@@ -209,7 +209,7 @@ class _EmpContactListState extends State<EmpContactList> {
                         return ListTile(
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => EmpContactDetail(contact: contact, account: currentAccount,),
+                              builder: (context) => SaleEmpContactDetail(contact: contact, account: currentAccount,),
                             )).then(onGoBack);
                           },
                          title: const Text('Tên khách hàng:'),
@@ -326,13 +326,14 @@ class _EmpContactListState extends State<EmpContactList> {
   }
 
   void searchNameAndEmail({required Account currentAccount, required String query}) async {
-    if(query.isNotEmpty){
       List<Contact> contactList = await ContactListViewModel().searchNameAndEmail(currentAccount: currentAccount, query: query);
 
       setState(() {
+        if(_contacts.isNotEmpty){
+          _contacts.clear();
+        }
         _contacts.addAll(contactList);
       });
-    }
   }
 
   onGoBack(dynamic value) {

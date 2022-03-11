@@ -6,7 +6,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class CustomEditableTextField extends StatelessWidget {
    const CustomEditableTextField({
-    Key? key, required this.text, required this.title, required this.readonly, required this.textEditingController, this.inputNumberOnly, this.inputEmailOnly
+    Key? key, required this.text, required this.title, required this.readonly, required this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor
   }) : super(key: key);
 
   final String title;
@@ -15,11 +15,14 @@ class CustomEditableTextField extends StatelessWidget {
   final TextEditingController textEditingController;
   final bool? inputNumberOnly;
   final bool? inputEmailOnly;
+  final dynamic onTap;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextFormField(
+        onTap: onTap,
         inputFormatters: inputNumberOnly == true ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(15),
@@ -40,13 +43,13 @@ class CustomEditableTextField extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: Colors.grey.shade300,
+                color: borderColor == null ? Colors.grey.shade300 : borderColor!,
                 width: 2),
             borderRadius: BorderRadius.circular(10),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-                color: Colors.blue,
+            borderSide: BorderSide(
+                color: borderColor == null ? Colors.blue : borderColor!,
                 width: 2),
             borderRadius: BorderRadius.circular(10),
           ),

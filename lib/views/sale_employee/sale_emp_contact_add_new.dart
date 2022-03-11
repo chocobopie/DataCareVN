@@ -8,18 +8,19 @@ import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:provider/provider.dart';
 
-class EmpContactAddNew extends StatefulWidget {
-  const EmpContactAddNew({Key? key, required this.account}) : super(key: key);
+class SaleEmpContactAddNew extends StatefulWidget {
+  const SaleEmpContactAddNew({Key? key, required this.account}) : super(key: key);
 
   final Account account;
 
   @override
-  _EmpContactAddNewState createState() => _EmpContactAddNewState();
+  _SaleEmpContactAddNewState createState() => _SaleEmpContactAddNewState();
 }
 
-class _EmpContactAddNewState extends State<EmpContactAddNew> {
+class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
   String fullname = '';
 
@@ -85,8 +86,8 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                     CustomEditableTextField(
                         text: '',
                         title: 'Tên khách hàng',
-                        readonly: false,
-                        textEditingController: _contactName
+                        readonly: true,
+                        textEditingController: _contactName,
                     ),
                     const SizedBox(height: 20.0,),
 
@@ -143,7 +144,7 @@ class _EmpContactAddNewState extends State<EmpContactAddNew> {
                         ),
                         onPressed: () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => SaleEmpFilter(account: _account,),
+                            builder: (context) => const SaleEmpFilter(),
                           ));
                           late Account filterAccount;
                           if(data != null){

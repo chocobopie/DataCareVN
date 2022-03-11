@@ -64,7 +64,7 @@ class _HomeSaleLeaderState extends State<HomeSaleLeader> {
                             child: TextButton(
                                 onPressed: () {
                                   Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => const EmpContactList(),
+                                    builder: (context) => const SaleEmpContactList(),
                                   ));
                                 },
                                 child: Padding(
@@ -129,7 +129,7 @@ class _HomeSaleLeaderState extends State<HomeSaleLeader> {
                             child: TextButton(
                                 onPressed: () {
                                   Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => const EmpDealList(),
+                                    builder: (context) => const SaleEmpDealList(),
                                   ));
                                 },
                                 child: Padding(

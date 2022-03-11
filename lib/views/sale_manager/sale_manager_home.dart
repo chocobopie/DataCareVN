@@ -63,7 +63,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
                             buttonColors: const [Colors.blue, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const EmpContactList(),
+                                builder: (context) => const SaleEmpContactList(),
                               ));
                             }
                         ),
@@ -75,7 +75,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
                             buttonColors: const [Colors.green, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const EmpDealList(),
+                                builder: (context) => const SaleEmpDealList(),
                               ));
                             }
                         ),

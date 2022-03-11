@@ -11,17 +11,17 @@ import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'package:provider/provider.dart';
 
-class EmpContactDetail extends StatefulWidget {
-  const EmpContactDetail({Key? key, required this.contact, required this.account}) : super(key: key);
+class SaleEmpContactDetail extends StatefulWidget {
+  const SaleEmpContactDetail({Key? key, required this.contact, required this.account}) : super(key: key);
 
   final Contact contact;
   final Account account;
 
   @override
-  _EmpContactDetailState createState() => _EmpContactDetailState();
+  _SaleEmpContactDetailState createState() => _SaleEmpContactDetailState();
 }
 
-class _EmpContactDetailState extends State<EmpContactDetail> {
+class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
 
   String fullname = '';
   bool _readOnly = true;
@@ -150,7 +150,7 @@ class _EmpContactDetailState extends State<EmpContactDetail> {
                         ),
                         onPressed: _readOnly != true ? () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => SaleEmpFilter(account: _account,),
+                            builder: (context) => const SaleEmpFilter(),
                           ));
                           late Account filterAccount;
                           if(data != null){

@@ -10,14 +10,14 @@ import 'sale_emp_contact_list.dart';
 import 'sale_emp_deal_list.dart';
 import 'emp_take_attendance.dart';
 
-class HomeEmployee extends StatefulWidget {
-  const HomeEmployee({Key? key}) : super(key: key);
+class HomeSaleEmployee extends StatefulWidget {
+  const HomeSaleEmployee({Key? key}) : super(key: key);
 
   @override
-  _HomeEmployeeState createState() => _HomeEmployeeState();
+  _HomeSaleEmployeeState createState() => _HomeSaleEmployeeState();
 }
 
-class _HomeEmployeeState extends State<HomeEmployee> {
+class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
   @override
   Widget build(BuildContext context) {
     var _account = Provider.of<AccountProvider>(context).account;
@@ -65,7 +65,7 @@ class _HomeEmployeeState extends State<HomeEmployee> {
                             child: TextButton(
                                 onPressed: () {
                                   Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => const EmpContactList(),
+                                    builder: (context) => const SaleEmpContactList(),
                                   ));
                                 },
                                 child: Padding(
@@ -130,7 +130,7 @@ class _HomeEmployeeState extends State<HomeEmployee> {
                             child: TextButton(
                                 onPressed: () {
                                   Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => const EmpDealList(),
+                                    builder: (context) => const SaleEmpDealList(),
                                   ));
                                 },
                                 child: Padding(

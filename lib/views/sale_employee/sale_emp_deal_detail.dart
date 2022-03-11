@@ -7,7 +7,9 @@ import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/contact_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
@@ -16,16 +18,16 @@ import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'package:provider/provider.dart';
 
 
-class EmpDealDetail extends StatefulWidget {
-  const EmpDealDetail({Key? key, required this.deal}) : super(key: key);
+class SaleEmpDealDetail extends StatefulWidget {
+  const SaleEmpDealDetail({Key? key, required this.deal}) : super(key: key);
 
   final Deal deal;
 
   @override
-  _EmpDealDetailState createState() => _EmpDealDetailState();
+  _SaleEmpDealDetailState createState() => _SaleEmpDealDetailState();
 }
 
-class _EmpDealDetailState extends State<EmpDealDetail> {
+class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
   late DateTime closeDate = widget.deal.closedDate;
   String _closeDate = '';
@@ -37,7 +39,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
   final TextEditingController _dealType = TextEditingController();
   final TextEditingController _dealAmount = TextEditingController();
   final TextEditingController _dealService = TextEditingController();
-  final TextEditingController _dealOwner = TextEditingController();
+  final TextEditingController _dealOwnerId = TextEditingController();
   final TextEditingController _dealLinkTrello = TextEditingController();
   late final TextEditingController _dealClosedDate = TextEditingController();
   final TextEditingController _dealVatId = TextEditingController();
@@ -68,7 +70,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
     _dealType.dispose();
     _dealAmount.dispose();
     _dealService.dispose();
-    _dealOwner.dispose();
+    _dealOwnerId.dispose();
     _dealLinkTrello.dispose();
     _dealClosedDate.dispose();
     _dealVatId.dispose();
@@ -174,58 +176,10 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                       const SizedBox(height: 20.0,),
 
                       //Vat
-                      Padding(
-                        padding:
-                        EdgeInsets.only(left: leftRight, right: leftRight),
-                        child: DropdownButtonFormField2(
-                          decoration: InputDecoration(
-                            contentPadding:
-                            const EdgeInsets.only(left: 20.0, right: 20.0),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.grey.shade300, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                              const BorderSide(color: Colors.blue, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            labelText: 'VAT',
-                            labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 107, 106, 144),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                          ),
-                          isExpanded: true,
-                          hint: Text( dealVatsNameUtilities[widget.deal.vatId], style: const TextStyle(fontSize: 14),),
-                          icon: const Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.black45,
-                          ),
-                          iconSize: 30,
-                          buttonHeight: 50,
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          items: dealVatsNameUtilities
-                              .map((item) => DropdownMenuItem<String>(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ))
-                              .toList(),
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Hãy cập nhật VAT';
-                            }
-                          },
+                      CustomDropdownFormField2(
+                          label: 'VAT',
+                          hintText: Text( dealVatsNameUtilities[widget.deal.vatId], style: const TextStyle(fontSize: 14),),
+                          items: dealVatsNameUtilities,
                           onChanged: _readOnly != true ? (value) {
                             if(value.toString() == dealVatsNameUtilities[0].toString()){
                               _dealVatId.text = '0';
@@ -233,9 +187,36 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                               _dealVatId.text = '1';
                             }
                           } : null,
-                        ),
                       ),
                       const SizedBox(height: 20.0,),
+
+                      //Loại dịch vụ
+                      CustomDropdownFormField2(
+                          label: 'Loại dịch vụ',
+                          hintText: Text(dealServicesNameUtilities[widget.deal.serviceId].toString(), style: const TextStyle(fontSize: 14),),
+                          items: dealServicesNameUtilities,
+                          onChanged: _readOnly != true ? (value){
+                            if(value.toString() == dealServicesNameUtilities[0].toString()){
+                              _dealService.text = '0';
+                            }else if(value.toString() == dealServicesNameUtilities[1].toString()){
+                              _dealService.text = '1';
+                            }else if(value.toString() == dealServicesNameUtilities[2].toString()){
+                              _dealService.text = '2';
+                            }else if(value.toString() == dealServicesNameUtilities[3].toString()){
+                              _dealService.text = '3';
+                            }else if(value.toString() == dealServicesNameUtilities[4].toString()){
+                              _dealService.text = '4';
+                            }else if(value.toString() == dealServicesNameUtilities[5].toString()){
+                              _dealService.text = '5';
+                            }else if(value.toString() == dealServicesNameUtilities[6].toString()){
+                              _dealService.text = '6';
+                            }
+                            print(_dealService.text);
+                          } : null
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
 
                       //Ngày đóng
                       SizedBox(
@@ -254,7 +235,7 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                             if (date != null) {
                               setState(() {
                                 _dealClosedDate.text = date.toString();
-                                _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(closeDate)}';
+                                _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
                                 print(date);
                               });
                             }
@@ -285,33 +266,14 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      //Loại dịch vụ
-                      CustomDropdownFormField2(
-                          label: 'Loại dịch vụ',
-                          hintText: Text(dealServicesNameUtilities[widget.deal.serviceId].toString(), style: const TextStyle(fontSize: 14),),
-                          items: dealServicesNameUtilities,
-                        onChanged: _readOnly != true ? (value){
-                            if(value.toString() == dealServicesNameUtilities[0].toString()){
-                              _dealService.text = '0';
-                            }else if(value.toString() == dealServicesNameUtilities[1].toString()){
-                              _dealService.text = '1';
-                            }else if(value.toString() == dealServicesNameUtilities[2].toString()){
-                              _dealService.text = '2';
-                            }else if(value.toString() == dealServicesNameUtilities[3].toString()){
-                              _dealService.text = '3';
-                            }else if(value.toString() == dealServicesNameUtilities[4].toString()){
-                              _dealService.text = '4';
-                            }else if(value.toString() == dealServicesNameUtilities[5].toString()){
-                              _dealService.text = '5';
-                            }else if(value.toString() == dealServicesNameUtilities[6].toString()){
-                              _dealService.text = '6';
-                            }
-                          print(_dealService.text);
-                        } : null
+                      //Link trello
+                      CustomEditableTextField(
+                          text: widget.deal.linkTrello!.isNotEmpty ? widget.deal.linkTrello! : '',
+                          title: 'Link Trello',
+                          readonly: _readOnly,
+                          textEditingController: _dealLinkTrello
                       ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
+                      const SizedBox(height: 20.0,),
 
                       //Chủ hợp đồng
                       CustomOutlinedButton(
@@ -319,6 +281,17 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                           title: 'Hợp đồng của: ${account?.fullname}',
                           radius: 10,
                           color: Colors.grey.shade300,
+                          onPressed: _readOnly != true ? () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const SaleEmpFilter(),
+                          ));
+                          if(data != null){
+                            setState(() {
+                              account = data;
+                            });
+                            _dealOwnerId.text = '${account!.accountId}';
+                          }
+                        } : null,
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -395,22 +368,22 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
                                 ) : TextButton(
                                   onPressed: () {
                                     setState(() {
-                                      // Deal deal = Deal(
-                                      //     dealId: widget.deal.dealId,
-                                      //     title: _dealTitle.text.isEmpty ? widget.deal.title : _dealTitle.text,
-                                      //     dealStageId: _dealStage.text.isEmpty ? widget.deal.dealId : int.parse(_dealStage.text),
-                                      //     amount: _dealAmount.text.isEmpty ? widget.deal.amount : int.parse(_dealAmount.text),
-                                      //     closedDate: closeDate,
-                                      //     dealOwnerId: widget.deal.dealOwnerId,
-                                      //     linkTrello: '',
-                                      //     vatId: vat.toString().isEmpty ? widget.deal.dealId : vat,
-                                      //     serviceId: _dealService.text.isEmpty ? widget.deal.serviceId : int.parse(_dealService.text),
-                                      //     dealTypeId: _dealType.text.isEmpty ? widget.deal.dealTypeId : int.parse(_dealType.text),
-                                      //     contactId: widget.deal.contactId
-                                      // );
-                                      // ApiService().updateADeal(deal);
+                                      Deal deal = Deal(
+                                          dealId: widget.deal.dealId,
+                                          title: _dealTitle.text.isEmpty ? widget.deal.title : _dealTitle.text,
+                                          dealStageId: _dealStage.text.isEmpty ? widget.deal.dealId : int.parse(_dealStage.text),
+                                          amount: _dealAmount.text.isEmpty ? widget.deal.amount : int.parse(_dealAmount.text),
+                                          closedDate: _dealClosedDate.text.isEmpty ? widget.deal.closedDate : DateTime.parse(_dealClosedDate.text),
+                                          dealOwnerId: _dealOwnerId.text.isEmpty ? widget.deal.dealOwnerId : int.parse(_dealOwnerId.text),
+                                          linkTrello: _dealLinkTrello.text.isEmpty ? widget.deal.linkTrello : _dealLinkTrello.text,
+                                          vatId: _dealVatId.text.isEmpty ? widget.deal.vatId : int.parse(_dealVatId.text),
+                                          serviceId: _dealService.text.isEmpty ? widget.deal.serviceId : int.parse(_dealService.text),
+                                          dealTypeId: _dealType.text.isEmpty ? widget.deal.dealTypeId : int.parse(_dealType.text),
+                                          contactId: widget.deal.contactId
+                                      );
+                                      ApiService().updateADeal(deal);
                                       _readOnly = true;
-                                      Future.delayed(const Duration(seconds: 3), (){
+                                      Future.delayed(const Duration(seconds: 2), (){
                                         Navigator.pop(context);
                                       });
                                       print('Lưu');
@@ -449,12 +422,10 @@ class _EmpDealDetailState extends State<EmpDealDetail> {
       );
   }
 
-  void _getContactByContactId(int contactId){
-    futureContact = ApiService().getContactByContactId(contactId);
-    futureContact.then((value) {
-      setState(() {
-        contact = value;
-      });
+  void _getContactByContactId(int contactId) async {
+    final data = await ContactViewModel().getContactByContactId(contactId);
+    setState(() {
+      contact = data;
     });
   }
 

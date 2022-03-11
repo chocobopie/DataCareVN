@@ -3,12 +3,12 @@ import 'package:login_sample/models/account.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SaleEmpFilter extends StatefulWidget {
-  const SaleEmpFilter({Key? key, required this.account}) : super(key: key);
-
-  final Account account;
+  const SaleEmpFilter({Key? key}) : super(key: key);
 
   @override
   State<SaleEmpFilter> createState() => _SaleEmpFilterState();
@@ -19,13 +19,14 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
   late final List<Account> _salesEmployees = [];
-
+  late Account currentAccount;
   final TextEditingController _searchEmployeeName = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: widget.account.blockId!, departmentId:  widget.account.departmentId!);
+    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: currentAccount.blockId!, departmentId:  currentAccount.departmentId!);
   }
 
   @override
@@ -71,7 +72,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                             _salesEmployees.clear();
                           }
                           _currentPage = 0;
-                          _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId: widget.account.departmentId!, blockId:  widget.account.blockId!, fullname: _searchEmployeeName.text);
+                          _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId: currentAccount.departmentId!, blockId:  currentAccount.blockId!, fullname: _searchEmployeeName.text);
                         },
                         decoration: InputDecoration(
                           icon: const Icon(Icons.search,
@@ -83,7 +84,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                                 _salesEmployees.clear();
                               }
                               _searchEmployeeName.clear();
-                              _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: widget.account.blockId!, departmentId:  widget.account.departmentId!);
+                              _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: currentAccount.blockId!, departmentId:  currentAccount.departmentId!);
                             },
                             icon: const Icon(Icons.clear),
                           ) : null,
@@ -133,9 +134,9 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                       }
                       _currentPage = 0;
                       if(_searchEmployeeName.text.isNotEmpty){
-                        _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId:  widget.account.departmentId!, blockId:  widget.account.blockId!, fullname: _searchEmployeeName.text);
+                        _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId:  currentAccount.departmentId!, blockId:  currentAccount.blockId!, fullname: _searchEmployeeName.text);
                       }else{
-                        _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: widget.account.blockId!, departmentId:  widget.account.departmentId!);
+                        _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: currentAccount.blockId!, departmentId:  currentAccount.departmentId!);
                       }
 
                       if(_salesEmployees.isNotEmpty){
@@ -151,9 +152,9 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                         });
                         print('Current page: $_currentPage');
                         if(_searchEmployeeName.text.isNotEmpty){
-                          _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  widget.account.departmentId!, blockId:  widget.account.blockId!, fullname: _searchEmployeeName.text);
+                          _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  currentAccount.departmentId!, blockId:  currentAccount.blockId!, fullname: _searchEmployeeName.text);
                         }else{
-                          _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: false, currentPage: _currentPage, blockId: widget.account.blockId!, departmentId:  widget.account.departmentId!);
+                          _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: false, currentPage: _currentPage, blockId: currentAccount.blockId!, departmentId:  currentAccount.departmentId!);
                         }
                       }
 

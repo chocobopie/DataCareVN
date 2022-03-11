@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/temp/deal_temp.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/sale_employee/emp_deal_detail.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 
 class EmpReceivedIssue extends StatefulWidget {
   const EmpReceivedIssue({Key? key}) : super(key: key);

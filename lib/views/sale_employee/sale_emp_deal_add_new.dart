@@ -8,27 +8,29 @@ import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_contact_filter.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
+import 'package:provider/provider.dart';
 
-class EmpDealAddNew extends StatefulWidget {
-  const EmpDealAddNew({Key? key}) : super(key: key);
+class SaleEmpDealAddNew extends StatefulWidget {
+  const SaleEmpDealAddNew({Key? key}) : super(key: key);
 
   @override
-  _EmpDealAddNewState createState() => _EmpDealAddNewState();
+  _SaleEmpDealAddNewState createState() => _SaleEmpDealAddNewState();
 }
 
-class _EmpDealAddNewState extends State<EmpDealAddNew> {
+class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
-  late final int _currentAccountDepartmentId = 0;
-  late final int _currentAccountTeamId = 0;
   late String _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
 
   late final TextEditingController _dealTitle = TextEditingController();
   late final TextEditingController _dealStageId = TextEditingController();
   late final TextEditingController _dealAmount = TextEditingController();
-  late DateTime _dealCloseDate;
+  late final TextEditingController _dealClosedDate = TextEditingController();
   late final TextEditingController _dealOwnerId = TextEditingController();
   late final TextEditingController _linkTrello = TextEditingController();
   late final TextEditingController _dealVatId = TextEditingController();
@@ -36,55 +38,32 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
   late final TextEditingController _dealTypeId = TextEditingController();
   late final TextEditingController _dealContactId = TextEditingController();
 
-
-  late List<Contact> contacts = [];
-  late List<String?> contactCompanyNames = [];
-  late List<String?> contactIdNames = [];
-
-  late List<Account> accounts = [];
-  late List<String?> dealOwnerIdNames = [];
-
-  late List<Department> departments = [];
-
-  late List<Team> teams = [];
+  String _contactFullname = '', _contactCompanyName = '', _accountFullname = '';
+  late Account currentAccount;
+  late Account filterAccount = Account();
+  late Contact filterContact;
 
 
   @override
   void initState() {
-    _getOverallInfo();
     super.initState();
+    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
   }
 
-
-  List<String> services = [
-    'Đào tạo',
-    'Website Content',
-    'Fanpage Content',
-    'Chạy Ads',
-    'Thiết kế Website',
-    'Thương mại điện tử',
-    'Set Up Ads'
-  ];
-
-  List<String> vats = [
-    'Có',
-    'Không'
-  ];
-
-  List<String> dealStages = [
-    'Gửi báo giá',
-    'Đang suy nghĩ',
-    'Gặp trao đổi',
-    'Đồng ý mua',
-    'Gửi hợp đồng',
-    'Xuống tiền',
-    'Thất bại'
-  ];
-
-  List<String> dealTypes = [
-    'Ký mới',
-    'Tái ký'
-  ];
+  @override
+  void dispose() {
+    super.dispose();
+     _dealTitle.dispose();
+     _dealStageId.dispose();
+     _dealAmount.dispose();
+     _dealClosedDate.dispose();
+     _dealOwnerId.dispose();
+     _linkTrello.dispose();
+     _dealVatId.dispose();
+     _dealServiceId.dispose();
+     _dealTypeId.dispose();
+     _dealContactId.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,55 +89,66 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: contacts.isNotEmpty && accounts.isNotEmpty && departments.isNotEmpty && teams.isNotEmpty ? ListView(
+                child: ListView(
                   children: <Widget>[
-                    //Tên hợp đồng
+                    //Tiêu đề hợp đồng
                     CustomEditableTextField(
                         text: '',
-                        title: 'Tên hợp đồng',
+                        title: 'Tiêu đề hợp đồng',
                         readonly: false,
                         textEditingController: _dealTitle
                     ),
                     const SizedBox(height: 20.0,),
 
                     //Tên khách hàng
-                    CustomDropdownFormField2(
-                        label: 'Tên khách hàng',
-                        hintText: const Text(''),
-                        items: contactIdNames,
-                        onChanged: (value){
-                          setState(() {
-                            print(value.toString());
-                            _dealContactId.text = _getContactId(value.toString());
-                            print(_dealContactId.text);
-                          });
+                    CustomEditableTextField(
+                        borderColor: Colors.red,
+                        text: _contactFullname,
+                        title: 'Tên khách hàng',
+                        readonly: true,
+                        textEditingController: _dealContactId,
+                        onTap: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const SaleEmpContactFilter(),
+                          ));
+                          if(data != null){
+                            setState(() {
+                              filterContact = data;
+                              _contactFullname = filterContact.fullname;
+                              _contactCompanyName = filterContact.companyName;
+                              _dealContactId.text = '${filterContact.contactId}';
+                            });
+                          }
                         },
                     ),
                     const SizedBox(height: 20.0,),
 
                     //Tên công ty
-                    CustomReadOnlyTextField(text: _dealContactId.text.isNotEmpty ? '${_getContactCompanyName(_dealContactId.text)}' : '', title: "Tên công ty khách hàng"),
+                    CustomReadOnlyTextField(
+                        text: _contactCompanyName,
+                        title: 'Tên công ty'
+                    ),
                     const SizedBox(height: 20.0,),
 
                     //Tiến trình hợp đồng
                     CustomDropdownFormField2(
                         label: 'Tiến trình hợp đồng',
                         hintText: const Text(''),
-                        items: dealStages,
+                        items: dealStagesNameUtilities,
                         onChanged: (value){
-                        if(value.toString() == 'Gửi báo giá'){
+                        if(value.toString() == dealStagesNameUtilities[0].toString()){
                           _dealStageId.text = '0';
-                        }else if(value.toString() == 'Đang suy nghĩ'){
+                        }else if(value.toString() == dealStagesNameUtilities[1].toString()){
                           _dealStageId.text = '1';
-                        }else if(value.toString() == 'Gặp trao đổi'){
+                        }else if(value.toString() == dealStagesNameUtilities[2].toString()){
                           _dealStageId.text = '2';
-                        }else if(value.toString() == 'Đồng ý mua'){
+                        }else if(value.toString() == dealStagesNameUtilities[3].toString()){
                           _dealStageId.text = '3';
-                        }else if(value.toString() == 'Gửi hợp đồng'){
+                        }else if(value.toString() == dealStagesNameUtilities[4].toString()){
                           _dealStageId.text = '4';
-                        }else if(value.toString() == 'Xuống tiền'){
+                        }else if(value.toString() == dealStagesNameUtilities[5].toString()){
                           _dealStageId.text = '5';
-                        }else if(value.toString() == 'Thất bại'){
+                        }else if(value.toString() == dealStagesNameUtilities[6].toString()){
                           _dealStageId.text = '6';
                         }
                         print(_dealStageId.text);
@@ -170,9 +160,9 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
                     CustomDropdownFormField2(
                         label: 'Loại hợp đồng',
                         hintText: const Text(''),
-                        items: dealTypes,
+                        items: dealTypesNameUtilities,
                         onChanged: (value){
-                        if(value.toString() == 'Ký mới'){
+                        if(value.toString() == dealTypesNameUtilities[0].toString()){
                           _dealTypeId.text = '0';
                         }else{
                           _dealTypeId.text = '1';
@@ -186,21 +176,21 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
                     CustomDropdownFormField2(
                       label: 'Loại dịch vụ',
                       hintText: const Text(''),
-                      items: services,
+                      items: dealServicesNameUtilities,
                       onChanged: (value){
-                        if(value.toString() == 'Đào tạo'){
+                        if(value.toString() == dealServicesNameUtilities[0].toString()){
                           _dealServiceId.text = '0';
-                        }else if(value.toString() == 'Website Content'){
+                        }else if(value.toString() == dealServicesNameUtilities[1].toString()){
                           _dealServiceId.text = '1';
-                        }else if(value.toString() == 'Fanpage Content'){
+                        }else if(value.toString() == dealServicesNameUtilities[2].toString()){
                           _dealServiceId.text = '2';
-                        }else if(value.toString() == 'Chạy Ads'){
+                        }else if(value.toString() == dealServicesNameUtilities[3].toString()){
                           _dealServiceId.text = '3';
-                        }else if(value.toString() == 'Thiết kế Website'){
+                        }else if(value.toString() == dealServicesNameUtilities[4].toString()){
                           _dealServiceId.text = '4';
-                        }else if(value.toString() == 'Thương mại điện tử'){
+                        }else if(value.toString() == dealServicesNameUtilities[5].toString()){
                           _dealServiceId.text = '5';
-                        }else if(value.toString() == 'Set Up Ads'){
+                        }else if(value.toString() == dealServicesNameUtilities[6].toString()){
                           _dealServiceId.text = '6';
                         }
                         print(_dealServiceId.text);
@@ -221,12 +211,12 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
                     //Vat
                     CustomDropdownFormField2(
                         label: 'VAT',
-                        hintText: Text(''),
-                        items: vats,
+                        hintText: const Text(''),
+                        items: dealVatsNameUtilities,
                         onChanged: (value){
-                        if(value.toString() == 'Có'){
+                        if(value.toString() == dealVatsNameUtilities[0].toString()){
                           _dealVatId.text = '0';
-                        }else if(value.toString() == 'Không'){
+                        }else if(value.toString() == dealVatsNameUtilities[1].toString()){
                           _dealVatId.text = '1';
                         }
                         print(_dealVatId.text);
@@ -248,9 +238,8 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
                             maxTime: DateTime.now().add(const Duration(days: 36500)),
                           );
                           if(date != null){
-                            _dealCloseDate = date;
-                            _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(_dealCloseDate)}';
-                            print(_dealCloseDate);
+                            _dealClosedDate.text = date.toString();
+                            _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
                           }
                         },
                         decoration: InputDecoration(
@@ -282,26 +271,34 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
                     const SizedBox(height: 20.0,),
 
                     //Chủ hợp đồng
-                    CustomDropdownFormField2(
-                        label: 'Chủ hợp đồng',
-                        hintText: const Text(''),
-                        items: dealOwnerIdNames,
-                        onChanged: (value){
-                          setState(() {
-                            _dealOwnerId.text = _getDealOwnerId(value.toString());
-                            print(_dealOwnerId.text);
-                          });
-                      },
+                    CustomEditableTextField(
+                        borderColor: Colors.red,
+                        text: _accountFullname,
+                        title: 'Chủ hợp đồng',
+                        readonly: true,
+                        textEditingController: _dealOwnerId,
+                        onTap: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const SaleEmpFilter(),
+                          ));
+                          if(data != null){
+                            setState(() {
+                              filterAccount = data;
+                              _dealOwnerId.text = '${filterAccount.accountId!}';
+                              _accountFullname = filterAccount.fullname!;
+                            });
+                          }
+                        },
                     ),
                     const SizedBox(height: 20.0,),
 
                     //Phòng ban
-                    // const CustomReadOnlyTextField(text: '', title: 'Phòng'),
-                    // const SizedBox(height: 20.0,),
+                    if(filterAccount.departmentId != null) CustomReadOnlyTextField(text: getDepartmentName(filterAccount.departmentId!), title: 'Phòng'),
+                    if(filterAccount.departmentId != null) const SizedBox(height: 20.0,),
 
                     //Nhóm
-                    // const CustomReadOnlyTextField(text: '', title: 'Nhóm'),
-                    // const SizedBox(height: 20.0,),
+                    if(filterAccount.teamId != null) CustomReadOnlyTextField(text: getTeamName(filterAccount.teamId!), title: 'Nhóm'),
+                    if(filterAccount.teamId != null) const SizedBox(height: 20.0,),
 
                     //Nút thêm mới
                     const SizedBox(height: 20.0,),
@@ -328,16 +325,16 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
                                 title: _dealTitle.text,
                                 dealStageId: int.parse(_dealStageId.text),
                                 amount: int.parse(_dealAmount.text),
-                                closedDate: _dealCloseDate.toString().isEmpty ? DateTime.now() : _dealCloseDate,
+                                closedDate: DateTime.parse(_dealClosedDate.text),
                                 dealOwnerId: int.parse(_dealOwnerId.text),
                                 linkTrello: _linkTrello.text,
                                 vatId: int.parse(_dealVatId.text),
                                 serviceId: int.parse(_dealServiceId.text),
                                 dealTypeId: int.parse(_dealTypeId.text),
-                                contactId: int.parse(_dealContactId.text)
+                                contactId: int.parse(_dealContactId.text),
                             );
                             ApiService().createNewDeal(deal);
-                            Future.delayed(const Duration(seconds: 3), (){
+                            Future.delayed(const Duration(seconds: 2), (){
                               Navigator.pop(context);
                             });
                           }
@@ -349,7 +346,7 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
                       ),
                     ),
                   ],
-                ) : const Center(child: CircularProgressIndicator()),
+                )
               )
           ),
           Positioned(
@@ -375,111 +372,25 @@ class _EmpDealAddNewState extends State<EmpDealAddNew> {
     );
   }
 
-  void _getOverallInfo(){
-    ApiService().getAllSalesEmployeeAccount().then((value){
-      setState(() {
-        if(accounts.isNotEmpty){
-          accounts.clear();
-        }
-        accounts.addAll(value);
-        _getdealOwnerIdNames();
-      });
-    });
-
-    ApiService().getAllContacts().then((value) {
-      setState(() {
-        if(contacts.isNotEmpty){
-          contacts.clear();
-        }
-        contacts.addAll(value);
-        _getContactNames();
-      });
-    });
-
-    ApiService().getAllDepartment().then((value) {
-      setState(() {
-        if(departments.isNotEmpty){
-          departments.clear();
-        }
-        departments.addAll(value);
-        _getDepartmentName();
-      });
-    });
-
-    ApiService().getAllTeam().then((value) {
-      setState(() {
-        if(teams.isNotEmpty){
-          teams.clear();
-        }
-        teams.addAll(value);
-        _getTeamName();
-      });
-    });
-  }
-
-  //Deal
-  void _getdealOwnerIdNames(){
-    if(dealOwnerIdNames.isNotEmpty){
-      dealOwnerIdNames.clear();
-    }
-    for(int i = 0; i < accounts.length; i++){
-      String idAndName = ('${accounts[i].accountId}_${accounts[i].fullname}');
-      String split = '${idAndName.split('_')}';
-      dealOwnerIdNames.add(split.substring(1, split.length-1));
-      print(dealOwnerIdNames);
-    }
-  }
-
-  String _getDealOwnerId(String string){
-      String id = string.substring(0, string.indexOf(','));
-      return id;
-  }
-
-  //Department
-  void _getDepartmentName(){
-    for (int i = 0; i < departments.length; i++) {
-      if (_currentAccountDepartmentId == departments[i].departmentId) {
-        departments[i].name;
+  String getDepartmentName(int departmentId){
+    String name = '';
+    for(int i = 0; i < departments.length; i++){
+      if(departmentId == departments[i].departmentId){
+        name = departments[i].name;
       }
     }
+    return name;
   }
 
-  //Team
-  String? _getTeamName(){
-    for (int i = 0; i < teams.length; i++) {
-      if (_currentAccountTeamId == teams[i].teamId) {
-        return teams[i].name;
+  String getTeamName(int teamId){
+    String name = '';
+    for(int i = 0; i < teams.length; i++){
+      if(teamId == teams[i].teamId){
+        name = teams[i].name;
       }
     }
+    return name;
   }
-
-  //Contact
-  String _getContactId(String string){
-      String id = string.substring(0, string.indexOf(','));
-      return id;
-  }
-
-  void _getContactNames(){
-    if(contactIdNames.isNotEmpty){
-      contactIdNames.clear();
-    }
-    for(int i = 0; i < contacts.length; i++){
-      String idAndName = ('${contacts[i].contactId}_${contacts[i].fullname}');
-      String split = '${idAndName.split('_')}';
-      contactIdNames.add(split.substring(1, split.length-1));
-      print(contactIdNames);
-    }
-  }
-
-  String? _getContactCompanyName(String contactId){
-    int id = int.parse(contactId);
-    for(int i = 0; i < contacts.length; i++){
-      if( id == contacts[i].contactId){
-        return contacts[i].companyName;
-      }
-    }
-  }
-
 }
 
 

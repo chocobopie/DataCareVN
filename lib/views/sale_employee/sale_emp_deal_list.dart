@@ -7,8 +7,8 @@ import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/view_models/deal_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
-import 'package:login_sample/views/sale_employee/emp_deal_add_new.dart';
-import 'package:login_sample/views/sale_employee/emp_deal_detail.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_deal_add_new.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';
@@ -17,14 +17,14 @@ import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class EmpDealList extends StatefulWidget {
-  const EmpDealList({Key? key}) : super(key: key);
+class SaleEmpDealList extends StatefulWidget {
+  const SaleEmpDealList({Key? key}) : super(key: key);
 
   @override
-  _EmpDealListState createState() => _EmpDealListState();
+  _SaleEmpDealListState createState() => _SaleEmpDealListState();
 }
 
-class _EmpDealListState extends State<EmpDealList> {
+class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false;
   String _fullname = 'Nhân viên';
@@ -42,10 +42,10 @@ class _EmpDealListState extends State<EmpDealList> {
 
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
     currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getOverallInfo(_currentPage, currentAccount);
+    super.initState();
   }
 
   @override
@@ -60,8 +60,8 @@ class _EmpDealListState extends State<EmpDealList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
-            builder: (context) => const EmpDealAddNew(),
-          ));
+            builder: (context) => const SaleEmpDealAddNew(),
+          )).then(_onGoBack);
         },
         backgroundColor: Colors.green,
         child: const Icon(Icons.plus_one),
@@ -99,7 +99,7 @@ class _EmpDealListState extends State<EmpDealList> {
                           title: _fullname,
                           onPressed: () async {
                             final data = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => SaleEmpFilter(account: currentAccount,),
+                              builder: (context) => const SaleEmpFilter(),
                             ));
                             if(data != null){
                               _currentPage = 0;
@@ -246,7 +246,7 @@ class _EmpDealListState extends State<EmpDealList> {
                       return ListTile(
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => EmpDealDetail(deal: deal)
+                            builder: (context) => SaleEmpDealDetail(deal: deal)
                           )).then(_onGoBack);
                         },
                         title: Text(deal.title),
@@ -367,6 +367,5 @@ class _EmpDealListState extends State<EmpDealList> {
       _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage);
     }
   }
-
 
 }
