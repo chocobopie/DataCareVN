@@ -13,6 +13,7 @@ import 'package:login_sample/models/permission_status.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/service.dart';
 import 'package:login_sample/models/team.dart';
+import 'package:login_sample/models/timeline.dart';
 import 'package:login_sample/models/vat.dart';
 
 class ApiService {
@@ -516,6 +517,24 @@ class ApiService {
       return jsonResponse.map((data) => Role.fromJson(data)).toList();
     } else {
       throw Exception("Failed to get roles");
+    }
+  }
+
+  //Timelines
+  Future<List<Timeline>> getTimelineByDealId({ required bool isRefresh ,required dealId, required currentPage}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'timelines?deal-id=$dealId&page=$currentPage&limit=20';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Got all timelines by Deal Id | 200');
+      return jsonResponse.map((data) => Timeline.fromJson(data)).toList();
+    } else {
+      throw Exception("Failed to get timelines");
     }
   }
 }

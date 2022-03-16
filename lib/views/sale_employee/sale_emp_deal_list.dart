@@ -11,7 +11,6 @@ import 'package:login_sample/views/sale_employee/sale_emp_deal_add_new.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
-import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +35,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   late final List<Deal> _deals = [];
   late Account currentAccount, filterAccount = Account();
 
-  late DateTime? fromDate;
-  late DateTime? toDate;
+  DateTime? fromDate;
+  DateTime? toDate;
   String fromDateToDateString = 'Ngày';
 
 
@@ -153,6 +152,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               toDate = null;
                               fromDateToDateString = 'Ngày';
                             });
+                            _refreshController.resetNoData();
                             _getOverallInfo(_currentPage, currentAccount);
                           },
                           icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
@@ -197,10 +197,12 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                   controller: _refreshController,
                   enablePullUp: true,
                   onRefresh: () async{
-                    if(_deals.isNotEmpty){
+                    setState(() {
                       _deals.clear();
-                    }
+                    });
+                    _refreshController.resetNoData();
                     _currentPage = 0;
+                    print('Curent page: $_currentPage');
                     if(filterAccount.accountId == null && fromDate == null && toDate == null){
                       _getAllDealByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
                     } else if (filterAccount.accountId != null && fromDate == null && toDate == null){
@@ -222,7 +224,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       setState(() {
                         _currentPage++;
                       });
-                      print('Current page: $_currentPage');
                       if(filterAccount.accountId == null && fromDate == null && toDate == null){
                         _getAllDealByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
                       } else if (filterAccount.accountId != null && fromDate == null && toDate == null){
@@ -233,12 +234,14 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                         _getAllDealByDealOwnerId(isRefresh: false, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
                       }
                     }
+                    print('Curent page: $_currentPage');
 
                     if(_deals.isNotEmpty){
-                      _refreshController.loadComplete();
-                    }else{
-                      _refreshController.loadFailed();
+                       _refreshController.loadComplete();
+                    }else if(_deals.isEmpty){
+                       _refreshController.loadFailed();
                     }
+
                   },
                   child: ListView.separated(
                     itemBuilder: (context, index){
@@ -334,22 +337,33 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   void _getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
     List<Deal> dealList = await DealListViewModel().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
-
-    setState(() {
-      _deals.addAll(dealList);
-      _maxPages = _deals[0].maxPage!;
-    });
-
+    if(dealList.isNotEmpty){
+      setState(() {
+        _deals.addAll(dealList);
+        _maxPages = _deals[0].maxPage!;
+      });
+    }else{
+      setState(() {
+        _refreshController.loadNoData();
+      });
+    }
+    print('Max page: $_maxPages');
   }
 
   void _getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
     List<Deal> dealList = await DealListViewModel().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
-    setState(() {
-      _deals.addAll(dealList);
-      _maxPages = _deals[0].maxPage!;
-    });
-
+    if(dealList.isNotEmpty){
+      setState(() {
+        _deals.addAll(dealList);
+        _maxPages = _deals[0].maxPage!;
+      });
+    }else{
+      setState(() {
+        _refreshController.loadNoData();
+      });
+    }
+    print('Max page: $_maxPages');
   }
 
   void _onGoBack(dynamic value){

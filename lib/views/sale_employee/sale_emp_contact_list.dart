@@ -7,7 +7,6 @@ import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_add_new.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
-import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:provider/provider.dart';
@@ -123,6 +122,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                               fullname = 'Nhân viên';
                               _contactOwnerId = -1;
                               _contacts.clear();
+                              _refreshController.resetNoData();
                               getOverallInfo(_currentPage, currentAccount);
                             });
                           },
@@ -167,10 +167,11 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                   controller: _refreshController,
                   enablePullUp: true,
                   onRefresh: () async{
-                    if(_contacts.isNotEmpty){
+                    setState(() {
                       _contacts.clear();
-                    }
+                    });
                     _currentPage = 0;
+                    _refreshController.resetNoData();
                     print('Current page: $_currentPage');
                     if(_contactOwnerId == -1){
                       _getAllContactByAccountId(isRefresh: true ,currentPage: _currentPage, accountId: currentAccount.accountId!);
@@ -306,23 +307,32 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
     List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
 
-    setState(() {
-      _contacts.addAll(contactList);
+    if(contactList.isNotEmpty){
+      setState(() {
+        _contacts.addAll(contactList);
+      });
       if(_contacts.isNotEmpty){
         _maxPages = _contacts[0].maxPage!;
       }
-    });
+    }else{
+      _refreshController.loadNoData();
+    }
+
   }
 
   void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage}) async {
     List<Contact> contactList = await ContactListViewModel().getAllContactByOwnerId(isRefresh: isRefresh, contactOwnerId: contactOwnerId, currentPage: currentPage);
 
-    setState(() {
-      _contacts.addAll(contactList);
+    if(contactList.isNotEmpty){
+      setState(() {
+        _contacts.addAll(contactList);
+      });
       if(_contacts.isNotEmpty){
         _maxPages = _contacts[0].maxPage!;
       }
-    });
+    }else{
+      _refreshController.loadNoData();
+    }
   }
 
   void searchNameAndEmail({required Account currentAccount, required String query}) async {

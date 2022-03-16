@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/employee/employee_profile.dart';
 
 
 class SideBar extends StatelessWidget {
@@ -12,7 +13,7 @@ class SideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double widthDrawer = MediaQuery.of(context).size.width * 0.65;
-    double logoutHeight = MediaQuery.of(context).size.height * 0.60;
+    double logoutHeight = MediaQuery.of(context).size.height * 0.55;
     return Drawer(
       child: Container(
         color: mainBgColor,
@@ -72,23 +73,27 @@ class SideBar extends StatelessWidget {
                 ),
               ),
             ),
-
             ListTile(
+              contentPadding: const EdgeInsets.only(left: 15.0),
               leading: const Icon(
-                  Icons.home,
+                Icons.person,
                 color: Colors.blueGrey,
               ),
               title: const Text(
-                  'Home',
+                'Xem thông tin cá nhân',
                 style: TextStyle(
                   color: Colors.blueGrey,
                 ),
               ),
-              onTap: () => print('Home'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const EmployeeProfile(),
+                ));
+              }
             ),
             const Divider(),
             ListTile(
-              contentPadding: EdgeInsets.fromLTRB(15.0, logoutHeight, 0.0, 0.0),
+              contentPadding: EdgeInsets.only(left: 15.0, top: logoutHeight),
               leading: const Icon(
                   Icons.logout,
                 color: Colors.blueGrey,

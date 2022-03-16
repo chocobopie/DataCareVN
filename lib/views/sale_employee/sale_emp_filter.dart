@@ -80,9 +80,10 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                           ),
                           suffixIcon: _searchEmployeeName.text.isNotEmpty ? IconButton(
                             onPressed: (){
-                              if(_salesEmployees.isNotEmpty){
+                              setState(() {
                                 _salesEmployees.clear();
-                              }
+                              });
+                              _refreshController.resetNoData();
                               _searchEmployeeName.clear();
                               _getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: true, currentPage: _currentPage, blockId: currentAccount.blockId!, departmentId:  currentAccount.departmentId!);
                             },
@@ -133,6 +134,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                         _salesEmployees.clear();
                       }
                       _currentPage = 0;
+                      _refreshController.resetNoData();
                       if(_searchEmployeeName.text.isNotEmpty){
                         _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId:  currentAccount.departmentId!, blockId:  currentAccount.blockId!, fullname: _searchEmployeeName.text);
                       }else{
@@ -222,19 +224,28 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   void _getAllSalesEmployeesByBlockIdDepartmentId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId}) async {
     List<Account> accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId);
 
-    setState(() {
-      _salesEmployees.addAll(accountList);
-      _maxPages = _salesEmployees[0].maxPage!;
-    });
+    if(accountList.isNotEmpty){
+      setState(() {
+        _salesEmployees.addAll(accountList);
+        _maxPages = _salesEmployees[0].maxPage!;
+      });
+    }else{
+      _refreshController.loadNoData();
+    }
   }
 
   void _getAccountsByFullname({required bool isRefresh, required int currentPage, required int departmentId, required int blockId, required String fullname}) async {
     List<Account> accountList = await AccountListViewModel().getAccountsByFullname(isRefresh: isRefresh, currentPage: currentPage, departmentId: departmentId, blockId: blockId, fullname: fullname);
 
-    setState(() {
-      _salesEmployees.addAll(accountList);
-      _maxPages = _salesEmployees[0].maxPage!;
-    });
+    if(accountList.isNotEmpty){
+      setState(() {
+        _salesEmployees.addAll(accountList);
+        _maxPages = _salesEmployees[0].maxPage!;
+      });
+    }else{
+      _refreshController.loadNoData();
+    }
+
   }
 
 

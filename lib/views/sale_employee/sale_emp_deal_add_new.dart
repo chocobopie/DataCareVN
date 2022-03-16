@@ -118,6 +118,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                               _contactCompanyName = filterContact.companyName;
                               _dealContactId.text = '${filterContact.contactId}';
                             });
+                            print('Contact Id: ${_dealContactId.text}');
                           }
                         },
                     ),
@@ -325,7 +326,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                                 title: _dealTitle.text,
                                 dealStageId: int.parse(_dealStageId.text),
                                 amount: _dealAmount.text.isEmpty ? 0 : int.parse(_dealAmount.text),
-                                closedDate: DateTime.parse(_dealClosedDate.text),
+                                closedDate: _dealClosedDate.text.isEmpty ? DateTime.now() : DateTime.parse(_dealClosedDate.text),
                                 dealOwnerId: int.parse(_dealOwnerId.text),
                                 linkTrello: _linkTrello.text.isEmpty ? '' : _linkTrello.text,
                                 vatId: int.parse(_dealVatId.text),

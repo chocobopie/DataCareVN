@@ -25,7 +25,7 @@ class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
       drawer: SideBar(context,
         name: _account.fullname!,
         role: rolesNameUtilities[_account.roleId!],
-        imageUrl: 'assets/logo.png',
+        imageUrl: 'assets/images/logo.png',
       ),
       body: Stack(
         children: <Widget>[
