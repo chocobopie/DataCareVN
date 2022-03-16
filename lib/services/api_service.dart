@@ -167,14 +167,31 @@ class ApiService {
     }
   }
 
-  Future<List<Deal>> getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
+  Future<Deal> getADealbyDealId({required int dealId}) async {
+    String url = stockUrl + 'deals/$dealId';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      print('Got deal by dealId | 200');
+      return Deal.fromJson(jsonResponse);
+    } else {
+      throw Exception("Failed to get deal by dealId");
+    }
+  }
+
+  Future<List<Deal>> getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? contactId, DateTime? fromDate, DateTime? toDate}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
     String url = stockUrl + 'deals?account-id=$accountId&page=$currentPage&limit=10';
 
-    if(fromDate != null && toDate != null){
+    if(fromDate != null && toDate != null && contactId == null){
       url = stockUrl + 'deals?account-id=$accountId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=10';
+    }else if(fromDate != null && toDate != null && contactId != null){
+      url = stockUrl + 'deals?account-id=$accountId&contact-id=$contactId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=10';
+    }else if(fromDate == null && toDate == null && contactId != null){
+      url = stockUrl + 'deals?account-id=$accountId&contact-id=$contactId&page=$currentPage&limit=10';
     }
 
 
@@ -188,15 +205,19 @@ class ApiService {
     }
   }
 
-  Future<List<Deal>> getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
+  Future<List<Deal>> getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, int? contactId, DateTime? fromDate, DateTime? toDate}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
     String url = stockUrl + 'deals?deal-owner=$dealOwnerId&page=$currentPage&limit=10';
 
-    if(fromDate != null && toDate != null){
+    if(fromDate != null && toDate != null && contactId != null){
+      url = stockUrl + 'deals?deal-owner=$dealOwnerId&contact-id=$contactId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=10';
+    }else if(fromDate != null && toDate != null && contactId == null){
       url = stockUrl + 'deals?deal-owner=$dealOwnerId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=10';
+    }else if(fromDate == null && toDate == null && contactId != null){
+      url = stockUrl + 'deals?deal-owner=$dealOwnerId&contact-id=$contactId&page=0&limit=10';
     }
 
     final response = await http.get(Uri.parse(url));

@@ -59,7 +59,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                               locale : LocaleType.vi,
                               minTime: DateTime.now().subtract(const Duration(days: 36500)),
                               currentTime: DateTime.now(),
-                              maxTime: DateTime.now(),
+                              maxTime: DateTime.now().add(const Duration(days: 36500)),
                             );
                             if(date != null){
                               setState(() {
@@ -108,7 +108,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                               locale : LocaleType.vi,
                               minTime: DateTime.now().subtract(const Duration(days: 36499)),
                               currentTime: DateTime.now(),
-                              maxTime: DateTime.now(),
+                              maxTime: DateTime.now().add(const Duration(days: 36500)),
                             );
                             if(date != null){
                               setState(() {

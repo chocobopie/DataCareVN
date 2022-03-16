@@ -46,41 +46,37 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
                   topRight: Radius.circular(30),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
+              margin: const EdgeInsets.only(top: 100.0),
               child: ListView(
-                padding:
-                const EdgeInsets.only(top: 10.0, left: 35.0, bottom: 5.0),
+                padding: const EdgeInsets.only(top: 10.0, left: 35.0, bottom: 5.0),
                 children: <Widget>[
                   //Hàng 1
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Row(
-                      children: <Widget>[
-                        //Thông tin liên lạc khách hàng
-                        ImageTextButton(
-                            imageUrl: 'assets/images/my-contact.png',
-                            text: 'Xem thông tin khách hàng',
-                            buttonColors: const [Colors.blue, Colors.white],
-                            onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const SaleEmpContactList(),
-                              ));
-                            }
-                        ),
-                        const SizedBox(width: 20.0,),
-                        //Hợp đồng
-                        ImageTextButton(
-                            imageUrl: 'assets/images/contracts.png',
-                            text: 'Xem hợp đồng',
-                            buttonColors: const [Colors.green, Colors.white],
-                            onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const SaleEmpDealList(),
-                              ));
-                            }
-                        ),
-                      ],
-                    ),
+                  Row(
+                    children: <Widget>[
+                      //Thông tin liên lạc khách hàng
+                      ImageTextButton(
+                          imageUrl: 'assets/images/my-contact.png',
+                          text: 'Xem thông tin khách hàng',
+                          buttonColors: const [Colors.blue, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpContactList(),
+                            ));
+                          }
+                      ),
+                      const SizedBox(width: 20.0,),
+                      //Hợp đồng
+                      ImageTextButton(
+                          imageUrl: 'assets/images/contracts.png',
+                          text: 'Xem hợp đồng',
+                          buttonColors: const [Colors.green, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpDealList(),
+                            ));
+                          }
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20.0,),
                   //Hàng 2

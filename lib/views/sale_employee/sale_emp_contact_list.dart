@@ -85,7 +85,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0,),
-                  child: Row(
+                  child: currentAccount.roleId! == 3 || currentAccount.roleId == 4 ? Row(
                     children: <Widget>[
                       const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       const SizedBox(width: 10,),
@@ -129,7 +129,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                           icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                       ),
                     ],
-                  ),
+                  ) : null
                 ),
               ],
             ),
@@ -137,7 +137,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.22),
+            padding: EdgeInsets.only(top: currentAccount.roleId! == 3 || currentAccount.roleId == 4 ? MediaQuery.of(context).size.height * 0.22 : 90),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -263,7 +263,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     color: Colors.blueGrey,
                   ),
                 ),
-                onChanged: (value){
+                onSubmitted: (value){
                   _currentPage = 0;
                   searchNameAndEmail(currentAccount: currentAccount, query: value.toString());
                 }
@@ -274,9 +274,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     Icons.cancel,
                   ),
                   onPressed: (){
-                    if(_contacts.isNotEmpty){
-                      _contacts.clear();
-                    }
+                    _contacts.clear();
                     setState(() {
                       _isSearching = false;
                       getOverallInfo(_currentPage, currentAccount);

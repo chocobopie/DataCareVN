@@ -48,298 +48,80 @@ class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: ListView(
                 padding:
-                const EdgeInsets.only(top: 10.0, left: 10.0, right: 18.0, bottom: 5.0),
+                const EdgeInsets.only(top: 10.0, left: 35.0, bottom: 5.0),
                 children: <Widget>[
-
                   //Hàng 1
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Row(
-                      children: <Widget>[
-                        //Nút Thông tin liên lạc của khách hàng
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-                          child: Container(
-                            height: 120,
-                            width: 150,
-                            child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => const SaleEmpContactList(),
-                                  ));
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 10.0, top: 20.0),
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: SizedBox(
-                                          child: Image(
-                                            image: AssetImage('assets/images/my-contact.png'),
-                                            fit: BoxFit.cover,
-                                          ),
-                                          height: 40.0,
-                                          width: 40.0,
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(top: 10.0),
-                                          child: Text(
-                                            'Thông tin liên lạc của khách hàng',
-                                            style: TextStyle(
-                                              fontSize: 12.0,
-                                              color: Color.fromARGB(255, 107, 106, 144),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15.0),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 1,
-                                  offset: const Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                              gradient: const LinearGradient(
-                                stops: [0.04, 0.02],
-                                colors: [Colors.blue, Colors.white],
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        //Nút hợp đồng
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-                          child: Container(
-                            height: 120,
-                            width: 150,
-                            child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => const SaleEmpDealList(),
-                                  ));
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 10.0, top: 20.0),
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: SizedBox(
-                                          child: Image(
-                                            image: AssetImage('assets/images/contracts.png'),
-                                            fit: BoxFit.cover,
-                                          ),
-                                          height: 40.0,
-                                          width: 40.0,
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(top: 10.0),
-                                          child: Text(
-                                            'Hợp đồng',
-                                            style: TextStyle(
-                                              fontSize: 12.0,
-                                              color: Color.fromARGB(255, 107, 106, 144),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15.0),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 1,
-                                  offset: const Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                              gradient: const LinearGradient(
-                                stops: [0.04, 0.02],
-                                colors: [Colors.green, Colors.white],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  Row(
+                    children: <Widget>[
+                      //Nút Thông tin liên lạc của khách hàng
+                      ImageTextButton(
+                          imageUrl: 'assets/images/my-contact.png',
+                          text: 'Xem thông tin khách hàng',
+                          buttonColors: const [Colors.blue, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpContactList(),
+                            ));
+                          }
+                      ),
+                      const SizedBox(width: 20.0,),
+                      //Hợp đồng
+                      ImageTextButton(
+                          imageUrl: 'assets/images/contracts.png',
+                          text: 'Xem hợp đồng',
+                          buttonColors: const [Colors.green, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpDealList(),
+                            ));
+                          }
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 20.0,),
                   //Hàng 2
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Row(
-                      children: <Widget>[
-                        //Nút lương của tôi
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-                          child: Container(
-                            height: 120,
-                            width: 150,
-                            child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => const EmpPayroll(),
-                                  ));
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 10.0, top: 20.0),
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: SizedBox(
-                                          child: Image(
-                                            image: AssetImage('assets/images/salary.png'),
-                                            fit: BoxFit.cover,
-                                          ),
-                                          height: 40.0,
-                                          width: 40.0,
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(top: 10.0),
-                                          child: Text(
-                                            'Xem lương',
-                                            style: TextStyle(
-                                              fontSize: 12.0,
-                                              color: Color.fromARGB(255, 107, 106, 144),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15.0),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 1,
-                                  offset: const Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                              gradient: const LinearGradient(
-                                stops: [0.04, 0.02],
-                                colors: [Colors.pink, Colors.white],
-                              ),
-                            ),
-                          ),
-                        ),
+                  Row(
+                    children: <Widget>[
 
-                        //Nút điểm danh
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0.0, 0.0),
-                          child: Container(
-                            height: 120,
-                            width: 150,
-                            child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => const EmpTakeAttendance(),
-                                  ));
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 10.0, top: 20.0),
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: SizedBox(
-                                          child: Image(
-                                            image: AssetImage('assets/images/attendance-report.png'),
-                                            fit: BoxFit.cover,
-                                          ),
-                                          height: 40.0,
-                                          width: 40.0,
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(top: 10.0),
-                                          child: Text(
-                                            'Điểm danh',
-                                            style: TextStyle(
-                                              fontSize: 12.0,
-                                              color: Color.fromARGB(255, 107, 106, 144),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15.0),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 1,
-                                  offset: const Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                              gradient: const LinearGradient(
-                                stops: [0.04, 0.02],
-                                colors: [Colors.red, Colors.white],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      //Xem lương
+                      ImageTextButton(
+                          imageUrl: 'assets/images/salary.png',
+                          text: 'Xem lương',
+                          buttonColors: const [Colors.pink, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const EmpPayroll(),
+                            ));
+                          }
+                      ),
+                      const SizedBox(width: 20.0,),
+
+                      //Nút điểm danh
+                      ImageTextButton(
+                          imageUrl: 'assets/images/attendance-report.png',
+                          text: 'Điểm danh',
+                          buttonColors: const [Colors.red, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const EmpTakeAttendance(),
+                            ));
+                          }
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 20.0,),
                   //Hàng 3
                   Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0, left: 20),
-                        child: ImageTextButton(
-                            imageUrl: 'assets/images/issue.png',
-                            text: 'Vấn đề',
-                            buttonColors: const [Colors.grey, Colors.white],
-                            onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const EmpIssue(),
-                              ));
-                            }
-                        ),
+                      ImageTextButton(
+                          imageUrl: 'assets/images/issue.png',
+                          text: 'Xem vấn đề',
+                          buttonColors: const [Colors.grey, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const EmpIssue(),
+                            ));
+                          }
                       ),
                     ],
                   ),

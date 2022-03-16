@@ -67,8 +67,10 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                     controller: _searchContactNameOrEmail,
                     showCursor: true,
                     cursorColor: Colors.black,
-                    onChanged: (value){
+                    onSubmitted: (value){
                       _currentPage = 0;
+                      _refreshController.resetNoData();
+                      _contacts.clear();
                       _searchContactByNameOrEmail(currentAccount: currentAccount, query: value.toString());
                     },
                     decoration: InputDecoration(
@@ -78,6 +80,7 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                       suffixIcon: _searchContactNameOrEmail.text.isNotEmpty ? IconButton(
                         onPressed: (){
                           _searchContactNameOrEmail.clear();
+                          _refreshController.resetNoData();
                           setState(() {
                             _contacts.clear();
                           });
@@ -126,10 +129,11 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                       controller: _refreshController,
                       enablePullUp: true,
                       onRefresh: () async{
-                        if(_contacts.isNotEmpty){
+                        setState(() {
                           _contacts.clear();
-                        }
+                        });
                         _currentPage = 0;
+                        _refreshController.resetNoData();
                         if(_searchContactNameOrEmail.text.isNotEmpty){
                           _searchContactByNameOrEmail(currentAccount: currentAccount, query: _searchContactNameOrEmail.text);
                         }else{
@@ -219,19 +223,27 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
   void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
     List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
 
-    setState(() {
-      _contacts.addAll(contactList);
+    if(contactList.isNotEmpty){
+      setState(() {
+        _contacts.addAll(contactList);
+      });
       _maxPages = _contacts[0].maxPage!;
-    });
+    }else{
+      _refreshController.loadNoData();
+    }
   }
 
   void _searchContactByNameOrEmail({required Account currentAccount, required String query}) async {
     List<Contact> contactList = await ContactListViewModel().searchNameAndEmail(currentAccount: currentAccount, query: query);
 
-    setState(() {
-      _contacts.clear();
-      _contacts.addAll(contactList);
-    });
+    if(contactList.isNotEmpty){
+      setState(() {
+        _contacts.addAll(contactList);
+      });
+      _maxPages = _contacts[0].maxPage!;
+    }else{
+      _refreshController.loadNoData();
+    }
   }
 
 }
