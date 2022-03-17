@@ -53,7 +53,7 @@ class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
                   //Hàng 1
                   Row(
                     children: <Widget>[
-                      //Nút Thông tin liên lạc của khách hàng
+                      //Xem thông tin khách hàng
                       ImageTextButton(
                           imageUrl: 'assets/images/my-contact.png',
                           text: 'Xem thông tin khách hàng',

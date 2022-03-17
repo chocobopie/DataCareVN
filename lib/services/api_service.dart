@@ -340,20 +340,23 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllAccountByBlockIdDepartmentId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId}) async {
+  Future<List<Account>> getAllAccountByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
+    String url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=10';
 
-    String url = stockUrl + 'accounts/sales?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=10';
+    if(teamId != null){
+      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=10';
+    }
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      print('Got all accounts by BlockId, DepartmentId | 200');
+      print('Got all accounts by BlockId, DepartmentId or TeamId | 200');
       return jsonResponse.map((data) => Account.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get all accounts by BlockId, DepartmentId");
+      throw Exception("Failed to get all accounts by BlockId, DepartmentId or TeamId");
     }
   }
 

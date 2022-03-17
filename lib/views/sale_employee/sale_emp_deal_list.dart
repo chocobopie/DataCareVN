@@ -90,11 +90,11 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 2.0,),
-                  child: currentAccount.roleId! == 3 || currentAccount.roleId! == 4 ? Row(
+                  child: Row(
                     children: <Widget>[
                       if(fromDateToDateString == 'Ngày') const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       //Lọc theo nhân viên
-                      Expanded(
+                      if(currentAccount.roleId! == 3 || currentAccount.roleId! == 4) Expanded(
                         child: CustomOutlinedButton(
                             color: mainBgColor,
                             title: _fullname,
@@ -186,7 +186,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                           icon: const Icon(Icons.refresh, color: mainBgColor, size: 20,)
                       ),
                     ],
-                  ) : null,
+                  ),
                 ),
               ],
             ),
@@ -195,7 +195,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top: currentAccount.roleId! == 3 || currentAccount.roleId! == 4 ? MediaQuery.of(context).size.height * 0.24 : 100),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.24),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -388,7 +388,11 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getOverallInfo(int currentPage, Account account){
-    _getAllDealByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
+    if(currentAccount.roleId == 5){
+      _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: currentAccount.accountId!, currentPage: currentPage);
+    }else{
+      _getAllDealByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
+    }
   }
 
   void _getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? contactId, DateTime? fromDate, DateTime? toDate}) async {
