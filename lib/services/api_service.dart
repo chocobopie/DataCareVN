@@ -6,6 +6,7 @@ import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/deal_stage.dart';
 import 'package:login_sample/models/deal_type.dart';
 import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/excuse_late.dart';
 import 'package:login_sample/models/excuse_late_status.dart';
 import 'package:login_sample/models/gender.dart';
 import 'package:login_sample/models/lead_source.dart';
@@ -473,6 +474,26 @@ class ApiService {
       throw Exception("Failed to get deal types");
     }
   }
+
+  //ExcuseLate
+  Future<http.Response> createNewExcuseLate(ExcuseLate excuseLate) {
+
+      String url = stockUrl + 'excuse-lates';
+
+      return http.post(Uri.parse(url), headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'attendanceId': excuseLate.attendanceId,
+          'dateRequest': excuseLate.dateRequest,
+          'description': excuseLate.description,
+          'expectedWorkingTime': excuseLate.expectedWorkingTime,
+          'excuseLateStatusId': 0
+        }),
+      );
+
+  }
+
 
   //ExcuseLateStatus
   Future<List<ExcuseLateStatus>> getAllExcuseLateStatus() async{

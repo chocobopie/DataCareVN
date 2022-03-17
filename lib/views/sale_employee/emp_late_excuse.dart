@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/excuse_late.dart';
+import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/views/sale_employee/emp_late_excuse_list.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -184,6 +187,12 @@ class _EmpLateExcuseState extends State<EmpLateExcuse> {
 
                   //Nút gửi đơn xin phép đi trễ
                   const SizedBox(height: 20.0,),
+                  CustomTextButton(
+                      color: Colors.blue,
+                      text: 'Gửi',
+                      onPressed: (){
+                      },
+                  ),
                   Container(
                     decoration: const BoxDecoration(
                       color: Colors.blueAccent,
