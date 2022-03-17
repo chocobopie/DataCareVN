@@ -38,8 +38,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   late Account currentAccount, filterAccount = Account();
 
   Contact? filterContact;
-  DateTime? fromDate;
-  DateTime? toDate;
+  DateTime? fromDate, toDate;
 
 
   @override

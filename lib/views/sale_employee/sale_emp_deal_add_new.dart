@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
-import 'package:login_sample/models/department.dart';
-import 'package:login_sample/models/team.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/providers/account_provider.dart';

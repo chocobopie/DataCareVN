@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/attendance_list_view_model.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class EmpAttendanceReport extends StatefulWidget {
   const EmpAttendanceReport({Key? key}) : super(key: key);
@@ -13,56 +21,26 @@ class EmpAttendanceReport extends StatefulWidget {
 
 class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
 
-  final ScrollController _scrollController = ScrollController();
-  List<Attendance> attendances = [];
-  bool loading = false, allLoaded = false;
-  DateTime dateTime = DateTime.now();
 
-  mockFetch() async {
-    if (allLoaded) {
-      return;
-    }
-    setState(() {
-      loading = true;
-    });
-    await Future.delayed(const Duration(milliseconds: 500));
-    List<Attendance> newData = attendances.length >= 100 ? [] : List.generate(20, (index)
-    => Attendance(
-        attendanceId: index + attendances.length,
-        accountId: 1,
-        date: dateTime = dateTime.add(const Duration(days: 1)),
-        attendanceStatusId: 0
-    ));
-    if (newData.isNotEmpty) {
-      attendances.addAll(newData);
-    }
-    setState(() {
-      loading = false;
-      allLoaded = newData.isEmpty;
-    });
-  }
+  late final List<Attendance> _attendances = [];
+  late Account currentAccount;
+  int _currentPage = 0, _maxPages = 0;
+  final RefreshController _refreshController = RefreshController();
+  String fromDateToDateString = 'Ngày';
+  DateTime? _fromDate, _toDate;
 
   @override
   void initState() {
     super.initState();
-    mockFetch();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent &&
-          !loading) {
-        mockFetch();
-      }
-    });
+    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
+    _refreshController.dispose();
   }
-
-  String _fromDate = '';
-  String _toDate = '';
 
   @override
   Widget build(BuildContext context) {
@@ -86,102 +64,53 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
               ),
               margin: const EdgeInsets.only(top: 80.0),
               child: Padding(
-                padding: const EdgeInsets.only(left: 15.0),
-                child: ListView(
-                  children: <Widget>[
+                padding: const EdgeInsets.only(left: 15.0, top: 20, right: 15.0),
+                child: Column(
+                  children: [
                     Row(
                       children: <Widget>[
-                        SizedBox(
-                          child: TextField(
-                            readOnly: true,
-                            onTap: () async {
-                              FocusScope.of(context).requestFocus(FocusNode());
-                              final excuseDate = await DatePicker.showDatePicker(
-                                context,
-                                locale : LocaleType.vi,
-                                minTime: DateTime.now().subtract(const Duration(days: 365)),
-                                currentTime: DateTime.now(),
-                                maxTime: DateTime.now(),
-                              );
-                              if(excuseDate != null){
-                                _fromDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(excuseDate)}';
-                                print('Từ ngày $excuseDate');
+                        const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                        Expanded(
+                          child: CustomOutlinedButton(
+                            title: fromDateToDateString,
+                            radius: 30,
+                            color: mainBgColor,
+                            onPressed: () async {
+                              final data = await Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const SaleEmpDateFilter(),
+                              ));
+                              if(data != null){
+                                FromDateToDate fromDateToDate = data;
+                                setState(() {
+                                  _fromDate = fromDateToDate.fromDate;
+                                  _toDate = fromDateToDate.toDate;
+                                  fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                  _attendances.clear();
+                                });
+                                _refreshController.resetNoData();
+                                _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
                               }
                             },
-                            decoration: InputDecoration(
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                              contentPadding: const EdgeInsets.only(left: 20.0),
-                              labelText: 'Từ ngày',
-                              hintText: _fromDate.isNotEmpty ? _fromDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
-                              labelStyle: const TextStyle(
-                                color: Color.fromARGB(255, 107, 106, 144),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.grey.shade300,
-                                    width: 2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.blue,
-                                    width: 2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
                           ),
-                          width: 160.0,
                         ),
-                        const SizedBox(width: 40.0,),
-                        SizedBox(
-                          child: TextField(
-                            readOnly: true,
-                            onTap: () async {
-                              FocusScope.of(context).requestFocus(FocusNode());
-                              final excuseDate = await DatePicker.showDatePicker(
-                                context,
-                                locale : LocaleType.vi,
-                                minTime: DateTime.now().subtract(const Duration(days: 365)),
-                                currentTime: DateTime.now(),
-                                maxTime: DateTime.now(),
-                              );
-                              if(excuseDate != null){
-                                _toDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(excuseDate)}';
-                                print('Đến ngày $excuseDate');
-                              }
+                        IconButton(
+                            onPressed: (){
+                              setState(() {
+                                _attendances.clear();
+                                _currentPage = 0;
+                                _fromDate = null;
+                                _toDate = null;
+                                fromDateToDateString = 'Ngày';
+                              });
+                              _refreshController.resetNoData();
+                              _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
                             },
-                            decoration: InputDecoration(
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                              contentPadding: const EdgeInsets.only(left: 20.0),
-                              labelText: 'Đến ngày',
-                              hintText: _toDate.isNotEmpty ? _toDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
-                              labelStyle: const TextStyle(
-                                color: Color.fromARGB(255, 107, 106, 144),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.grey.shade300,
-                                    width: 2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.blue,
-                                    width: 2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          width: 160.0,
+                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                         ),
                       ],
-                    )
+                    ),
                   ],
-                ),
+                )
               )
           ),
 
@@ -212,48 +141,64 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                   ),
                 ),
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
-                child: attendances.isNotEmpty ? Stack(
-                  children: [
-                    ListView.separated(
-                        controller: _scrollController,
-                        itemBuilder: (context, index) {
-                          if (index < attendances.length) {
-                            return ListTile(
-                              title: Text('Ngày: ${DateFormat('dd-MM-yyyy').format(attendances[index].date)}'),
-                              dense: true,
-                              trailing: const Text('Có mặt'),
-                            );
-                          } else {
-                            return SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: 50,
-                              child: const Center(
-                                  child: Text(
-                                      'Bạn đã đến cuối danh sách')),
-                            );
-                          }
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Divider(
-                            height: 2,
-                            thickness: 2,
-                          );
-                        },
-                        itemCount: attendances.length + (allLoaded ? 1 : 0)),
-                    if (loading) ...[
-                      Positioned(
-                          left: 0,
-                          bottom: 0,
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: const Center(
-                                child: CircularProgressIndicator()),
-                          )),
-                    ]
-                  ],
-                )
-                    : const Center(child: CircularProgressIndicator()),
+                child: _attendances.isNotEmpty ? SmartRefresher(
+                  controller: _refreshController,
+                  enablePullUp: true,
+                  onRefresh: () async {
+                    setState(() {
+                      _attendances.clear();
+                    });
+                    _currentPage = 0;
+                    _refreshController.resetNoData();
+                    if(_fromDate == null && _toDate == null){
+                      _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                    }else if(_toDate != null && _fromDate != null){
+                      _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+                    }
+
+                    if(_attendances.isNotEmpty){
+                      _refreshController.refreshCompleted();
+                    }else{
+                      _refreshController.refreshFailed();
+                    }
+                  },
+
+                  onLoading: () async {
+                    if(_currentPage < _maxPages){
+                      setState(() {
+                        _currentPage++;
+                      });
+                      if(_fromDate == null && _toDate == null){
+                        _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                      }else if(_toDate != null && _fromDate != null){
+                        _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+                      }
+                    }
+
+                    if(_attendances.isNotEmpty){
+                      _refreshController.loadComplete();
+                    }else{
+                      _refreshController.loadFailed();
+                    }
+                  },
+
+                  child: ListView.separated(
+                      itemBuilder: (context, index) {
+                        final _attendance = _attendances[index];
+                        return ListTile(
+                          title: Text('Ngày ${DateFormat('dd-MM-yyyy').format(_attendance.date)}'),
+                          trailing: Text('${_attendance.attendanceStatusId}'),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider(
+                          height: 1,
+                          thickness: 2,
+                        );
+                      },
+                      itemCount: _attendances.length
+                  ),
+                ) : const Center(child: CircularProgressIndicator())
               ),
             ),
           ),
@@ -281,51 +226,16 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
     );
   }
 
-  // Widget _buildTableCalendarWithBuilders() {
-  //   return Column(
-  //     children: [
-  //       TableCalendar(
-  //         focusedDay: _focusedDay,
-  //         firstDay: DateTime(2016),
-  //         lastDay: DateTime.now(),
-  //         locale: 'en_US',
-  //         startingDayOfWeek: StartingDayOfWeek.monday,
-  //         calendarFormat: CalendarFormat.month,
-  //         availableGestures: AvailableGestures.all,
-  //         availableCalendarFormats: const {
-  //           CalendarFormat.month: '',
-  //           CalendarFormat.week: '',
-  //         },
-  //         selectedDayPredicate: (DateTime date) {
-  //           return isSameDay(_selectedDay, date);
-  //         },
-  //         onDaySelected: (DateTime selectDay, DateTime focusDay) {
-  //           setState(() {
-  //             _selectedDay = selectDay;
-  //             _focusedDay = focusDay;
-  //           });
-  //         },
-  //         eventLoader: _getEvents,
-  //         calendarStyle: CalendarStyle(
-  //           isTodayHighlighted: false,
-  //           outsideDaysVisible: false,
-  //           weekendTextStyle:
-  //               const TextStyle().copyWith(color: Colors.blue[800]),
-  //           holidayTextStyle:
-  //               const TextStyle().copyWith(color: Colors.blue[800]),
-  //         ),
-  //         daysOfWeekStyle: DaysOfWeekStyle(
-  //           weekendStyle: const TextStyle().copyWith(color: Colors.blue[600]),
-  //         ),
-  //         headerStyle: const HeaderStyle(
-  //           titleCentered: true,
-  //           formatButtonVisible: false,
-  //         ),
-  //       ),
-  //       ..._getEvents(_selectedDay).map((Event event) => ListTile(
-  //             title: Text(event.title),
-  //           ))
-  //     ],
-  //   );
-  // }
+  void _getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
+    List<Attendance> listAttendance = await AttendanceListViewModel().getAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
+
+    if(listAttendance.isNotEmpty){
+      setState(() {
+        _attendances.addAll(listAttendance);
+        _maxPages = _attendances[0].maxPage;
+      });
+    }else{
+      _refreshController.loadNoData();
+    }
+  }
 }

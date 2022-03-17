@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sample/views/sale_employee/emp_attendance_report.dart';
 import 'package:login_sample/views/sale_employee/emp_late_excuse.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -45,7 +46,10 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
+                      Text('Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}', style: const TextStyle(color: defaultFontColor),),
                       const SizedBox(height: 10.0,),
+
+                      //Nút điểm danh
                       Column(
                         children: [
                           Container(

@@ -10,18 +10,21 @@ class Attendance {
     required this.accountId,
     required this.date,
     required this.attendanceStatusId,
+    required this.maxPage,
   });
 
-  final int attendanceId;
-  final int accountId;
-  final DateTime date;
-  final int attendanceStatusId;
+  int attendanceId;
+  int accountId;
+  DateTime date;
+  int attendanceStatusId;
+  int maxPage;
 
   factory Attendance.fromJson(Map<String, dynamic> json) => Attendance(
     attendanceId: json["attendanceId"],
     accountId: json["accountId"],
     date: DateTime.parse(json["date"]),
     attendanceStatusId: json["attendanceStatusId"],
+    maxPage: json["maxPage"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -29,5 +32,6 @@ class Attendance {
     "accountId": accountId,
     "date": date.toIso8601String(),
     "attendanceStatusId": attendanceStatusId,
+    "maxPage": maxPage,
   };
 }

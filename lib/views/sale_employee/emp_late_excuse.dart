@@ -193,17 +193,6 @@ class _EmpLateExcuseState extends State<EmpLateExcuse> {
                       onPressed: (){
                       },
                   ),
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10.0),
-                      ),
-                    ),
-                    child: TextButton(onPressed: (){},
-                        child: const Text('Gửi', style: TextStyle(color: Colors.white),),
-                    ),
-                  ),
                   const SizedBox(height: 20.0),
                   IconTextButtonSmall2(
                       imageUrl: 'assets/images/attendance-report.png',

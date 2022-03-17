@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/attendance.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/deal_stage.dart';
@@ -491,7 +492,6 @@ class ApiService {
           'excuseLateStatusId': 0
         }),
       );
-
   }
 
 
@@ -582,4 +582,41 @@ class ApiService {
       throw Exception("Failed to get timelines");
     }
   }
+
+  //Attendance
+  Future<http.Response> takeAttendance(Attendance attendance) {
+
+    String url = stockUrl + 'attendances';
+
+    return http.post(Uri.parse(url), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+      body: jsonEncode(<String, dynamic>{
+        "accountId": attendance.accountId,
+        "date": attendance.date,
+        "attendanceStatusId": 0,
+      }),
+    );
+  }
+
+  Future<List<Attendance>> getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'attendances/self?account-id=$accountId&page=$currentPage&limit=20';
+    if(fromDate != null && toDate != null){
+      url = stockUrl + 'attendances/self?account-id=$accountId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=20';
+    }
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Got attendance list by accountId | 200');
+      return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
+    } else {
+      throw Exception("Failed to get attendance list");
+    }
+  }
 }
+
