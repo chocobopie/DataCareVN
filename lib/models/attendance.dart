@@ -6,18 +6,18 @@ String attendanceToJson(Attendance data) => json.encode(data.toJson());
 
 class Attendance {
   Attendance({
-    required this.attendanceId,
+    this.attendanceId,
     required this.accountId,
     required this.date,
     required this.attendanceStatusId,
-    required this.maxPage,
+    this.maxPage,
   });
 
-  int attendanceId;
+  int? attendanceId;
   int accountId;
   DateTime date;
   int attendanceStatusId;
-  int maxPage;
+  int? maxPage;
 
   factory Attendance.fromJson(Map<String, dynamic> json) => Attendance(
     attendanceId: json["attendanceId"],

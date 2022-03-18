@@ -1,12 +1,18 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/view_models/attendance_list_view_model.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall3.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:provider/provider.dart';
 
 class HrManagerAttendanceList extends StatefulWidget {
-  const HrManagerAttendanceList({Key? key, required this.attendanceType, required this.userAttendances}) : super(key: key);
+  const HrManagerAttendanceList({Key? key, required this.attendanceType, required this.userAttendances, required this.selectedDate}) : super(key: key);
 
+  final DateTime selectedDate;
   final String attendanceType;
   final List<UserAttendance> userAttendances;
 
@@ -27,6 +33,9 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
   List<UserAttendance> userLates = [];
   List<UserAttendance> userAbsents = [];
   List<UserAttendance> userLateAlloweds = [];
+
+  late final List<Attendance> _attendances = [];
+  Account currentAccount = Account();
 
   getAttend(){
     if(userAttends.isNotEmpty){
@@ -80,6 +89,8 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
     getLate();
     getLateAllowed();
     super.initState();
+    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getAttendanceListByAccountIdAndStatusId(accountId: currentAccount.accountId!, statusId: 0, isRefresh: true, selectedDate: widget.selectedDate, currentPage: widget.selectedDate);
   }
 
   @override
@@ -118,6 +129,7 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
+                          
                           IconTextButtonSmall3(
                               title: 'Đúng giờ',
                               subtitle: '${userAttends.length}',
@@ -137,7 +149,7 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
                           ),
                           const SizedBox(width: 10.0,),
                           IconTextButtonSmall3(
-                              title: 'Được đi trễ',
+                              title: 'Cho phép trễ',
                               subtitle: '${userLateAlloweds.length}',
                               colorsButton: const [Colors.blue, Colors.white],
                           ),
@@ -176,9 +188,10 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
                     ),
                   ),
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: ListView.builder(
-                    itemCount: userAttendances.length,
+                  child: _attendances.isNotEmpty ? ListView.builder(
+                    itemCount: _attendances.length,
                     itemBuilder: (context, index) {
+                      final Attendance attendance = _attendances[index];
                       return Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 15.0),
                         child: Container(
@@ -190,7 +203,7 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
                             border: Border.all(color: Colors.grey.shade400),
                           ),
                           child: ListTile(
-                            title: Text(userAttendances[index].name, style: const TextStyle(fontSize: 12.0),),
+                            title: Text('Account id: ${attendance.accountId}', style: const TextStyle(fontSize: 12.0),),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
@@ -198,20 +211,20 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
                                   padding: const EdgeInsets.only(top: 8.0, right: 40.0),
                                   child: Column(
                                     children: <Widget>[
-                                      Text('Phòng: ${userAttendances[index].department}', style: const TextStyle(fontSize: 12.0),),
+                                      Text('Phòng: ${attendance.accountId}', style: const TextStyle(fontSize: 12.0),),
                                       const SizedBox(height: 5.0,),
-                                      Text(userAttendances[index].team,style: const TextStyle(fontSize: 12.0),),
+                                      Text('Nhóm: ${attendance.accountId}',style: const TextStyle(fontSize: 12.0),),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(width: 40.0,),
                                 Column(
                                   children: <Widget>[
-                                    if(userAttendances[index].attendance == 'Đúng giờ')  const Text('Đúng giờ', style: TextStyle(fontSize: 12.0, color: Colors.green),),
-                                    if(userAttendances[index].attendance == 'Trễ') const Text('Trễ', style: TextStyle(fontSize: 12.0, color: Colors.yellow),),
-                                    if(userAttendances[index].attendance == 'Vắng') const Text('Vắng', style: TextStyle(fontSize: 12.0, color: Colors.red),),
-                                    if(userAttendances[index].attendance == 'Được đi trễ') const Text('Được đi trễ', style: TextStyle(fontSize: 12.0, color: Colors.blue),),
-                                    if(userAttendances[index].attendance == 'Xin đi trễ') const Text('Xin đi trễ', style: TextStyle(fontSize: 12.0, color: Colors.blue),),
+                                    if(attendance.attendanceStatusId == 0)  const Text('Đúng giờ', style: TextStyle(fontSize: 12.0, color: Colors.green),),
+                                    if(attendance.attendanceStatusId == 1) const Text('Cho phép trễ', style: TextStyle(fontSize: 12.0, color: Colors.yellow),),
+                                    if(attendance.attendanceStatusId == 2) const Text('Trễ', style: TextStyle(fontSize: 12.0, color: Colors.red),),
+                                    if(attendance.attendanceStatusId == 3) const Text('Vắng', style: TextStyle(fontSize: 12.0, color: Colors.blue),),
+                                    // if(userAttendances[index].attendance == 'Xin đi trễ') const Text('Xin đi trễ', style: TextStyle(fontSize: 12.0, color: Colors.blue),),
                                     _customDropdownButton(userAttendances[index].attendance, userAttendances.indexOf(userAttendances[index])),
                                   ]
                                 ),
@@ -223,7 +236,7 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
                         ),
                       );
                     },
-                  )
+                  ) : const Center(child: CircularProgressIndicator()),
               ),
             ),
           ),
@@ -280,6 +293,16 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
     );
   }
 
+  void _getAttendanceListByAccountIdAndStatusId({required int accountId, required int statusId, required bool isRefresh, required DateTime selectedDate, required currentPage}) async{
+    List<Attendance> attendanceList = await AttendanceListViewModel().getAttendanceListByAccountIdAndStatusId(accountId: accountId, statusId: statusId, isRefresh: isRefresh, selectedDate: selectedDate, currentPage: currentPage);
+
+    if(attendanceList.isNotEmpty){
+      setState(() {
+        _attendances.addAll(attendanceList);
+      });
+    }
+  }
+
   Widget _customDropdownButton(String attendType, int index){
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
@@ -319,7 +342,7 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
                 print(currentIndex);
                 print(attendanceController.text);
               });
-            }else if(_attendanceType == 'Được đi trễ'){
+            }else if(_attendanceType == 'Cho phép trễ'){
               setState(() {
                 currentIndex = index;
                 attendanceController.text = _attendanceType;
@@ -406,7 +429,7 @@ class MenuItems {
   static const attend = MenuItem(text: 'Có mặt', icon: Icon(Icons.access_time_filled, color: Colors.green));
   static const absent = MenuItem(text: 'Vắng', icon: Icon(Icons.access_time_filled, color: Colors.red));
   static const late = MenuItem(text: 'Trễ', icon: Icon(Icons.access_time_filled, color: Colors.yellow));
-  static const lateAccepted = MenuItem(text: 'Được đi trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
+  static const lateAccepted = MenuItem(text: 'Cho phép trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
 
   static Widget buildItem(MenuItem item) {
     return Row(
@@ -435,7 +458,7 @@ class MenuItems {
       case MenuItems.absent:
         return 'Vắng';
       case MenuItems.lateAccepted:
-        return 'Được đi trễ';
+        return 'Cho phép trễ';
     }
   }
 }

@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/WorldTimeAPI.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/view_models/attendance_list_view_model.dart';
+import 'package:login_sample/view_models/attendance_view_model.dart';
+import 'package:login_sample/view_models/world_time_api_view_model.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/emp_attendance_report.dart';
 import 'package:login_sample/views/sale_employee/emp_late_excuse.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
+import 'package:provider/provider.dart';
 
 class EmpTakeAttendance extends StatefulWidget {
   const EmpTakeAttendance({Key? key}) : super(key: key);
@@ -15,9 +23,25 @@ class EmpTakeAttendance extends StatefulWidget {
 
 class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
 
+  late final List<Attendance> _attendances = [];
+  late Account currentAccount;
+  late DateTime _currentTime;
+  late double _timeHms;
+  late final DateTime _today;
+  bool isTook = false;
+  String takeAttendanceString = '';
 
-  late Position currentPosition;
-  var geoLocator = Geolocator();
+  @override
+  void initState() {
+    super.initState();
+    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getCorrectData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +65,17 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                 ),
               ),
               margin: const EdgeInsets.only(top: 100.0),
-              child: ListView(
+              child: takeAttendanceString.isNotEmpty ? ListView(
                 padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text('Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}', style: const TextStyle(color: defaultFontColor),),
+                      Text('Hôm nay ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}', style: const TextStyle(color: defaultFontColor),),
                       const SizedBox(height: 10.0,),
 
                       //Nút điểm danh
                       Column(
-                        children: [
+                        children: <Widget>[
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.red,
@@ -67,15 +91,25 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                                 ),
                               ],
                             ),
-                            width: 200.0,
-                            height: 50.0,
                             child: TextButton(
-                              onPressed: (){
-
-                              },
-                              child: const Text(
-                                'Điểm danh hôm nay',
-                                style: TextStyle(
+                              onPressed: isTook == false ? () async {
+                                _getCorrectData();
+                                Attendance attendance = Attendance(
+                                    accountId: currentAccount.accountId!,
+                                    date: _currentTime.toLocal(),
+                                    attendanceStatusId: _timeHms <= 9.0 ? 0 : 2
+                                );
+                                final data = await AttendanceViewModel().takeAttendance(attendance: attendance);
+                                if(data.attendanceStatusId.toString().isNotEmpty){
+                                  setState(() {
+                                    isTook = true;
+                                    takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
+                                  });
+                                }
+                              } : null,
+                              child: Text(
+                                takeAttendanceString,
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
@@ -115,7 +149,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                     ],
                   )
                 ],
-              ),
+              ) : const Center(child: CircularProgressIndicator()),
           ),
           Positioned(
             top: 0.0,
@@ -138,5 +172,33 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
         ],
       ),
     );
+  }
+
+  void _getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
+    List<Attendance> listAttendance = await AttendanceListViewModel().getAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
+
+    if(listAttendance.isNotEmpty){
+      setState(() {
+        _attendances.addAll(listAttendance);
+        isTook = true;
+        takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
+      });
+    }else{
+      setState(() {
+        takeAttendanceString = 'Điểm danh hôm nay';
+      });
+      isTook;
+    }
+  }
+
+  void _getCorrectData() async {
+    WorldTimeApi data = await WorldTimeApiViewModel().getCorrectTime();
+
+    if(data.datetime.toString().isNotEmpty){
+      _currentTime = data.datetime;
+      _timeHms = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
+      _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
+      _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: 0, fromDate: _today, toDate: _today);
+    }
   }
 }

@@ -41,6 +41,12 @@ List<String> rolesNameUtilities = [];
 List<String> leadSourceNameUtilities = [];
 List<String> excuseLateStatusesNameUtilities = [];
 List<String> gendersUtilities = [];
+List<String> attendanceStatusUtilities = [
+  'Đúng giờ',
+  'Cho phép trễ',
+  'Trễ',
+  'Vắng'
+];
 
 List<String> rolesTemp = [
   'Nhân viên kinh doanh',

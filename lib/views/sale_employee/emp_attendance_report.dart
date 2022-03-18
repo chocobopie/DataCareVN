@@ -187,7 +187,7 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                         final _attendance = _attendances[index];
                         return ListTile(
                           title: Text('Ngày ${DateFormat('dd-MM-yyyy').format(_attendance.date)}'),
-                          trailing: Text('${_attendance.attendanceStatusId}'),
+                          trailing: Text(attendanceStatusUtilities[_attendance.attendanceStatusId]),
                         );
                       },
                       separatorBuilder: (context, index) {
@@ -232,7 +232,7 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
     if(listAttendance.isNotEmpty){
       setState(() {
         _attendances.addAll(listAttendance);
-        _maxPages = _attendances[0].maxPage;
+        _maxPages = _attendances[0].maxPage!;
       });
     }else{
       _refreshController.loadNoData();

@@ -10,4 +10,12 @@ class AttendanceListViewModel with ChangeNotifier{
 
     return attendanceList;
   }
+
+  Future<List<Attendance>> getAttendanceListByAccountIdAndStatusId({required int accountId, required int statusId, required bool isRefresh, required DateTime selectedDate, required currentPage}) async {
+    List<Attendance> attendanceList = await ApiService().getAttendanceListByAccountIdAndStatusId(accountId: accountId, statusId: statusId, isRefresh: isRefresh, selectedDate: selectedDate, currentPage: currentPage);
+
+    notifyListeners();
+
+    return attendanceList;
+  }
 }

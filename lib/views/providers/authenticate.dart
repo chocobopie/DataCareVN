@@ -10,7 +10,8 @@ enum Status {
   registered,
   authenticating,
   registering,
-  loggedOut
+  loggedOut,
+  loggedInFailed
 }
 
 class AuthProvider with ChangeNotifier{
@@ -45,7 +46,7 @@ class AuthProvider with ChangeNotifier{
 
       return Account.fromJson(jsonDecode(response.body));
     }else{
-      _loggedInStatus = Status.notLoggedIn;
+      _loggedInStatus = Status.loggedInFailed;
       notifyListeners();
       throw Exception('Login failed');
     }

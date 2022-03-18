@@ -29,7 +29,7 @@ class SaleEmpDealList extends StatefulWidget {
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false;
-  String _fullname = 'Nhân viên', fromDateToDateString = 'Ngày', _contactName = 'Khách hàng';
+  String _fullname = 'Nhân viên', fromDateToDateString = 'Ngày đóng', _contactName = 'Khách hàng';
   int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
@@ -91,7 +91,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                   padding: const EdgeInsets.only(left: 2.0,),
                   child: Row(
                     children: <Widget>[
-                      if(fromDateToDateString == 'Ngày') const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                      if(fromDateToDateString == 'Ngày đóng') const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       //Lọc theo nhân viên
                       if(currentAccount.roleId! == 3 || currentAccount.roleId! == 4) Expanded(
                         child: CustomOutlinedButton(
@@ -177,7 +177,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               filterAccount = Account();
                               fromDate = null;
                               toDate = null;
-                              fromDateToDateString = 'Ngày';
+                              fromDateToDateString = 'Ngày đóng';
                             });
                             _refreshController.resetNoData();
                             _getOverallInfo(_currentPage, currentAccount);
@@ -400,8 +400,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     if(dealList.isNotEmpty){
       setState(() {
         _deals.addAll(dealList);
-        _maxPages = _deals[0].maxPage!;
       });
+        _maxPages = _deals[0].maxPage!;
     }else{
       setState(() {
         _refreshController.loadNoData();
@@ -417,8 +417,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     if(dealList.isNotEmpty){
       setState(() {
         _deals.addAll(dealList);
-        _maxPages = _deals[0].maxPage!;
       });
+      _maxPages = _deals[0].maxPage!;
     }else{
       setState(() {
         _refreshController.loadNoData();

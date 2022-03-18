@@ -22,6 +22,8 @@ class _LoginState extends State<Login> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   late Account _account = Account();
+  bool _loginFailed = false;
+  late final Status _loggedInStatus = Status.notLoggedIn;
 
   @override
   void dispose() {
@@ -112,13 +114,22 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 const SizedBox(height: 30,),
+
+                if(_loginFailed == true) const Text('Tên đăng nhập hoặc mật khẩu không đúng'),
+                if(_loginFailed == true) const SizedBox(height: 30,),
+
                 MaterialButton(
                   onPressed: () async {
-                    late Future<Account> account = auth.login( email.text, password.text );
+                    Account account = await auth.login( email.text, password.text );
+
+                    if(_loggedInStatus == Status.loggedInFailed){
+                      setState(() {
+                        _loginFailed = true;
+                      });
+                    }
                     
-                    if(account.toString().isNotEmpty){
-                        account.then((value) {
-                          _account = value;
+                    if(account.accountId.toString().isNotEmpty){
+                          _account = account;
                           Provider.of<AccountProvider>(context, listen: false).setAccount(_account);
 
                           if(_account.roleId == 0){
@@ -152,9 +163,7 @@ class _LoginState extends State<Login> {
                               builder: (context) => const HomeSaleEmployee(),
                             ));
                           }
-                        });
                     }
-
 
                   },
                   height: 45,

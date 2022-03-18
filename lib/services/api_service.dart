@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:login_sample/models/WorldTimeAPI.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
 import 'package:login_sample/models/contact.dart';
@@ -584,19 +585,42 @@ class ApiService {
   }
 
   //Attendance
-  Future<http.Response> takeAttendance(Attendance attendance) {
+  Future<Attendance> takeAttendance({required Attendance attendance}) async {
 
     String url = stockUrl + 'attendances';
 
-    return http.post(Uri.parse(url), headers: <String, String>{
+    final response = await http.post(Uri.parse(url), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
       body: jsonEncode(<String, dynamic>{
         "accountId": attendance.accountId,
-        "date": attendance.date,
-        "attendanceStatusId": 0,
+        "date": attendance.date.toIso8601String(),
+        "attendanceStatusId": attendance.attendanceStatusId,
       }),
     );
+
+    if(response.statusCode == 200){
+      print('Take attendance for ${attendance.date} successfully');
+      return Attendance.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to create album');
+    }
+  }
+
+  Future<List<Attendance>> getAttendanceListByAccountIdAndStatusId({required int accountId, required int statusId, required bool isRefresh, required DateTime selectedDate, required currentPage}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'attendances/other?account-id=$accountId&date=$selectedDate&attendance-status-id=$statusId&page=$currentPage&limit=10';
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Got all attendace list by account id and status id | 200');
+      return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
+    }else{
+      throw Exception('Failed to get attendance list by account id and status id | 400');
+    }
   }
 
   Future<List<Attendance>> getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
@@ -616,6 +640,19 @@ class ApiService {
       return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
     } else {
       throw Exception("Failed to get attendance list");
+    }
+  }
+
+  //WorldTimeAPI
+  Future<WorldTimeApi> getCorrectTime() async {
+    String url = 'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Get correct current time successfully | 200');
+      return WorldTimeApi.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to get correct current time | 400');
     }
   }
 }
