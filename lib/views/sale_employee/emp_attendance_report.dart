@@ -188,19 +188,10 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                         final _attendance = _attendances[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15.0),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 1), // changes position of shadow
-                                ),
-                              ],
+                          child: Card(
+                            elevation: 5,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(25)),
                             ),
                             child: ListTile(
                               title: Text('Ngày ${DateFormat('dd-MM-yyyy').format(_attendance.date)}'),

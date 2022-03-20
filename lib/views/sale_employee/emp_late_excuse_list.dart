@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 
 class EmpLateExcuseList extends StatefulWidget {
   const EmpLateExcuseList({Key? key}) : super(key: key);
@@ -13,8 +16,9 @@ class EmpLateExcuseList extends StatefulWidget {
 
 class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
 
-  String _fromDate = '';
-  String _toDate = '';
+  String fromDateToDateString = 'Từ trước đến nay';
+  DateTime? _fromDate, _toDate;
+
 
   List<UserAttendance> userLateExcuses = [
     UserAttendance(id: '1', name: 'Nguyễn Văn A', team: 'Nhóm 1', department: 'Đào tạo', attendance: 'Mới'),
@@ -51,107 +55,51 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
             ),
             margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
             child: Padding(
-              padding: const EdgeInsets.only(left: 15.0),
-              child: ListView(
+              padding: const EdgeInsets.only(left: 15.0, top: 10.0),
+              child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      SizedBox(
-                        child: TextField(
-                          readOnly: true,
-                          onTap: () async {
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            final excuseDate = await DatePicker.showDatePicker(
-                              context,
-                              locale : LocaleType.vi,
-                              minTime: DateTime.now().subtract(const Duration(days: 365)),
-                              currentTime: DateTime.now(),
-                              maxTime: DateTime.now(),
-                            );
-                            if(excuseDate != null){
-                              _fromDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(excuseDate)}';
-                              print('Từ ngày $excuseDate');
-                            }
-                          },
-                          decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            contentPadding: const EdgeInsets.only(left: 20.0),
-                            labelText: 'Từ ngày',
-                            hintText: _fromDate.isNotEmpty ? _fromDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
-                            labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 107, 106, 144),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.grey.shade300,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Colors.blue,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        width: 160.0,
+                      const Text('Lọc theo ngày gửi đơn:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                      const SizedBox(width: 10.0,),
+
+                      CustomOutlinedButton(
+                          title: fromDateToDateString,
+                          radius: 30.0,
+                          color: mainBgColor,
+                          onPressed: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const SaleEmpDateFilter(),
+                          ));
+                          if(data != null){
+                            FromDateToDate fromDateToDate = data;
+                            setState(() {
+                              _fromDate = fromDateToDate.fromDate;
+                              _toDate = fromDateToDate.toDate;
+                              fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                            });
+                          }
+                        },
                       ),
-                      const SizedBox(width: 40.0,),
-                      SizedBox(
-                        child: TextField(
-                          readOnly: true,
-                          onTap: () async {
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            final excuseDate = await DatePicker.showDatePicker(
-                              context,
-                              locale : LocaleType.vi,
-                              minTime: DateTime.now().subtract(const Duration(days: 365)),
-                              currentTime: DateTime.now(),
-                              maxTime: DateTime.now(),
-                            );
-                            if(excuseDate != null){
-                              _toDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(excuseDate)}';
-                              print('Đến ngày $excuseDate');
-                            }
+
+                      IconButton(
+                          onPressed: (){
+                            setState(() {
+                              _fromDate = null;
+                              _toDate = null;
+                              fromDateToDateString = 'Từ trước đến nay';
+                            });
                           },
-                          decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            contentPadding: const EdgeInsets.only(left: 20.0),
-                            labelText: 'Đến ngày',
-                            hintText: _toDate.isNotEmpty ? _toDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
-                            labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 107, 106, 144),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.grey.shade300,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Colors.blue,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        width: 160.0,
+                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                       ),
                     ],
                   )
                 ],
-              ),
+              )
             ),
           ),
-
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.21),
+            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.18),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -177,42 +125,61 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                   ),
                 ),
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
-                child: ListView.builder(
-                    itemCount: userLateExcuses.length,
-                    itemBuilder: (context, index){
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
-                        child: ListTile(
-                          selected: true,
-                          selectedTileColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          trailing: Text(userLateExcuses[index].attendance),
-                          leading: SizedBox(
-                            height: 50.0,
-                            width: 200.0,
-                            child: Row(
-                              children: [
-                                Column(
-                                  children: <Widget>[
-                                    const Text('Ngày gửi', style: TextStyle(color: defaultFontColor),),
-                                    Text(DateFormat('dd-MM-yyyy').format(DateTime.now())),
-                                  ],
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30.0),
+                      child: Row(
+                        children: const <Widget>[
+                          Text('Ngày gửi', style: TextStyle(color: defaultFontColor),),
+                          SizedBox(width: 50.0,),
+                          Text('Ngày xin đi trễ', style: TextStyle(color: defaultFontColor),),
+                          SizedBox(width: 80.0,),
+                          Text('Trạng thái', style: TextStyle(color: defaultFontColor),)
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: userLateExcuses.length,
+                          itemBuilder: (context, index){
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                              child: Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(25)),
                                 ),
-                                const SizedBox(width: 40.0,),
-                                Column(
-                                  children: <Widget>[
-                                    const Text('Ngày xin đi trễ', style: TextStyle(color: defaultFontColor),),
-                                    Text(DateFormat('dd-MM-yyyy').format(DateTime.now())),
-                                  ],
+                                child: ListTile(
+                                  trailing: Text(userLateExcuses[index].attendance),
+                                  leading: SizedBox(
+                                    height: 50.0,
+                                    width: 200.0,
+                                    child: Row(
+                                      children: [
+                                        Column(
+                                          children: <Widget>[
+                                            const SizedBox(height: 15.0,),
+                                            Text(DateFormat('dd-MM-yyyy').format(DateTime.now())),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 40.0,),
+                                        Column(
+                                          children: <Widget>[
+                                            const SizedBox(height: 15.0,),
+                                            Text(DateFormat('dd-MM-yyyy').format(DateTime.now())),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }
+                              ),
+                            );
+                          }
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
