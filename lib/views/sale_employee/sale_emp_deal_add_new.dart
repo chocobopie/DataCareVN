@@ -91,6 +91,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                   children: <Widget>[
                     //Tiêu đề hợp đồng
                     CustomEditableTextField(
+                        borderColor: mainBgColor,
                         text: '',
                         title: 'Tiêu đề hợp đồng',
                         readonly: false,
@@ -100,7 +101,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                     //Tên khách hàng
                     CustomEditableTextField(
-                        borderColor: Colors.red,
+                        borderColor: mainBgColor,
                         text: _contactFullname,
                         title: 'Tên khách hàng',
                         readonly: true,
@@ -131,6 +132,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                     //Tiến trình hợp đồng
                     CustomDropdownFormField2(
+                        borderColor: mainBgColor,
                         label: 'Tiến trình hợp đồng',
                         hintText: const Text(''),
                         items: dealStagesNameUtilities,
@@ -157,6 +159,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                     //Loại hợp đồng
                     CustomDropdownFormField2(
+                        borderColor: mainBgColor,
                         label: 'Loại hợp đồng',
                         hintText: const Text(''),
                         items: dealTypesNameUtilities,
@@ -173,6 +176,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                     //Loại dịch vụ
                     CustomDropdownFormField2(
+                      borderColor: mainBgColor,
                       label: 'Loại dịch vụ',
                       hintText: const Text(''),
                       items: dealServicesNameUtilities,
@@ -199,6 +203,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                     //Tổng giá trị
                     CustomEditableTextField(
+                        borderColor: mainBgColor,
                         inputNumberOnly: true,
                         text: '',
                         title: 'Tổng giá trị (VNĐ)',
@@ -209,6 +214,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                     //Vat
                     CustomDropdownFormField2(
+                        borderColor: mainBgColor,
                         label: 'VAT',
                         hintText: const Text(''),
                         items: dealVatsNameUtilities,
@@ -252,14 +258,14 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                             fontWeight: FontWeight.w500,
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.grey.shade300,
+                            borderSide: const BorderSide(
+                                color: mainBgColor,
                                 width: 2),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                                color: Colors.blue,
+                                color: mainBgColor,
                                 width: 2),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -271,7 +277,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                     //Chủ hợp đồng
                     CustomEditableTextField(
-                        borderColor: Colors.red,
+                        borderColor: mainBgColor,
                         text: _accountFullname,
                         title: 'Chủ hợp đồng',
                         readonly: true,

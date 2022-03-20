@@ -25,7 +25,7 @@ class CustomEditableTextField extends StatelessWidget {
         onTap: onTap,
         inputFormatters: inputNumberOnly == true ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
-          LengthLimitingTextInputFormatter(15),
+          LengthLimitingTextInputFormatter(10),
         ] : null,
         keyboardType: inputNumberOnly == true ? TextInputType.number : inputEmailOnly == true ? TextInputType.emailAddress : TextInputType.text,
         onChanged: (val) {

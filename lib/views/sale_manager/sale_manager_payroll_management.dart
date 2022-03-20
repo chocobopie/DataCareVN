@@ -183,12 +183,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                            trailing: Row(
                              mainAxisSize: MainAxisSize.min,
                              children: <Widget>[
-                               const Text(
-                                 'KPI: 58.2%',
-                                 style: TextStyle(
-                                   fontSize: 10.0,
-                                 ),
-                               ),
+                               const Text('KPI: 58.2%', style: TextStyle(fontSize: 10.0,),),
                                TextButton.icon(
                                  onPressed: (){
                                    Navigator.push(context, MaterialPageRoute(

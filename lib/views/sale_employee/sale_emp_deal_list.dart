@@ -29,7 +29,7 @@ class SaleEmpDealList extends StatefulWidget {
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false;
-  String _fullname = '', fromDateToDateString = 'Từ trước đến nay', _contactName = 'Tất cả khách hàng';
+  String _fullname = '', fromDateToDateString = 'Ngày đóng từ trước đến nay', _contactName = 'Tất cả khách hàng';
   int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
@@ -92,7 +92,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
               padding: const EdgeInsets.only(left: 10.0, top: 10.0),
               child: Column(
                 children: <Widget>[
-                  const Text('Lọc', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                  const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                   Row(
                     children: <Widget>[
                       //Lọc theo nhân viên
@@ -180,7 +180,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               filterAccount = Account();
                               fromDate = null;
                               toDate = null;
-                              fromDateToDateString = 'Từ trước đến nay';
+                              fromDateToDateString = 'Ngày đóng từ trước đến nay';
                             });
                             _refreshController.resetNoData();
                             _getOverallInfo(_currentPage, currentAccount);
@@ -258,34 +258,62 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                     }
 
                   },
-                  child: ListView.separated(
+                  child: ListView.builder(
                     itemBuilder: (context, index){
                       final deal = _deals[index];
-                      return ListTile(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => SaleEmpDealDetail(deal: deal)
-                          )).then(_onGoBack);
-                        },
-                        title: Text(deal.title),
-                        subtitle: Text('Từ trước đến nay: ${DateFormat('dd-MM-yyyy').format(deal.closedDate)}'),
-                        dense: true,
-                        trailing: Column(
-                          children: [
-                            const SizedBox(height: 8.0,),
-                            Text('Giá trị: ${deal.amount}'),
-                            const SizedBox(
-                              height: 5.0,
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
+                          child: Card(
+                            elevation: 10.0,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10))
                             ),
-                            Text('Tiến trình: ${dealStagesNameUtilities[deal.dealStageId]}'),
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return const Divider(
-                        height: 1,
-                        thickness: 2,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => SaleEmpDealDetail(deal: deal)
+                                )).then(_onGoBack);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(child: Text(deal.title, style: const TextStyle(fontSize: 18.0),)),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 30.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text('Ngày đóng ${DateFormat('dd-MM-yyyy').format(deal.closedDate)}', style: const TextStyle(fontSize: 12.0),),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(child: Text('${deal.amount} VNĐ', style: const TextStyle(fontSize: 20.0),)),
+                                          const Spacer(),
+
+                                          Text(dealStagesNameUtilities[deal.dealStageId])
+                                        ],
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+
                       );
                     },
                     itemCount: _deals.length,

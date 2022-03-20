@@ -183,18 +183,30 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                     }
                   },
 
-                  child: ListView.separated(
+                  child: ListView.builder(
                       itemBuilder: (context, index) {
                         final _attendance = _attendances[index];
-                        return ListTile(
-                          title: Text('Ngày ${DateFormat('dd-MM-yyyy').format(_attendance.date)}'),
-                          trailing: Text(attendanceStatusUtilities[_attendance.attendanceStatusId]),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                          height: 1,
-                          thickness: 2,
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15.0),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 1), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              title: Text('Ngày ${DateFormat('dd-MM-yyyy').format(_attendance.date)}'),
+                              trailing: Text(attendanceStatusUtilities[_attendance.attendanceStatusId]),
+                            ),
+                          ),
                         );
                       },
                       itemCount: _attendances.length

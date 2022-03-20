@@ -84,6 +84,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
                     //Tên khách hàng
                     CustomEditableTextField(
+                        borderColor: mainBgColor,
                         text: '',
                         title: 'Tên khách hàng',
                         readonly: true,
@@ -92,6 +93,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                     const SizedBox(height: 20.0,),
 
                     CustomDropdownFormField2(
+                        borderColor: mainBgColor,
                         label: 'Giới tính',
                         hintText: const Text(''),
                         items: gendersUtilities,
@@ -109,6 +111,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
                     //Tên công ty
                     CustomEditableTextField(
+                        borderColor: mainBgColor,
                         text: '',
                         title: 'Tên công ty khách hàng',
                         readonly: false,
@@ -118,6 +121,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
                     //Email khách hàng
                     CustomEditableTextField(
+                        borderColor: mainBgColor,
                         text: '',
                         title: 'Email của khách hàng',
                         readonly: false,
@@ -127,6 +131,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
                     //Phone number
                    CustomEditableTextField(
+                       borderColor: mainBgColor,
                        inputNumberOnly: true,
                        text: '',
                        title: 'Số điện thoại',
@@ -136,32 +141,54 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                     const SizedBox(height: 20.0,),
 
                     //Contact Owner Id
-                    if(fullname.isNotEmpty) OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          primary: defaultFontColor,
-                          side: BorderSide(width: 2.0, color: Colors.grey.shade300),
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                        ),
-                        onPressed: () async {
-                          final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SaleEmpFilter(),
-                          ));
-                          late Account filterAccount;
-                          if(data != null){
-                            setState(() {
-                              filterAccount = data;
-                              _contactOwnerId.text = filterAccount.accountId!.toString();
-                              fullname = filterAccount.fullname!;
-                            });
-                            print('Contact owner Id: ${_contactOwnerId.text}');
-                          }
-                        },
-                        child: Text('Khách hàng của: $fullname')
+                    // if(fullname.isNotEmpty) OutlinedButton(
+                    //     style: OutlinedButton.styleFrom(
+                    //       primary: defaultFontColor,
+                    //       side: BorderSide(width: 2.0, color: Colors.grey.shade300),
+                    //       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    //     ),
+                    //     onPressed: () async {
+                    //       final data = await Navigator.push(context, MaterialPageRoute(
+                    //         builder: (context) => const SaleEmpFilter(),
+                    //       ));
+                    //       late Account filterAccount;
+                    //       if(data != null){
+                    //         setState(() {
+                    //           filterAccount = data;
+                    //           _contactOwnerId.text = filterAccount.accountId!.toString();
+                    //           fullname = filterAccount.fullname!;
+                    //         });
+                    //         print('Contact owner Id: ${_contactOwnerId.text}');
+                    //       }
+                    //     },
+                    //     child: Text('Khách hàng của: $fullname')
+                    // ),
+                    if(fullname.isNotEmpty) CustomEditableTextField(
+                        borderColor: mainBgColor,
+                        text: fullname,
+                        title: 'Người quản lý khách hàng',
+                        readonly: true,
+                        textEditingController: _contactOwnerId,
+                        onTap: () async {
+                        final data = await Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => const SaleEmpFilter(),
+                        ));
+                        late Account filterAccount;
+                        if(data != null){
+                          setState(() {
+                            filterAccount = data;
+                            _contactOwnerId.text = filterAccount.accountId!.toString();
+                            fullname = filterAccount.fullname!;
+                          });
+                          print('Contact owner Id: ${_contactOwnerId.text}');
+                        }
+                      },
                     ),
                     const SizedBox(height: 20.0,),
 
                     //Nguồn
                     CustomDropdownFormField2(
+                        borderColor: mainBgColor,
                         label: 'Nguồn',
                         hintText: const Text(''),
                         items: leadSourceNameUtilities,

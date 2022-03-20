@@ -130,13 +130,22 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     ],
                   ) : null
                 ),
+                Row(
+                  children: const <Widget>[
+                    SizedBox(width: 20.0,),
+                    Text('Họ và tên'),
+                    SizedBox(width: 140.0,),
+                    Text('Email'),
+                    SizedBox(width: 70.0,),
+                    Text('SĐT'),
+                  ],
+                ),
               ],
             ),
           ),
-
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top: currentAccount.roleId! == 3 || currentAccount.roleId == 4 ? MediaQuery.of(context).size.height * 0.20 : 90),
+            padding: EdgeInsets.only(top: currentAccount.roleId! == 3 || currentAccount.roleId == 4 ? MediaQuery.of(context).size.height * 0.22 : 90),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -203,35 +212,43 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       _refreshController.loadFailed();
                     }
                   },
-                  child: ListView.separated(
+                  child: ListView.builder(
                       itemBuilder: (context, index){
                         final contact = _contacts[index];
-                        return ListTile(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => SaleEmpContactDetail(contact: contact, account: currentAccount,),
-                            )).then(onGoBack);
-                          },
-                         title: const Text('Tên khách hàng:'),
-                         subtitle: Text(contact.fullname),
-                         dense: true,
-                         trailing: Column(
-                           children: [
-                             const SizedBox(height: 8.0,),
-                             Text('Email: ${contact.email}', style: const TextStyle(fontSize: 12.0)),
-                             const SizedBox(
-                               height: 5.0,
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15.0),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 1), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => SaleEmpContactDetail(contact: contact, account: currentAccount,),
+                                )).then(onGoBack);
+                              },
+                             title: Text(contact.fullname, style: const TextStyle(fontSize: 14.0,),),
+                             trailing: Row(
+                               mainAxisSize: MainAxisSize.min,
+                               children: <Widget>[
+                                 Text(contact.email),
+                                 const SizedBox(width: 10.0,),
+                                 Text(contact.phoneNumber),
+                               ],
                              ),
-                             Text('SĐT: ${contact.phoneNumber}', style: const TextStyle(fontSize: 12.0)),
-                           ],
-                         ),
+                            ),
+                          ),
                         );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                            height: 1,
-                            thickness: 2,
-                         );
                       },
                       itemCount: _contacts.length,
                   ),
