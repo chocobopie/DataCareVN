@@ -171,7 +171,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                     if(fullname.isNotEmpty) CustomEditableTextField(
                       borderColor: _readOnly != true ? mainBgColor : null,
                       text: fullname,
-                      title: 'Khách hàng của',
+                      title: 'Nhân viên đại diện',
                       readonly: true,
                       textEditingController: _contactOwnerId,
                       onTap: _readOnly != true ? () async {

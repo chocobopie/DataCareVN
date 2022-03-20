@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
+import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_add_new.dart';
@@ -24,22 +25,24 @@ class SaleEmpContactList extends StatefulWidget {
 class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   bool _isSearching = false;
-  String fullname = '';
+  String _fullname = '';
   late final GlobalKey<FormFieldState> _key = GlobalKey();
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
   final RefreshController _refreshController = RefreshController();
   late final List<Contact> _contacts = [];
-  late Account currentAccount, filterAccount = Account();
+  late final List<Account> _saleEmployeeList = [];
+  late Account _currentAccount, _filterAccount = Account();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if(_contacts.isEmpty){
-      currentAccount = Provider.of<AccountProvider>(context).account;
-      getOverallInfo(_currentPage, currentAccount);
-      fullname = _getDepartmentName(currentAccount.blockId!, currentAccount.departmentId);
+      _currentAccount = Provider.of<AccountProvider>(context).account;
+      getOverallInfo(_currentPage, _currentAccount);
+      _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
     }
+    _getAllSaleEmployee(isRefresh: true);
   }
 
   @override
@@ -55,8 +58,8 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
-            builder: (context) => SaleEmpContactAddNew(account: currentAccount,),
-          )).then(onGoBack);
+            builder: (context) => SaleEmpContactAddNew(account: _currentAccount,),
+          )).then(_onGoBack);
         },
         backgroundColor: Colors.green,
         child: const Icon(Icons.person_add),
@@ -84,13 +87,13 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, top: 10.0),
-                  child: (currentAccount.roleId! == 3 || currentAccount.roleId == 4) && fullname.isNotEmpty ? Row(
+                  child: (_currentAccount.roleId! == 3 || _currentAccount.roleId == 4) && _fullname.isNotEmpty ? Row(
                     children: <Widget>[
                       const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       const SizedBox(width: 10,),
                       CustomOutlinedButton(
                         color: mainBgColor,
-                        title: fullname,
+                        title: _fullname,
                         radius: 30,
                         onPressed: () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
@@ -100,9 +103,9 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                             _currentPage = 0;
 
                             setState(() {
-                              filterAccount = data;
-                              _contactOwnerId = filterAccount.accountId!;
-                              fullname = filterAccount.fullname!;
+                              _filterAccount = data;
+                              _contactOwnerId = _filterAccount.accountId!;
+                              _fullname = _filterAccount.fullname!;
                             });
 
                             if(_contacts.isNotEmpty){
@@ -116,13 +119,13 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       IconButton(
                           onPressed: (){
                             setState(() {
-                              filterAccount = Account();
+                              _filterAccount = Account();
                               _currentPage = 0;
-                              fullname = _getDepartmentName(currentAccount.blockId!, currentAccount.departmentId);;
+                              _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);;
                               _contactOwnerId = -1;
                               _contacts.clear();
                               _refreshController.resetNoData();
-                              getOverallInfo(_currentPage, currentAccount);
+                              getOverallInfo(_currentPage, _currentAccount);
                             });
                           },
                           icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
@@ -130,22 +133,12 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     ],
                   ) : null
                 ),
-                Row(
-                  children: const <Widget>[
-                    SizedBox(width: 20.0,),
-                    Text('Họ và tên'),
-                    SizedBox(width: 140.0,),
-                    Text('Email'),
-                    SizedBox(width: 70.0,),
-                    Text('SĐT'),
-                  ],
-                ),
               ],
             ),
           ),
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top: currentAccount.roleId! == 3 || currentAccount.roleId == 4 ? MediaQuery.of(context).size.height * 0.22 : 90),
+            padding: EdgeInsets.only(top: _currentAccount.roleId! == 3 || _currentAccount.roleId == 4 ? MediaQuery.of(context).size.height * 0.20 : 90),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -182,7 +175,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     _refreshController.resetNoData();
                     print('Current page: $_currentPage');
                     if(_contactOwnerId == -1){
-                      _getAllContactByAccountId(isRefresh: true ,currentPage: _currentPage, accountId: currentAccount.accountId!);
+                      _getAllContactByAccountId(isRefresh: true ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
                     } else {
                       _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                     }
@@ -200,7 +193,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       });
                       print('Current page: $_currentPage');
                       if(_contactOwnerId == -1){
-                        _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: currentAccount.accountId!);
+                        _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
                       } else {
                         _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                       }
@@ -217,37 +210,60 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                         final contact = _contacts[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15.0),
+                          child: Card(
+                              elevation: 10,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 1), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: ListTile(
+                            child: InkWell(
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => SaleEmpContactDetail(contact: contact, account: currentAccount,),
-                                )).then(onGoBack);
+                                    builder: (context) => SaleEmpContactDetail(contact: contact, account: _currentAccount)
+                                )).then(_onGoBack);
                               },
-                             title: Text(contact.fullname, style: const TextStyle(fontSize: 14.0,),),
-                             trailing: Row(
-                               mainAxisSize: MainAxisSize.min,
-                               children: <Widget>[
-                                 Text(contact.email),
-                                 const SizedBox(width: 10.0,),
-                                 Text(contact.phoneNumber),
-                               ],
-                             ),
-                            ),
-                          ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(child: Text(contact.fullname, style: const TextStyle(fontSize: 18),)),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(contact.email, style: const TextStyle(fontSize: 14),),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 30.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(contact.phoneNumber, style: const TextStyle(fontSize: 14),),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Row(
+                                      children: <Widget>[
+                                        const Text('Nhân viên đại diện: ', style: TextStyle(fontSize: 14),),
+                                        const Spacer(),
+                                        Text(_getContactOwnerName(contact.contactOwnerId)),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          )
                         );
                       },
                       itemCount: _contacts.length,
@@ -281,7 +297,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                 ),
                 onSubmitted: (value){
                   _currentPage = 0;
-                  searchNameAndEmail(currentAccount: currentAccount, query: value.toString());
+                  _searchNameAndEmail(currentAccount: _currentAccount, query: value.toString());
                 }
               ),
               actions: <Widget>[
@@ -293,7 +309,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     _contacts.clear();
                     setState(() {
                       _isSearching = false;
-                      getOverallInfo(_currentPage, currentAccount);
+                      getOverallInfo(_currentPage, _currentAccount);
                     });
                   },
                 ) : IconButton(
@@ -359,7 +375,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     }
   }
 
-  void searchNameAndEmail({required Account currentAccount, required String query}) async {
+  void _searchNameAndEmail({required Account currentAccount, required String query}) async {
       List<Contact> contactList = await ContactListViewModel().searchNameAndEmail(currentAccount: currentAccount, query: query);
 
       setState(() {
@@ -368,7 +384,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
       });
   }
 
-  onGoBack(dynamic value) {
+  _onGoBack(dynamic value) {
     if(_contacts.isNotEmpty){
       _contacts.clear();
     }
@@ -379,10 +395,36 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     });
 
     if(_contactOwnerId == -1){
-      getOverallInfo(_currentPage, currentAccount);
+      getOverallInfo(_currentPage, _currentAccount);
     }else{
       _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
     }
+  }
+
+  void _getAllSaleEmployee({required bool isRefresh}){
+    if(_currentAccount.roleId == 4){
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId, limit: 1000000);
+    }else if(_currentAccount.roleId == 3){
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, limit: 1000000);
+    }
+  }
+
+  void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+    List<Account> accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
+
+    setState(() {
+      _saleEmployeeList.addAll(accountList);
+    });
+  }
+
+  String _getContactOwnerName(int contactOwnerId){
+    String name = '';
+    for(int i = 0; i < _saleEmployeeList.length; i++){
+      if(contactOwnerId == _saleEmployeeList[i].accountId){
+          name = _saleEmployeeList[i].fullname!;
+      }
+    }
+    return name;
   }
 
 }
