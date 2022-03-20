@@ -23,12 +23,16 @@ class ApiService {
   String stockUrl = 'https://trungpd2022.azurewebsites.net/api/v1/';
 
   //Contacts
-  Future<List<Contact>> getAllContactsByAccountId( {required bool isRefresh, required int accountId, required int currentPage} ) async {
+  Future<List<Contact>> getAllContactsByAccountId( {required bool isRefresh, required int accountId, required int currentPage, int? limit} ) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'contacts?account-id=$accountId&page=$currentPage&limit=10';
+    String url = stockUrl + 'contacts?account-id=$accountId&page=$currentPage&limit=20';
+
+    if(limit != null){
+      url = stockUrl + 'contacts?account-id=$accountId&page=$currentPage&limit=$limit';
+    }
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -343,14 +347,18 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllAccountByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId}) async {
+  Future<List<Account>> getAllAccountByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
-    String url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=10';
+    String url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=20';
 
-    if(teamId != null){
-      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=10';
+    if(teamId != null && limit == null){
+      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=20';
+    }else if(teamId != null && limit != null){
+      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=$limit';
+    }else if(teamId == null && limit != null){
+      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=$limit';
     }
 
     final response = await http.get(Uri.parse(url));

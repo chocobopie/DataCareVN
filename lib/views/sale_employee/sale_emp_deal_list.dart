@@ -6,6 +6,8 @@ import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/view_models/account_list_view_model.dart';
+import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/view_models/deal_list_view_model.dart';
 import 'package:login_sample/view_models/deal_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
@@ -29,26 +31,29 @@ class SaleEmpDealList extends StatefulWidget {
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false;
-  String _fullname = '', fromDateToDateString = 'Ngày đóng từ trước đến nay', _contactName = 'Tất cả khách hàng';
+  String _fullname = '', _fromDateToDateString = 'Ngày chốt từ trước đến nay', _contactName = 'Tất cả khách hàng';
   int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
 
+  late final List<Account> _saleEmployeeList = [];
+  late final List<Contact> _contactList = [];
   late final List<Deal> _deals = [];
-  late Account currentAccount, filterAccount = Account();
+  late Account _currentAccount, _filterAccount = Account();
 
-  Contact? filterContact;
-  DateTime? fromDate, toDate;
-
+  Contact? _filterContact;
+  DateTime? _fromDate, _toDate;
 
   @override
   void initState() {
     super.initState();
-    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    _getOverallInfo(_currentPage, currentAccount);
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getOverallInfo(_currentPage, _currentAccount);
     setState(() {
-      _fullname = _getDepartmentName(currentAccount.blockId!, currentAccount.departmentId);
+      _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
     });
+    _getAllSaleEmployee(isRefresh: true);
+    _getAllContactByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage, limit: 1000000);
   }
 
   @override
@@ -96,7 +101,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                   Row(
                     children: <Widget>[
                       //Lọc theo nhân viên
-                      if(currentAccount.roleId! == 3 || currentAccount.roleId! == 4) Expanded(
+                      if(_currentAccount.roleId! == 3 || _currentAccount.roleId! == 4) Expanded(
                         child: CustomOutlinedButton(
                             color: mainBgColor,
                             title: _fullname,
@@ -107,8 +112,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               if(data != null){
                                 _currentPage = 0;
                                 setState(() {
-                                  filterAccount = data;
-                                  _fullname = filterAccount.fullname!;
+                                  _filterAccount = data;
+                                  _fullname = _filterAccount.fullname!;
                                   _deals.clear();
                                 });
                                 _refreshController.resetNoData();
@@ -130,8 +135,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               ));
                               if(data != null){
                                 setState(() {
-                                  filterContact = data;
-                                  _contactName = filterContact!.fullname;
+                                  _filterContact = data;
+                                  _contactName = _filterContact!.fullname;
                                   _deals.clear();
                                 });
                                 _refreshController.resetNoData();
@@ -144,7 +149,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       //Lọc theo ngày
                       Expanded(
                         child: CustomOutlinedButton(
-                            title: fromDateToDateString,
+                            title: _fromDateToDateString,
                             radius: 30,
                             color: mainBgColor,
                             onPressed: () async {
@@ -154,9 +159,9 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               if(data != null){
                                 FromDateToDate fromDateToDate = data;
                                 setState(() {
-                                  fromDate = fromDateToDate.fromDate;
-                                  toDate = fromDateToDate.toDate;
-                                  fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                  _fromDate = fromDateToDate.fromDate;
+                                  _toDate = fromDateToDate.toDate;
+                                  _fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                   _deals.clear();
                                 });
                                 _refreshController.resetNoData();
@@ -174,16 +179,16 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                             }
                             setState(() {
                               _currentPage = 0;
-                              _fullname = _getDepartmentName(currentAccount.blockId!, currentAccount.departmentId);
+                              _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
                               _contactName = 'Tất cả khách hàng';
-                              filterContact = null;
-                              filterAccount = Account();
-                              fromDate = null;
-                              toDate = null;
-                              fromDateToDateString = 'Ngày đóng từ trước đến nay';
+                              _filterContact = null;
+                              _filterAccount = Account();
+                              _fromDate = null;
+                              _toDate = null;
+                              _fromDateToDateString = 'Ngày chốt từ trước đến nay';
                             });
                             _refreshController.resetNoData();
-                            _getOverallInfo(_currentPage, currentAccount);
+                            _getOverallInfo(_currentPage, _currentAccount);
                           },
                           icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                       ),
@@ -288,10 +293,12 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                     ),
 
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 30.0),
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
-                                          Text('Ngày đóng ${DateFormat('dd-MM-yyyy').format(deal.closedDate)}', style: const TextStyle(fontSize: 12.0),),
+                                          const Text('Tên khách hàng:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(_getContactName(deal.contactId), style: const TextStyle(fontSize: 14.0),),
                                         ],
                                       ),
                                     ),
@@ -300,9 +307,31 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
+                                          const Text('Người quản lý hợp đồng:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(_getDealOwnerName(deal.dealOwnerId), style: const TextStyle(fontSize: 14.0)),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 30.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Ngày chốt hợp đồng:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(DateFormat('dd-MM-yyyy').format(deal.closedDate), style: const TextStyle(fontSize: 14.0),)
+                                        ],
+                                      ),
+                                    ),
+
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
                                           Expanded(child: Text('${deal.amount} VNĐ', style: const TextStyle(fontSize: 20.0),)),
                                           const Spacer(),
-
                                           Text(dealStagesNameUtilities[deal.dealStageId])
                                         ],
                                       ),
@@ -361,7 +390,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                     _deals.clear();
                     setState(() {
                       _isSearching = false;
-                      _getOverallInfo(_currentPage, currentAccount);
+                      _getOverallInfo(_currentPage, _currentAccount);
                     });
                   },
                 ) : IconButton(
@@ -384,35 +413,35 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   void _getFilter({required bool isRefresh}){
 
-    if(filterAccount.accountId == null && filterContact == null){
-      if(fromDate == null && toDate == null){
-        _getAllDealByAccountId(isRefresh: isRefresh, accountId: currentAccount.accountId!, currentPage: _currentPage);
-      }else if(fromDate != null && toDate != null){
-        _getAllDealByAccountId(isRefresh: isRefresh, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
+    if(_filterAccount.accountId == null && _filterContact == null){
+      if(_fromDate == null && _toDate == null){
+        _getAllDealByAccountId(isRefresh: isRefresh, accountId: _currentAccount.accountId!, currentPage: _currentPage);
+      }else if(_fromDate != null && _toDate != null){
+        _getAllDealByAccountId(isRefresh: isRefresh, accountId: _currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
       }
     }
 
-    if(filterAccount.accountId == null && filterContact != null){
-      if(fromDate == null && toDate == null){
-        _getAllDealByAccountId(isRefresh: isRefresh, accountId: currentAccount.accountId!, currentPage: _currentPage, contactId: filterContact!.contactId);
-      }else if(fromDate != null && toDate != null){
-        _getAllDealByAccountId(isRefresh: isRefresh, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate, contactId: filterContact!.contactId);
+    if(_filterAccount.accountId == null && _filterContact != null){
+      if(_fromDate == null && _toDate == null){
+        _getAllDealByAccountId(isRefresh: isRefresh, accountId: _currentAccount.accountId!, currentPage: _currentPage, contactId: _filterContact!.contactId);
+      }else if(_fromDate != null && _toDate != null){
+        _getAllDealByAccountId(isRefresh: isRefresh, accountId: _currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, contactId: _filterContact!.contactId);
       }
     }
 
-    if(filterAccount.accountId != null && filterContact == null){
-      if(fromDate == null && toDate == null){
-        _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage);
-      }else if(fromDate != null && toDate != null){
-        _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate);
+    if(_filterAccount.accountId != null && _filterContact == null){
+      if(_fromDate == null && _toDate == null){
+        _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: _filterAccount.accountId!, currentPage: _currentPage);
+      }else if(_fromDate != null && _toDate != null){
+        _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: _filterAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
       }
     }
 
-    if(filterAccount.accountId != null && filterContact != null){
-      if(fromDate == null && toDate == null){
-        _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage, contactId: filterContact!.contactId);
-      }else if(fromDate != null && toDate != null){
-        _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate, contactId: filterContact!.contactId);
+    if(_filterAccount.accountId != null && _filterContact != null){
+      if(_fromDate == null && _toDate == null){
+        _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: _filterAccount.accountId!, currentPage: _currentPage, contactId: _filterContact!.contactId);
+      }else if(_fromDate != null && _toDate != null){
+        _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: _filterAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, contactId: _filterContact!.contactId);
       }
     }
   }
@@ -428,8 +457,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getOverallInfo(int currentPage, Account account){
-    if(currentAccount.roleId == 5){
-      _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: currentAccount.accountId!, currentPage: currentPage);
+    if(_currentAccount.roleId == 5){
+      _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: _currentAccount.accountId!, currentPage: currentPage);
     }else{
       _getAllDealByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
     }
@@ -483,6 +512,54 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     });
     _refreshController.resetNoData();
     _getFilter(isRefresh: true);
+  }
+
+  void _getAllSaleEmployee({required bool isRefresh}){
+    if(_currentAccount.roleId == 4){
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId, limit: 1000000);
+    }else if(_currentAccount.roleId == 3){
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, limit: 1000000);
+    }
+  }
+
+  void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+    List<Account> accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
+
+    if(accountList.isNotEmpty){
+      setState(() {
+        _saleEmployeeList.addAll(accountList);
+      });
+    }
+  }
+  
+  void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? limit}) async {
+    List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, limit: limit);
+
+    if(contactList.isNotEmpty){
+      setState(() {
+        _contactList.addAll(contactList);
+      });
+    }
+  }
+  
+  String _getContactName(int contactId){
+    String name = '';
+    for(int i = 0; i < _contactList.length; i++){
+      if(contactId == _contactList[i].contactId){
+         name = _contactList[i].fullname;
+      }
+    }
+    return name;
+  }
+  
+  String _getDealOwnerName(int dealOwnerId){
+    String name = '';
+    for(int i = 0; i < _saleEmployeeList.length; i++){
+      if(dealOwnerId == _saleEmployeeList[i].accountId){
+        name = _saleEmployeeList[i].fullname!;
+      }
+    }
+    return name;
   }
 
 }

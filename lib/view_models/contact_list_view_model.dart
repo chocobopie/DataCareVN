@@ -5,9 +5,9 @@ import 'package:login_sample/services/api_service.dart';
 
 class ContactListViewModel with ChangeNotifier{
 
-  Future<List<Contact>> getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
+  Future<List<Contact>> getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? limit}) async {
 
-    List<Contact> contactList = await ApiService().getAllContactsByAccountId(isRefresh: isRefresh,accountId: accountId, currentPage: currentPage);
+    List<Contact> contactList = await ApiService().getAllContactsByAccountId(isRefresh: isRefresh,accountId: accountId, currentPage: currentPage, limit: limit);
 
     notifyListeners();
 
