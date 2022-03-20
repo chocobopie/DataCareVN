@@ -64,7 +64,7 @@ class _EmpReceivedIssueState extends State<EmpReceivedIssue> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             contentPadding: const EdgeInsets.only(left: 20.0),
                             labelText: 'Số lượng hợp đồng có vấn đề nhận được',
-                            hintText: '${deals.length}',
+                            hintText: '',
                             labelStyle: const TextStyle(
                               color: Color.fromARGB(255, 107, 106, 144),
                               fontSize: 16,
@@ -115,50 +115,7 @@ class _EmpReceivedIssueState extends State<EmpReceivedIssue> {
                   ),
                 ),
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
-                child: ListView.builder(
-                    itemCount: deals.length,
-                    itemBuilder: (context, index){
-                      return Theme(
-                        data: ThemeData().copyWith(dividerColor: Colors.transparent),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(5.0),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 1,
-                                  offset: const Offset(
-                                      0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: ExpansionTile(
-                              trailing: const Text('[Tiêu đề]'),
-                              title: Align(
-                                alignment: Alignment.topLeft,
-                                child: TextButton(
-                                  child: Text('Hợp đồng: ${deals[index].dealId}'),
-                                  onPressed: () {
-                                    // Navigator.push(context, MaterialPageRoute(builder: (context) => EmpDealDetail(deal: deals[index])));
-                                  },
-                                ),
-                              ),
-                              children: const <Widget>[
-                                ListTile(
-                                  title: Text('[Nội dung]', style: TextStyle(color: defaultFontColor, fontSize: 12.0),),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                ),
+                child: Column(),
               ),
             ),
           ),

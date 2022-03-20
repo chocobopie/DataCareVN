@@ -3,8 +3,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
-import 'package:login_sample/widgets/IconTextButtonSmall3.dart';
+
 
 class SaleEmpDateFilter extends StatefulWidget {
   const SaleEmpDateFilter({Key? key}) : super(key: key);
@@ -19,6 +18,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
   String toDateString = '';
   DateTime fromDate = DateTime.now();
   DateTime toDate = DateTime.now();
+  late bool isFromDate = true, isToDate = true, isFromBeforeTo = true;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             contentPadding: const EdgeInsets.only(left: 20.0),
                             labelText: 'Từ ngày',
-                            hintText: fromDateString.isNotEmpty ? 'Ngày $fromDateString' : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
+                            hintText: fromDateString.isNotEmpty ? 'Ngày $fromDateString' : '',
                             labelStyle: const TextStyle(
                               color: Color.fromARGB(255, 107, 106, 144),
                               fontSize: 18,
@@ -95,7 +95,9 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                         ),
                         width: MediaQuery.of(context).size.width,
                       ),
-                      const SizedBox(height: 20,),
+                      if(isFromDate != true) const SizedBox(height: 5.0,),
+                      if(isFromDate != true) const Text('Bạn chưa chọn ngày bắt đầu', style: TextStyle(color: Colors.red),),
+                      const SizedBox(height: 20),
 
                       //Đến ngày
                       SizedBox(
@@ -122,7 +124,7 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             contentPadding: const EdgeInsets.only(left: 20.0),
                             labelText: 'Đến ngày',
-                            hintText: toDateString.isNotEmpty ? 'Ngày $toDateString' : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
+                            hintText: toDateString.isNotEmpty ? 'Ngày $toDateString' : '',
                             labelStyle: const TextStyle(
                               color: Color.fromARGB(255, 107, 106, 144),
                               fontSize: 18,
@@ -144,7 +146,9 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                         ),
                         width: MediaQuery.of(context).size.width,
                       ),
-                      const SizedBox(height: 20,),
+                      if(isToDate != true) const SizedBox(height: 5.0,),
+                      if(isToDate != true) const Text('Bạn chưa chọn ngày kết thúc', style: TextStyle(color: Colors.red),),
+                      const SizedBox(height: 20),
 
                       Container(
                         width: MediaQuery.of(context).size.width,
@@ -164,25 +168,54 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                         child: TextButton(
                           onPressed: (){
                             if(fromDateString.isEmpty){
-                              fromDateString = DateFormat('dd-MM-yyyy').format(DateTime.now());
-                            }
-                            if(toDateString.isEmpty){
-                              toDateString = DateFormat('dd-MM-yyyy').format(DateTime.now());
-                            }
-                            if(fromDate.isBefore(toDate) && toDate.isAfter(fromDate)){
-                              FromDateToDate fromDateToDate =  FromDateToDate(fromDateString: fromDateString, toDateString: toDateString, fromDate: fromDate, toDate: toDate);
-                              Navigator.pop(context, fromDateToDate);
-                            }else if(fromDate.isAfter(toDate) || toDate.isBefore(fromDate)){
-                              print('Error');
+                              setState(() {
+                                isFromDate = false;
+                              });
                             }else{
-                              FromDateToDate fromDateToDate =  FromDateToDate(fromDateString: fromDateString, toDateString: toDateString, fromDate: fromDate, toDate: toDate);
-                              Navigator.pop(context, fromDateToDate);
+                              setState(() {
+                                isFromDate;
+                              });
+                            }
+
+                            if(toDateString.isEmpty){
+                              setState(() {
+                                isToDate = false;
+                              });
+                            }else{
+                              setState(() {
+                                isToDate;
+                              });
+                            }
+
+                            if(fromDate.isAfter(toDate)){
+                              setState(() {
+                                isFromBeforeTo = false;
+                              });
+                            }else{
+                              setState(() {
+                                isFromBeforeTo;
+                              });
+                            }
+
+
+                            if(fromDateString.isNotEmpty && toDateString.isNotEmpty){
+                              if(fromDate.isBefore(toDate) && toDate.isAfter(fromDate)){
+                                FromDateToDate fromDateToDate =  FromDateToDate(fromDateString: fromDateString, toDateString: toDateString, fromDate: fromDate, toDate: toDate);
+                                Navigator.pop(context, fromDateToDate);
+                              }else if(fromDate.isAfter(toDate) || toDate.isBefore(fromDate)){
+                                print('Error');
+                              }else{
+                                FromDateToDate fromDateToDate =  FromDateToDate(fromDateString: fromDateString, toDateString: toDateString, fromDate: fromDate, toDate: toDate);
+                                Navigator.pop(context, fromDateToDate);
+                              }
                             }
                           },
                           child: const Text('Xác nhận', style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
+                      const SizedBox(height: 5.0,),
+                      if(isFromBeforeTo != true) const Text('Ngày bắt đầu phải bé hơn ngày kết thúc', style: TextStyle(color: Colors.red),),
                     ],
                   )
                 ],

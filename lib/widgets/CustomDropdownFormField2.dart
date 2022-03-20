@@ -2,12 +2,13 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropdownFormField2 extends StatelessWidget {
-  const CustomDropdownFormField2({Key? key, required this.label, required this.hintText, required this.items, required this.onChanged}) : super(key: key);
+  const CustomDropdownFormField2({Key? key, required this.label, required this.hintText, required this.items, required this.onChanged, this.borderColor}) : super(key: key);
 
   final String label;
   final Widget hintText;
   final List<dynamic> items;
   final dynamic onChanged;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +18,14 @@ class CustomDropdownFormField2 extends StatelessWidget {
         const EdgeInsets.only(left: 20.0, right: 20.0),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Colors.grey.shade300, width: 2),
+              color: borderColor == null ? Colors.grey.shade300 : borderColor!,
+              width: 2),
           borderRadius: BorderRadius.circular(10),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide:
-          const BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(
+              color: borderColor == null ? Colors.blue : borderColor!,
+              width: 2),
           borderRadius: BorderRadius.circular(10),
         ),
         labelText: label,

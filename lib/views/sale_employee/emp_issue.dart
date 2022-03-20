@@ -41,7 +41,7 @@ class _EmpIssueState extends State<EmpIssue> {
                     padding: const EdgeInsets.only(top: 20.0),
                     child: IconTextButtonSmall2(
                       imageUrl: 'assets/images/sent_issue.png',
-                      text: 'Vấn đề gửi đến các thành viên khác',
+                      text: 'Vấn đề đã gửi',
                       colorsButton: const [Colors.greenAccent, Colors.white],
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const EmpSentIssueList()));

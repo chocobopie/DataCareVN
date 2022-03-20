@@ -85,7 +85,7 @@ class _EmpLateExcuseState extends State<EmpLateExcuse> {
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         contentPadding: const EdgeInsets.only(left: 20.0),
                         labelText: 'Ngày xin đi trễ',
-                        hintText: _lateExcuseDate.isNotEmpty ? _lateExcuseDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
+                        hintText: _lateExcuseDate.isNotEmpty ? _lateExcuseDate : '',
                         labelStyle: const TextStyle(
                           color: Color.fromARGB(255, 107, 106, 144),
                           fontSize: 18,
@@ -128,7 +128,7 @@ class _EmpLateExcuseState extends State<EmpLateExcuse> {
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         contentPadding: const EdgeInsets.only(left: 20.0),
                         labelText: 'Thời gian dự kiến đến công ty',
-                        hintText: _lateExcuseTime.isEmpty ? 'Chỉ được xin đi trễ trước [Số giờ]' : _lateExcuseTime,
+                        hintText: _lateExcuseTime.isEmpty ? '' : _lateExcuseTime,
                         labelStyle: const TextStyle(
                           color: Color.fromARGB(255, 107, 106, 144),
                           fontSize: 18,

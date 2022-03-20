@@ -29,7 +29,7 @@ class SaleEmpDealList extends StatefulWidget {
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false;
-  String _fullname = 'Nhân viên', fromDateToDateString = 'Ngày đóng', _contactName = 'Khách hàng';
+  String _fullname = '', fromDateToDateString = 'Từ trước đến nay', _contactName = 'Tất cả khách hàng';
   int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
@@ -43,9 +43,12 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   @override
   void initState() {
+    super.initState();
     currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getOverallInfo(_currentPage, currentAccount);
-    super.initState();
+    setState(() {
+      _fullname = _getDepartmentName(currentAccount.blockId!, currentAccount.departmentId);
+    });
   }
 
   @override
@@ -85,13 +88,13 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
               ),
             ),
             margin: const EdgeInsets.only(top: 100.0),
-            child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 2.0,),
-                  child: Row(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0),
+              child: Column(
+                children: <Widget>[
+                  const Text('Lọc', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                  Row(
                     children: <Widget>[
-                      if(fromDateToDateString == 'Ngày đóng') const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       //Lọc theo nhân viên
                       if(currentAccount.roleId! == 3 || currentAccount.roleId! == 4) Expanded(
                         child: CustomOutlinedButton(
@@ -114,7 +117,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                             }, radius: 30,
                         ),
                       ),
-                      
+
                       //Lọc theo khách hàng
                       Expanded(
                         child: CustomOutlinedButton(
@@ -137,7 +140,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                             },
                         ),
                       ),
-                      
+
                       //Lọc theo ngày
                       Expanded(
                         child: CustomOutlinedButton(
@@ -171,23 +174,23 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                             }
                             setState(() {
                               _currentPage = 0;
-                              _fullname = 'Nhân viên';
-                              _contactName = 'Khách hàng';
+                              _fullname = _getDepartmentName(currentAccount.blockId!, currentAccount.departmentId);
+                              _contactName = 'Tất cả khách hàng';
                               filterContact = null;
                               filterAccount = Account();
                               fromDate = null;
                               toDate = null;
-                              fromDateToDateString = 'Ngày đóng';
+                              fromDateToDateString = 'Từ trước đến nay';
                             });
                             _refreshController.resetNoData();
                             _getOverallInfo(_currentPage, currentAccount);
                           },
-                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 20,)
+                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
@@ -265,7 +268,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                           )).then(_onGoBack);
                         },
                         title: Text(deal.title),
-                        subtitle: Text('Ngày đóng: ${DateFormat('dd-MM-yyyy').format(deal.closedDate)}'),
+                        subtitle: Text('Từ trước đến nay: ${DateFormat('dd-MM-yyyy').format(deal.closedDate)}'),
                         dense: true,
                         trailing: Column(
                           children: [
@@ -384,6 +387,16 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
         _getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: filterAccount.accountId!, currentPage: _currentPage, fromDate: fromDate, toDate: toDate, contactId: filterContact!.contactId);
       }
     }
+  }
+
+  String _getDepartmentName(int blockId, departmentId){
+    String name = '';
+    for(int i = 0; i < departments.length; i++){
+      if(blockId == departments[i].blockId && departmentId == departments[i].departmentId){
+        name = departments[i].name;
+      }
+    }
+    return name;
   }
 
   void _getOverallInfo(int currentPage, Account account){

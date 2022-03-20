@@ -88,6 +88,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
 
                     //Tên khách hàng
                     CustomEditableTextField(
+                        borderColor: _readOnly != true ? mainBgColor : null,
                         text: widget.contact.fullname,
                         title: 'Tên khách hàng',
                         readonly: _readOnly,
@@ -96,6 +97,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                     const SizedBox(height: 20.0,),
                     
                     CustomDropdownFormField2(
+                        borderColor: _readOnly != true ? mainBgColor : null,
                         label: 'Giới tính', 
                         hintText: Text(gendersUtilities[int.parse('${widget.contact.genderId}')]), 
                         items: gendersUtilities, 
@@ -114,6 +116,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
 
                     //Email của khách hàng
                     CustomEditableTextField(
+                        borderColor: _readOnly != true ? mainBgColor : null,
                         inputEmailOnly: true,
                         text: widget.contact.email,
                         title: 'Email của khách hàng',
@@ -124,6 +127,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
 
                     //Số điện thoại
                     CustomEditableTextField(
+                        borderColor: _readOnly != true ? mainBgColor : null,
                         inputNumberOnly: true,
                         text: widget.contact.phoneNumber,
                         title: 'Số điện thoại',
@@ -139,35 +143,54 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                         readonly: _readOnly,
                         textEditingController: _contactCompanyName
                     ),
-                    const SizedBox(height: 10.0,),
+                    const SizedBox(height: 20.0,),
 
                     //Khách hàng của
-                    if(fullname.isNotEmpty) OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          primary: defaultFontColor,
-                          side: BorderSide(width: 2.0, color: Colors.grey.shade300),
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                        ),
-                        onPressed: _readOnly != true ? () async {
-                          final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SaleEmpFilter(),
-                          ));
-                          late Account filterAccount;
-                          if(data != null){
-                            setState(() {
-                              filterAccount = data;
-                              _contactOwnerId.text = filterAccount.accountId!.toString();
-                              fullname = filterAccount.fullname!;
-                            });
-                            print('Contact owner Id: ${_contactOwnerId.text}');
-                          }
-                        } : null,
-                        child: Text('Khách hàng của: $fullname')
+                    // if(fullname.isNotEmpty) OutlinedButton(
+                    //     style: OutlinedButton.styleFrom(
+                    //       primary: defaultFontColor,
+                    //       side: BorderSide(width: 2.0, color: Colors.grey.shade300),
+                    //       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    //     ),
+                    //     onPressed: _readOnly != true ? () async {
+                    //       final data = await Navigator.push(context, MaterialPageRoute(
+                    //         builder: (context) => const SaleEmpFilter(),
+                    //       ));
+                    //       late Account filterAccount;
+                    //       if(data != null){
+                    //         setState(() {
+                    //           filterAccount = data;
+                    //           _contactOwnerId.text = filterAccount.accountId!.toString();
+                    //           fullname = filterAccount.fullname!;
+                    //         });
+                    //         print('Contact owner Id: ${_contactOwnerId.text}');
+                    //       }
+                    //     } : null,
+                    //     child: Text('Khách hàng của: $fullname')
+                    // ),
+                    if(fullname.isNotEmpty) CustomEditableTextField(
+                      borderColor: _readOnly != true ? mainBgColor : null,
+                      text: fullname,
+                      title: 'Khách hàng của',
+                      readonly: true,
+                      textEditingController: _contactOwnerId,
+                      onTap: _readOnly != true ? () async {
+                        final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleEmpFilter(),));
+                        late Account filterAccount;
+                        if (data != null) {
+                          setState(() {
+                            filterAccount = data;
+                            _contactOwnerId.text = filterAccount.accountId!.toString();
+                            fullname = filterAccount.fullname!;
+                          });
+                        }
+                      } : null,
                     ),
                     const SizedBox(height: 20.0,),
 
                     //Nguồn
                     CustomDropdownFormField2(
+                        borderColor: _readOnly != true ? mainBgColor : null,
                         label: 'Nguồn',
                         hintText: Text(leadSourceNameUtilities[int.parse('${widget.contact.leadSourceId}')]),
                         items: leadSourceNameUtilities,

@@ -206,7 +206,7 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Lọc theo khác hàng",
+                "Lọc theo khách hàng",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

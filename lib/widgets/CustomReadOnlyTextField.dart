@@ -3,11 +3,12 @@ import 'package:login_sample/utilities/utils.dart';
 
 class CustomReadOnlyTextField extends StatelessWidget {
   const CustomReadOnlyTextField({
-    Key? key, required this.text, required this.title,
+    Key? key, required this.text, required this.title, this.borderColor,
   }) : super(key: key);
 
   final String title;
   final String text;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +26,13 @@ class CustomReadOnlyTextField extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: Colors.grey.shade300,
+                color: borderColor == null ? Colors.grey.shade300 : borderColor!,
                 width: 2),
             borderRadius: BorderRadius.circular(10),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-                color: Colors.blue,
+            borderSide: BorderSide(
+                color: borderColor == null ? Colors.blue : borderColor!,
                 width: 2),
             borderRadius: BorderRadius.circular(10),
           ),

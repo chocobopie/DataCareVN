@@ -24,13 +24,11 @@ class SaleEmpContactList extends StatefulWidget {
 class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   bool _isSearching = false;
-  String fullname = 'Nhân viên';
+  String fullname = '';
   late final GlobalKey<FormFieldState> _key = GlobalKey();
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
   final RefreshController _refreshController = RefreshController();
-
-  late Future<List<Contact>> _futureContacts;
   late final List<Contact> _contacts = [];
   late Account currentAccount, filterAccount = Account();
 
@@ -40,6 +38,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     if(_contacts.isEmpty){
       currentAccount = Provider.of<AccountProvider>(context).account;
       getOverallInfo(_currentPage, currentAccount);
+      fullname = _getDepartmentName(currentAccount.blockId!, currentAccount.departmentId);
     }
   }
 
@@ -81,13 +80,13 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
               ),
             ),
             margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 90.0),
-            child: ListView(
+            child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0,),
-                  child: currentAccount.roleId! == 3 || currentAccount.roleId == 4 ? Row(
+                  padding: const EdgeInsets.only(left: 15.0, top: 10.0),
+                  child: (currentAccount.roleId! == 3 || currentAccount.roleId == 4) && fullname.isNotEmpty ? Row(
                     children: <Widget>[
-                      const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                      const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       const SizedBox(width: 10,),
                       CustomOutlinedButton(
                         color: mainBgColor,
@@ -119,7 +118,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                             setState(() {
                               filterAccount = Account();
                               _currentPage = 0;
-                              fullname = 'Nhân viên';
+                              fullname = _getDepartmentName(currentAccount.blockId!, currentAccount.departmentId);;
                               _contactOwnerId = -1;
                               _contacts.clear();
                               _refreshController.resetNoData();
@@ -137,7 +136,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top: currentAccount.roleId! == 3 || currentAccount.roleId == 4 ? MediaQuery.of(context).size.height * 0.22 : 90),
+            padding: EdgeInsets.only(top: currentAccount.roleId! == 3 || currentAccount.roleId == 4 ? MediaQuery.of(context).size.height * 0.20 : 90),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -302,6 +301,16 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
       _getAllContactByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
   }
 
+  String _getDepartmentName(int blockId, departmentId){
+    String name = '';
+    for(int i = 0; i < departments.length; i++){
+      if(blockId == departments[i].blockId && departmentId == departments[i].departmentId){
+        name = departments[i].name;
+      }
+    }
+    return name;
+  }
+
   void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
     List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
 
@@ -337,9 +346,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
       List<Contact> contactList = await ContactListViewModel().searchNameAndEmail(currentAccount: currentAccount, query: query);
 
       setState(() {
-        if(_contacts.isNotEmpty){
-          _contacts.clear();
-        }
+        _contacts.clear();
         _contacts.addAll(contactList);
       });
   }

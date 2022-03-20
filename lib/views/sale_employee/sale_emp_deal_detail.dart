@@ -13,6 +13,7 @@ import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_timeline.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
+import 'package:login_sample/widgets/CustomDatePicker.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -103,39 +104,34 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                             CustomReadOnlyTextField(
                                 text: '${widget.deal.dealId}',
                                 title: 'ID hợp đồng'),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Tiêu đề hợp đồng
                             CustomEditableTextField(
+                              borderColor: _readOnly != true ? mainBgColor : null,
                               text: widget.deal.title,
                               title: 'Tiêu đề',
                               readonly: _readOnly,
                               textEditingController: _dealTitle,
                             ),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Tên khách hàng
                             CustomReadOnlyTextField(
+                                borderColor: _readOnly != true ? mainBgColor : null,
                                 text: contact!.fullname,
                                 title: 'Tên khách hàng'),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Tên công ty khách hàng
                             CustomReadOnlyTextField(
                                 text: contact!.companyName,
                                 title: 'Tên công ty khách hàng'),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Tiến trình hợp đồng
                             CustomDropdownFormField2(
+                                borderColor: _readOnly != true ? mainBgColor : null,
                                 label: 'Tiến trình hợp đồng',
                                 hintText: Text(
                                   dealStagesNameUtilities[
@@ -179,12 +175,11 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         print(_dealStage.text);
                                       }
                                     : null),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Loại hợp đồng
                             CustomDropdownFormField2(
+                                borderColor: _readOnly != true ? mainBgColor : null,
                                 label: 'Loại hợp đồng',
                                 hintText: Text(
                                   dealTypesNameUtilities[widget.deal.dealTypeId]
@@ -204,23 +199,21 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         print(_dealType.text);
                                       }
                                     : null),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Tổng giá trị
                             CustomEditableTextField(
+                                borderColor: _readOnly != true ? mainBgColor : null,
                                 inputNumberOnly: true,
                                 text: '${widget.deal.amount}',
                                 title: 'Tổng giá trị (VNĐ)',
                                 readonly: _readOnly,
                                 textEditingController: _dealAmount),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Vat
                             CustomDropdownFormField2(
+                              borderColor: _readOnly != true ? mainBgColor : null,
                               label: 'VAT',
                               hintText: Text(
                                 dealVatsNameUtilities[widget.deal.vatId],
@@ -238,12 +231,11 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                     }
                                   : null,
                             ),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Loại dịch vụ
                             CustomDropdownFormField2(
+                                borderColor: _readOnly != true ? mainBgColor : null,
                                 label: 'Loại dịch vụ',
                                 hintText: Text(
                                   dealServicesNameUtilities[
@@ -286,72 +278,80 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         print(_dealService.text);
                                       }
                                     : null),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Ngày đóng
-                            SizedBox(
-                              child: TextField(
-                                readOnly: _readOnly,
-                                onTap: _readOnly != true
-                                    ? () async {
-                                        FocusScope.of(context)
-                                            .requestFocus(FocusNode());
-                                        final date =
-                                            await DatePicker.showDatePicker(
-                                          context,
-                                          locale: LocaleType.vi,
-                                          minTime: DateTime.now(),
-                                          currentTime: DateTime.now(),
-                                          maxTime: DateTime.now()
-                                              .add(const Duration(days: 36500)),
-                                        );
-                                        if (date != null) {
-                                          setState(() {
-                                            _dealClosedDate.text =
-                                                date.toString();
-                                            _closeDate =
-                                                'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
-                                            print(date);
-                                          });
-                                        }
-                                      }
-                                    : null,
-                                decoration: InputDecoration(
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.always,
-                                  contentPadding:
-                                      const EdgeInsets.only(left: 20.0),
-                                  labelText: 'Ngày đóng',
-                                  hintText: _closeDate.isNotEmpty
-                                      ? _closeDate
-                                      : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
-                                  labelStyle: const TextStyle(
-                                    color: Color.fromARGB(255, 107, 106, 144),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.grey.shade300, width: 2),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Colors.blue, width: 2),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                              width: 150.0,
+                            // SizedBox(
+                            //   child: TextField(readOnly: _readOnly,
+                            //     onTap: _readOnly != true ? () async {
+                            //             FocusScope.of(context).requestFocus(FocusNode());
+                            //             final date = await DatePicker.showDatePicker(context,
+                            //               locale: LocaleType.vi,
+                            //               minTime: DateTime.now(),
+                            //               currentTime: DateTime.now(),
+                            //               maxTime: DateTime.now()
+                            //                   .add(const Duration(days: 36500)),
+                            //             );
+                            //             if (date != null) {
+                            //               setState(() {
+                            //                 _dealClosedDate.text = date.toString();
+                            //                 _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
+                            //                 print(date);
+                            //               });
+                            //             }
+                            //           } : null,
+                            //     decoration: InputDecoration(
+                            //       floatingLabelBehavior:
+                            //           FloatingLabelBehavior.always,
+                            //       contentPadding:
+                            //           const EdgeInsets.only(left: 20.0),
+                            //       labelText: 'Ngày đóng',
+                            //       hintText: _closeDate.isNotEmpty ? _closeDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
+                            //       labelStyle: const TextStyle(
+                            //         color: Color.fromARGB(255, 107, 106, 144),
+                            //         fontSize: 18,
+                            //         fontWeight: FontWeight.w500,
+                            //       ),
+                            //       enabledBorder: OutlineInputBorder(
+                            //         borderSide: BorderSide(
+                            //             color: Colors.grey.shade300, width: 2),
+                            //         borderRadius: BorderRadius.circular(10),
+                            //       ),
+                            //       focusedBorder: OutlineInputBorder(
+                            //         borderSide: const BorderSide(
+                            //             color: Colors.blue, width: 2),
+                            //         borderRadius: BorderRadius.circular(10),
+                            //       ),
+                            //     ),
+                            //   ),
+                            //   width: 150.0,
+                            // ),
+                            CustomDatePicker(
+                                borderColor: _readOnly != true ? mainBgColor : null,
+                                label: 'Ngày đóng',
+                                hintText: _closeDate.isNotEmpty ? _closeDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
+                                onTap: _readOnly != true ? () async {
+                                  FocusScope.of(context).requestFocus(FocusNode());
+                                  final date = await DatePicker.showDatePicker(context,
+                                    locale: LocaleType.vi,
+                                    minTime: DateTime.now(),
+                                    currentTime: DateTime.now(),
+                                    maxTime: DateTime.now().add(const Duration(days: 36500)),
+                                  );
+                                  if (date != null) {
+                                    setState(() {
+                                      _dealClosedDate.text = date.toString();
+                                      _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
+                                      print(date);
+                                    });
+                                  }
+                                } : null,
                             ),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Link trello
                             CustomEditableTextField(
+                                borderColor: _readOnly != true ? mainBgColor : null,
                                 text: widget.deal.linkTrello!.isNotEmpty
                                     ? widget.deal.linkTrello!
                                     : '',
@@ -364,7 +364,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                             //Chủ hợp đồng
                             CustomEditableTextField(
-                              borderColor: Colors.red,
+                              borderColor: _readOnly != true ? mainBgColor : null,
                               text: account!.fullname!,
                               title: 'Chủ hợp đồng',
                               readonly: true,
@@ -387,26 +387,17 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                     }
                                   : null,
                             ),
-                            const SizedBox(
-                              height: 20.0,
-                            ),
+                            const SizedBox(height: 20.0,),
 
                             //Phòng ban
                             if (account?.departmentId != null)
-                              CustomReadOnlyTextField(
-                                  text: _getDepartmentName(
-                                      account!.departmentId!),
-                                  title: 'Phòng'),
+                              CustomReadOnlyTextField(text: _getDepartmentName(account!.departmentId!), title: 'Phòng'),
                             if (account?.departmentId! != null)
-                              const SizedBox(
-                                height: 20.0,
-                              ),
+                              const SizedBox(height: 20.0,),
 
                             //Nhóm
                             if (account?.teamId != null)
-                              CustomReadOnlyTextField(
-                                  text: _getTeamNamwe(account!.teamId!),
-                                  title: 'Nhóm'),
+                              CustomReadOnlyTextField(text: _getTeamNamwe(account!.teamId!), title: 'Nhóm'),
 
                             //Button
                             const SizedBox(height: 20.0,),

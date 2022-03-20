@@ -78,7 +78,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                         children: <Widget>[
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.red,
+                              color: isTook == false ? Colors.red : mainBgColor,
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(25.0),
                               ),
@@ -93,19 +93,19 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                             ),
                             child: TextButton(
                               onPressed: isTook == false ? () async {
-                                _getCorrectData();
-                                Attendance attendance = Attendance(
-                                    accountId: currentAccount.accountId!,
-                                    date: _currentTime.toLocal(),
-                                    attendanceStatusId: _timeHms <= 9.0 ? 0 : 2
-                                );
-                                final data = await AttendanceViewModel().takeAttendance(attendance: attendance);
-                                if(data.attendanceStatusId.toString().isNotEmpty){
-                                  setState(() {
-                                    isTook = true;
-                                    takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
-                                  });
-                                }
+                                // _getCorrectData();
+                                // Attendance attendance = Attendance(
+                                //     accountId: currentAccount.accountId!,
+                                //     date: _currentTime.toLocal(),
+                                //     attendanceStatusId: _timeHms <= 9.0 ? 0 : 2
+                                // );
+                                // final data = await AttendanceViewModel().takeAttendance(attendance: attendance);
+                                // if(data.attendanceStatusId.toString().isNotEmpty){
+                                //   setState(() {
+                                //     isTook = true;
+                                //     takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
+                                //   });
+                                // }
                               } : null,
                               child: Text(
                                 takeAttendanceString,
