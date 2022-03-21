@@ -101,11 +101,10 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                           ));
                           if(data != null){
                             _currentPage = 0;
-
                             setState(() {
                               _filterAccount = data;
                               _contactOwnerId = _filterAccount.accountId!;
-                              _fullname = _filterAccount.fullname!;
+                              _fullname = 'Nhân viên tạo: ${_filterAccount.fullname!}';
                             });
 
                             if(_contacts.isNotEmpty){
@@ -423,7 +422,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   void _getAllSaleEmployee({required bool isRefresh}){
-    if(_currentAccount.roleId == 4){
+    if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
       _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId, limit: 1000000);
     }else if(_currentAccount.roleId == 3){
       _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, limit: 1000000);

@@ -29,7 +29,7 @@ class ApiService {
       currentPage = 0;
     }
 
-    String url = stockUrl + 'contacts?account-id=$accountId&page=$currentPage&limit=20';
+    String url = stockUrl + 'contacts?account-id=$accountId&page=$currentPage&limit=10';
 
     if(limit != null){
       url = stockUrl + 'contacts?account-id=$accountId&page=$currentPage&limit=$limit';
@@ -340,7 +340,7 @@ class ApiService {
       currentPage = 0;
     }
 
-    String url = stockUrl + 'accounts?account-id=$accountId&page=$currentPage&limit=15';
+    String url = stockUrl + 'accounts?account-id=$accountId&page=$currentPage&limit=10';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -356,10 +356,10 @@ class ApiService {
     if(isRefresh == true){
       currentPage = 0;
     }
-    String url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=20';
+    String url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=10';
 
     if(teamId != null && limit == null){
-      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=20';
+      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=10';
     }else if(teamId != null && limit != null){
       url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=$limit';
     }else if(teamId == null && limit != null){
@@ -585,7 +585,7 @@ class ApiService {
       currentPage = 0;
     }
 
-    String url = stockUrl + 'timelines?deal-id=$dealId&page=$currentPage&limit=20';
+    String url = stockUrl + 'timelines?deal-id=$dealId&page=$currentPage&limit=10';
 
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
@@ -641,9 +641,9 @@ class ApiService {
       currentPage = 0;
     }
 
-    String url = stockUrl + 'attendances/self?account-id=$accountId&page=$currentPage&limit=20';
+    String url = stockUrl + 'attendances/self?account-id=$accountId&page=$currentPage&limit=10';
     if(fromDate != null && toDate != null){
-      url = stockUrl + 'attendances/self?account-id=$accountId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=20';
+      url = stockUrl + 'attendances/self?account-id=$accountId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=10';
     }
 
     final response = await http.get(Uri.parse(url));

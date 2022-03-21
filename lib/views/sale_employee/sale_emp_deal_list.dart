@@ -113,13 +113,13 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 _currentPage = 0;
                                 setState(() {
                                   _filterAccount = data;
-                                  _fullname = _filterAccount.fullname!;
+                                  _fullname = 'Nhân viên: ${_filterAccount.fullname!}';
                                   _deals.clear();
                                 });
                                 _refreshController.resetNoData();
                                 _getFilter(isRefresh: true);
                               }
-                            }, radius: 30,
+                            }, radius: 10,
                         ),
                       ),
 
@@ -127,7 +127,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       Expanded(
                         child: CustomOutlinedButton(
                             title: _contactName,
-                            radius: 30,
+                            radius: 10,
                             color: mainBgColor,
                             onPressed: () async {
                               final data = await Navigator.push(context, MaterialPageRoute(
@@ -136,7 +136,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               if(data != null){
                                 setState(() {
                                   _filterContact = data;
-                                  _contactName = _filterContact!.fullname;
+                                  _contactName = 'Tên khách hàng: ${_filterContact!.fullname}';
                                   _deals.clear();
                                 });
                                 _refreshController.resetNoData();
@@ -150,7 +150,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       Expanded(
                         child: CustomOutlinedButton(
                             title: _fromDateToDateString,
-                            radius: 30,
+                            radius: 10,
                             color: mainBgColor,
                             onPressed: () async {
                               final data = await Navigator.push(context, MaterialPageRoute(
@@ -161,7 +161,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 setState(() {
                                   _fromDate = fromDateToDate.fromDate;
                                   _toDate = fromDateToDate.toDate;
-                                  _fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                  _fromDateToDateString = 'Ngày chốt: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                   _deals.clear();
                                 });
                                 _refreshController.resetNoData();

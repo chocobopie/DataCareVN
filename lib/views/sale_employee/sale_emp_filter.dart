@@ -89,7 +89,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                             },
                             icon: const Icon(Icons.clear),
                           ) : null,
-                          hintText: "Tìm theo tên nhân viên",
+                          hintText: "Tìm theo tên của nhân viên",
                           hintStyle: const TextStyle(
                             color: Colors.blueGrey,
                           ),
@@ -130,9 +130,9 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                     controller: _refreshController,
                     enablePullUp: true,
                     onRefresh: () async{
-                      if(_salesEmployees.isNotEmpty){
+                      setState(() {
                         _salesEmployees.clear();
-                      }
+                      });
                       _currentPage = 0;
                       _refreshController.resetNoData();
                       if(_searchEmployeeName.text.isNotEmpty){
@@ -166,30 +166,83 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                         _refreshController.loadFailed();
                       }
                     },
-                    child: _salesEmployees.isNotEmpty ? ListView.separated(
+                    child: _salesEmployees.isNotEmpty ? ListView.builder(
                         itemBuilder: (context, index) {
-                          final _account = _salesEmployees[index];
-                          return ListTile(
-                            title: Text(_account.fullname!),
-                            subtitle: Text(rolesNameUtilities[_account.roleId!]),
-                            dense: true,
-                            trailing: Column(
-                              children: [
-                                const SizedBox(height: 8.0,),
-                                Text('SĐT: ${_account.phoneNumber}', style: const TextStyle(fontSize: 12.0)),
-                                if(_account.teamId != null) const SizedBox(height: 5.0,),
-                                if(_account.teamId != null) Text('Nhóm: ${teams[_account.teamId!].name}', style: const TextStyle(fontSize: 12.0)),
-                              ],
+                          final account = _salesEmployees[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                            child: InkWell(
+                              onTap: (){
+                                Navigator.pop(context, account);
+                              },
+                              child: Card(
+                                elevation: 10.0,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Tên nhân viên:'),
+                                            const Spacer(),
+                                            Text(account.fullname!),
+                                          ],
+                                        ),
+                                      ),
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Chức vụ:'),
+                                            const Spacer(),
+                                            Text(rolesNameUtilities[account.roleId!]),
+                                          ],
+                                        ),
+                                      ),
+
+                                      if(account.teamId != null) Padding(
+                                        padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Nhóm:'),
+                                            const Spacer(),
+                                            Text(getTeamName(account.teamId!, account.departmentId)),
+                                          ],
+                                        ),
+                                      ),
+
+                                      if(account.phoneNumber != null) Padding(
+                                        padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('SĐT:'),
+                                            const Spacer(),
+                                            Text(account.phoneNumber!),
+                                          ],
+                                        ),
+                                      ),
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Email:'),
+                                            const Spacer(),
+                                            Text(account.email!),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
-                            onTap: (){
-                              Navigator.pop(context, _account);
-                            },
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Divider(
-                            height: 1,
-                            thickness: 2,
                           );
                         },
                         itemCount: _salesEmployees.length

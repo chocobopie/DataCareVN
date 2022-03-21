@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:provider/provider.dart';
@@ -17,16 +18,18 @@ class SaleEmpContactFilter extends StatefulWidget {
 class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
 
   late final List<Contact> _contacts = [];
-  late Account currentAccount;
+  late Account _currentAccount;
   int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
   final TextEditingController _searchContactNameOrEmail = TextEditingController();
+  late final List<Account> _saleEmployeeList = [];
 
   @override
   void initState() {
     super.initState();
-    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    _getAllContactByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getAllContactByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage);
+    _getAllSaleEmployee(isRefresh: true);
   }
 
   @override
@@ -71,7 +74,7 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                       _currentPage = 0;
                       _refreshController.resetNoData();
                       _contacts.clear();
-                      _searchContactByNameOrEmail(currentAccount: currentAccount, query: value.toString());
+                      _searchContactByNameOrEmail(currentAccount: _currentAccount, query: value.toString());
                     },
                     decoration: InputDecoration(
                       icon: const Icon(Icons.search,
@@ -84,11 +87,11 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                           setState(() {
                             _contacts.clear();
                           });
-                          _getAllContactByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                          _getAllContactByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage);
                         },
                         icon: const Icon(Icons.clear),
                       ) : null,
-                      hintText: "Tìm theo tên hoặc email",
+                      hintText: "Tìm theo tên của khách hàng",
                       hintStyle: const TextStyle(
                         color: Colors.blueGrey,
                       ),
@@ -135,9 +138,9 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                         _currentPage = 0;
                         _refreshController.resetNoData();
                         if(_searchContactNameOrEmail.text.isNotEmpty){
-                          _searchContactByNameOrEmail(currentAccount: currentAccount, query: _searchContactNameOrEmail.text);
+                          _searchContactByNameOrEmail(currentAccount: _currentAccount, query: _searchContactNameOrEmail.text);
                         }else{
-                          _getAllContactByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                          _getAllContactByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage);
                         }
 
                         if(_contacts.isNotEmpty){
@@ -153,9 +156,9 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                           });
                           print('Current page: $_currentPage');
                           if(_searchContactNameOrEmail.text.isNotEmpty){
-                            _searchContactByNameOrEmail(currentAccount: currentAccount, query: _searchContactNameOrEmail.text);
+                            _searchContactByNameOrEmail(currentAccount: _currentAccount, query: _searchContactNameOrEmail.text);
                           }else{
-                            _getAllContactByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                            _getAllContactByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage);
                           }
                         }
 
@@ -165,30 +168,83 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                           _refreshController.loadFailed();
                         }
                       },
-                      child: _contacts.isNotEmpty ? ListView.separated(
+                      child: _contacts.isNotEmpty ? ListView.builder(
                           itemBuilder: (context, index) {
-                            final _contact = _contacts[index];
-                            return ListTile(
-                              title: Text(_contact.fullname),
-                              subtitle: const Text(''),
-                              dense: true,
-                              trailing: Column(
-                                children: [
-                                  const SizedBox(height: 8.0,),
-                                  Text('SĐT: ${_contact.phoneNumber}', style: const TextStyle(fontSize: 12.0)),
-                                  const SizedBox(height: 5.0,),
-                                  Text('Email: ${_contact.email}', style: const TextStyle(fontSize: 12.0)),
-                                ],
+                            final contact = _contacts[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context, contact);
+                                },
+                                child: Card(
+                                  elevation: 10.0,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10))
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              const Text('Tên khách hàng:'),
+                                              const Spacer(),
+                                              Text(contact.fullname),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              const Text('Tên công ty:'),
+                                              const Spacer(),
+                                              Text(contact.companyName),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              const Text('SĐT:'),
+                                              const Spacer(),
+                                              Text(contact.phoneNumber),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              const Text('Email:'),
+                                              const Spacer(),
+                                              Text(contact.email),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              const Text('Người tạo:'),
+                                              const Spacer(),
+                                              Text(_getContactOwnerName(contact.contactOwnerId!)),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                              onTap: (){
-                                Navigator.pop(context, _contact);
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider(
-                              height: 1,
-                              thickness: 2,
                             );
                           },
                           itemCount: _contacts.length
@@ -244,6 +300,34 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
     }else{
       _refreshController.loadNoData();
     }
+  }
+
+  void _getAllSaleEmployee({required bool isRefresh}){
+    if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId, limit: 1000000);
+    }else if(_currentAccount.roleId == 3){
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, limit: 1000000);
+    }
+  }
+
+  void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+    List<Account> accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
+
+    if(accountList.isNotEmpty){
+      setState(() {
+        _saleEmployeeList.addAll(accountList);
+      });
+    }
+  }
+
+  String _getContactOwnerName(int contactOwnerId){
+    String name = '';
+    for(int i = 0; i < _saleEmployeeList.length; i++){
+      if(contactOwnerId == _saleEmployeeList[i].accountId){
+        name = _saleEmployeeList[i].fullname!;
+      }
+    }
+    return name;
   }
 
 }
