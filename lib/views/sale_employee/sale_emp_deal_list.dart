@@ -551,7 +551,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getAllSaleEmployee({required bool isRefresh}){
-    if(_currentAccount.roleId == 4){
+    if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
       _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId, limit: 1000000);
     }else if(_currentAccount.roleId == 3){
       _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, limit: 1000000);

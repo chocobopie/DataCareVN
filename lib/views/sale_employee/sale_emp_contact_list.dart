@@ -83,18 +83,18 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
               ),
             ),
             margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 90.0),
-            child: Column(
+            child: _currentAccount.roleId! == 3 || _currentAccount.roleId == 4 ? Column(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, top: 10.0),
-                  child: (_currentAccount.roleId! == 3 || _currentAccount.roleId == 4) && _fullname.isNotEmpty ? Row(
+                  child: _fullname.isNotEmpty ? Row(
                     children: <Widget>[
                       const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       const SizedBox(width: 10,),
                       CustomOutlinedButton(
                         color: mainBgColor,
                         title: _fullname,
-                        radius: 30,
+                        radius: 10,
                         onPressed: () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const SaleEmpFilter(),
@@ -134,7 +134,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                   ) : null
                 ),
               ],
-            ),
+            ) : null,
           ),
           //Card dưới
           Padding(

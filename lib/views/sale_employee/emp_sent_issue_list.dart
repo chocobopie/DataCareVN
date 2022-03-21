@@ -21,7 +21,7 @@ class EmpSentIssueList extends StatefulWidget {
 class _EmpSentIssueListState extends State<EmpSentIssueList> {
 
   bool isSearching = false;
-  late String _fromDatetoDateString = 'Từ trước đến nay';
+  late String _fromDatetoDateString = 'Deadline';
   DateTime? fromDate, toDate;
 
   @override
@@ -52,7 +52,7 @@ class _EmpSentIssueListState extends State<EmpSentIssueList> {
                   padding: const EdgeInsets.only(left: 15, top: 10.0),
                   child: Row(
                     children: <Widget>[
-                      const Text('Lọc theo deadline:', style: TextStyle(color: defaultFontColor),),
+                      const Text('Lọc theo:', style: TextStyle(color: defaultFontColor),),
                       const SizedBox(width: 10.0,),
                       Expanded(
                         child: CustomOutlinedButton(

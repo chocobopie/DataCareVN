@@ -72,8 +72,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
                     children: <Widget>[
                       const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       Row(
-                        children: const <Widget>[
-                          Expanded(
+                        children: <Widget>[
+                          const Expanded(
                             child: CustomOutlinedButton(
                                 title: 'Khối',
                                 radius: 30.0,
@@ -81,7 +81,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                             ),
                           ),
 
-                          Expanded(
+                          const Expanded(
                             child: CustomOutlinedButton(
                                 title: 'Phòng ban',
                                 radius: 30.0,
@@ -89,7 +89,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                             ),
                           ),
 
-                          Expanded(
+                          const Expanded(
                             child: CustomOutlinedButton(
                                 title: 'Nhóm',
                                 radius: 30,
@@ -97,12 +97,18 @@ class _AdminAccountListState extends State<AdminAccountList> {
                             ),
                           ),
 
-                          Expanded(
+                          const Expanded(
                             child: CustomOutlinedButton(
                                 title: 'Chức vụ',
                                 radius: 30,
                                 color: mainBgColor
                             ),
+                          ),
+
+                          IconButton(
+                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
+                            onPressed: () {
+                            },
                           ),
                         ],
                       ),
@@ -160,6 +166,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                     child: Row(
                                       children: <Widget>[
+                                        const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
                                         Text(account.fullname!, style: const TextStyle(fontSize: 20.0),),
                                       ],
                                     ),
@@ -168,6 +176,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                     child: Row(
                                       children: <Widget>[
+                                        const Text('Khối', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
                                         Text(blockNameUtilities[account.blockId!]),
                                       ],
                                     ),
@@ -176,6 +186,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                     child: Row(
                                       children: <Widget>[
+                                        const Text('Phòng:', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
                                         Text(getDepartmentName(account.departmentId!, account.blockId))
                                       ],
                                     ),
@@ -184,6 +196,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                     child: Row(
                                       children: <Widget>[
+                                        const Text('Nhóm:', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
                                         Text(getTeamName(account.teamId!, account.departmentId!))
                                       ],
                                     ),
@@ -192,19 +206,12 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                     child: Row(
                                       children: <Widget>[
+                                        const Text('Chức vụ:', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
                                         Text(rolesNameUtilities[account.roleId!]),
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Spacer(),
-                                        Text(account.email!),
-                                      ],
-                                    ),
-                                  )
                                 ],
                               ),
                             ),

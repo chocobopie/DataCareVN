@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_payroll_detail.dart';
 import 'package:login_sample/widgets/CustomFilterFormField.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 
 class HrManagerPayrollList extends StatefulWidget {
   const HrManagerPayrollList({Key? key}) : super(key: key);
@@ -103,12 +104,6 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         payroll: '3.000.000 VNĐ'),
   ];
 
-  String? selectedValue;
-  String? selectedValue2;
-  String? selectedValue3;
-  String? selectedValue4;
-  String? selectedValue5;
-
   @override
   Widget build(BuildContext context) {
     double leftRight = MediaQuery.of(context).size.width * 0.05;
@@ -131,74 +126,54 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
                 ),
               ),
               margin: const EdgeInsets.only(top: 80.0),
-              child: ListView(
+              child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
+                    padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
                     child: Column(
                       children: <Widget>[
+                        const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                         Row(
                           children: <Widget>[
-                            const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                            const SizedBox(width: 10,),
-                            CustomFilterFormField(
-                              items: rolesTemp,
-                              titleWidth: 150,
-                              dropdownWidth: 220,
-                              hint: 'Chức vụ',
-                              selectedValue: selectedValue,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedValue = value;
-                                });
-                              },
+                            const Expanded(
+                              child: CustomOutlinedButton(
+                                  title: 'Khối',
+                                  radius: 20.0,
+                                  color: mainBgColor
+                              ),
                             ),
-                            const SizedBox(width: 5.0,),
-                            CustomFilterFormField(
-                              items: blocksTemp,
-                              titleWidth: 130,
-                              dropdownWidth: 220,
-                              hint: 'Khối',
-                              selectedValue: selectedValue2,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedValue2 = value;
-                                });
+
+                            const Expanded(
+                              child: CustomOutlinedButton(
+                                  title: 'Phòng ban',
+                                  radius: 20.0,
+                                  color: mainBgColor
+                              ),
+                            ),
+
+                            const Expanded(
+                              child: CustomOutlinedButton(
+                                  title: 'Nhóm',
+                                  radius: 20,
+                                  color: mainBgColor
+                              ),
+                            ),
+
+                            const Expanded(
+                              child: CustomOutlinedButton(
+                                  title: 'Chức vụ',
+                                  radius: 20,
+                                  color: mainBgColor
+                              ),
+                            ),
+
+                            IconButton(
+                              icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
+                              onPressed: () {
                               },
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10.0,),
-                        Row(
-                          children: <Widget>[
-                            CustomFilterFormField(
-                              items: departmentTemp,
-                              titleWidth: 150,
-                              dropdownWidth: 150,
-                              hint: 'Phòng ban',
-                              selectedValue: selectedValue3,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedValue3 = value;
-                                });
-                              },
-                            ),
-                            const SizedBox(width: 5.0,),
-                            CustomFilterFormField(
-                              items: teamTemp,
-                              titleWidth: 150,
-                              dropdownWidth: 150,
-                              hint: 'Nhóm',
-                              selectedValue: selectedValue4,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedValue4 = value;
-                                });
-                              },
-                            ),
-                            const SizedBox(width: 5.0,),
-                          ],
-                        )
                       ],
                     ),
                   ),
@@ -236,7 +211,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
           //Card dưới
           Padding(
             padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.26),
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.21),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
