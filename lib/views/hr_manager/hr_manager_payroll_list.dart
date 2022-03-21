@@ -16,90 +16,90 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
   List<EmployeePayroll> empPayrolls = [
     EmployeePayroll(
         id: '1',
-        name: 'Tên 1',
-        role: 'NVKD',
-        department: 'Ban 1',
-        team: 'Nhóm A',
+        name: 'Đỗ Ðức Anh',
+        role: 'Nhân viên kinh doanh',
+        department: 'Phòng quảng cáo',
+        team: 'Nhóm Kiều Thủy',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '2',
-        name: 'Tên 2',
+        name: 'Tăng Quốc Ðiền',
         role: 'NVKD',
-        department: 'Ban 2',
-        team: 'Nhóm B',
+        department: 'Phòng quảng cáo',
+        team: 'Nhóm Kiều Thủy',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '3',
-        name: 'Tên 3',
+        name: 'Phương Thái Ðức',
         role: 'TNKD',
-        department: 'Ban 3',
-        team: 'Nhóm C',
+        department: 'Phòng quảng cáo',
+        team: 'Nhóm Kiều Thủy',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '4',
-        name: 'Tên 4',
+        name: 'Đức Ðông Dương',
         role: 'NVKD',
-        department: 'Ban 4',
-        team: 'Nhóm D',
+        department: 'Phòng quảng cáo',
+        team: 'Nhóm Kiều Thủy',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '5',
-        name: 'Tên 5',
+        name: 'Chương Tường Lâm',
         role: 'NVKD',
-        department: 'Ban 5',
-        team: 'Nhóm E',
+        department: 'Phòng quảng cáo',
+        team: 'Nhóm Thúy Anh',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '6',
-        name: 'Tên 6',
+        name: 'Liễu Quang Tài',
         role: 'TNKD',
-        department: 'Ban 6',
-        team: 'Nhóm F',
+        department: 'Phòng đào tạo',
+        team: 'Nhóm Thúy Anh',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '7',
-        name: 'Tên 7',
+        name: 'Cát Trung Thành',
         role: 'NVKD',
-        department: 'Ban 7',
-        team: 'Nhóm G',
+        department: 'Phòng đào tạo',
+        team: 'Nhóm Thúy Anh',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '8',
-        name: 'Tên 8',
+        name: 'Ao Hữu Vĩnh',
         role: 'NVKD',
-        department: 'Ban 8',
-        team: 'Nhóm H',
+        department: 'Phòng đào tạo',
+        team: 'Nhóm Thúy Anh',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '9',
-        name: 'Tên 9',
+        name: 'Bồ Việt Chính',
         role: 'NVKD',
-        department: 'Ban 9',
-        team: 'Nhóm I',
+        department: 'Phòng đào tạo',
+        team: 'Nhóm Văn Đại',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '10',
-        name: 'Tên 10',
+        name: 'Cung Bảo Ðịnh',
         role: 'NVKD',
-        department: 'Ban 10',
-        team: 'Nhóm K',
+        department: 'Phòng đào tạo',
+        team: 'Nhóm Văn Đại',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
     EmployeePayroll(
         id: '11',
-        name: 'Tên 11',
+        name: 'Đương Hùng Dũng',
         role: 'TPKD',
-        department: 'Ban 11',
-        team: 'Nhóm L',
+        department: 'Phòng đào tạo',
+        team: 'Nhóm Văn Đại',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
   ];
@@ -239,74 +239,64 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
                 child: ListView.builder(
                     itemCount: empPayrolls.length,
                     itemBuilder: (context, index) {
+                      final account = empPayrolls[index];
                       return Padding(
-                        padding: EdgeInsets.only(
-                            left: leftRight,
-                            right: leftRight,
-                            bottom: leftRight),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(15.0),
-                            ),
-                            border: Border.all(color: Colors.grey.shade400),
+                        padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
+                        child: Card(
+                          elevation: 10.0,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          child: ListTile(
-                            title: Text(empPayrolls[index].name),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
                               children: <Widget>[
+
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0, right: 20.0),
-                                  child: Column(
+                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                  child: Row(
                                     children: <Widget>[
-                                      Text(
-                                        'Phòng ban: ${empPayrolls[index].department}',
-                                        style: const TextStyle(fontSize: 12.0),
-                                      ),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Text(
-                                        'Nhóm: ${empPayrolls[index].team}',
-                                        style: const TextStyle(fontSize: 12.0),
-                                      ),
+                                      const Text('Tên nhân viên:'),
+                                      const Spacer(),
+                                      Text(account.name),
                                     ],
                                   ),
                                 ),
+
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Column(
+                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                  child: Row(
                                     children: <Widget>[
-                                      const Text(
-                                        'Tiền lương',
-                                        style: TextStyle(fontSize: 12.0),
-                                      ),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Text(
-                                        empPayrolls[index].payroll,
-                                        style: const TextStyle(fontSize: 12.0),
-                                      ),
+                                      const Text('Chức vụ:'),
+                                      const Spacer(),
+                                      Text(account.role),
                                     ],
                                   ),
-                                )
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      const Text('Nhóm:'),
+                                      const Spacer(),
+                                      Text(account.team),
+                                    ],
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      const Text('Phòng ban::'),
+                                      const Spacer(),
+                                      Text(account.department),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
-                            dense: true,
-                            subtitle: Text(empPayrolls[index].role),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          HrManagerPayrollDetail(
-                                            empPayrolls: empPayrolls[index],
-                                          )));
-                            },
                           ),
                         ),
                       );
@@ -314,6 +304,11 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
               ),
             ),
           ),
+
+          // onTap: () {
+          //   Navigator.push(context,
+          //       MaterialPageRoute(builder: (context) => HrManagerPayrollDetail(empPayrolls: empPayrolls[index],)));
+          // },
 
           Positioned(
             top: 0.0,

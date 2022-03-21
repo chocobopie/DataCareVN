@@ -236,7 +236,7 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                                             children: <Widget>[
                                               const Text('Người tạo:'),
                                               const Spacer(),
-                                              Text(_getContactOwnerName(contact.contactOwnerId!)),
+                                              Text(_getContactOwnerName(contact.contactOwnerId)),
                                             ],
                                           ),
                                         ),
