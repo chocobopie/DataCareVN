@@ -174,14 +174,14 @@ class ApiService {
     }
   }
 
-  Future<Deal> getADealbyDealId({required int dealId}) async {
-    String url = stockUrl + 'deals/$dealId';
+  Future<Deal> getADealByDealId({required int accountId, required int dealId}) async {
+    String url = stockUrl + 'deals?account-id=$accountId&deal-id=$dealId';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       print('Got deal by dealId | 200');
-      return Deal.fromJson(jsonResponse);
+      return Deal.fromJson(jsonResponse[0]);
     } else {
       throw Exception("Failed to get deal by dealId");
     }

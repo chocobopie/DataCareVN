@@ -283,11 +283,23 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 padding: const EdgeInsets.all(10.0),
                                 child: Column(
                                   children: <Widget>[
+
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
                                           Expanded(child: Text(deal.title, style: const TextStyle(fontSize: 18.0),)),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Mã số hợp đồng:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text('${deal.dealId}', style: const TextStyle(fontSize: 14.0),),
                                         ],
                                       ),
                                     ),
@@ -378,7 +390,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                   setState(() {
                     _deals.clear();
                   });
-                  _getADealByDealId(dealId: int.parse(value.toString()));
+                  _getADealByDealId(accountId: _currentAccount.accountId!, dealId: int.parse(value.toString()));
                 },
               ),
               actions: <Widget>[
@@ -390,8 +402,17 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                     _deals.clear();
                     setState(() {
                       _isSearching = false;
+                      _currentPage = 0;
+                      _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                      _contactName = 'Tất cả khách hàng';
+                      _filterContact = null;
+                      _filterAccount = Account();
+                      _fromDate = null;
+                      _toDate = null;
+                      _fromDateToDateString = 'Ngày chốt từ trước đến nay';
                       _getOverallInfo(_currentPage, _currentAccount);
                     });
+                    _refreshController.resetNoData();
                   },
                 ) : IconButton(
                   icon: const Icon(
@@ -497,8 +518,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     print('Max page: $_maxPages');
   }
 
-  void _getADealByDealId({required int dealId}) async {
-    Deal deal = await DealViewModel().getADealByDealId(dealId: dealId);
+  void _getADealByDealId({required int accountId, required int dealId}) async {
+    Deal deal = await DealViewModel().getADealbyDealId(accountId: accountId, dealId: dealId);
 
     setState(() {
       _deals.add(deal);

@@ -103,7 +103,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                           children: <Widget>[
                             CustomReadOnlyTextField(
                                 text: '${widget.deal.dealId}',
-                                title: 'ID hợp đồng'),
+                                title: 'Mã số hợp đồng'),
                             const SizedBox(height: 20.0,),
 
                             //Tiêu đề hợp đồng
@@ -328,7 +328,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                             // ),
                             CustomDatePicker(
                                 borderColor: _readOnly != true ? mainBgColor : null,
-                                label: 'Ngày đóng',
+                                label: 'Ngày chốt hợp đồng',
                                 hintText: _closeDate.isNotEmpty ? _closeDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
                                 onTap: _readOnly != true ? () async {
                                   FocusScope.of(context).requestFocus(FocusNode());

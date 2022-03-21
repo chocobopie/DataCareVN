@@ -23,7 +23,7 @@ class SaleEmpDealAddNew extends StatefulWidget {
 
 class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
-  late String _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
+  late String _closeDate = '';
 
   late final TextEditingController _dealTitle = TextEditingController();
   late final TextEditingController _dealStageId = TextEditingController();
@@ -250,7 +250,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                         decoration: InputDecoration(
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           contentPadding: const EdgeInsets.only(left: 20.0),
-                          labelText: 'Ngày đóng',
+                          labelText: 'Ngày chốt hợp đồng',
                           hintText: _closeDate,
                           labelStyle: const TextStyle(
                             color: Color.fromARGB(255, 107, 106, 144),

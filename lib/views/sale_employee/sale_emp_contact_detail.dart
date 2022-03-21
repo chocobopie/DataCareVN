@@ -83,7 +83,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                 child: fullname.isNotEmpty ? ListView(
                   children: <Widget>[
                     //Id khách hàng
-                    CustomReadOnlyTextField(text: '${widget.contact.contactId}', title: 'ID khách hàng'),
+                    CustomReadOnlyTextField(text: '${widget.contact.contactId}', title: 'Mã số khách hàng'),
                     const SizedBox(height: 20.0,),
 
                     //Tên khách hàng

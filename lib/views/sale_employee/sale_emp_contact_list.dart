@@ -25,7 +25,7 @@ class SaleEmpContactList extends StatefulWidget {
 class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   bool _isSearching = false;
-  String _fullname = '';
+  String _fullname = '', _searchString = '';
   late final GlobalKey<FormFieldState> _key = GlobalKey();
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
@@ -297,7 +297,11 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                 ),
                 onSubmitted: (value){
                   _currentPage = 0;
-                  _searchNameAndEmail(currentAccount: _currentAccount, query: value.toString());
+                  setState(() {
+                    _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                  });
+                  _searchString = value.toString();
+                  _searchNameAndEmail(currentAccount: _currentAccount, query: _searchString);
                 }
               ),
               actions: <Widget>[
@@ -307,8 +311,15 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                   ),
                   onPressed: (){
                     _contacts.clear();
+                    _searchString = '';
                     setState(() {
                       _isSearching = false;
+                      _filterAccount = Account();
+                      _currentPage = 0;
+                      _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                      _contactOwnerId = -1;
+                      _contacts.clear();
+                      _refreshController.resetNoData();
                       getOverallInfo(_currentPage, _currentAccount);
                     });
                   },
@@ -394,11 +405,16 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
       _key.currentState?.reset();
     });
 
-    if(_contactOwnerId == -1){
-      getOverallInfo(_currentPage, _currentAccount);
-    }else{
-      _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+    if(_isSearching == false || _searchString.isEmpty){
+      if(_contactOwnerId == -1){
+        getOverallInfo(_currentPage, _currentAccount);
+      }else{
+        _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+      }
+    }else if(_isSearching == true && _searchString.isNotEmpty){
+      _searchNameAndEmail(currentAccount: _currentAccount, query: _searchString);
     }
+
   }
 
   void _getAllSaleEmployee({required bool isRefresh}){
