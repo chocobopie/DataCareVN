@@ -112,7 +112,6 @@ class _HrManagerAttendanceReportState extends State<HrManagerAttendanceReport> {
                         DateTime _convertSelectDate = DateTime.parse( DateFormat('yyyy-MM-dd').format(_selectedDay) );
                         Navigator.push(context, MaterialPageRoute(
                             builder: (context) => HrManagerAttendanceList(
-                              selectedDate: _convertSelectDate,
                               attendanceType:  'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
                               userAttendances: userAttendances,
                             ),

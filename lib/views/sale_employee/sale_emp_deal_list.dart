@@ -31,7 +31,7 @@ class SaleEmpDealList extends StatefulWidget {
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false;
-  String _fullname = '', _fromDateToDateString = 'Ngày chốt từ trước đến nay', _contactName = 'Tất cả khách hàng';
+  String _fullname = 'Nhân viên', _fromDateToDateString = 'Ngày chốt', _contactName = 'Tên khách hàng';
   int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
@@ -49,9 +49,9 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getOverallInfo(_currentPage, _currentAccount);
-    setState(() {
-      _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
-    });
+    // setState(() {
+    //   _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+    // });
     _getAllSaleEmployee(isRefresh: true);
     _getAllContactByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage, limit: 1000000);
   }
@@ -92,7 +92,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                 topRight: Radius.circular(25),
               ),
             ),
-            margin: const EdgeInsets.only(top: 100.0),
+            margin: const EdgeInsets.only(top: 90.0),
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 10.0),
               child: Column(
@@ -179,13 +179,14 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                             }
                             setState(() {
                               _currentPage = 0;
-                              _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                              // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                              _fullname = 'Nhân viên';
                               _contactName = 'Tất cả khách hàng';
                               _filterContact = null;
                               _filterAccount = Account();
                               _fromDate = null;
                               _toDate = null;
-                              _fromDateToDateString = 'Ngày chốt từ trước đến nay';
+                              _fromDateToDateString = 'Ngày chốt';
                             });
                             _refreshController.resetNoData();
                             _getOverallInfo(_currentPage, _currentAccount);
@@ -288,7 +289,9 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
-                                          Expanded(child: Text(deal.title, style: const TextStyle(fontSize: 18.0),)),
+                                          const Text('Tiêu đề:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(deal.title, style: const TextStyle(fontSize: 14.0),),
                                         ],
                                       ),
                                     ),
@@ -342,9 +345,20 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
-                                          Expanded(child: Text('${deal.amount} VNĐ', style: const TextStyle(fontSize: 20.0),)),
+                                          const Text('Tiền trình hợp đồng:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
-                                          Text(dealStagesNameUtilities[deal.dealStageId])
+                                          Text(dealStagesNameUtilities[deal.dealStageId], style: const TextStyle(fontSize: 14.0),),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Số tiền:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text('${deal.amount} VNĐ', style: const TextStyle(fontSize: 14.0),),
                                         ],
                                       ),
                                     ),
@@ -403,13 +417,14 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                     setState(() {
                       _isSearching = false;
                       _currentPage = 0;
-                      _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                      // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                      _fullname = 'Nhân viên';
                       _contactName = 'Tất cả khách hàng';
                       _filterContact = null;
                       _filterAccount = Account();
                       _fromDate = null;
                       _toDate = null;
-                      _fromDateToDateString = 'Ngày chốt từ trước đến nay';
+                      _fromDateToDateString = 'Ngày chốt';
                       _getOverallInfo(_currentPage, _currentAccount);
                     });
                     _refreshController.resetNoData();

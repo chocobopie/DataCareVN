@@ -25,7 +25,7 @@ class SaleEmpContactList extends StatefulWidget {
 class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   bool _isSearching = false;
-  String _fullname = '', _searchString = '';
+  String _fullname = 'Nhân viên tạo', _searchString = '';
   late final GlobalKey<FormFieldState> _key = GlobalKey();
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
@@ -40,7 +40,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     if(_contacts.isEmpty){
       _currentAccount = Provider.of<AccountProvider>(context).account;
       getOverallInfo(_currentPage, _currentAccount);
-      _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+      // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
     }
     _getAllSaleEmployee(isRefresh: true);
   }
@@ -121,7 +121,8 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                             setState(() {
                               _filterAccount = Account();
                               _currentPage = 0;
-                              _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);;
+                              // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                              _fullname = 'Nhân viên tạo';
                               _contactOwnerId = -1;
                               _contacts.clear();
                               _refreshController.resetNoData();
@@ -229,7 +230,9 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
-                                          Expanded(child: Text(contact.fullname, style: const TextStyle(fontSize: 18),)),
+                                          const Text('Tên khách hàng:', style: TextStyle(fontSize: 14),),
+                                          const Spacer(),
+                                          Text(contact.fullname, style: const TextStyle(fontSize: 14),),
                                         ],
                                       ),
                                     ),
@@ -238,6 +241,8 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
+                                          const Text('Email:', style: TextStyle(fontSize: 14),),
+                                          const Spacer(),
                                           Text(contact.email, style: const TextStyle(fontSize: 14),),
                                         ],
                                       ),
@@ -247,6 +252,8 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 30.0),
                                       child: Row(
                                         children: <Widget>[
+                                          const Text('Số điện thoại:', style: TextStyle(fontSize: 14),),
+                                          const Spacer(),
                                           Text(contact.phoneNumber, style: const TextStyle(fontSize: 14),),
                                         ],
                                       ),
@@ -254,7 +261,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
                                     Row(
                                       children: <Widget>[
-                                        const Text('Nhân viên đại diện: ', style: TextStyle(fontSize: 14),),
+                                        const Text('Nhân viên tạo: ', style: TextStyle(fontSize: 14),),
                                         const Spacer(),
                                         Text(_getContactOwnerName(contact.contactOwnerId)),
                                       ],
@@ -290,10 +297,8 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                   icon: Icon(Icons.search,
                     color: Colors.blueGrey,
                   ),
-                  hintText: "Tìm theo tên hoặc email",
-                  hintStyle: TextStyle(
-                    color: Colors.blueGrey,
-                  ),
+                  hintText: "Tìm theo tên, email của khách hàng",
+                  hintStyle: TextStyle(color: Colors.blueGrey, fontSize: 14.0),
                 ),
                 onSubmitted: (value){
                   _currentPage = 0;

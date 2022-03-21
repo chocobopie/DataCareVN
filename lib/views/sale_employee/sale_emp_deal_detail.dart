@@ -108,6 +108,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                             //Tiêu đề hợp đồng
                             CustomEditableTextField(
+                              inputNumberOnly: false,
                               borderColor: _readOnly != true ? mainBgColor : null,
                               text: widget.deal.title,
                               title: 'Tiêu đề',

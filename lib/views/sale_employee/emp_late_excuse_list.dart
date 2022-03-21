@@ -16,7 +16,7 @@ class EmpLateExcuseList extends StatefulWidget {
 
 class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
 
-  String fromDateToDateString = 'Từ trước đến nay';
+  String fromDateToDateString = 'Ngày gửi đơn';
   DateTime? _fromDate, _toDate;
 
 
@@ -60,7 +60,7 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      const Text('Lọc theo ngày gửi đơn:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                      const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       const SizedBox(width: 10.0,),
 
                       CustomOutlinedButton(
@@ -87,7 +87,7 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                             setState(() {
                               _fromDate = null;
                               _toDate = null;
-                              fromDateToDateString = 'Từ trước đến nay';
+                              fromDateToDateString = 'Ngày gửi đơn';
                             });
                           },
                           icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)

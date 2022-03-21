@@ -20,4 +20,12 @@ class AccountListViewModel with ChangeNotifier{
     return accountList;
   }
 
+  Future<List<Account>> getAllAccount({required bool isRefresh, required int currentPage, required int accountId}) async {
+    List<Account> accountList = await ApiService().getAllAccounts(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId);
+
+    notifyListeners();
+
+    return accountList;
+  }
+
 }

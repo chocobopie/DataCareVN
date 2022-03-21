@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -17,6 +18,7 @@ class HomeAdmin extends StatelessWidget {
         name: 'Admin',
         role: rolesNameUtilities[_account.roleId!],
         imageUrl: 'assets/images/logo.png',
+        roleId: _account.roleId!,
       ),
       body: Stack(
         children: <Widget>[
@@ -36,9 +38,9 @@ class HomeAdmin extends StatelessWidget {
                   topRight: Radius.circular(30),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
+              margin: const EdgeInsets.only(top: 100.0),
               child: ListView(
-                padding: const EdgeInsets.only(top: 20.0, left: 35.0, right: 35.0, bottom: 10.0),
+                padding: const EdgeInsets.only(top: 20.0, left: 30.0),
                 children: <Widget>[
                   Row(
                     children: [
@@ -49,6 +51,17 @@ class HomeAdmin extends StatelessWidget {
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) => const AdminAccountList(),
+                            ));
+                          }
+                      ),
+                      const SizedBox(width: 30.0,),
+                      ImageTextButton(
+                          imageUrl: 'assets/images/attendance-report.png',
+                          text: 'Xem báo cáo điểm danh',
+                          buttonColors: const [Colors.green, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const HrManagerAttendanceReport(),
                             ));
                           }
                       ),
@@ -67,7 +80,7 @@ class HomeAdmin extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Admin",
+                "Quản trị viên",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

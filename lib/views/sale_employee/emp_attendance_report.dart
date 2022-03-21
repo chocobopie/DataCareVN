@@ -26,7 +26,7 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
   late Account currentAccount;
   int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
-  String fromDateToDateString = 'Từ trước đến nay';
+  String fromDateToDateString = 'Ngày';
   DateTime? _fromDate, _toDate;
 
   @override
@@ -69,7 +69,7 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                   children: [
                     Row(
                       children: <Widget>[
-                        const Text('Lọc theo ngày:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                        const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                         const SizedBox(width: 10.0,),
                         Expanded(
                           child: CustomOutlinedButton(
@@ -101,7 +101,7 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                                 _currentPage = 0;
                                 _fromDate = null;
                                 _toDate = null;
-                                fromDateToDateString = 'Từ trước đến nay';
+                                fromDateToDateString = 'Ngày';
                               });
                               _refreshController.resetNoData();
                               _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:login_sample/models/WorldTimeAPI.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/deal_stage.dart';
@@ -334,8 +335,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllAccounts() async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/accounts';
+  Future<List<Account>> getAllAccounts({required bool isRefresh, required currentPage, required int accountId}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'accounts?account-id=$accountId&page=$currentPage&limit=15';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -661,6 +666,20 @@ class ApiService {
       return WorldTimeApi.fromJson(jsonDecode(response.body));
     }else{
       throw Exception('Failed to get correct current time | 400');
+    }
+  }
+
+  //Block
+  Future<List<Block>> getAllBlocks() async {
+    String url = stockUrl + 'blocks';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get all blocks successfully | 200');
+      return jsonResponse.map((data) => Block.fromJson(data)).toList();
+    }else{
+      throw Exception('Failed to get blocks | 400');
     }
   }
 }

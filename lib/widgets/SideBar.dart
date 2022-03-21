@@ -4,11 +4,12 @@ import 'package:login_sample/views/employee/employee_profile.dart';
 
 
 class SideBar extends StatelessWidget {
-  const SideBar(BuildContext context, {Key? key, required this.name, required this.role, required this.imageUrl}) : super(key: key);
+  const SideBar(BuildContext context, {Key? key, required this.name, required this.role, required this.imageUrl, this.roleId}) : super(key: key);
 
   final String name;
   final String role;
   final String imageUrl;
+  final int? roleId;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,7 @@ class SideBar extends StatelessWidget {
                 ),
               ),
             ),
-            ListTile(
+            if(roleId != 0) ListTile(
               contentPadding: const EdgeInsets.only(left: 15.0),
               leading: const Icon(
                 Icons.person,
@@ -90,6 +91,24 @@ class SideBar extends StatelessWidget {
                   builder: (context) => const EmployeeProfile(),
                 ));
               }
+            ),
+            ListTile(
+                contentPadding: const EdgeInsets.only(left: 15.0),
+                leading: const Icon(
+                  Icons.password,
+                  color: Colors.blueGrey,
+                ),
+                title: const Text(
+                  'Đổi mật khẩu',
+                  style: TextStyle(
+                    color: Colors.blueGrey,
+                  ),
+                ),
+                onTap: () {
+                  // Navigator.push(context, MaterialPageRoute(
+                  //   builder: (context) => const EmployeeProfile(),
+                  // ));
+                }
             ),
             const Divider(),
             ListTile(

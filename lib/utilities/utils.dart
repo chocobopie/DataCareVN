@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/deal_stage.dart';
 import 'package:login_sample/models/deal_type.dart';
 import 'package:login_sample/models/department.dart';
@@ -31,6 +32,7 @@ List<ExcuseLateStatus> excuseLateStatuses = [];
 List<Gender> genders = [];
 List<Team> teams = [];
 List<Department> departments = [];
+List<Block> blocks = [];
 //List String
 List<String> dealServicesNameUtilities = [];
 List<String> dealVatsNameUtilities = [];
@@ -47,6 +49,27 @@ List<String> attendanceStatusUtilities = [
   'Trễ',
   'Vắng'
 ];
+List<String> blockNameUtilities = [];
+
+String getDepartmentName(int departmentId, blockId){
+  String name = '';
+  for(int i = 0; i < departments.length; i++){
+    if(departmentId == departments[i].departmentId && blockId == departments[i].blockId){
+      name = departments[i].name;
+    }
+  }
+  return name;
+}
+
+String getTeamName(int teamId, departmentId){
+  String name = '';
+  for(int i = 0; i < teams.length; i++){
+    if(teamId == teams[i].teamId && departmentId == teams[i].departmentId){
+      name = teams[i].name;
+    }
+  }
+  return name;
+}
 
 List<String> rolesTemp = [
   'Nhân viên kinh doanh',

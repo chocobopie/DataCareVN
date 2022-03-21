@@ -38,9 +38,25 @@ class _WrapperState extends State<Wrapper> {
     getAllGendersName();
     getAllTeams();
     geAllDepartment();
+    getAllBlocksName();
   }
 
   //Convert Future<List<Model> to List<Model> to List<String>
+  void getAllBlocksName(){
+    ApiService().getAllBlocks().then((value) {
+      if(blocks.isNotEmpty){
+        blocks.clear();
+      }
+      blocks.addAll(value);
+      if(blockNameUtilities.isNotEmpty){
+        blockNameUtilities.clear();
+      }
+      for(int i = 0; i < blocks.length; i++){
+        blockNameUtilities.add(blocks[i].name);
+      }
+    });
+  }
+
   void getAllDealServicesName(){
     ApiService().getAllService().then((value) {
         if(dealServices.isNotEmpty){
