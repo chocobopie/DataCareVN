@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/models/block.dart';
+import 'package:login_sample/models/department.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/view_models/block_list_view_model.dart';
+import 'package:login_sample/view_models/department_list_view_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class AdminBlockFilter extends StatefulWidget {
-  const AdminBlockFilter({Key? key}) : super(key: key);
+class AdminDepartmentFilter extends StatefulWidget {
+  const AdminDepartmentFilter({Key? key}) : super(key: key);
 
   @override
-  State<AdminBlockFilter> createState() => _AdminBlockFilterState();
+  State<AdminDepartmentFilter> createState() => _AdminDepartmentFilterState();
 }
 
-class _AdminBlockFilterState extends State<AdminBlockFilter> {
+class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
 
-  late final List<Block> _blocks = [];
+  late final List<Department> _departments = [];
 
   final RefreshController _refreshController = RefreshController();
-  final TextEditingController _searchBlockName = TextEditingController();
+  final TextEditingController _searchDepartmentName = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getAllBlocks();
+    _getAllDepartment();
   }
 
   @override
   void dispose() {
     super.dispose();
     _refreshController.dispose();
-    _searchBlockName.dispose();
+    _searchDepartmentName.dispose();
   }
 
   @override
@@ -59,12 +59,12 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                 children: <Widget>[
                   TextField(
                     style: const TextStyle(color: Colors.blueGrey,),
-                    controller: _searchBlockName,
+                    controller: _searchDepartmentName,
                     showCursor: true,
                     cursorColor: Colors.black,
                     onSubmitted: (value){
                       setState(() {
-                        _blocks.clear();
+                        _departments.clear();
                       });
 
                     },
@@ -72,18 +72,17 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                       icon: const Icon(Icons.search,
                         color: Colors.blueGrey,
                       ),
-                      suffixIcon: _searchBlockName.text.isNotEmpty ? IconButton(
+                      suffixIcon: _searchDepartmentName.text.isNotEmpty ? IconButton(
                         onPressed: (){
                           setState(() {
-                            _blocks.clear();
+                            _departments.clear();
                           });
                           _refreshController.resetNoData();
-                          _searchBlockName.clear();
-                          _getAllBlocks();
+                          _searchDepartmentName.clear();
                         },
                         icon: const Icon(Icons.clear),
                       ) : null,
-                      hintText: "Tìm theo tên của khối phòng",
+                      hintText: "Tìm theo tên phòng ban",
                       hintStyle: const TextStyle(
                         color: Colors.blueGrey,
                       ),
@@ -125,24 +124,24 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                       enablePullUp: true,
                       onRefresh: () async{
                         setState(() {
-                          _blocks.clear();
-                          _getAllBlocks();
+                          _departments.clear();
+                          _getAllDepartment();
 
-                          if(_blocks.isNotEmpty){
+                          if(_departments.isNotEmpty){
                             _refreshController.refreshCompleted();
                           }else{
                             _refreshController.refreshFailed();
                           }
                         });
                       },
-                      child: _blocks.isNotEmpty ? ListView.builder(
+                      child: _departments.isNotEmpty ? ListView.builder(
                           itemBuilder: (context, index) {
-                            final block = _blocks[index];
+                            final department = _departments[index];
                             return Padding(
                               padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.pop(context, block);
+                                  Navigator.pop(context, department);
                                 },
                                 child: Card(
                                   elevation: 10.0,
@@ -157,9 +156,20 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                                           padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
                                           child: Row(
                                             children: <Widget>[
-                                              const Text('Tên khối:'),
+                                              const Text('Tên phòng ban:'),
                                               const Spacer(),
-                                              Text(block.name),
+                                              Text(department.name),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              const Text('Thuộc khối:'),
+                                              const Spacer(),
+                                              Text(blockNameUtilities[department.blockId]),
                                             ],
                                           ),
                                         ),
@@ -170,7 +180,7 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                               ),
                             );
                           },
-                          itemCount: _blocks.length
+                          itemCount: _departments.length
                       ) : const Center(child: CircularProgressIndicator())
                   )
               ),
@@ -185,7 +195,7 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Lọc theo tên khối phòng",
+                "Lọc theo tên phòng ban",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,
@@ -199,16 +209,11 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
     );
   }
 
-  void _getAllBlocks() async {
-    List<Block> blockList = await BlockListViewModel().getAllBlocks();
+  void _getAllDepartment() async {
+    List<Department> departmentList = await DepartmentListViewModel().getAllDepartment();
 
-    if(blockList.isNotEmpty){
-      setState(() {
-        _blocks.addAll(blockList);
-      });
-    }else{
-      _refreshController.loadNoData();
-    }
+    setState(() {
+      _departments.addAll(departmentList);
+    });
   }
-
 }

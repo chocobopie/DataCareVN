@@ -4,6 +4,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_payroll_detail.dart';
 import 'package:login_sample/widgets/CustomFilterFormField.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:number_paginator/number_paginator.dart';
 
 class HrManagerPayrollList extends StatefulWidget {
   const HrManagerPayrollList({Key? key}) : super(key: key);
@@ -108,6 +109,17 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
   Widget build(BuildContext context) {
     double leftRight = MediaQuery.of(context).size.width * 0.05;
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Card(
+        elevation: 10.0,
+        child: NumberPaginator(
+          numberPages: 10,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+
+          },
+        ) ,
+      ),
       body: Stack(
         children: <Widget>[
           Container(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall3.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:number_paginator/number_paginator.dart';
 
 class HrManagerAttendanceList extends StatefulWidget {
   const HrManagerAttendanceList({Key? key, required this.attendanceType, required this.userAttendances}) : super(key: key);
@@ -91,6 +92,17 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Card(
+        elevation: 10.0,
+        child: NumberPaginator(
+          numberPages: 10,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+
+          },
+        ) ,
+      ),
       body: Stack(
         children: <Widget>[
           Container(

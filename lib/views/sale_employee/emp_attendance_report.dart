@@ -8,6 +8,7 @@ import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -44,6 +45,17 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Card(
+        elevation: 10.0,
+        child: NumberPaginator(
+          numberPages: 10,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+
+          },
+        ) ,
+      ),
       body: Stack(
         children: <Widget>[
           Container(

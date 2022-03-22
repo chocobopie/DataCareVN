@@ -56,52 +56,44 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Card(
-        elevation: 10.0,
-        child: _maxPages > 0 ? NumberPaginator(
-          numberPages: _maxPages,
-          buttonSelectedBackgroundColor: mainBgColor,
-          onPageChange: (int index) {
-            setState(() {
-              _currentPage = index;
-            });
-            if(_contactOwnerId == -1){
-              _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
-            } else {
-              _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-            }
-          },
-        ) : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => SaleEmpContactAddNew(account: _currentAccount,),
+                  )).then(_onGoBack);
+                },
+                backgroundColor: Colors.green,
+                child: const Icon(Icons.person_add),
+              ),
+            ),
+          ),
+          Card(
+            elevation: 10.0,
+            child: _maxPages > 0 ? NumberPaginator(
+              numberPages: _maxPages,
+              buttonSelectedBackgroundColor: mainBgColor,
+              onPageChange: (int index) {
+                setState(() {
+                  _currentPage = index;
+                });
+                if(_contactOwnerId == -1){
+                  _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                } else {
+                  _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                }
+              },
+            ) : null,
+          ),
+        ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context) => SaleEmpContactAddNew(account: _currentAccount,),
-          )).then(_onGoBack);
-        },
-        backgroundColor: Colors.green,
-        child: const Icon(Icons.person_add),
-      ),
-
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Card(
-      //   elevation: 10.0,
-      //   child: _maxPages > 0 ? NumberPaginator(
-      //     numberPages: _maxPages,
-      //     buttonSelectedBackgroundColor: mainBgColor,
-      //     onPageChange: (int index) {
-      //       setState(() {
-      //         _currentPage = index;
-      //       });
-      //       if(_contactOwnerId == -1){
-      //         _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
-      //       } else {
-      //         _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-      //       }
-      //     },
-      //   ) : null,
-      // ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -204,6 +196,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                 margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
                 child: _contacts.isNotEmpty ? SmartRefresher(
                   controller: _refreshController,
+                  enablePullUp: true,
                   onRefresh: () async{
                     setState(() {
                       _contacts.clear();

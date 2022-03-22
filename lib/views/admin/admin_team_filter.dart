@@ -1,34 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/models/block.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/view_models/block_list_view_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class AdminBlockFilter extends StatefulWidget {
-  const AdminBlockFilter({Key? key}) : super(key: key);
+class AdminTeamFilter extends StatefulWidget {
+  const AdminTeamFilter({Key? key}) : super(key: key);
 
   @override
-  State<AdminBlockFilter> createState() => _AdminBlockFilterState();
+  State<AdminTeamFilter> createState() => _AdminTeamFilterState();
 }
 
-class _AdminBlockFilterState extends State<AdminBlockFilter> {
+class _AdminTeamFilterState extends State<AdminTeamFilter> {
 
-  late final List<Block> _blocks = [];
+  late final List<Team> _teams = [];
 
   final RefreshController _refreshController = RefreshController();
-  final TextEditingController _searchBlockName = TextEditingController();
+  final TextEditingController _searchTeamName = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getAllBlocks();
   }
 
   @override
   void dispose() {
     super.dispose();
     _refreshController.dispose();
-    _searchBlockName.dispose();
+    _searchTeamName.dispose();
   }
 
   @override
@@ -59,12 +56,12 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                 children: <Widget>[
                   TextField(
                     style: const TextStyle(color: Colors.blueGrey,),
-                    controller: _searchBlockName,
+                    controller: _searchTeamName,
                     showCursor: true,
                     cursorColor: Colors.black,
                     onSubmitted: (value){
                       setState(() {
-                        _blocks.clear();
+                        _teams.clear();
                       });
 
                     },
@@ -72,14 +69,14 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                       icon: const Icon(Icons.search,
                         color: Colors.blueGrey,
                       ),
-                      suffixIcon: _searchBlockName.text.isNotEmpty ? IconButton(
+                      suffixIcon: _searchTeamName.text.isNotEmpty ? IconButton(
                         onPressed: (){
                           setState(() {
-                            _blocks.clear();
+                            _teams.clear();
                           });
                           _refreshController.resetNoData();
-                          _searchBlockName.clear();
-                          _getAllBlocks();
+                          _searchTeamName.clear();
+
                         },
                         icon: const Icon(Icons.clear),
                       ) : null,
@@ -125,19 +122,19 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                       enablePullUp: true,
                       onRefresh: () async{
                         setState(() {
-                          _blocks.clear();
-                          _getAllBlocks();
+                          _teams.clear();
 
-                          if(_blocks.isNotEmpty){
+
+                          if(_teams.isNotEmpty){
                             _refreshController.refreshCompleted();
                           }else{
                             _refreshController.refreshFailed();
                           }
                         });
                       },
-                      child: _blocks.isNotEmpty ? ListView.builder(
+                      child: _teams.isNotEmpty ? ListView.builder(
                           itemBuilder: (context, index) {
-                            final block = _blocks[index];
+                            final block = _teams[index];
                             return Padding(
                               padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
                               child: InkWell(
@@ -170,7 +167,7 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                               ),
                             );
                           },
-                          itemCount: _blocks.length
+                          itemCount: _teams.length
                       ) : const Center(child: CircularProgressIndicator())
                   )
               ),
@@ -199,16 +196,5 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
     );
   }
 
-  void _getAllBlocks() async {
-    List<Block> blockList = await BlockListViewModel().getAllBlocks();
-
-    if(blockList.isNotEmpty){
-      setState(() {
-        _blocks.addAll(blockList);
-      });
-    }else{
-      _refreshController.loadNoData();
-    }
-  }
 
 }

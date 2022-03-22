@@ -6,6 +6,7 @@ import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart'
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:number_paginator/number_paginator.dart';
 
 class EmpLateExcuseList extends StatefulWidget {
   const EmpLateExcuseList({Key? key}) : super(key: key);
@@ -35,6 +36,17 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Card(
+        elevation: 10.0,
+        child: NumberPaginator(
+          numberPages: 10,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+
+          },
+        ) ,
+      ),
       body: Stack(
         children: <Widget>[
           Container(

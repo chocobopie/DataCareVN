@@ -67,29 +67,42 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Card(
-        elevation: 10.0,
-        child: _maxPages > 0 ? NumberPaginator(
-          numberPages: _maxPages,
-          buttonSelectedBackgroundColor: mainBgColor,
-          onPageChange: (int index) {
-            setState(() {
-              _currentPage = index;
-              _deals.clear();
-            });
-            _getFilter(isRefresh: false);
-          },
-        ) : null,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context) => const SaleEmpDealAddNew(),
-          )).then(_onGoBack);
-        },
-        backgroundColor: Colors.green,
-        child: const Icon(Icons.plus_one),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => const SaleEmpDealAddNew(),
+                  )).then(_onGoBack);
+                },
+                backgroundColor: Colors.green,
+                child: const Icon(Icons.plus_one),
+              ),
+            ),
+          ),
+
+          Card(
+            elevation: 10.0,
+            child: _maxPages > 0 ? NumberPaginator(
+              numberPages: _maxPages,
+              buttonSelectedBackgroundColor: mainBgColor,
+              onPageChange: (int index) {
+                setState(() {
+                  _currentPage = index;
+                  _deals.clear();
+                });
+                _getFilter(isRefresh: false);
+              },
+            ) : null,
+          ),
+        ],
       ),
 
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -265,6 +278,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
                 child: _deals.isNotEmpty ? SmartRefresher(
                   controller: _refreshController,
+                  enablePullUp: true,
                   onRefresh: () async{
                     setState(() {
                       _deals.clear();

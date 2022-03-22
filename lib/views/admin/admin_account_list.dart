@@ -5,9 +5,11 @@ import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/views/admin/admin_block_filter.dart';
+import 'package:login_sample/views/admin/admin_department_filter.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'admin_account_add.dart';
@@ -26,7 +28,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
   late Account _currentAccount;
   late int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
-  String _blockNameString = 'Tên khối', _departmentNameString = 'Tên phòng ban' , _teamNameString = 'Tên nhóm', _roleNameString = 'Chức vụ';
+  String _blockNameString = 'Tên khối', _departmentNameString = 'Tên phòng' , _teamNameString = 'Tên nhóm', _roleNameString = 'Chức vụ';
 
   Block? _blockFilter;
   Team? _teamFilter;
@@ -47,17 +49,43 @@ class _AdminAccountListState extends State<AdminAccountList> {
 
   @override
   Widget build(BuildContext context) {
-    var account = Provider.of<AccountProvider>(context).account;
     return Scaffold(
-       floatingActionButton: account.roleId == 0 ? FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context) => const AdminAccountAdd(),
-          ));
-        },
-        backgroundColor: Colors.green,
-        child: const Icon(Icons.plus_one),
-      ) : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+       floatingActionButton: Column(
+         mainAxisAlignment: MainAxisAlignment.end,
+         children: <Widget>[
+           Padding(
+             padding: const EdgeInsets.only(left: 10.0),
+             child: Align(
+               alignment: Alignment.bottomLeft,
+               child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => const AdminAccountAdd(),
+                  ));
+                },
+                backgroundColor: Colors.green,
+                child: const Icon(Icons.plus_one),
+               ),
+             ),
+           ),
+
+           Card(
+             elevation: 10.0,
+             child: _maxPages > 0 ? NumberPaginator(
+               numberPages: _maxPages,
+               buttonSelectedBackgroundColor: mainBgColor,
+               onPageChange: (int index) {
+                 setState(() {
+                   _currentPage = index;
+                   _accounts.clear();
+                 });
+                 _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+               },
+             ) : null,
+           ),
+         ],
+       ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -79,16 +107,19 @@ class _AdminAccountListState extends State<AdminAccountList> {
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
+                  padding: const EdgeInsets.only(left: 5.0, top: 10.0),
                   child: Column(
                     children: <Widget>[
                       const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: CustomOutlinedButton(
+                      const SizedBox(height: 10.0,),
+                      SizedBox(
+                        height: 40.0,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: <Widget>[
+                            CustomOutlinedButton(
                                 title: _blockNameString,
-                                radius: 30.0,
+                                radius: 10.0,
                                 color: mainBgColor,
                                 onPressed: () async {
                                   final data = await Navigator.push(context, MaterialPageRoute(
@@ -102,41 +133,52 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   }
                                 },
                             ),
-                          ),
 
-                          Expanded(
-                            child: CustomOutlinedButton(
+                            CustomOutlinedButton(
                                 title: _departmentNameString,
-                                radius: 30.0,
-                                color: mainBgColor
+                                radius: 10.0,
+                                color: mainBgColor,
+                                onPressed: () async {
+                                  final data = await Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) => const AdminDepartmentFilter()
+                                  ));
+                                  if(data != null){
+                                     _departmentFilter = data;
+                                    setState(() {
+                                      _departmentNameString = _departmentFilter!.name;
+                                    });
+                                  }
+                                },
                             ),
-                          ),
 
-                          Expanded(
-                            child: CustomOutlinedButton(
+                            CustomOutlinedButton(
                                 title: _teamNameString,
-                                radius: 30,
+                                radius: 10,
                                 color: mainBgColor
                             ),
-                          ),
 
-                          Expanded(
-                            child: CustomOutlinedButton(
+                            CustomOutlinedButton(
                                 title: _roleNameString,
-                                radius: 30,
+                                radius: 10,
                                 color: mainBgColor
                             ),
-                          ),
 
-                          IconButton(
-                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
-                            onPressed: () {
-                              _refreshController.resetNoData();
-                              _accounts.clear();
-                              _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                            },
-                          ),
-                        ],
+                            IconButton(
+                              icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
+                              onPressed: () {
+                                setState(() {
+                                  _blockNameString = 'Tên khối';
+                                  _departmentNameString = 'Tên phòng';
+                                  _teamNameString = 'Tên nhóm';
+                                  _roleNameString = 'Chức vụ';
+                                  _accounts.clear();
+                                });
+                                _refreshController.resetNoData();
+                                _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -148,7 +190,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
             padding: EdgeInsets.only(
                 left: 0.0,
                 right: 0.0,
-                top: MediaQuery.of(context).size.height * 0.22),
+                top: MediaQuery.of(context).size.height * 0.23),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -181,27 +223,12 @@ class _AdminAccountListState extends State<AdminAccountList> {
                       setState(() {
                         _accounts.clear();
                       });
-                      _currentPage = 0;
-                      _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                      _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
 
                       if(_accounts.isNotEmpty){
                         _refreshController.refreshCompleted();
                       }else{
                         _refreshController.refreshFailed();
-                      }
-                    },
-                    onLoading: () async {
-                      if(_currentPage < _maxPages){
-                        setState(() {
-                          _currentPage++;
-                        });
-                      }
-                      _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
-
-                      if(_accounts.isNotEmpty){
-                        _refreshController.loadComplete();
-                      }else{
-                        _refreshController.loadFailed();
                       }
                     },
                     child: ListView.builder(
@@ -345,6 +372,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
 
     if(accountList.isNotEmpty){
       setState(() {
+        _accounts.clear();
         _accounts.addAll(accountList);
       });
       _maxPages = _accounts[0].maxPage!;
