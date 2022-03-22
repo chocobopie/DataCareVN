@@ -141,15 +141,18 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
             ),
             margin: const EdgeInsets.only(top: 90.0),
             child: Padding(
-              padding: const EdgeInsets.only(left: 10.0, top: 10.0),
+              padding: const EdgeInsets.only( top: 10.0),
               child: Column(
                 children: <Widget>[
                   const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                  Row(
-                    children: <Widget>[
-                      //Lọc theo nhân viên
-                      if(_currentAccount.roleId! == 3 || _currentAccount.roleId! == 4) Expanded(
-                        child: CustomOutlinedButton(
+                  const SizedBox(height: 10.0,),
+                  SizedBox(
+                    height: 40.0,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        //Lọc theo nhân viên
+                        if(_currentAccount.roleId! == 3 || _currentAccount.roleId! == 4) CustomOutlinedButton(
                             color: mainBgColor,
                             title: _fullname,
                             onPressed: () async {
@@ -168,11 +171,9 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               }
                             }, radius: 10,
                         ),
-                      ),
 
-                      //Lọc theo khách hàng
-                      Expanded(
-                        child: CustomOutlinedButton(
+                        //Lọc theo khách hàng
+                        CustomOutlinedButton(
                             title: _contactName,
                             radius: 10,
                             color: mainBgColor,
@@ -191,11 +192,9 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               }
                             },
                         ),
-                      ),
 
-                      //Lọc theo ngày
-                      Expanded(
-                        child: CustomOutlinedButton(
+                        //Lọc theo ngày
+                        CustomOutlinedButton(
                             title: _fromDateToDateString,
                             radius: 10,
                             color: mainBgColor,
@@ -216,31 +215,31 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               }
                             },
                         ),
-                      ),
 
 
-                      IconButton(
-                          onPressed: (){
-                            if(_deals.isNotEmpty){
-                              _deals.clear();
-                            }
-                            setState(() {
-                              _currentPage = 0;
-                              // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
-                              _fullname = 'Người quản lý hợp đồng';
-                              _contactName = 'Tên khách hàng';
-                              _filterContact = null;
-                              _filterAccount = Account();
-                              _fromDate = null;
-                              _toDate = null;
-                              _fromDateToDateString = 'Ngày chốt';
-                            });
-                            _refreshController.resetNoData();
-                            _getOverallInfo(_currentPage, _currentAccount);
-                          },
-                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
-                      ),
-                    ],
+                        IconButton(
+                            onPressed: (){
+                              if(_deals.isNotEmpty){
+                                _deals.clear();
+                              }
+                              setState(() {
+                                _currentPage = 0;
+                                // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                                _fullname = 'Người quản lý hợp đồng';
+                                _contactName = 'Tên khách hàng';
+                                _filterContact = null;
+                                _filterAccount = Account();
+                                _fromDate = null;
+                                _toDate = null;
+                                _fromDateToDateString = 'Ngày chốt';
+                              });
+                              _refreshController.resetNoData();
+                              _getOverallInfo(_currentPage, _currentAccount);
+                            },
+                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

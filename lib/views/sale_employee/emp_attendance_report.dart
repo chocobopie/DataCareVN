@@ -48,13 +48,22 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Card(
         elevation: 10.0,
-        child: NumberPaginator(
-          numberPages: 10,
+        child: _maxPages > 0 ? NumberPaginator(
+          numberPages: _maxPages,
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
 
+            setState(() {
+              _currentPage = index;
+              _attendances.clear();
+            });
+            if(_fromDate == null && _toDate == null){
+              _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
+            }else if(_toDate != null && _fromDate != null){
+              _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+            }
           },
-        ) ,
+        ) : null,
       ),
       body: Stack(
         children: <Widget>[
@@ -160,12 +169,11 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                     setState(() {
                       _attendances.clear();
                     });
-                    _currentPage = 0;
                     _refreshController.resetNoData();
                     if(_fromDate == null && _toDate == null){
-                      _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                      _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
                     }else if(_toDate != null && _fromDate != null){
-                      _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+                      _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
                     }
 
                     if(_attendances.isNotEmpty){
@@ -174,25 +182,24 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                       _refreshController.refreshFailed();
                     }
                   },
-
-                  onLoading: () async {
-                    if(_currentPage < _maxPages){
-                      setState(() {
-                        _currentPage++;
-                      });
-                      if(_fromDate == null && _toDate == null){
-                        _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
-                      }else if(_toDate != null && _fromDate != null){
-                        _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
-                      }
-                    }
-
-                    if(_attendances.isNotEmpty){
-                      _refreshController.loadComplete();
-                    }else{
-                      _refreshController.loadFailed();
-                    }
-                  },
+                  // onLoading: () async {
+                  //   if(_currentPage < _maxPages){
+                  //     setState(() {
+                  //       _currentPage++;
+                  //     });
+                  //     if(_fromDate == null && _toDate == null){
+                  //       _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                  //     }else if(_toDate != null && _fromDate != null){
+                  //       _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+                  //     }
+                  //   }
+                  //
+                  //   if(_attendances.isNotEmpty){
+                  //     _refreshController.loadComplete();
+                  //   }else{
+                  //     _refreshController.loadFailed();
+                  //   }
+                  // },
 
                   child: ListView.builder(
                       itemBuilder: (context, index) {
@@ -244,13 +251,16 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
   void _getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
     List<Attendance> listAttendance = await AttendanceListViewModel().getAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
+    _attendances.clear();
     if(listAttendance.isNotEmpty){
       setState(() {
         _attendances.addAll(listAttendance);
         _maxPages = _attendances[0].maxPage!;
       });
     }else{
-      _refreshController.loadNoData();
+      setState(() {
+        _refreshController.loadNoData();
+      });
     }
   }
 }

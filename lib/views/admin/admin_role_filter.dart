@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/role.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/view_models/department_list_view_model.dart';
+import 'package:login_sample/view_models/role_list_view_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class AdminDepartmentFilter extends StatefulWidget {
-  const AdminDepartmentFilter({Key? key}) : super(key: key);
+class AdminRoleFilter extends StatefulWidget {
+  const AdminRoleFilter({Key? key}) : super(key: key);
 
   @override
-  State<AdminDepartmentFilter> createState() => _AdminDepartmentFilterState();
+  State<AdminRoleFilter> createState() => _AdminRoleFilterState();
 }
 
-class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
+class _AdminRoleFilterState extends State<AdminRoleFilter> {
 
-  late final List<Department> _departments = [];
+  late final List<Role> _roles = [];
 
   final RefreshController _refreshController = RefreshController();
-  final TextEditingController _searchDepartmentName = TextEditingController();
+  final TextEditingController _searchRoleName = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getAllDepartment();
+    _getallRoles();
   }
 
   @override
   void dispose() {
     super.dispose();
     _refreshController.dispose();
-    _searchDepartmentName.dispose();
+    _searchRoleName.dispose();
   }
 
   @override
@@ -59,30 +59,31 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                 children: <Widget>[
                   TextField(
                     style: const TextStyle(color: Colors.blueGrey,),
-                    controller: _searchDepartmentName,
+                    controller: _searchRoleName,
                     showCursor: true,
                     cursorColor: Colors.black,
                     onSubmitted: (value){
                       setState(() {
-                        _departments.clear();
+                        _roles.clear();
                       });
-
+                      _getallRoles();
                     },
                     decoration: InputDecoration(
                       icon: const Icon(Icons.search,
                         color: Colors.blueGrey,
                       ),
-                      suffixIcon: _searchDepartmentName.text.isNotEmpty ? IconButton(
+                      suffixIcon: _searchRoleName.text.isNotEmpty ? IconButton(
                         onPressed: (){
                           setState(() {
-                            _departments.clear();
+                            _roles.clear();
                           });
                           _refreshController.resetNoData();
-                          _searchDepartmentName.clear();
+                          _searchRoleName.clear();
+                          _getallRoles();
                         },
                         icon: const Icon(Icons.clear),
                       ) : null,
-                      hintText: "Tìm theo tên phòng ban",
+                      hintText: "Tìm theo tên chức vụ",
                       hintStyle: const TextStyle(
                         color: Colors.blueGrey,
                       ),
@@ -124,24 +125,23 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                       enablePullUp: true,
                       onRefresh: () async{
                         setState(() {
-                          _departments.clear();
-                          _getAllDepartment();
-
-                          if(_departments.isNotEmpty){
-                            _refreshController.refreshCompleted();
-                          }else{
-                            _refreshController.refreshFailed();
-                          }
+                          _roles.clear();
                         });
+                        _getallRoles();
+                        if(_roles.isNotEmpty){
+                          _refreshController.refreshCompleted();
+                        }else{
+                          _refreshController.refreshFailed();
+                        }
                       },
-                      child: _departments.isNotEmpty ? ListView.builder(
+                      child: _roles.isNotEmpty ? ListView.builder(
                           itemBuilder: (context, index) {
-                            final department = _departments[index];
+                            final role = _roles[index];
                             return Padding(
                               padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.pop(context, department);
+                                  Navigator.pop(context, role);
                                 },
                                 child: Card(
                                   elevation: 10.0,
@@ -156,20 +156,9 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                                           padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
                                           child: Row(
                                             children: <Widget>[
-                                              const Text('Tên phòng ban:'),
+                                              const Text('Chức vụ:'),
                                               const Spacer(),
-                                              Text(department.name),
-                                            ],
-                                          ),
-                                        ),
-
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              const Text('Thuộc khối:'),
-                                              const Spacer(),
-                                              Text(blockNameUtilities[department.blockId]),
+                                              Text(role.name),
                                             ],
                                           ),
                                         ),
@@ -180,7 +169,7 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                               ),
                             );
                           },
-                          itemCount: _departments.length
+                          itemCount: _roles.length
                       ) : const Center(child: CircularProgressIndicator())
                   )
               ),
@@ -195,7 +184,7 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Lọc theo tên phòng ban",
+                "Lọc theo chức vụ",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,
@@ -209,11 +198,12 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
     );
   }
 
-  void _getAllDepartment() async {
-    List<Department> departmentList = await DepartmentListViewModel().getAllDepartment();
+  void _getallRoles() async {
+
+    List<Role> roleList = await RoleListViewModel().getAllRole();
 
     setState(() {
-      _departments.addAll(departmentList);
+      _roles.addAll(roleList);
     });
     _refreshController.loadNoData();
   }

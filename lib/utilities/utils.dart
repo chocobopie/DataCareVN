@@ -51,13 +51,22 @@ List<String> attendanceStatusUtilities = [
 ];
 List<String> blockNameUtilities = [];
 
-String getDepartmentName(int departmentId, blockId){
+String getDepartmentName(int departmentId, int? blockId){
   String name = '';
-  for(int i = 0; i < departments.length; i++){
-    if(departmentId == departments[i].departmentId && blockId == departments[i].blockId){
-      name = departments[i].name;
+  if(blockId != null){
+    for(int i = 0; i < departments.length; i++){
+      if(departmentId == departments[i].departmentId && blockId == departments[i].blockId){
+        name = departments[i].name;
+      }
+    }
+  }else{
+    for(int i = 0; i < departments.length; i++){
+      if(departmentId == departments[i].departmentId){
+        name = departments[i].name;
+      }
     }
   }
+
   return name;
 }
 

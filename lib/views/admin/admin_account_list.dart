@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/views/admin/admin_block_filter.dart';
 import 'package:login_sample/views/admin/admin_department_filter.dart';
+import 'package:login_sample/views/admin/admin_role_filter.dart';
+import 'package:login_sample/views/admin/admin_team_filter.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -33,6 +36,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
   Block? _blockFilter;
   Team? _teamFilter;
   Department? _departmentFilter;
+  Role? _roleFilter;
 
   @override
   void initState() {
@@ -154,13 +158,35 @@ class _AdminAccountListState extends State<AdminAccountList> {
                             CustomOutlinedButton(
                                 title: _teamNameString,
                                 radius: 10,
-                                color: mainBgColor
+                                color: mainBgColor,
+                                onPressed: () async {
+                                  final data = await Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) => const AdminTeamFilter()
+                                  ));
+                                  if(data != null){
+                                    _teamFilter = data;
+                                    setState(() {
+                                      _teamNameString = _teamFilter!.name;
+                                    });
+                                  }
+                                },
                             ),
 
                             CustomOutlinedButton(
                                 title: _roleNameString,
                                 radius: 10,
-                                color: mainBgColor
+                                color: mainBgColor,
+                                onPressed: () async {
+                                  final data = await Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) => const AdminRoleFilter()
+                                  ));
+                                  if(data != null){
+                                    _roleFilter = data;
+                                    setState(() {
+                                      _teamNameString = _roleFilter!.name;
+                                    });
+                                  }
+                                },
                             ),
 
                             IconButton(

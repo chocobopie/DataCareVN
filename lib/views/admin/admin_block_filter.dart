@@ -83,7 +83,7 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
                         },
                         icon: const Icon(Icons.clear),
                       ) : null,
-                      hintText: "Tìm theo tên của khối phòng",
+                      hintText: "Tìm theo tên của khối",
                       hintStyle: const TextStyle(
                         color: Colors.blueGrey,
                       ),
@@ -185,7 +185,7 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Lọc theo tên khối phòng",
+                "Lọc theo tên khối",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,
@@ -209,6 +209,7 @@ class _AdminBlockFilterState extends State<AdminBlockFilter> {
     }else{
       _refreshController.loadNoData();
     }
+    _refreshController.loadNoData();
   }
 
 }

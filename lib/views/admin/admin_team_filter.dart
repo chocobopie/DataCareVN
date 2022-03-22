@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/team.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/team_list_view_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminTeamFilter extends StatefulWidget {
@@ -19,6 +21,7 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
   @override
   void initState() {
     super.initState();
+    _getAllTeams();
   }
 
   @override
@@ -63,7 +66,7 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
                       setState(() {
                         _teams.clear();
                       });
-
+                      _getAllTeams();
                     },
                     decoration: InputDecoration(
                       icon: const Icon(Icons.search,
@@ -76,11 +79,11 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
                           });
                           _refreshController.resetNoData();
                           _searchTeamName.clear();
-
+                          _getAllTeams();
                         },
                         icon: const Icon(Icons.clear),
                       ) : null,
-                      hintText: "Tìm theo tên của khối phòng",
+                      hintText: "Tìm theo tên của nhóm",
                       hintStyle: const TextStyle(
                         color: Colors.blueGrey,
                       ),
@@ -123,8 +126,7 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
                       onRefresh: () async{
                         setState(() {
                           _teams.clear();
-
-
+                          _getAllTeams();
                           if(_teams.isNotEmpty){
                             _refreshController.refreshCompleted();
                           }else{
@@ -134,12 +136,12 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
                       },
                       child: _teams.isNotEmpty ? ListView.builder(
                           itemBuilder: (context, index) {
-                            final block = _teams[index];
+                            final team = _teams[index];
                             return Padding(
                               padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.pop(context, block);
+                                  Navigator.pop(context, team);
                                 },
                                 child: Card(
                                   elevation: 10.0,
@@ -154,9 +156,20 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
                                           padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
                                           child: Row(
                                             children: <Widget>[
-                                              const Text('Tên khối:'),
+                                              const Text('Tên nhóm:'),
                                               const Spacer(),
-                                              Text(block.name),
+                                              Text(team.name),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              const Text('Thuộc phòng:'),
+                                              const Spacer(),
+                                              Text(getDepartmentName(team.departmentId, null)),
                                             ],
                                           ),
                                         ),
@@ -182,7 +195,7 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Lọc theo tên khối phòng",
+                "Lọc theo tên nhóm",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,
@@ -196,5 +209,12 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
     );
   }
 
+  void _getAllTeams() async {
+    List<Team> teamList = await TeamListViewModel().getAllTeams();
 
+    setState(() {
+      _teams.addAll(teamList);
+    });
+    _refreshController.loadNoData();
+  }
 }
