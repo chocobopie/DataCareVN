@@ -46,9 +46,12 @@ class AuthProvider with ChangeNotifier{
 
       return Account.fromJson(jsonDecode(response.body));
     }else{
+
+      Account account = Account();
       _loggedInStatus = Status.loggedInFailed;
       notifyListeners();
-      throw Exception('Login failed');
+
+      return account;
     }
   }
 }

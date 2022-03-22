@@ -18,6 +18,8 @@ import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -31,7 +33,7 @@ class SaleEmpDealList extends StatefulWidget {
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false;
-  String _fullname = 'Nhân viên', _fromDateToDateString = 'Ngày chốt', _contactName = 'Tên khách hàng';
+  String _fullname = 'Người quản lý hợp đồng', _fromDateToDateString = 'Ngày chốt', _contactName = 'Tên khách hàng';
   int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
@@ -65,6 +67,21 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Card(
+        elevation: 10.0,
+        child: _maxPages > 0 ? NumberPaginator(
+          numberPages: _maxPages,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+            setState(() {
+              _currentPage = index;
+              _deals.clear();
+            });
+            _getFilter(isRefresh: false);
+          },
+        ) : null,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
@@ -74,6 +91,23 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
         backgroundColor: Colors.green,
         child: const Icon(Icons.plus_one),
       ),
+
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: Card(
+      //   elevation: 10.0,
+      //   child: _maxPages > 0 ? NumberPaginator(
+      //       numberPages: _maxPages,
+      //       buttonSelectedBackgroundColor: mainBgColor,
+      //       onPageChange: (int index) {
+      //         setState(() {
+      //           _currentPage = index;
+      //           _deals.clear();
+      //         });
+      //         _getFilter(isRefresh: false);
+      //       },
+      //   ) : null,
+      // ),
+
       body: Stack(
         children: <Widget>[
           Container(
@@ -180,8 +214,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                             setState(() {
                               _currentPage = 0;
                               // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
-                              _fullname = 'Nhân viên';
-                              _contactName = 'Tất cả khách hàng';
+                              _fullname = 'Người quản lý hợp đồng';
+                              _contactName = 'Tên khách hàng';
                               _filterContact = null;
                               _filterAccount = Account();
                               _fromDate = null;
@@ -231,16 +265,14 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
                 child: _deals.isNotEmpty ? SmartRefresher(
                   controller: _refreshController,
-                  enablePullUp: true,
                   onRefresh: () async{
                     setState(() {
                       _deals.clear();
                     });
                     _refreshController.resetNoData();
-                    _currentPage = 0;
                     print('Curent page: $_currentPage');
 
-                    _getFilter(isRefresh: true);
+                    _getFilter(isRefresh: false);
 
                     if(_deals.isNotEmpty){
                       _refreshController.refreshCompleted();
@@ -248,22 +280,22 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       _refreshController.refreshFailed();
                     }
                   },
-                  onLoading: () async{
-                    if(_currentPage < _maxPages){
-                      setState(() {
-                        _currentPage++;
-                      });
-                      _getFilter(isRefresh: false);
-                    }
-                    print('Curent page: $_currentPage');
-
-                    if(_deals.isNotEmpty){
-                       _refreshController.loadComplete();
-                    }else if(_deals.isEmpty){
-                       _refreshController.loadFailed();
-                    }
-
-                  },
+                  // onLoading: () async{
+                  //   if(_currentPage < _maxPages){
+                  //     setState(() {
+                  //       _currentPage++;
+                  //     });
+                  //     _getFilter(isRefresh: false);
+                  //   }
+                  //   print('Curent page: $_currentPage');
+                  //
+                  //   if(_deals.isNotEmpty){
+                  //      _refreshController.loadComplete();
+                  //   }else if(_deals.isEmpty){
+                  //      _refreshController.loadFailed();
+                  //   }
+                  //
+                  // },
                   child: ListView.builder(
                     itemBuilder: (context, index){
                       final deal = _deals[index];
@@ -418,8 +450,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       _isSearching = false;
                       _currentPage = 0;
                       // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
-                      _fullname = 'Nhân viên';
-                      _contactName = 'Tất cả khách hàng';
+                      _fullname = 'Người quản lý hợp đồng';
+                      _contactName = 'Tên khách hàng';
                       _filterContact = null;
                       _filterAccount = Account();
                       _fromDate = null;
@@ -505,6 +537,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     List<Deal> dealList = await DealListViewModel().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, contactId: contactId);
     if(dealList.isNotEmpty){
       setState(() {
+        _deals.clear();
         _deals.addAll(dealList);
       });
         _maxPages = _deals[0].maxPage!;
@@ -522,6 +555,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
     if(dealList.isNotEmpty){
       setState(() {
+        _deals.clear();
         _deals.addAll(dealList);
       });
       _maxPages = _deals[0].maxPage!;

@@ -218,7 +218,7 @@ class _HrManagerAttendanceListState extends State<HrManagerAttendanceList> {
                               ],
                             ),
                             dense: true,
-                            subtitle: const Text('Chức vụ'),
+                            subtitle: const Text('Nhân viên kinh doanh'),
                           ),
                         ),
                       );

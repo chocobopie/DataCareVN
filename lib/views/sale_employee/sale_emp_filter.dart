@@ -19,13 +19,13 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
   late final List<Account> _salesEmployees = [];
-  late Account currentAccount;
+  late Account _currentAccount;
   final TextEditingController _searchEmployeeName = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _filterSaleEmployee(isRefresh: true);
   }
 
@@ -72,7 +72,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                             _salesEmployees.clear();
                           }
                           _currentPage = 0;
-                          _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId: currentAccount.departmentId!, blockId:  currentAccount.blockId!, fullname: _searchEmployeeName.text);
+                          _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId: _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
                         },
                         decoration: InputDecoration(
                           icon: const Icon(Icons.search,
@@ -136,7 +136,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                       _currentPage = 0;
                       _refreshController.resetNoData();
                       if(_searchEmployeeName.text.isNotEmpty){
-                        _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId:  currentAccount.departmentId!, blockId:  currentAccount.blockId!, fullname: _searchEmployeeName.text);
+                        _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
                       }else{
                         _filterSaleEmployee(isRefresh: true);
                       }
@@ -154,7 +154,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                         });
                         print('Current page: $_currentPage');
                         if(_searchEmployeeName.text.isNotEmpty){
-                          _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  currentAccount.departmentId!, blockId:  currentAccount.blockId!, fullname: _searchEmployeeName.text);
+                          _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
                         }else{
                           _filterSaleEmployee(isRefresh: false);
                         }
@@ -275,10 +275,10 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   }
 
   void _filterSaleEmployee({required bool isRefresh}){
-    if(currentAccount.roleId == 4 || currentAccount.roleId == 5){
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: currentAccount.blockId!, departmentId:  currentAccount.departmentId!, teamId: currentAccount.teamId);
+    if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId);
     }else{
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: currentAccount.blockId!, departmentId:  currentAccount.departmentId!);
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!);
     }
   }
 

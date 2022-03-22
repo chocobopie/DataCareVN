@@ -54,7 +54,7 @@ class _SaleEmpDealTimelineState extends State<SaleEmpDealTimeline> {
               ),
               margin: const EdgeInsets.only(top: 100.0),
               child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.only(left: 5.0, right: 5.0),
                   child: _timeLines.isNotEmpty ? SmartRefresher(
                     controller: _refreshController,
                     enablePullUp: true,
@@ -84,17 +84,32 @@ class _SaleEmpDealTimelineState extends State<SaleEmpDealTimeline> {
                         _refreshController.loadFailed();
                       }
                     },
-                    child: ListView.separated(
+                    child: ListView.builder(
                         itemBuilder: (context, index) {
                           final timeline = _timeLines[index];
-                          return ListTile(
-                            title: Text(timeline.line),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Divider(
-                            height: 1,
-                            thickness: 2,
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Card(
+                              elevation: 10.0,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                      child: Row(
+                                         children: <Widget>[
+                                           Expanded(child: Text(timeline.line)),
+                                         ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
                           );
                         },
                         itemCount: _timeLines.length

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/block.dart';
+import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/team.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
+import 'package:login_sample/views/admin/admin_block_filter.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'admin_account_add.dart';
 
 class AdminAccountList extends StatefulWidget {
@@ -19,7 +24,13 @@ class _AdminAccountListState extends State<AdminAccountList> {
   late final List<Account> _accounts = [];
   bool _isSearching = false;
   late Account _currentAccount;
-  final int _currentPage = 0;
+  late int _currentPage = 0, _maxPages = 0;
+  final RefreshController _refreshController = RefreshController();
+  String _blockNameString = 'Tên khối', _departmentNameString = 'Tên phòng ban' , _teamNameString = 'Tên nhóm', _roleNameString = 'Chức vụ';
+
+  Block? _blockFilter;
+  Team? _teamFilter;
+  Department? _departmentFilter;
 
   @override
   void initState() {
@@ -31,6 +42,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
   @override
   void dispose() {
     super.dispose();
+    _refreshController.dispose();
   }
 
   @override
@@ -70,36 +82,47 @@ class _AdminAccountListState extends State<AdminAccountList> {
                   padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
                   child: Column(
                     children: <Widget>[
-                      const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                      const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       Row(
                         children: <Widget>[
-                          const Expanded(
+                          Expanded(
                             child: CustomOutlinedButton(
-                                title: 'Khối',
+                                title: _blockNameString,
+                                radius: 30.0,
+                                color: mainBgColor,
+                                onPressed: () async {
+                                  final data = await Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => const AdminBlockFilter()
+                                  ));
+                                  if(data != null){
+                                    _blockFilter = data;
+                                    setState(() {
+                                      _blockNameString = _blockFilter!.name;
+                                    });
+                                  }
+                                },
+                            ),
+                          ),
+
+                          Expanded(
+                            child: CustomOutlinedButton(
+                                title: _departmentNameString,
                                 radius: 30.0,
                                 color: mainBgColor
                             ),
                           ),
 
-                          const Expanded(
+                          Expanded(
                             child: CustomOutlinedButton(
-                                title: 'Phòng ban',
-                                radius: 30.0,
-                                color: mainBgColor
-                            ),
-                          ),
-
-                          const Expanded(
-                            child: CustomOutlinedButton(
-                                title: 'Nhóm',
+                                title: _teamNameString,
                                 radius: 30,
                                 color: mainBgColor
                             ),
                           ),
 
-                          const Expanded(
+                          Expanded(
                             child: CustomOutlinedButton(
-                                title: 'Chức vụ',
+                                title: _roleNameString,
                                 radius: 30,
                                 color: mainBgColor
                             ),
@@ -108,6 +131,9 @@ class _AdminAccountListState extends State<AdminAccountList> {
                           IconButton(
                             icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
                             onPressed: () {
+                              _refreshController.resetNoData();
+                              _accounts.clear();
+                              _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
                             },
                           ),
                         ],
@@ -148,78 +174,109 @@ class _AdminAccountListState extends State<AdminAccountList> {
                     ),
                   ),
 
-                  child: _accounts.isNotEmpty ? ListView.builder(
-                      itemBuilder: (context, index) {
-                        final account = _accounts[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Card(
-                              elevation: 10.0,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10))
-                              ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
-                                        const Spacer(),
-                                        Text(account.fullname!, style: const TextStyle(fontSize: 20.0),),
-                                      ],
+                  child: _accounts.isNotEmpty ? SmartRefresher(
+                    controller: _refreshController,
+                    enablePullUp: true,
+                    onRefresh: () async {
+                      setState(() {
+                        _accounts.clear();
+                      });
+                      _currentPage = 0;
+                      _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+
+                      if(_accounts.isNotEmpty){
+                        _refreshController.refreshCompleted();
+                      }else{
+                        _refreshController.refreshFailed();
+                      }
+                    },
+                    onLoading: () async {
+                      if(_currentPage < _maxPages){
+                        setState(() {
+                          _currentPage++;
+                        });
+                      }
+                      _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+
+                      if(_accounts.isNotEmpty){
+                        _refreshController.loadComplete();
+                      }else{
+                        _refreshController.loadFailed();
+                      }
+                    },
+                    child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          final account = _accounts[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: Card(
+                                elevation: 10.0,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10))
+                                ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(account.fullname!, style: const TextStyle(fontSize: 20.0),),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Khối', style: TextStyle(fontSize: 12.0),),
-                                        const Spacer(),
-                                        Text(blockNameUtilities[account.blockId!]),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Khối', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(blockNameUtilities[account.blockId!]),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  if(account.departmentId != null) Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Phòng:', style: TextStyle(fontSize: 12.0),),
-                                        const Spacer(),
-                                        Text(getDepartmentName(account.departmentId!, account.blockId))
-                                      ],
+                                    if(account.departmentId != null) Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Phòng:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(getDepartmentName(account.departmentId!, account.blockId))
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  if(account.teamId != null) Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Nhóm:', style: TextStyle(fontSize: 12.0),),
-                                        const Spacer(),
-                                        Text(getTeamName(account.teamId!, account.departmentId!))
-                                      ],
+                                    if(account.teamId != null) Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Nhóm:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(getTeamName(account.teamId!, account.departmentId!))
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Chức vụ:', style: TextStyle(fontSize: 12.0),),
-                                        const Spacer(),
-                                        Text(rolesNameUtilities[account.roleId!]),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Chức vụ:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(rolesNameUtilities[account.roleId!]),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      itemCount: _accounts.length,
-                      ) : const Center(child: CircularProgressIndicator())
+                          );
+                        },
+                        itemCount: _accounts.length,
+                        ),
+                  ) : const Center(child: CircularProgressIndicator())
                   )
               ),
             ),
@@ -251,7 +308,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                     Icons.search,
                     color: Colors.blueGrey,
                   ),
-                  hintText: "Tìm theo tên",
+                  hintText: "Tìm theo tên của nhân viên",
                   hintStyle: TextStyle(
                     color: Colors.blueGrey,
                   ),
@@ -264,15 +321,11 @@ class _AdminAccountListState extends State<AdminAccountList> {
                     Icons.cancel,
                   ),
                   onPressed: () {
-                    setState(() {
-                      _isSearching = false;
-                    });
+                    setState(() {_isSearching = false;});
                   },
                 )
                     : IconButton(
-                  icon: const Icon(
-                    Icons.search,
-                  ),
+                  icon: const Icon(Icons.search,),
                   onPressed: () {
                     setState(() {
                       _isSearching = true;
@@ -293,6 +346,11 @@ class _AdminAccountListState extends State<AdminAccountList> {
     if(accountList.isNotEmpty){
       setState(() {
         _accounts.addAll(accountList);
+      });
+      _maxPages = _accounts[0].maxPage!;
+    }else{
+      setState(() {
+        _refreshController.loadNoData();
       });
     }
   }

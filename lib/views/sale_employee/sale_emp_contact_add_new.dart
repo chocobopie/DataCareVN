@@ -223,6 +223,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       ),
                       child: TextButton(
                         onPressed: (){
+
                           if(_contactName.text.isNotEmpty && _contactCompanyName.text.isNotEmpty && _contactPhoneNumber.text.isNotEmpty
                              && _contactEmail.text.isNotEmpty && _contactGender.text.isNotEmpty && _contactLeadSourceId.text.isNotEmpty){
                             Contact contact = Contact(
@@ -235,6 +236,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                               genderId: int.parse(_contactGender.text),
                               leadSourceId: int.parse(_contactLeadSourceId.text)
                             );
+
                             ApiService().createNewContact(contact);
                             Future.delayed(const Duration(seconds: 2), (){
                               Navigator.pop(context);

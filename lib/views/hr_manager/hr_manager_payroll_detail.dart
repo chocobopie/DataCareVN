@@ -108,16 +108,17 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                     const SizedBox(
                       height: 20.0,
                     ),
-                    BonusExpansionTile(
-                        personalNewSignController: personalNewSignController,
-                        personalReSignController: personalReSignController,
-                        manageController: manageController,
-                        supporterController: supporterController,
-                        club20Controller: club20Controller,
-                        recruitmentController: recruitmentController,
-                        personalBonusController: personalBonusController,
-                        teamBonusController: teamBonusController,
-                        cttdBonusController: cttdBonusController),
+                    // BonusExpansionTile(
+                    //     personalNewSignController: personalNewSignController,
+                    //     personalReSignController: personalReSignController,
+                    //     manageController: manageController,
+                    //     supporterController: supporterController,
+                    //     club20Controller: club20Controller,
+                    //     recruitmentController: recruitmentController,
+                    //     personalBonusController: personalBonusController,
+                    //     teamBonusController: teamBonusController,
+                    //     cttdBonusController: cttdBonusController
+                    // ),
                   ],
                 ),
               )),

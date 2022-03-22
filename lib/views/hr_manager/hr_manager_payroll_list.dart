@@ -135,13 +135,13 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
                         const Text('LỌC THEO', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                         Row(
                           children: <Widget>[
-                            const Expanded(
-                              child: CustomOutlinedButton(
-                                  title: 'Khối',
-                                  radius: 20.0,
-                                  color: mainBgColor
-                              ),
-                            ),
+                            // const Expanded(
+                            //   child: CustomOutlinedButton(
+                            //       title: 'Khối',
+                            //       radius: 20.0,
+                            //       color: mainBgColor
+                            //   ),
+                            // ),
 
                             const Expanded(
                               child: CustomOutlinedButton(
@@ -242,60 +242,66 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
                       final account = empPayrolls[index];
                       return Padding(
                         padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
-                        child: Card(
-                          elevation: 10.0,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              children: <Widget>[
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => HrManagerPayrollDetail(empPayrolls: account,)));
+                          },
+                          child: Card(
+                            elevation: 10.0,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: <Widget>[
 
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      const Text('Tên nhân viên:'),
-                                      const Spacer(),
-                                      Text(account.name),
-                                    ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Tên nhân viên:'),
+                                        const Spacer(),
+                                        Text(account.name),
+                                      ],
+                                    ),
                                   ),
-                                ),
 
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      const Text('Chức vụ:'),
-                                      const Spacer(),
-                                      Text(account.role),
-                                    ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Chức vụ:'),
+                                        const Spacer(),
+                                        Text(account.role),
+                                      ],
+                                    ),
                                   ),
-                                ),
 
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      const Text('Nhóm:'),
-                                      const Spacer(),
-                                      Text(account.team),
-                                    ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Nhóm:'),
+                                        const Spacer(),
+                                        Text(account.team),
+                                      ],
+                                    ),
                                   ),
-                                ),
 
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      const Text('Phòng ban::'),
-                                      const Spacer(),
-                                      Text(account.department),
-                                    ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Phòng ban::'),
+                                        const Spacer(),
+                                        Text(account.department),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -304,11 +310,6 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
               ),
             ),
           ),
-
-          // onTap: () {
-          //   Navigator.push(context,
-          //       MaterialPageRoute(builder: (context) => HrManagerPayrollDetail(empPayrolls: empPayrolls[index],)));
-          // },
 
           Positioned(
             top: 0.0,

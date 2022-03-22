@@ -325,23 +325,23 @@ class _HomeSaleLeaderState extends State<HomeSaleLeader> {
                     ),
                   ),
                   //Hàng 3
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0, left: 20),
-                        child: ImageTextButton(
-                            imageUrl: 'assets/images/issue.png',
-                            text: 'Vấn đề',
-                            buttonColors: const [Colors.grey, Colors.white],
-                            onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const EmpIssue(),
-                              ));
-                            }
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Padding(
+                  //       padding: const EdgeInsets.only(top: 20.0, left: 20),
+                  //       child: ImageTextButton(
+                  //           imageUrl: 'assets/images/issue.png',
+                  //           text: 'Vấn đề',
+                  //           buttonColors: const [Colors.grey, Colors.white],
+                  //           onPressed: (){
+                  //             Navigator.push(context, MaterialPageRoute(
+                  //               builder: (context) => const EmpIssue(),
+                  //             ));
+                  //           }
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               )
           ),

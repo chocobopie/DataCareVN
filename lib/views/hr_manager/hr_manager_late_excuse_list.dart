@@ -164,7 +164,7 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
                                   ),
                                 ],
                               ),
-                              subtitle: const Text('Chức vụ'),
+                              subtitle: const Text('Nhân viên kinh doanh'),
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.only(left: 15.0, bottom: 5.0),
@@ -188,7 +188,7 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
                                 const Padding(
                                   padding: EdgeInsets.only(left: 15.0, right: 15.0),
                                   child: Align(
-                                      child: Text('Lý do: [Lý do chính đáng]',
+                                      child: Text('Lý do: Xe xẹp lốp',
                                         style: TextStyle(color: Colors.blue, fontSize: 14.0),
                                       ),
                                     alignment: Alignment.centerLeft,

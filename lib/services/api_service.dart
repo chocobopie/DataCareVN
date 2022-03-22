@@ -106,10 +106,10 @@ class ApiService {
     return response;
   }
 
-  Future<http.Response> createNewContact(Contact contact) {
+  Future<Contact> createNewContact(Contact contact) async {
     String url = 'https://trungpd2022.azurewebsites.net/api/v1/contacts';
-    return http.post(
-      Uri.parse(url),
+
+    final response = await http.post(Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -123,6 +123,18 @@ class ApiService {
         'genderId': contact.genderId
       }),
     );
+
+    if(response.statusCode == 200){
+      print('Create new contact successfully');
+
+      return Contact.fromJson(jsonDecode(response.body));
+    }else{
+      print('Create new contact failed');
+
+      Contact? contact;
+
+      return contact!;
+    }
   }
 
   Future<http.Response> updateAContact(Contact contact){
@@ -238,9 +250,10 @@ class ApiService {
     }
   }
 
-  Future<http.Response> createNewDeal(Deal deal) {
+  Future<Deal> createNewDeal(Deal deal) async {
     String url = 'https://trungpd2022.azurewebsites.net/api/v1/deals';
-    return http.post(
+
+    final response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -258,6 +271,18 @@ class ApiService {
         'contactId': deal.contactId
       }),
     );
+
+    if(response.statusCode == 200){
+      print('Create new deal successfully | 200');
+
+      return Deal.fromJson(jsonDecode(response.body));
+    }else{
+      print('Failed to create new deal | 400');
+
+      Deal? deal;
+
+      return deal!;
+    }
   }
 
   Future<http.Response> deleteDeal(int dealId) async {

@@ -323,6 +323,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                       ),
                       child: TextButton(
                         onPressed: () {
+
                           if(_dealTitle.text.isNotEmpty && _dealStageId.text.isNotEmpty && _dealAmount.text.isNotEmpty &&  _dealOwnerId.text.isNotEmpty
                           && _dealVatId.text.isNotEmpty && _dealServiceId.text.isNotEmpty && _dealTypeId.text.isNotEmpty && _dealContactId.text.isNotEmpty ){
                             Deal deal = Deal(

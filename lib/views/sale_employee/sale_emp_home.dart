@@ -111,20 +111,20 @@ class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
                   ),
                   const SizedBox(height: 20.0,),
                   //Hàng 3
-                  Row(
-                    children: [
-                      ImageTextButton(
-                          imageUrl: 'assets/images/issue.png',
-                          text: 'Xem vấn đề',
-                          buttonColors: const [Colors.grey, Colors.white],
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const EmpIssue(),
-                            ));
-                          }
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     ImageTextButton(
+                  //         imageUrl: 'assets/images/issue.png',
+                  //         text: 'Xem vấn đề',
+                  //         buttonColors: const [Colors.grey, Colors.white],
+                  //         onPressed: (){
+                  //           Navigator.push(context, MaterialPageRoute(
+                  //             builder: (context) => const EmpIssue(),
+                  //           ));
+                  //         }
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               )
           ),

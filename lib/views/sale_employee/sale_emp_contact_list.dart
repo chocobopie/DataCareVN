@@ -10,6 +10,7 @@ import 'package:login_sample/views/sale_employee/sale_emp_contact_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -55,6 +56,24 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Card(
+        elevation: 10.0,
+        child: _maxPages > 0 ? NumberPaginator(
+          numberPages: _maxPages,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+            setState(() {
+              _currentPage = index;
+            });
+            if(_contactOwnerId == -1){
+              _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
+            } else {
+              _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+            }
+          },
+        ) : null,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
@@ -64,6 +83,25 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
         backgroundColor: Colors.green,
         child: const Icon(Icons.person_add),
       ),
+
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: Card(
+      //   elevation: 10.0,
+      //   child: _maxPages > 0 ? NumberPaginator(
+      //     numberPages: _maxPages,
+      //     buttonSelectedBackgroundColor: mainBgColor,
+      //     onPageChange: (int index) {
+      //       setState(() {
+      //         _currentPage = index;
+      //       });
+      //       if(_contactOwnerId == -1){
+      //         _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
+      //       } else {
+      //         _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+      //       }
+      //     },
+      //   ) : null,
+      // ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -166,18 +204,16 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                 margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
                 child: _contacts.isNotEmpty ? SmartRefresher(
                   controller: _refreshController,
-                  enablePullUp: true,
                   onRefresh: () async{
                     setState(() {
                       _contacts.clear();
                     });
-                    _currentPage = 0;
                     _refreshController.resetNoData();
                     print('Current page: $_currentPage');
                     if(_contactOwnerId == -1){
-                      _getAllContactByAccountId(isRefresh: true ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                      _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
                     } else {
-                      _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                      _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                     }
 
                     if(_contacts.isNotEmpty){
@@ -186,25 +222,25 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       _refreshController.refreshFailed();
                     }
                   },
-                  onLoading: () async{
-                    if(_currentPage < _maxPages){
-                      setState(() {
-                        _currentPage++;
-                      });
-                      print('Current page: $_currentPage');
-                      if(_contactOwnerId == -1){
-                        _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                      } else {
-                        _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-                      }
-                    }
-
-                    if(_contacts.isNotEmpty){
-                      _refreshController.loadComplete();
-                    }else{
-                      _refreshController.loadFailed();
-                    }
-                  },
+                  // onLoading: () async{
+                  //   if(_currentPage < _maxPages){
+                  //     setState(() {
+                  //       _currentPage++;
+                  //     });
+                  //     print('Current page: $_currentPage');
+                  //     if(_contactOwnerId == -1){
+                  //       _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                  //     } else {
+                  //       _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                  //     }
+                  //   }
+                  //
+                  //   if(_contacts.isNotEmpty){
+                  //     _refreshController.loadComplete();
+                  //   }else{
+                  //     _refreshController.loadFailed();
+                  //   }
+                  // },
                   child: ListView.builder(
                       itemBuilder: (context, index){
                         final contact = _contacts[index];
@@ -272,7 +308,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                           )
                         );
                       },
-                      itemCount: _contacts.length,
+                    itemCount: _contacts.length,
                   ),
                 ) :  const Center(child: CircularProgressIndicator())
               ),
@@ -360,15 +396,17 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
+
     List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
 
     if(contactList.isNotEmpty){
       setState(() {
+        _contacts.clear();
         _contacts.addAll(contactList);
+        if(_contacts.isNotEmpty){
+          _maxPages = _contacts[0].maxPage!;
+        }
       });
-      if(_contacts.isNotEmpty){
-        _maxPages = _contacts[0].maxPage!;
-      }
     }else{
       _refreshController.loadNoData();
     }
@@ -381,10 +419,10 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     if(contactList.isNotEmpty){
       setState(() {
         _contacts.addAll(contactList);
+        if(_contacts.isNotEmpty){
+          _maxPages = _contacts[0].maxPage!;
+        }
       });
-      if(_contacts.isNotEmpty){
-        _maxPages = _contacts[0].maxPage!;
-      }
     }else{
       _refreshController.loadNoData();
     }

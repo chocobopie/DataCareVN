@@ -138,6 +138,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
 
                     //Tên công ty của khách hàng
                     CustomEditableTextField(
+                        borderColor: _readOnly != true ? mainBgColor : null,
                         text: widget.contact.companyName,
                         title: 'Tên công ty',
                         readonly: _readOnly,
