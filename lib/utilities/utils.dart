@@ -20,7 +20,7 @@ const locale = 'vi';
 String formatNumber(String s) => NumberFormat.decimalPattern(locale).format(int.parse(s));
 String get currency => NumberFormat.compactSimpleCurrency(locale: locale).currencySymbol;
 
-//List model
+//------------------------------------------------------------------List model
 List<Service> dealServices = [];
 List<Vat> dealVats = [];
 List<DealStage> dealStages = [];
@@ -33,7 +33,7 @@ List<Gender> genders = [];
 List<Team> teams = [];
 List<Department> departments = [];
 List<Block> blocks = [];
-//List String
+//------------------------------------------------------------------List String
 List<String> dealServicesNameUtilities = [];
 List<String> dealVatsNameUtilities = [];
 List<String> dealStagesNameUtilities = [];
@@ -51,6 +51,7 @@ List<String> attendanceStatusUtilities = [
 ];
 List<String> blockNameUtilities = [];
 
+//-------------------------------------------------------------------------------------------------------------------
 String getDepartmentName(int departmentId, int? blockId){
   String name = '';
   if(blockId != null){
@@ -66,7 +67,6 @@ String getDepartmentName(int departmentId, int? blockId){
       }
     }
   }
-
   return name;
 }
 
@@ -80,6 +80,28 @@ String getTeamName(int teamId, departmentId){
   return name;
 }
 
+List<Department> getDepartmentListInBlock({required Block block}){
+  List<Department> departmentList = [];
+  for(int i = 0; i < departments.length; i++){
+    if(block.blockId == departments[i].blockId){
+      departmentList.add(departments[i]);
+    }
+  }
+  return departmentList;
+}
+
+List<Team> getTeamListInDepartment({required Department department}){
+  List<Team> teamList = [];
+  for(int i = 0; i < teams.length; i++){
+    if(department.departmentId == teams[i].departmentId){
+      teamList.add(teams[i]);
+    }
+  }
+  return teamList;
+}
+
+
+// ---------------------------------Temp List For Testing------------------------------------------
 List<String> rolesTemp = [
   'Nhân viên kinh doanh',
   'Trưởng nhóm kinh doanh',

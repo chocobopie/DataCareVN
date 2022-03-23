@@ -6,6 +6,7 @@ import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
+import 'package:login_sample/views/admin/admin_account_detail.dart';
 import 'package:login_sample/views/admin/admin_block_filter.dart';
 import 'package:login_sample/views/admin/admin_department_filter.dart';
 import 'package:login_sample/views/admin/admin_role_filter.dart';
@@ -134,6 +135,10 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   if(data != null){
                                     _blockFilter = data;
                                     setState(() {
+                                      _departmentFilter = null;
+                                      _teamFilter = null;
+                                      _departmentNameString = 'Tên phòng';
+                                      _teamNameString = 'Tên nhóm';
                                       _accounts.clear();
                                       _blockNameString = _blockFilter!.name;
                                     });
@@ -143,18 +148,20 @@ class _AdminAccountListState extends State<AdminAccountList> {
                             ),
 
                             if( _blockFilter != null )
-                              if( _getDepartmentListInBlock(block: _blockFilter!).isNotEmpty )
+                              if( getDepartmentListInBlock(block: _blockFilter!).isNotEmpty )
                                 CustomOutlinedButton(
                                   title: _departmentNameString,
                                   radius: 10.0,
                                   color: mainBgColor,
                                   onPressed: () async {
                                     final data = await Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => AdminDepartmentFilter(departmentList: _getDepartmentListInBlock(block: _blockFilter!),)
+                                        builder: (context) => AdminDepartmentFilter(departmentList: getDepartmentListInBlock(block: _blockFilter!),)
                                     ));
                                     if(data != null){
                                       _departmentFilter = data;
                                       setState(() {
+                                        _teamFilter = null;
+                                        _teamNameString = 'Tên nhóm';
                                         _accounts.clear();
                                         _departmentNameString = _departmentFilter!.name;
                                       });
@@ -165,14 +172,14 @@ class _AdminAccountListState extends State<AdminAccountList> {
 
 
                             if(_departmentFilter != null)
-                              if( _getTeamListInDepartment(department: _departmentFilter!).isNotEmpty )
+                              if( getTeamListInDepartment(department: _departmentFilter!).isNotEmpty )
                               CustomOutlinedButton(
                                 title: _teamNameString,
                                 radius: 10,
                                 color: mainBgColor,
                                 onPressed: () async {
                                   final data = await Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => AdminTeamFilter(teamList: _getTeamListInDepartment(department: _departmentFilter!),)
+                                      builder: (context) => AdminTeamFilter(teamList: getTeamListInDepartment(department: _departmentFilter!),)
                                   ));
                                   if(data != null){
                                     _teamFilter = data;
@@ -208,6 +215,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                               icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
                               onPressed: () {
                                 setState(() {
+                                  _currentPage = 0;
                                   _blockNameString = 'Tên khối';
                                   _departmentNameString = 'Tên phòng';
                                   _teamNameString = 'Tên nhóm';
@@ -215,6 +223,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   _blockFilter = null;
                                   _departmentFilter = null;
                                   _teamFilter = null;
+                                  _roleFilter = null;
                                   _accounts.clear();
                                 });
                                 _refreshController.resetNoData();
@@ -282,66 +291,73 @@ class _AdminAccountListState extends State<AdminAccountList> {
                           final account = _accounts[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10.0),
-                            child: Card(
-                                elevation: 10.0,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10))
-                                ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
-                                          const Spacer(),
-                                          Text(account.fullname!, style: const TextStyle(fontSize: 20.0),),
-                                        ],
+                            child: InkWell(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => AdminAccountDetail(account: account)
+                                ));
+                              },
+                              child: Card(
+                                  elevation: 10.0,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(10))
+                                  ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
+                                            const Spacer(),
+                                            Text(account.fullname!, style: const TextStyle(fontSize: 20.0),),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Khối', style: TextStyle(fontSize: 12.0),),
-                                          const Spacer(),
-                                          Text(blockNameUtilities[account.blockId!]),
-                                        ],
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Khối', style: TextStyle(fontSize: 12.0),),
+                                            const Spacer(),
+                                            Text(blockNameUtilities[account.blockId!]),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    if(account.departmentId != null) Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Phòng:', style: TextStyle(fontSize: 12.0),),
-                                          const Spacer(),
-                                          Text(getDepartmentName(account.departmentId!, account.blockId))
-                                        ],
+                                      if(account.departmentId != null) Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Phòng:', style: TextStyle(fontSize: 12.0),),
+                                            const Spacer(),
+                                            Text(getDepartmentName(account.departmentId!, account.blockId))
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    if(account.teamId != null) Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Nhóm:', style: TextStyle(fontSize: 12.0),),
-                                          const Spacer(),
-                                          Text(getTeamName(account.teamId!, account.departmentId!))
-                                        ],
+                                      if(account.teamId != null) Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Nhóm:', style: TextStyle(fontSize: 12.0),),
+                                            const Spacer(),
+                                            Text(getTeamName(account.teamId!, account.departmentId!))
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Chức vụ:', style: TextStyle(fontSize: 12.0),),
-                                          const Spacer(),
-                                          Text(rolesNameUtilities[account.roleId!]),
-                                        ],
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Chức vụ:', style: TextStyle(fontSize: 12.0),),
+                                            const Spacer(),
+                                            Text(rolesNameUtilities[account.roleId!]),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -438,26 +454,6 @@ class _AdminAccountListState extends State<AdminAccountList> {
         _refreshController.loadNoData();
       });
     }
-  }
-
-  List<Department> _getDepartmentListInBlock({required Block block}){
-    List<Department> departmentList = [];
-    for(int i = 0; i < departments.length; i++){
-      if(block.blockId == departments[i].blockId){
-        departmentList.add(departments[i]);
-      }
-    }
-    return departmentList;
-  }
-
-  List<Team> _getTeamListInDepartment({required Department department}){
-    List<Team> teamList = [];
-    for(int i = 0; i < teams.length; i++){
-      if(department.departmentId == teams[i].departmentId){
-        teamList.add(teams[i]);
-      }
-    }
-    return teamList;
   }
 
 }

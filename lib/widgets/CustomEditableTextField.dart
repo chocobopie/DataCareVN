@@ -6,13 +6,13 @@ import 'package:login_sample/utilities/utils.dart';
 
 class CustomEditableTextField extends StatelessWidget {
    const CustomEditableTextField({
-    Key? key, required this.text, required this.title, required this.readonly, required this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor
+    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor
   }) : super(key: key);
 
   final String title;
   final String text;
   final bool readonly;
-  final TextEditingController textEditingController;
+  final TextEditingController? textEditingController;
   final bool? inputNumberOnly;
   final bool? inputEmailOnly;
   final dynamic onTap;
@@ -22,7 +22,8 @@ class CustomEditableTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextFormField(
-        onTap: onTap,
+        minLines: 1,
+        maxLines: 5,
         inputFormatters: inputNumberOnly == true ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(10),
@@ -31,7 +32,7 @@ class CustomEditableTextField extends StatelessWidget {
         ],
         keyboardType: inputNumberOnly == true ? TextInputType.number : inputEmailOnly == true ? TextInputType.emailAddress : TextInputType.text,
         onChanged: (val) {
-          textEditingController.text = val;
+          textEditingController?.text = val;
         },
         decoration: InputDecoration(
           floatingLabelBehavior: FloatingLabelBehavior.always,
