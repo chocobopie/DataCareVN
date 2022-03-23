@@ -223,7 +223,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 _deals.clear();
                               }
                               setState(() {
-                                _currentPage = 0;
                                 // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
                                 _fullname = 'Người quản lý hợp đồng';
                                 _contactName = 'Tên khách hàng';
@@ -539,9 +538,9 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   void _getOverallInfo(int currentPage, Account account){
     if(_currentAccount.roleId == 5){
-      _getAllDealByDealOwnerId(isRefresh: true, dealOwnerId: _currentAccount.accountId!, currentPage: currentPage);
+      _getAllDealByDealOwnerId(isRefresh: false, dealOwnerId: _currentAccount.accountId!, currentPage: currentPage);
     }else{
-      _getAllDealByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
+      _getAllDealByAccountId(isRefresh: false, accountId: account.accountId!, currentPage: currentPage);
     }
   }
 

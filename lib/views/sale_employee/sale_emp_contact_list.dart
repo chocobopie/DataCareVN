@@ -40,7 +40,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     super.didChangeDependencies();
     if(_contacts.isEmpty){
       _currentAccount = Provider.of<AccountProvider>(context).account;
-      getOverallInfo(_currentPage, _currentAccount);
+      _getOverallInfo(_currentPage, _currentAccount);
       // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
     }
     _getAllSaleEmployee(isRefresh: true);
@@ -149,14 +149,13 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                           onPressed: (){
                             setState(() {
                               _filterAccount = Account();
-                              _currentPage = 0;
                               // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
                               _fullname = 'Nhân viên tạo';
                               _contactOwnerId = -1;
                               _contacts.clear();
                               _refreshController.resetNoData();
-                              getOverallInfo(_currentPage, _currentAccount);
                             });
+                            _getOverallInfo(_currentPage, _currentAccount);
                           },
                           icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                       ),
@@ -215,25 +214,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       _refreshController.refreshFailed();
                     }
                   },
-                  // onLoading: () async{
-                  //   if(_currentPage < _maxPages){
-                  //     setState(() {
-                  //       _currentPage++;
-                  //     });
-                  //     print('Current page: $_currentPage');
-                  //     if(_contactOwnerId == -1){
-                  //       _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                  //     } else {
-                  //       _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-                  //     }
-                  //   }
-                  //
-                  //   if(_contacts.isNotEmpty){
-                  //     _refreshController.loadComplete();
-                  //   }else{
-                  //     _refreshController.loadFailed();
-                  //   }
-                  // },
                   child: ListView.builder(
                       itemBuilder: (context, index){
                         final contact = _contacts[index];
@@ -353,7 +333,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       _contactOwnerId = -1;
                       _contacts.clear();
                       _refreshController.resetNoData();
-                      getOverallInfo(_currentPage, _currentAccount);
+                      _getOverallInfo(_currentPage, _currentAccount);
                     });
                   },
                 ) : IconButton(
@@ -374,8 +354,8 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     );
   }
 
-  void getOverallInfo(int currentPage, Account account){
-      _getAllContactByAccountId(isRefresh: true, accountId: account.accountId!, currentPage: currentPage);
+  void _getOverallInfo(int currentPage, Account account){
+      _getAllContactByAccountId(isRefresh: false, accountId: account.accountId!, currentPage: currentPage);
   }
 
   String _getDepartmentName(int blockId, departmentId){
@@ -442,7 +422,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
     if(_isSearching == false || _searchString.isEmpty){
       if(_contactOwnerId == -1){
-        getOverallInfo(_currentPage, _currentAccount);
+        _getOverallInfo(_currentPage, _currentAccount);
       }else{
         _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
       }

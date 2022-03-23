@@ -215,7 +215,6 @@ class _AdminAccountListState extends State<AdminAccountList> {
                               icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
                               onPressed: () {
                                 setState(() {
-                                  _currentPage = 0;
                                   _blockNameString = 'Tên khối';
                                   _departmentNameString = 'Tên phòng';
                                   _teamNameString = 'Tên nhóm';
@@ -228,7 +227,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                 });
                                 _refreshController.resetNoData();
                                 // _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                                _getFilter(isRefresh: true);
+                                _getFilter(isRefresh: false);
                               },
                             ),
                           ],

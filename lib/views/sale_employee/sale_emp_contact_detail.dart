@@ -57,7 +57,6 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final _account = Provider.of<AccountProvider>(context).account;
     return Scaffold(
       body: Stack(
         children: <Widget>[
