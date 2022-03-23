@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/department.dart';
@@ -42,7 +43,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+    _getFilter(isRefresh: true);
   }
 
   @override
@@ -84,7 +85,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
                    _currentPage = index;
                    _accounts.clear();
                  });
-                 _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                 // _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                 _getFilter(isRefresh: false);
                },
              ) : null,
            ),
@@ -132,43 +134,54 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   if(data != null){
                                     _blockFilter = data;
                                     setState(() {
+                                      _accounts.clear();
                                       _blockNameString = _blockFilter!.name;
                                     });
                                   }
+                                  _getFilter(isRefresh: true);
                                 },
                             ),
 
-                            CustomOutlinedButton(
-                                title: _departmentNameString,
-                                radius: 10.0,
-                                color: mainBgColor,
-                                onPressed: () async {
-                                  final data = await Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => const AdminDepartmentFilter()
-                                  ));
-                                  if(data != null){
-                                     _departmentFilter = data;
-                                    setState(() {
-                                      _departmentNameString = _departmentFilter!.name;
-                                    });
-                                  }
-                                },
-                            ),
+                            if( _blockFilter != null )
+                              if( _getDepartmentListInBlock(block: _blockFilter!).isNotEmpty )
+                                CustomOutlinedButton(
+                                  title: _departmentNameString,
+                                  radius: 10.0,
+                                  color: mainBgColor,
+                                  onPressed: () async {
+                                    final data = await Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) => AdminDepartmentFilter(departmentList: _getDepartmentListInBlock(block: _blockFilter!),)
+                                    ));
+                                    if(data != null){
+                                      _departmentFilter = data;
+                                      setState(() {
+                                        _accounts.clear();
+                                        _departmentNameString = _departmentFilter!.name;
+                                      });
+                                    }
+                                    _getFilter(isRefresh: true);
+                                  },
+                                ),
 
-                            CustomOutlinedButton(
+
+                            if(_departmentFilter != null)
+                              if( _getTeamListInDepartment(department: _departmentFilter!).isNotEmpty )
+                              CustomOutlinedButton(
                                 title: _teamNameString,
                                 radius: 10,
                                 color: mainBgColor,
                                 onPressed: () async {
                                   final data = await Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => const AdminTeamFilter()
+                                      builder: (context) => AdminTeamFilter(teamList: _getTeamListInDepartment(department: _departmentFilter!),)
                                   ));
                                   if(data != null){
                                     _teamFilter = data;
                                     setState(() {
+                                      _accounts.clear();
                                       _teamNameString = _teamFilter!.name;
                                     });
                                   }
+                                  _getFilter(isRefresh: true);
                                 },
                             ),
 
@@ -183,9 +196,11 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   if(data != null){
                                     _roleFilter = data;
                                     setState(() {
-                                      _teamNameString = _roleFilter!.name;
+                                      _accounts.clear();
+                                      _roleNameString = _roleFilter!.name;
                                     });
                                   }
+                                  _getFilter(isRefresh: true);
                                 },
                             ),
 
@@ -197,10 +212,14 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   _departmentNameString = 'Tên phòng';
                                   _teamNameString = 'Tên nhóm';
                                   _roleNameString = 'Chức vụ';
+                                  _blockFilter = null;
+                                  _departmentFilter = null;
+                                  _teamFilter = null;
                                   _accounts.clear();
                                 });
                                 _refreshController.resetNoData();
-                                _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                                // _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                                _getFilter(isRefresh: true);
                               },
                             ),
                           ],
@@ -249,7 +268,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
                       setState(() {
                         _accounts.clear();
                       });
-                      _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                      // _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                      _getFilter(isRefresh: false);
 
                       if(_accounts.isNotEmpty){
                         _refreshController.refreshCompleted();
@@ -393,8 +413,19 @@ class _AdminAccountListState extends State<AdminAccountList> {
     );
   }
 
-  void _getAllAccount({required bool isRefresh, required int currentPage, required int accountId}) async {
-    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId);
+  void _getFilter({required bool isRefresh}){
+    _getAllAccount(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!,
+        blockId: _blockFilter != null ?_blockFilter!.blockId : null,
+        departmentId: _departmentFilter != null ? _departmentFilter!.departmentId : null,
+        teamId: _teamFilter != null ? _teamFilter!.teamId : null,
+        roleId: _roleFilter != null ? _roleFilter!.roleId : null
+    );
+  }
+
+  void _getAllAccount({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId}) async {
+    List<Account> accountList = await AccountListViewModel()
+        .getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId
+    );
 
     if(accountList.isNotEmpty){
       setState(() {
@@ -407,6 +438,26 @@ class _AdminAccountListState extends State<AdminAccountList> {
         _refreshController.loadNoData();
       });
     }
+  }
+
+  List<Department> _getDepartmentListInBlock({required Block block}){
+    List<Department> departmentList = [];
+    for(int i = 0; i < departments.length; i++){
+      if(block.blockId == departments[i].blockId){
+        departmentList.add(departments[i]);
+      }
+    }
+    return departmentList;
+  }
+
+  List<Team> _getTeamListInDepartment({required Department department}){
+    List<Team> teamList = [];
+    for(int i = 0; i < teams.length; i++){
+      if(department.departmentId == teams[i].departmentId){
+        teamList.add(teams[i]);
+      }
+    }
+    return teamList;
   }
 
 }

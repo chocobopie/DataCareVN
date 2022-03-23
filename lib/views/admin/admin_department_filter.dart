@@ -5,7 +5,9 @@ import 'package:login_sample/view_models/department_list_view_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminDepartmentFilter extends StatefulWidget {
-  const AdminDepartmentFilter({Key? key}) : super(key: key);
+  const AdminDepartmentFilter({Key? key, required this.departmentList}) : super(key: key);
+
+  final List<Department> departmentList;
 
   @override
   State<AdminDepartmentFilter> createState() => _AdminDepartmentFilterState();
@@ -13,7 +15,7 @@ class AdminDepartmentFilter extends StatefulWidget {
 
 class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
 
-  late final List<Department> _departments = [];
+  late List<Department> _departments = widget.departmentList;
 
   final RefreshController _refreshController = RefreshController();
   final TextEditingController _searchDepartmentName = TextEditingController();
@@ -21,7 +23,6 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
   @override
   void initState() {
     super.initState();
-    _getAllDepartment();
   }
 
   @override
@@ -76,6 +77,7 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                         onPressed: (){
                           setState(() {
                             _departments.clear();
+                            _departments = widget.departmentList;
                           });
                           _refreshController.resetNoData();
                           _searchDepartmentName.clear();
@@ -122,17 +124,9 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                   child: SmartRefresher(
                       controller: _refreshController,
                       enablePullUp: true,
-                      onRefresh: () async{
-                        setState(() {
-                          _departments.clear();
-                          _getAllDepartment();
-
-                          if(_departments.isNotEmpty){
-                            _refreshController.refreshCompleted();
-                          }else{
-                            _refreshController.refreshFailed();
-                          }
-                        });
+                      enablePullDown: false,
+                      onLoading: () async {
+                        _refreshController.loadNoData();
                       },
                       child: _departments.isNotEmpty ? ListView.builder(
                           itemBuilder: (context, index) {
@@ -209,12 +203,12 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
     );
   }
 
-  void _getAllDepartment() async {
-    List<Department> departmentList = await DepartmentListViewModel().getAllDepartment();
-
-    setState(() {
-      _departments.addAll(departmentList);
-    });
-    _refreshController.loadNoData();
-  }
+  // void _getAllDepartment() async {
+  //   List<Department> departmentList = await DepartmentListViewModel().getAllDepartment();
+  //
+  //   setState(() {
+  //     _departments.addAll(departmentList);
+  //   });
+  //     _refreshController.loadNoData();
+  // }
 }

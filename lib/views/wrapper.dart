@@ -14,11 +14,9 @@ class _WrapperState extends State<Wrapper> {
 
 
   @override
-  void initState() {
-    super.initState();
-    setState(() {
-      getOverallInfor();
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getOverallInfor();
   }
 
   @override

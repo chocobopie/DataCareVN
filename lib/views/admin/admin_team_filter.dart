@@ -5,7 +5,9 @@ import 'package:login_sample/view_models/team_list_view_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminTeamFilter extends StatefulWidget {
-  const AdminTeamFilter({Key? key}) : super(key: key);
+  const AdminTeamFilter({Key? key, required this.teamList}) : super(key: key);
+
+  final List<Team> teamList;
 
   @override
   State<AdminTeamFilter> createState() => _AdminTeamFilterState();
@@ -13,7 +15,7 @@ class AdminTeamFilter extends StatefulWidget {
 
 class _AdminTeamFilterState extends State<AdminTeamFilter> {
 
-  late final List<Team> _teams = [];
+  late List<Team> _teams = widget.teamList;
 
   final RefreshController _refreshController = RefreshController();
   final TextEditingController _searchTeamName = TextEditingController();
@@ -21,7 +23,6 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
   @override
   void initState() {
     super.initState();
-    _getAllTeams();
   }
 
   @override
@@ -66,7 +67,7 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
                       setState(() {
                         _teams.clear();
                       });
-                      _getAllTeams();
+                      _teams = widget.teamList;
                     },
                     decoration: InputDecoration(
                       icon: const Icon(Icons.search,
@@ -79,7 +80,7 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
                           });
                           _refreshController.resetNoData();
                           _searchTeamName.clear();
-                          _getAllTeams();
+                          _teams = widget.teamList;
                         },
                         icon: const Icon(Icons.clear),
                       ) : null,
@@ -123,16 +124,9 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
                   child: SmartRefresher(
                       controller: _refreshController,
                       enablePullUp: true,
-                      onRefresh: () async{
-                        setState(() {
-                          _teams.clear();
-                          _getAllTeams();
-                          if(_teams.isNotEmpty){
-                            _refreshController.refreshCompleted();
-                          }else{
-                            _refreshController.refreshFailed();
-                          }
-                        });
+                      enablePullDown: false,
+                      onLoading: () async {
+                        _refreshController.loadNoData();
                       },
                       child: _teams.isNotEmpty ? ListView.builder(
                           itemBuilder: (context, index) {
@@ -209,12 +203,11 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
     );
   }
 
-  void _getAllTeams() async {
-    List<Team> teamList = await TeamListViewModel().getAllTeams();
-
-    setState(() {
-      _teams.addAll(teamList);
-    });
-    _refreshController.loadNoData();
-  }
+  // void _getAllTeams() async {
+  //   List<Team> teamList = await TeamListViewModel().getAllTeams();
+  //     setState(() {
+  //       _teams.addAll(teamList);
+  //     });
+  //   _refreshController.loadNoData();
+  // }
 }

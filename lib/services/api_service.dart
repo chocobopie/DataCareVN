@@ -360,12 +360,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllAccounts({required bool isRefresh, required currentPage, required int accountId}) async {
+  Future<List<Account>> getAllAccounts({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'accounts?account-id=$accountId&page=$currentPage&limit=10';
+    String url = stockUrl + 'accounts?account-id=$accountId&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&page=$currentPage&limit=10';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
