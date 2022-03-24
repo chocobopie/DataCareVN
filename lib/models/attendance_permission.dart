@@ -1,9 +1,29 @@
+import 'dart:convert';
 
-class AttendancePermission{
-  final int attendancePermissionID;
-  final int view;
-  final int update;
-  final int delete;
+AttendancePermission attendancePermissionFromJson(String str) => AttendancePermission.fromJson(json.decode(str));
 
-  AttendancePermission(this.attendancePermissionID, this.view, this.update, this.delete);
+String attendancePermissionToJson(AttendancePermission data) => json.encode(data.toJson());
+
+class AttendancePermission {
+  AttendancePermission({
+    this.attendancePermissionId,
+    this.view,
+    this.update,
+  });
+
+  int? attendancePermissionId;
+  int? view;
+  int? update;
+
+  factory AttendancePermission.fromJson(Map<String, dynamic> json) => AttendancePermission(
+    attendancePermissionId: json["attendancePermissionId"],
+    view: json["view"],
+    update: json["update"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "attendancePermissionId": attendancePermissionId,
+    "view": view,
+    "update": update,
+  };
 }

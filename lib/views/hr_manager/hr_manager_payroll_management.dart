@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_payroll_list.dart';
 import 'package:login_sample/views/sale_employee/emp_payroll.dart';
+import 'package:provider/provider.dart';
 
-class HrManagerPayrollManagement extends StatelessWidget {
+class HrManagerPayrollManagement extends StatefulWidget {
   const HrManagerPayrollManagement({Key? key}) : super(key: key);
 
+  @override
+  State<HrManagerPayrollManagement> createState() => _HrManagerPayrollManagementState();
+}
+
+class _HrManagerPayrollManagementState extends State<HrManagerPayrollManagement> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,3 +88,4 @@ class HrManagerPayrollManagement extends StatelessWidget {
     );
   }
 }
+

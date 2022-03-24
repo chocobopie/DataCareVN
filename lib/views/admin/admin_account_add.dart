@@ -209,35 +209,11 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                               left: leftRight,
                               right: leftRight,
                               bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xem', empPerms, empPermTemp),
+                          child: buildDropdownButtonFormField2('Xem', hrPerms, empPermTemp),
                         ),
                       ]
                   ),
                   if(_hrPerm == true) const SizedBox(height: 20.0,),
-                  //Quyền quản lý lương
-                  if(_hrPerm == true) CustomExpansionTile(
-                      key: _key2,
-                      label: 'Quyền quản lý lương',
-                      colors: const [Colors.green, Colors.white],
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xem', empPerms2, empPermTemp),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Chỉnh sửa', empPerms2, empPermTemp),
-                        ),
-                      ]
-                  ),
                   if(_saleEmployeePerm == true) const SizedBox(height: 20.0,),
                   //Quyền quản lý thông tin liên lạc của khách hàng
                   if(_saleEmployeePerm == true) CustomExpansionTile(

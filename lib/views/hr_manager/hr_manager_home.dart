@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_account_list.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_employee/emp_payroll.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/emp_take_attendance.dart';
 import 'package:login_sample/widgets/SideBar.dart';
+import 'package:provider/provider.dart';
 import 'hr_manager_account_list.dart';
 import 'hr_manager_attendance_report.dart';
 import 'hr_manager_payroll_management.dart';
@@ -16,6 +20,15 @@ class HomeHRManager extends StatefulWidget {
 }
 
 class _HomeHRManagerState extends State<HomeHRManager> {
+
+  late Account _currentAccount;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +69,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const HrManagerPayrollManagement(),
+                                builder: (context) => _currentAccount.roleId == 1 ? const HrManagerPayrollManagement() : const EmpPayroll(),
                               ));
                         },
                       ),
