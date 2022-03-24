@@ -4,15 +4,18 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/permission.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/permission_view_model.dart';
 import 'package:login_sample/views/admin/admin_block_filter.dart';
 import 'package:login_sample/views/admin/admin_department_filter.dart';
 import 'package:login_sample/views/admin/admin_team_filter.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
+import 'package:login_sample/widgets/CustomExpansionTile.dart';
 import 'package:provider/provider.dart';
 
 class AdminAccountDetail extends StatefulWidget {
@@ -28,8 +31,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
   bool _readOnly = true;
   late final Account _currentAccount = widget.account;
-  late final String _dateOfBirthString = '';
 
+  Permission? _permission;
   Block? _filterBlock;
   Department? _filterDepartment;
   Team? _filterTeam;
@@ -39,6 +42,12 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   final TextEditingController _accountBlockId = TextEditingController();
   final TextEditingController _accountTeamId = TextEditingController();
   final TextEditingController _accountRoleId = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _getPermByPermId(permId: _currentAccount.permissionId!);
+  }
 
   @override
   void dispose() {
@@ -230,6 +239,25 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             } : null,
                         ),
                       ),
+
+                      if(_currentAccount.roleId != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: CustomEditableTextField(
+                            text: _accountRoleId.text.isEmpty ? rolesNameUtilities[_currentAccount.roleId!] : rolesNameUtilities[int.parse(_accountRoleId.text)],
+                            title: 'Chức vụ',
+                            readonly: true,
+                            onTap: _readOnly != true ? () async {
+                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(teamList: getTeamListInDepartment(department: _filterDepartment!))));
+                              if( data != null ){
+                                setState(() {
+                                  _filterRole = data;
+                                  _accountRoleId.text = _filterRole!.roleId.toString();
+                                });
+                              }
+                            } : null,
+                          ),
+                        ),
                     ],
                   ) : const Center(child: CircularProgressIndicator())
               )),
@@ -255,5 +283,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
         ],
       ),
     );
+  }
+
+  void _getPermByPermId({required int permId}) async {
+    _permission = await PermissionViewModel().getPermByPermId(permId: permId);
   }
 }

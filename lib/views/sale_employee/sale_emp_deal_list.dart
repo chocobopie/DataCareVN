@@ -33,7 +33,7 @@ class SaleEmpDealList extends StatefulWidget {
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false;
-  String _fullname = 'Người quản lý hợp đồng', _fromDateToDateString = 'Ngày chốt', _contactName = 'Tên khách hàng';
+  String _fullname = 'Người quản lý hợp đồng', _fromDateToDateString = 'Ngày chốt', _contactName = 'Tên khách hàng', _searchString = '';
   int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
@@ -448,7 +448,8 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                   setState(() {
                     _deals.clear();
                   });
-                  _getADealByDealId(accountId: _currentAccount.accountId!, dealId: int.parse(value.toString()));
+                  _searchString = value.toString();
+                  _getADealByDealId(accountId: _currentAccount.accountId!, dealId: int.parse(_searchString));
                 },
               ),
               actions: <Widget>[
@@ -580,20 +581,29 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getADealByDealId({required int accountId, required int dealId}) async {
-    Deal deal = await DealViewModel().getADealbyDealId(accountId: accountId, dealId: dealId);
+    Deal? deal = await DealViewModel().getADealbyDealId(accountId: accountId, dealId: dealId);
 
-    setState(() {
-      _deals.add(deal);
-    });
+      setState(() {
+        _deals.add(deal);
+        _maxPages = _deals[0].maxPage!;
+      });
+
   }
 
   void _onGoBack(dynamic value){
+
     setState(() {
-      _currentPage = 0;
+      // _currentPage = 0;
       _deals.clear();
     });
     _refreshController.resetNoData();
-    _getFilter(isRefresh: true);
+
+
+    if(_isSearching == false || _searchString.isEmpty){
+      _getFilter(isRefresh: false);
+    }else if(_isSearching == true && _searchString.isNotEmpty){
+      _getADealByDealId(accountId: _currentAccount.accountId!, dealId: int.parse(_searchString));
+    }
   }
 
   void _getAllSaleEmployee({required bool isRefresh}){

@@ -13,6 +13,7 @@ import 'package:login_sample/models/excuse_late.dart';
 import 'package:login_sample/models/excuse_late_status.dart';
 import 'package:login_sample/models/gender.dart';
 import 'package:login_sample/models/lead_source.dart';
+import 'package:login_sample/models/permission.dart';
 import 'package:login_sample/models/permission_status.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/service.dart';
@@ -196,7 +197,7 @@ class ApiService {
       print('Got deal by dealId | 200');
       return Deal.fromJson(jsonResponse[0]);
     } else {
-      throw Exception("Failed to get deal by dealId");
+      throw('Failed to get deal by dealId | 400');
     }
   }
 
@@ -705,6 +706,19 @@ class ApiService {
       return jsonResponse.map((data) => Block.fromJson(data)).toList();
     }else{
       throw Exception('Failed to get blocks | 400');
+    }
+  }
+
+  //Permission
+  Future<Permission> getPermByPermId({required int permId}) async {
+    String url = stockUrl + 'permission/$permId';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Got Permission by Permission Id | 200');
+      return Permission.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to get permission by permission id | 400');
     }
   }
 }

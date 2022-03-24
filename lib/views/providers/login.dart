@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_home.dart';
+import 'package:login_sample/views/employee/employee_forget_password.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_home.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_leader/sale_leader_home.dart';
@@ -23,7 +24,7 @@ class _LoginState extends State<Login> {
   TextEditingController password = TextEditingController();
   late Account _account = Account();
   bool _loginFailed = false, _isEmailEmpty = false, _isPasswordEmpty = false;
-  late final Status _loggedInStatus = Status.notLoggedIn;
+  Account? account;
 
   @override
   void dispose() {
@@ -136,39 +137,34 @@ class _LoginState extends State<Login> {
                     }
 
                     if(_isPasswordEmpty == false && _isEmailEmpty == false){
-                      Account account = await auth.login( email.text, password.text );
+                      account = await auth.login( email.text, password.text );
 
-                      if(account.accountId != null){
-                        _account = account;
+                      if(account != null){
+
+                        _account = account!;
                         Provider.of<AccountProvider>(context, listen: false).setAccount(_account);
 
                         if(_account.roleId == 0){
-                          print('0');
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const HomeAdmin(),
                           ));
                         }else if(_account.roleId == 1){
-                          print('1');
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const HomeHRManager(),
                           ));
                         }else if(_account.roleId == 2){
-                          print('2');
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const HomeHRManager(),
                           ));
                         }else if(_account.roleId == 3){
-                          print('3');
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const HomeSaleManager(),
                           ));
                         }else if(_account.roleId == 4){
-                          print('4');
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const HomeSaleLeader(),
                           ));
                         }else if(_account.roleId == 5){
-                          print('5');
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const HomeSaleEmployee(),
                           ));
@@ -191,7 +187,11 @@ class _LoginState extends State<Login> {
                 ),
                 const SizedBox(height: 10.0,),
                 TextButton(
-                    onPressed: (){},
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const EmployeeForgetPassword(),
+                      ));
+                    },
                     child: const Text('Quên mật khẩu', style: TextStyle(color: defaultFontColor),)
                 ),
               ],

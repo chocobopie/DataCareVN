@@ -5,6 +5,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -42,6 +43,24 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Card(
+        elevation: 10.0,
+        child: _maxPages > 0 ? NumberPaginator(
+          numberPages: _maxPages,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+            setState(() {
+              _currentPage = index;
+            });
+            if(_searchContactNameOrEmail.text.isNotEmpty){
+              _searchContactByNameOrEmail(currentAccount: _currentAccount, query: _searchContactNameOrEmail.text);
+            }else{
+              _getAllContactByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage);
+            }
+          },
+        ) : null,
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -135,12 +154,11 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                         setState(() {
                           _contacts.clear();
                         });
-                        _currentPage = 0;
                         _refreshController.resetNoData();
                         if(_searchContactNameOrEmail.text.isNotEmpty){
                           _searchContactByNameOrEmail(currentAccount: _currentAccount, query: _searchContactNameOrEmail.text);
                         }else{
-                          _getAllContactByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage);
+                          _getAllContactByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage);
                         }
 
                         if(_contacts.isNotEmpty){
@@ -149,25 +167,25 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                           _refreshController.refreshFailed();
                         }
                       },
-                      onLoading: () async{
-                        if(_currentPage < _maxPages){
-                          setState(() {
-                            _currentPage++;
-                          });
-                          print('Current page: $_currentPage');
-                          if(_searchContactNameOrEmail.text.isNotEmpty){
-                            _searchContactByNameOrEmail(currentAccount: _currentAccount, query: _searchContactNameOrEmail.text);
-                          }else{
-                            _getAllContactByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage);
-                          }
-                        }
-
-                        if(_contacts.isNotEmpty){
-                          _refreshController.loadComplete();
-                        }else{
-                          _refreshController.loadFailed();
-                        }
-                      },
+                      // onLoading: () async{
+                      //   if(_currentPage < _maxPages){
+                      //     setState(() {
+                      //       _currentPage++;
+                      //     });
+                      //     print('Current page: $_currentPage');
+                      //     if(_searchContactNameOrEmail.text.isNotEmpty){
+                      //       _searchContactByNameOrEmail(currentAccount: _currentAccount, query: _searchContactNameOrEmail.text);
+                      //     }else{
+                      //       _getAllContactByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage);
+                      //     }
+                      //   }
+                      //
+                      //   if(_contacts.isNotEmpty){
+                      //     _refreshController.loadComplete();
+                      //   }else{
+                      //     _refreshController.loadFailed();
+                      //   }
+                      // },
                       child: _contacts.isNotEmpty ? ListView.builder(
                           itemBuilder: (context, index) {
                             final contact = _contacts[index];

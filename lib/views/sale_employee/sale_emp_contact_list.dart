@@ -202,11 +202,22 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     });
                     _refreshController.resetNoData();
                     print('Current page: $_currentPage');
-                    if(_contactOwnerId == -1){
-                      _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                    } else {
-                      _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+
+                    if(_isSearching == false || _searchString.isEmpty){
+                      if(_contactOwnerId == -1){
+                        _getOverallInfo(_currentPage, _currentAccount);
+                      }else{
+                        _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                      }
+                    }else if(_isSearching == true && _searchString.isNotEmpty){
+                      _searchNameAndEmail(currentAccount: _currentAccount, query: _searchString);
                     }
+
+                    // if(_contactOwnerId == -1){
+                    //   _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                    // } else {
+                    //   _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                    // }
 
                     if(_contacts.isNotEmpty){
                       _refreshController.refreshCompleted();
@@ -415,16 +426,16 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
       _contacts.clear();
     }
 
-    setState(() {
-      _currentPage = 0;
-      _key.currentState?.reset();
-    });
+    // setState(() {
+    //   _currentPage = 0;
+    //   _key.currentState?.reset();
+    // });
 
     if(_isSearching == false || _searchString.isEmpty){
       if(_contactOwnerId == -1){
         _getOverallInfo(_currentPage, _currentAccount);
       }else{
-        _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+        _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
       }
     }else if(_isSearching == true && _searchString.isNotEmpty){
       _searchNameAndEmail(currentAccount: _currentAccount, query: _searchString);

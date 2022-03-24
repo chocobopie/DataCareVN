@@ -4,6 +4,7 @@ import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -39,6 +40,24 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Card(
+        elevation: 10.0,
+        child: _maxPages > 0 ? NumberPaginator(
+          numberPages: _maxPages,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+            setState(() {
+              _currentPage = index;
+            });
+            if(_searchEmployeeName.text.isNotEmpty){
+              _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
+            }else{
+              _filterSaleEmployee(isRefresh: false);
+            }
+          },
+        ) : null,
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -133,12 +152,11 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                       setState(() {
                         _salesEmployees.clear();
                       });
-                      _currentPage = 0;
                       _refreshController.resetNoData();
                       if(_searchEmployeeName.text.isNotEmpty){
-                        _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
+                        _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
                       }else{
-                        _filterSaleEmployee(isRefresh: true);
+                        _filterSaleEmployee(isRefresh: false);
                       }
 
                       if(_salesEmployees.isNotEmpty){
@@ -147,25 +165,25 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                         _refreshController.refreshFailed();
                       }
                     },
-                    onLoading: () async{
-                      if(_currentPage < _maxPages){
-                        setState(() {
-                          _currentPage++;
-                        });
-                        print('Current page: $_currentPage');
-                        if(_searchEmployeeName.text.isNotEmpty){
-                          _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
-                        }else{
-                          _filterSaleEmployee(isRefresh: false);
-                        }
-                      }
-
-                      if(_salesEmployees.isNotEmpty){
-                        _refreshController.loadComplete();
-                      }else{
-                        _refreshController.loadFailed();
-                      }
-                    },
+                    // onLoading: () async{
+                    //   if(_currentPage < _maxPages){
+                    //     setState(() {
+                    //       _currentPage++;
+                    //     });
+                    //     print('Current page: $_currentPage');
+                    //     if(_searchEmployeeName.text.isNotEmpty){
+                    //       _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
+                    //     }else{
+                    //       _filterSaleEmployee(isRefresh: false);
+                    //     }
+                    //   }
+                    //
+                    //   if(_salesEmployees.isNotEmpty){
+                    //     _refreshController.loadComplete();
+                    //   }else{
+                    //     _refreshController.loadFailed();
+                    //   }
+                    // },
                     child: _salesEmployees.isNotEmpty ? ListView.builder(
                         itemBuilder: (context, index) {
                           final account = _salesEmployees[index];
