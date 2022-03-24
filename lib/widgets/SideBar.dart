@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/employee/employee_change_password.dart';
 import 'package:login_sample/views/employee/employee_profile.dart';
 
 
@@ -105,9 +106,9 @@ class SideBar extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(
-                  //   builder: (context) => const EmployeeProfile(),
-                  // ));
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => const EmployeeChangePassword(),
+                  ));
                 }
             ),
             const Divider(),

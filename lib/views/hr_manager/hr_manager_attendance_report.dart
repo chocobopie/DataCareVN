@@ -128,7 +128,7 @@ class _HrManagerAttendanceReportState extends State<HrManagerAttendanceReport> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.07,
                     child: IconTextButtonSmall2(
-                      text: 'Xin phép đi trễ ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
+                      text: 'Đơn xin phép đi trễ ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
                       imageUrl: 'assets/images/late-excuse.png',
                       colorsButton: const [Colors.grey, Colors.white],
                       onPressed: () {

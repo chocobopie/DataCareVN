@@ -422,9 +422,10 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   _onGoBack(dynamic value) {
-    if(_contacts.isNotEmpty){
+    setState(() {
       _contacts.clear();
-    }
+    });
+      
 
     // setState(() {
     //   _currentPage = 0;

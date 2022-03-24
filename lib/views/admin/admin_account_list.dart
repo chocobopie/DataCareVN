@@ -309,7 +309,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                         padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                         child: Row(
                                           children: <Widget>[
-                                            const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
+                                            const Expanded(child: Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),)),
                                             const Spacer(),
                                             Text(account.fullname!, style: const TextStyle(fontSize: 20.0),),
                                           ],
