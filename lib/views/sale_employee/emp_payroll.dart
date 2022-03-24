@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/widgets/CustomMonthPicker.dart';
 
-class EmpPayroll extends StatelessWidget {
+class EmpPayroll extends StatefulWidget {
   const EmpPayroll({Key? key}) : super(key: key);
+
+  @override
+  State<EmpPayroll> createState() => _EmpPayrollState();
+}
+
+class _EmpPayrollState extends State<EmpPayroll> {
+
+  DateTime _selectedMonth = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +39,52 @@ class EmpPayroll extends StatelessWidget {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: ListView(
                 padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
-                children: const <Widget>[
+                children: <Widget>[
+                  Container(
+                    width: 200.0,
+                    decoration: const BoxDecoration(
+                      color: Colors.blueAccent,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
+                    ),
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        // _onPressed(context: context);
+                        final date = await DatePicker.showPicker(context,
+                          pickerModel: CustomMonthPicker(
+                            currentTime: DateTime.now(),
+                            minTime: DateTime(2016),
+                            maxTime: DateTime.now(),
+                            locale: LocaleType.vi,
+                          ),
+                        );
+
+                        if (date != null) {
+                          setState(() {
+                            _selectedMonth = date;
+                            print(_selectedMonth);
+                          });
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.calendar_today,
+                        color: Colors.white,
+                      ),
+                      label: Text(
+                        'Tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0,),
                   //Lương
-                  PayrollExpansionTile(),
-                  SizedBox(height: 20.0,),
+                  const PayrollExpansionTile(),
+                  const SizedBox(height: 20.0,),
                   //Thưởng
-                  BonusExpansionTile2(),
+                  const BonusExpansionTile2(),
                 ],
               )
           ),
@@ -48,9 +99,9 @@ class EmpPayroll extends StatelessWidget {
               title: const Text(
                 "Lương của tôi",
                 style: TextStyle(
-                  letterSpacing: 0.0,
-                  fontSize: 20.0,
-                  color: Colors.blueGrey
+                    letterSpacing: 0.0,
+                    fontSize: 20.0,
+                    color: Colors.blueGrey
                 ),
               ),
             ),
@@ -60,6 +111,7 @@ class EmpPayroll extends StatelessWidget {
     );
   }
 }
+
 
 class BonusExpansionTile2 extends StatelessWidget {
   const BonusExpansionTile2({

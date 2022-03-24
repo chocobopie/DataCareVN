@@ -23,6 +23,8 @@ class SaleEmpDealAddNew extends StatefulWidget {
 
 class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   late String _closeDate = '';
 
   late final TextEditingController _dealTitle = TextEditingController();
@@ -85,155 +87,161 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                 ),
               ),
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ListView(
-                  children: <Widget>[
-                    //Tiêu đề hợp đồng
-                    CustomEditableTextField(
-                        borderColor: mainBgColor,
-                        text: '',
-                        title: 'Tiêu đề hợp đồng',
-                        readonly: false,
-                        textEditingController: _dealTitle
-                    ),
-                    const SizedBox(height: 20.0,),
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ListView(
+                    children: <Widget>[
+                      //Tiêu đề hợp đồng
+                      CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: _dealTitle.text,
+                          title: 'Tiêu đề hợp đồng',
+                          readonly: false,
+                          textEditingController: _dealTitle
+                      ),
+                      const SizedBox(height: 20.0,),
 
-                    //Tên khách hàng
-                    CustomEditableTextField(
-                        borderColor: mainBgColor,
-                        text: _contactFullname,
-                        title: 'Tên khách hàng',
-                        readonly: true,
-                        textEditingController: _dealContactId,
-                        onTap: () async {
-                          final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SaleEmpContactFilter(),
-                          ));
-                          if(data != null){
-                            setState(() {
-                              filterContact = data;
-                              _contactFullname = filterContact.fullname;
-                              _contactCompanyName = filterContact.companyName;
-                              _dealContactId.text = '${filterContact.contactId}';
-                            });
-                            print('Contact Id: ${_dealContactId.text}');
+                      //Tên khách hàng
+                      CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: _contactFullname,
+                          title: 'Tên khách hàng',
+                          readonly: true,
+                          textEditingController: _dealContactId,
+                          onTap: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpContactFilter(),
+                            ));
+                            if(data != null){
+                              setState(() {
+                                filterContact = data;
+                                _contactFullname = filterContact.fullname;
+                                _contactCompanyName = filterContact.companyName;
+                                _dealContactId.text = '${filterContact.contactId}';
+                              });
+                              print('Contact Id: ${_dealContactId.text}');
+                            }
+                          },
+                      ),
+                      const SizedBox(height: 20.0,),
+
+                      //Tên công ty
+                      if(_contactCompanyName.isNotEmpty)
+                      CustomReadOnlyTextField(
+                          text: _contactCompanyName,
+                          title: 'Tên công ty'
+                      ),
+                      if(_contactCompanyName.isNotEmpty)
+                      const SizedBox(height: 20.0,),
+
+                      //Tiến trình hợp đồng
+                      CustomDropdownFormField2(
+                          borderColor: mainBgColor,
+                          label: 'Tiến trình hợp đồng',
+                          hintText: const Text(''),
+                          items: dealStagesNameUtilities,
+                          onChanged: (value){
+                          if(value.toString() == dealStagesNameUtilities[0].toString()){
+                            _dealStageId.text = '0';
+                          }else if(value.toString() == dealStagesNameUtilities[1].toString()){
+                            _dealStageId.text = '1';
+                          }else if(value.toString() == dealStagesNameUtilities[2].toString()){
+                            _dealStageId.text = '2';
+                          }else if(value.toString() == dealStagesNameUtilities[3].toString()){
+                            _dealStageId.text = '3';
+                          }else if(value.toString() == dealStagesNameUtilities[4].toString()){
+                            _dealStageId.text = '4';
+                          }else if(value.toString() == dealStagesNameUtilities[5].toString()){
+                            _dealStageId.text = '5';
+                          }else if(value.toString() == dealStagesNameUtilities[6].toString()){
+                            _dealStageId.text = '6';
                           }
+                          print(_dealStageId.text);
                         },
-                    ),
-                    const SizedBox(height: 20.0,),
+                      ),
+                      const SizedBox(height: 20.0,),
 
-                    //Tên công ty
-                    CustomReadOnlyTextField(
-                        text: _contactCompanyName,
-                        title: 'Tên công ty'
-                    ),
-                    const SizedBox(height: 20.0,),
+                      //Loại hợp đồng
+                      CustomDropdownFormField2(
+                          borderColor: mainBgColor,
+                          label: 'Loại hợp đồng',
+                          hintText: const Text(''),
+                          items: dealTypesNameUtilities,
+                          onChanged: (value){
+                          if(value.toString() == dealTypesNameUtilities[0].toString()){
+                            _dealTypeId.text = '0';
+                          }else{
+                            _dealTypeId.text = '1';
+                          }
+                          print(_dealTypeId.text);
+                        },
+                      ),
+                      const SizedBox(height: 20.0,),
 
-                    //Tiến trình hợp đồng
-                    CustomDropdownFormField2(
+                      //Loại dịch vụ
+                      CustomDropdownFormField2(
                         borderColor: mainBgColor,
-                        label: 'Tiến trình hợp đồng',
+                        label: 'Loại dịch vụ',
                         hintText: const Text(''),
-                        items: dealStagesNameUtilities,
+                        items: dealServicesNameUtilities,
                         onChanged: (value){
-                        if(value.toString() == dealStagesNameUtilities[0].toString()){
-                          _dealStageId.text = '0';
-                        }else if(value.toString() == dealStagesNameUtilities[1].toString()){
-                          _dealStageId.text = '1';
-                        }else if(value.toString() == dealStagesNameUtilities[2].toString()){
-                          _dealStageId.text = '2';
-                        }else if(value.toString() == dealStagesNameUtilities[3].toString()){
-                          _dealStageId.text = '3';
-                        }else if(value.toString() == dealStagesNameUtilities[4].toString()){
-                          _dealStageId.text = '4';
-                        }else if(value.toString() == dealStagesNameUtilities[5].toString()){
-                          _dealStageId.text = '5';
-                        }else if(value.toString() == dealStagesNameUtilities[6].toString()){
-                          _dealStageId.text = '6';
-                        }
-                        print(_dealStageId.text);
-                      },
-                    ),
-                    const SizedBox(height: 20.0,),
+                          if(value.toString() == dealServicesNameUtilities[0].toString()){
+                            _dealServiceId.text = '0';
+                          }else if(value.toString() == dealServicesNameUtilities[1].toString()){
+                            _dealServiceId.text = '1';
+                          }else if(value.toString() == dealServicesNameUtilities[2].toString()){
+                            _dealServiceId.text = '2';
+                          }else if(value.toString() == dealServicesNameUtilities[3].toString()){
+                            _dealServiceId.text = '3';
+                          }else if(value.toString() == dealServicesNameUtilities[4].toString()){
+                            _dealServiceId.text = '4';
+                          }else if(value.toString() == dealServicesNameUtilities[5].toString()){
+                            _dealServiceId.text = '5';
+                          }else if(value.toString() == dealServicesNameUtilities[6].toString()){
+                            _dealServiceId.text = '6';
+                          }
+                          print(_dealServiceId.text);
+                        },
+                      ),
+                      const SizedBox(height: 20.0,),
 
-                    //Loại hợp đồng
-                    CustomDropdownFormField2(
-                        borderColor: mainBgColor,
-                        label: 'Loại hợp đồng',
-                        hintText: const Text(''),
-                        items: dealTypesNameUtilities,
-                        onChanged: (value){
-                        if(value.toString() == dealTypesNameUtilities[0].toString()){
-                          _dealTypeId.text = '0';
-                        }else{
-                          _dealTypeId.text = '1';
-                        }
-                        print(_dealTypeId.text);
-                      },
-                    ),
-                    const SizedBox(height: 20.0,),
+                      //Tổng giá trị
+                      CustomEditableTextFormField(
+                          isNull: true,
+                          borderColor: mainBgColor,
+                          inputNumberOnly: true,
+                          text: '',
+                          title: 'Số tiền (VNĐ)',
+                          readonly: false,
+                          textEditingController: _dealAmount
+                      ),
+                      const SizedBox(height: 20.0,),
 
-                    //Loại dịch vụ
-                    CustomDropdownFormField2(
-                      borderColor: mainBgColor,
-                      label: 'Loại dịch vụ',
-                      hintText: const Text(''),
-                      items: dealServicesNameUtilities,
-                      onChanged: (value){
-                        if(value.toString() == dealServicesNameUtilities[0].toString()){
-                          _dealServiceId.text = '0';
-                        }else if(value.toString() == dealServicesNameUtilities[1].toString()){
-                          _dealServiceId.text = '1';
-                        }else if(value.toString() == dealServicesNameUtilities[2].toString()){
-                          _dealServiceId.text = '2';
-                        }else if(value.toString() == dealServicesNameUtilities[3].toString()){
-                          _dealServiceId.text = '3';
-                        }else if(value.toString() == dealServicesNameUtilities[4].toString()){
-                          _dealServiceId.text = '4';
-                        }else if(value.toString() == dealServicesNameUtilities[5].toString()){
-                          _dealServiceId.text = '5';
-                        }else if(value.toString() == dealServicesNameUtilities[6].toString()){
-                          _dealServiceId.text = '6';
-                        }
-                        print(_dealServiceId.text);
-                      },
-                    ),
-                    const SizedBox(height: 20.0,),
+                      //Vat
+                      CustomDropdownFormField2(
+                          borderColor: mainBgColor,
+                          label: 'VAT',
+                          hintText: const Text(''),
+                          items: dealVatsNameUtilities,
+                          onChanged: (value){
+                          if(value.toString() == dealVatsNameUtilities[0].toString()){
+                            _dealVatId.text = '0';
+                          }else if(value.toString() == dealVatsNameUtilities[1].toString()){
+                            _dealVatId.text = '1';
+                          }
+                          print(_dealVatId.text);
+                        },
+                      ),
+                      const SizedBox(height: 20.0,),
 
-                    //Tổng giá trị
-                    CustomEditableTextField(
-                        borderColor: mainBgColor,
-                        inputNumberOnly: true,
-                        text: '',
-                        title: 'Tổng giá trị (VNĐ)',
-                        readonly: false,
-                        textEditingController: _dealAmount
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Vat
-                    CustomDropdownFormField2(
-                        borderColor: mainBgColor,
-                        label: 'VAT',
-                        hintText: const Text(''),
-                        items: dealVatsNameUtilities,
-                        onChanged: (value){
-                        if(value.toString() == dealVatsNameUtilities[0].toString()){
-                          _dealVatId.text = '0';
-                        }else if(value.toString() == dealVatsNameUtilities[1].toString()){
-                          _dealVatId.text = '1';
-                        }
-                        print(_dealVatId.text);
-                      },
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Ngày đóng
-                    SizedBox(
-                      child: TextField(
-                        controller: TextEditingController(),
-                        onTap: () async {
+                      //Ngày đóng
+                      CustomEditableTextFormField(
+                          text: _closeDate,
+                          title: 'Ngày chốt hợp đồng',
+                          readonly: false,
+                          onTap: () async {
                           FocusScope.of(context).requestFocus(FocusNode());
                           final date = await DatePicker.showDatePicker(
                             context,
@@ -247,112 +255,133 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                             _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
                           }
                         },
-                        decoration: InputDecoration(
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          contentPadding: const EdgeInsets.only(left: 20.0),
-                          labelText: 'Ngày chốt hợp đồng',
-                          hintText: _closeDate,
-                          labelStyle: const TextStyle(
-                            color: Color.fromARGB(255, 107, 106, 144),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                      ),
+                      // SizedBox(
+                      //   child: TextFormField(
+                      //     controller: TextEditingController(),
+                      //     onTap: () async {
+                      //       FocusScope.of(context).requestFocus(FocusNode());
+                      //       final date = await DatePicker.showDatePicker(
+                      //         context,
+                      //         locale : LocaleType.vi,
+                      //         minTime: DateTime.now(),
+                      //         currentTime: DateTime.now(),
+                      //         maxTime: DateTime.now().add(const Duration(days: 36500)),
+                      //       );
+                      //       if(date != null){
+                      //         _dealClosedDate.text = date.toString();
+                      //         _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
+                      //       }
+                      //     },
+                      //     decoration: InputDecoration(
+                      //       floatingLabelBehavior: FloatingLabelBehavior.always,
+                      //       contentPadding: const EdgeInsets.only(left: 20.0),
+                      //       labelText: 'Ngày chốt hợp đồng',
+                      //       hintText: _closeDate,
+                      //       labelStyle: const TextStyle(
+                      //         color: Color.fromARGB(255, 107, 106, 144),
+                      //         fontSize: 18,
+                      //         fontWeight: FontWeight.w500,
+                      //       ),
+                      //       enabledBorder: OutlineInputBorder(
+                      //         borderSide: const BorderSide(
+                      //             color: mainBgColor,
+                      //             width: 2),
+                      //         borderRadius: BorderRadius.circular(10),
+                      //       ),
+                      //       focusedBorder: OutlineInputBorder(
+                      //         borderSide: const BorderSide(
+                      //             color: mainBgColor,
+                      //             width: 2),
+                      //         borderRadius: BorderRadius.circular(10),
+                      //       ),
+                      //     ),
+                      //   ),
+                      //   width: 150.0,
+                      // ),
+                      const SizedBox(height: 20.0,),
+
+                      //Chủ hợp đồng
+                      CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: _accountFullname,
+                          title: 'Chủ hợp đồng',
+                          readonly: true,
+                          textEditingController: _dealOwnerId,
+                          onTap: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpFilter(),
+                            ));
+                            if(data != null){
+                              setState(() {
+                                filterAccount = data;
+                                _dealOwnerId.text = '${filterAccount.accountId!}';
+                                _accountFullname = filterAccount.fullname!;
+                              });
+                            }
+                          },
+                      ),
+                      const SizedBox(height: 20.0,),
+
+                      //Phòng ban
+                      if(filterAccount.departmentId != null) CustomReadOnlyTextField(text: getDepartmentName(filterAccount.departmentId!), title: 'Phòng'),
+                      if(filterAccount.departmentId != null) const SizedBox(height: 20.0,),
+
+                      //Nhóm
+                      if(filterAccount.teamId != null) CustomReadOnlyTextField(text: getTeamName(filterAccount.teamId!), title: 'Nhóm'),
+                      if(filterAccount.teamId != null) const SizedBox(height: 20.0,),
+
+                      //Nút thêm mới
+                      const SizedBox(height: 20.0,),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10.0),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: mainBgColor,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: mainBgColor,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              blurRadius: 1,
+                              offset: const Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: TextButton(
+                          onPressed: () {
+                            if(!_formKey.currentState!.validate()){
+                              return;
+                            }
+                            if(_dealTitle.text.isNotEmpty && _dealStageId.text.isNotEmpty && _dealAmount.text.isNotEmpty &&  _dealOwnerId.text.isNotEmpty
+                            && _dealVatId.text.isNotEmpty && _dealServiceId.text.isNotEmpty && _dealTypeId.text.isNotEmpty && _dealContactId.text.isNotEmpty ){
+                              Deal deal = Deal(
+                                  dealId: 0,
+                                  title: _dealTitle.text,
+                                  dealStageId: int.parse(_dealStageId.text),
+                                  amount: _dealAmount.text.isEmpty ? 0 : int.parse(_dealAmount.text),
+                                  closedDate: _dealClosedDate.text.isEmpty ? DateTime.now() : DateTime.parse(_dealClosedDate.text),
+                                  dealOwnerId: int.parse(_dealOwnerId.text),
+                                  linkTrello: _linkTrello.text.isEmpty ? '' : _linkTrello.text,
+                                  vatId: int.parse(_dealVatId.text),
+                                  serviceId: int.parse(_dealServiceId.text),
+                                  dealTypeId: int.parse(_dealTypeId.text),
+                                  contactId: int.parse(_dealContactId.text),
+                              );
+                              ApiService().createNewDeal(deal);
+                              Future.delayed(const Duration(seconds: 2), (){
+                                Navigator.pop(context);
+                              });
+                            }
+                          },
+                          child: const Text(
+                            'Thêm mới',
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
-                      width: 150.0,
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Chủ hợp đồng
-                    CustomEditableTextField(
-                        borderColor: mainBgColor,
-                        text: _accountFullname,
-                        title: 'Chủ hợp đồng',
-                        readonly: true,
-                        textEditingController: _dealOwnerId,
-                        onTap: () async {
-                          final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SaleEmpFilter(),
-                          ));
-                          if(data != null){
-                            setState(() {
-                              filterAccount = data;
-                              _dealOwnerId.text = '${filterAccount.accountId!}';
-                              _accountFullname = filterAccount.fullname!;
-                            });
-                          }
-                        },
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Phòng ban
-                    if(filterAccount.departmentId != null) CustomReadOnlyTextField(text: getDepartmentName(filterAccount.departmentId!), title: 'Phòng'),
-                    if(filterAccount.departmentId != null) const SizedBox(height: 20.0,),
-
-                    //Nhóm
-                    if(filterAccount.teamId != null) CustomReadOnlyTextField(text: getTeamName(filterAccount.teamId!), title: 'Nhóm'),
-                    if(filterAccount.teamId != null) const SizedBox(height: 20.0,),
-
-                    //Nút thêm mới
-                    const SizedBox(height: 20.0,),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            blurRadius: 1,
-                            offset: const Offset(0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-
-                          if(_dealTitle.text.isNotEmpty && _dealStageId.text.isNotEmpty && _dealAmount.text.isNotEmpty &&  _dealOwnerId.text.isNotEmpty
-                          && _dealVatId.text.isNotEmpty && _dealServiceId.text.isNotEmpty && _dealTypeId.text.isNotEmpty && _dealContactId.text.isNotEmpty ){
-                            Deal deal = Deal(
-                                dealId: 0,
-                                title: _dealTitle.text,
-                                dealStageId: int.parse(_dealStageId.text),
-                                amount: _dealAmount.text.isEmpty ? 0 : int.parse(_dealAmount.text),
-                                closedDate: _dealClosedDate.text.isEmpty ? DateTime.now() : DateTime.parse(_dealClosedDate.text),
-                                dealOwnerId: int.parse(_dealOwnerId.text),
-                                linkTrello: _linkTrello.text.isEmpty ? '' : _linkTrello.text,
-                                vatId: int.parse(_dealVatId.text),
-                                serviceId: int.parse(_dealServiceId.text),
-                                dealTypeId: int.parse(_dealTypeId.text),
-                                contactId: int.parse(_dealContactId.text),
-                            );
-                            ApiService().createNewDeal(deal);
-                            Future.delayed(const Duration(seconds: 2), (){
-                              Navigator.pop(context);
-                            });
-                          }
-                        },
-                        child: const Text(
-                          'Thêm mới',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
+                    ],
+                  )
+                ),
               )
           ),
           Positioned(

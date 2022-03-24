@@ -42,7 +42,7 @@ class _EmployeeForgetPasswordState extends State<EmployeeForgetPassword> {
                       children: const <Widget>[
                         Text('Vui lòng nhập email của bạn để hệ thống gửi mật khẩu mới đến email của bạn', style: TextStyle(color: defaultFontColor),),
                         SizedBox(height: 20.0,),
-                        CustomEditableTextField(
+                        CustomEditableTextFormField(
                             text: 'Email của bạn',
                             title: 'Email',
                             readonly: false,

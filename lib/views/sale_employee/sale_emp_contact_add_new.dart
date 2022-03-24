@@ -22,6 +22,8 @@ class SaleEmpContactAddNew extends StatefulWidget {
 
 class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   String fullname = '';
 
   final TextEditingController _contactName = TextEditingController();
@@ -77,180 +79,161 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                 ),
               ),
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: fullname.isNotEmpty ? ListView(
-                  children: <Widget>[
-
-                    //Tên khách hàng
-                    CustomEditableTextField(
-                        borderColor: mainBgColor,
-                        text: '',
-                        title: 'Tên khách hàng',
-                        readonly: true,
-                        textEditingController: _contactName,
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    CustomDropdownFormField2(
-                        borderColor: mainBgColor,
-                        label: 'Giới tính',
-                        hintText: const Text(''),
-                        items: gendersUtilities,
-                        onChanged: (value){
-                          if(value.toString() == gendersUtilities[0]){
-                            _contactGender.text = '0';
-                          }else if(value.toString() == gendersUtilities[1]){
-                            _contactGender.text = '1';
-                          }else if(value.toString() == gendersUtilities[2]){
-                            _contactGender.text = '2';
-                          }
-                        }
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Tên công ty
-                    CustomEditableTextField(
-                        borderColor: mainBgColor,
-                        text: '',
-                        title: 'Tên công ty khách hàng',
-                        readonly: false,
-                        textEditingController: _contactCompanyName
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Email khách hàng
-                    CustomEditableTextField(
-                        borderColor: mainBgColor,
-                        text: '',
-                        title: 'Email của khách hàng',
-                        readonly: false,
-                        textEditingController: _contactEmail
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Phone number
-                   CustomEditableTextField(
-                       borderColor: mainBgColor,
-                       inputNumberOnly: true,
-                       text: '',
-                       title: 'Số điện thoại',
-                       readonly: false,
-                       textEditingController: _contactPhoneNumber
-                   ),
-                    const SizedBox(height: 20.0,),
-
-                    //Contact Owner Id
-                    // if(fullname.isNotEmpty) OutlinedButton(
-                    //     style: OutlinedButton.styleFrom(
-                    //       primary: defaultFontColor,
-                    //       side: BorderSide(width: 2.0, color: Colors.grey.shade300),
-                    //       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    //     ),
-                    //     onPressed: () async {
-                    //       final data = await Navigator.push(context, MaterialPageRoute(
-                    //         builder: (context) => const SaleEmpFilter(),
-                    //       ));
-                    //       late Account filterAccount;
-                    //       if(data != null){
-                    //         setState(() {
-                    //           filterAccount = data;
-                    //           _contactOwnerId.text = filterAccount.accountId!.toString();
-                    //           fullname = filterAccount.fullname!;
-                    //         });
-                    //         print('Contact owner Id: ${_contactOwnerId.text}');
-                    //       }
-                    //     },
-                    //     child: Text('Khách hàng của: $fullname')
-                    // ),
-                    if(fullname.isNotEmpty) CustomEditableTextField(
-                        borderColor: mainBgColor,
-                        text: fullname,
-                        title: 'Nhân viên đại diện',
-                        readonly: true,
-                        textEditingController: _contactOwnerId,
-                        onTap: () async {
-                        final data = await Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => const SaleEmpFilter(),
-                        ));
-                        late Account filterAccount;
-                        if(data != null){
-                          setState(() {
-                            filterAccount = data;
-                            _contactOwnerId.text = filterAccount.accountId!.toString();
-                            fullname = filterAccount.fullname!;
-                          });
-                          print('Contact owner Id: ${_contactOwnerId.text}');
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Nguồn
-                    CustomDropdownFormField2(
-                        borderColor: mainBgColor,
-                        label: 'Nguồn',
-                        hintText: const Text(''),
-                        items: leadSourceNameUtilities,
-                        onChanged: (value){
-                          if(value.toString() == leadSourceNameUtilities[0]){
-                            _contactLeadSourceId.text = '0';
-                          }else if(value.toString() == leadSourceNameUtilities[1]){
-                            _contactLeadSourceId.text = '1';
-                          }else if(value.toString() == leadSourceNameUtilities[2]){
-                            _contactLeadSourceId.text = '2';
-                          }
-                          print(_contactLeadSourceId.text);
-                        }
-                    ),
-                    const SizedBox(height: 20.0,),
-                    
-
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            blurRadius: 1,
-                            offset: const Offset(0, 3), // changes position of shadow
-                          ),
-                        ],
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: fullname.isNotEmpty ? ListView(
+                    children: <Widget>[
+                      //Tên khách hàng
+                      CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: '',
+                          title: 'Tên khách hàng',
+                          readonly: false,
+                          textEditingController: _contactName,
                       ),
-                      child: TextButton(
-                        onPressed: (){
+                      const SizedBox(height: 20.0,),
 
-                          if(_contactName.text.isNotEmpty && _contactCompanyName.text.isNotEmpty && _contactPhoneNumber.text.isNotEmpty
-                             && _contactEmail.text.isNotEmpty && _contactGender.text.isNotEmpty && _contactLeadSourceId.text.isNotEmpty){
-                            Contact contact = Contact(
-                              contactId: 0,
-                              fullname: _contactName.text,
-                              companyName: _contactCompanyName.text,
-                              contactOwnerId: _contactOwnerId.text.isEmpty ? _account.accountId! : int.parse(_contactOwnerId.text),
-                              phoneNumber: _contactPhoneNumber.text,
-                              email: _contactEmail.text,
-                              genderId: int.parse(_contactGender.text),
-                              leadSourceId: int.parse(_contactLeadSourceId.text)
-                            );
+                      CustomDropdownFormField2(
+                          borderColor: mainBgColor,
+                          label: 'Giới tính',
+                          hintText: const Text(''),
+                          items: gendersUtilities,
+                          onChanged: (value){
+                            if(value.toString() == gendersUtilities[0]){
+                              _contactGender.text = '0';
+                            }else if(value.toString() == gendersUtilities[1]){
+                              _contactGender.text = '1';
+                            }else if(value.toString() == gendersUtilities[2]){
+                              _contactGender.text = '2';
+                            }
+                          }
+                      ),
+                      const SizedBox(height: 20.0,),
 
-                            ApiService().createNewContact(contact);
-                            Future.delayed(const Duration(seconds: 2), (){
-                              Navigator.pop(context);
+                      //Tên công ty
+                      CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: '',
+                          title: 'Tên công ty khách hàng',
+                          readonly: false,
+                          textEditingController: _contactCompanyName
+                      ),
+                      const SizedBox(height: 20.0,),
+
+                      //Email khách hàng
+                      CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: '',
+                          title: 'Email của khách hàng',
+                          readonly: false,
+                          textEditingController: _contactEmail
+                      ),
+                      const SizedBox(height: 20.0,),
+
+                      //Phone number
+                     CustomEditableTextFormField(
+                         borderColor: mainBgColor,
+                         inputNumberOnly: true,
+                         text: '',
+                         title: 'Số điện thoại',
+                         readonly: false,
+                         textEditingController: _contactPhoneNumber
+                     ),
+                      const SizedBox(height: 20.0,),
+
+                      if(fullname.isNotEmpty) CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: fullname,
+                          title: 'Nhân viên đại diện',
+                          readonly: true,
+                          textEditingController: _contactOwnerId,
+                          onTap: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const SaleEmpFilter(),
+                          ));
+                          late Account filterAccount;
+                          if(data != null){
+                            setState(() {
+                              filterAccount = data;
+                              _contactOwnerId.text = filterAccount.accountId!.toString();
+                              fullname = filterAccount.fullname!;
                             });
                           }
                         },
-                        child: const Text(
-                          'Thêm mới',
-                          style: TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 20.0,),
+
+                      //Nguồn
+                      CustomDropdownFormField2(
+                          borderColor: mainBgColor,
+                          label: 'Nguồn',
+                          hintText: const Text(''),
+                          items: leadSourceNameUtilities,
+                          onChanged: (value){
+                            if(value.toString() == leadSourceNameUtilities[0]){
+                              _contactLeadSourceId.text = '0';
+                            }else if(value.toString() == leadSourceNameUtilities[1]){
+                              _contactLeadSourceId.text = '1';
+                            }else if(value.toString() == leadSourceNameUtilities[2]){
+                              _contactLeadSourceId.text = '2';
+                            }
+                            print(_contactLeadSourceId.text);
+                          }
+                      ),
+                      const SizedBox(height: 20.0,),
+                      
+
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        decoration: BoxDecoration(
+                          color: Colors.blueAccent,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              blurRadius: 1,
+                              offset: const Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: TextButton(
+                          onPressed: (){
+                            if(!_formKey.currentState!.validate()){
+                              return;
+                            }
+                            if(_contactName.text.isNotEmpty && _contactCompanyName.text.isNotEmpty && _contactPhoneNumber.text.isNotEmpty
+                               && _contactEmail.text.isNotEmpty && _contactGender.text.isNotEmpty && _contactLeadSourceId.text.isNotEmpty){
+                              Contact contact = Contact(
+                                contactId: 0,
+                                fullname: _contactName.text,
+                                companyName: _contactCompanyName.text,
+                                contactOwnerId: _contactOwnerId.text.isEmpty ? _account.accountId! : int.parse(_contactOwnerId.text),
+                                phoneNumber: _contactPhoneNumber.text,
+                                email: _contactEmail.text,
+                                genderId: int.parse(_contactGender.text),
+                                leadSourceId: int.parse(_contactLeadSourceId.text),
+                                createdDate: DateTime.now()
+                              );
+
+                              ApiService().createNewContact(contact);
+                              Future.delayed(const Duration(seconds: 2), (){
+                                Navigator.pop(context);
+                              });
+                            }
+                          },
+                          child: const Text(
+                            'Thêm mới',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ) : const Center(child: CircularProgressIndicator())
+                    ],
+                  ) : const Center(child: CircularProgressIndicator())
+                ),
               )
           ),
           Positioned(

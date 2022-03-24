@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
+import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_add_new.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_detail.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -26,7 +29,7 @@ class SaleEmpContactList extends StatefulWidget {
 class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   bool _isSearching = false;
-  String _fullname = 'Nhân viên tạo', _searchString = '';
+  String _fullname = 'Nhân viên tạo', _searchString = '', _fromDateToDateString = 'Ngày tạo';
   late final GlobalKey<FormFieldState> _key = GlobalKey();
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
@@ -35,13 +38,15 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   late final List<Account> _saleEmployeeList = [];
   late Account _currentAccount, _filterAccount = Account();
 
+  DateTime? _fromDate, _toDate;
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if(_contacts.isEmpty){
       _currentAccount = Provider.of<AccountProvider>(context).account;
       _getOverallInfo(_currentPage, _currentAccount);
-      // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
     }
     _getAllSaleEmployee(isRefresh: true);
   }
@@ -84,11 +89,12 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                 setState(() {
                   _currentPage = index;
                 });
-                if(_contactOwnerId == -1){
-                  _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                } else {
-                  _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-                }
+                _getOverallInfo(_currentPage, _currentAccount);
+                // if(_contactOwnerId == -1){
+                //   _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
+                // } else {
+                //   _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                // }
               },
             ) : null,
           ),
@@ -117,49 +123,73 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, top: 10.0),
-                  child: _fullname.isNotEmpty ? Row(
-                    children: <Widget>[
-                      const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                      const SizedBox(width: 10,),
-                      CustomOutlinedButton(
-                        color: mainBgColor,
-                        title: _fullname,
-                        radius: 10,
-                        onPressed: () async {
-                          final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SaleEmpFilter(),
-                          ));
-                          if(data != null){
-                            _currentPage = 0;
-                            setState(() {
-                              _filterAccount = data;
-                              _contactOwnerId = _filterAccount.accountId!;
-                              _fullname = 'Nhân viên tạo: ${_filterAccount.fullname!}';
-                            });
+                  child: _fullname.isNotEmpty ? SizedBox(
+                    height: 40.0,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                            const SizedBox(width: 10,),
+                            CustomOutlinedButton(
+                              color: mainBgColor,
+                              title: _fullname,
+                              radius: 10,
+                              onPressed: () async {
+                                final data = await Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => const SaleEmpFilter(),
+                                ));
+                                if(data != null){
+                                  _currentPage = 0;
+                                  setState(() {
+                                    _filterAccount = data;
+                                    _contactOwnerId = _filterAccount.accountId!;
+                                    _fullname = 'Nhân viên tạo: ${_filterAccount.fullname!}';
+                                  });
 
-                            if(_contacts.isNotEmpty){
-                              _contacts.clear();
-                            }
-
-                            _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-                          }
-                        },
-                      ),
-                      IconButton(
-                          onPressed: (){
-                            setState(() {
-                              _filterAccount = Account();
-                              // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
-                              _fullname = 'Nhân viên tạo';
-                              _contactOwnerId = -1;
-                              _contacts.clear();
-                              _refreshController.resetNoData();
-                            });
-                            _getOverallInfo(_currentPage, _currentAccount);
-                          },
-                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
-                      ),
-                    ],
+                                  if(_contacts.isNotEmpty){
+                                    _contacts.clear();
+                                  }
+                                  _getOverallInfo(_currentPage, _currentAccount);
+                                  // _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
+                                }
+                              },
+                            ),
+                            CustomOutlinedButton(
+                              title: _fromDateToDateString,
+                              radius: 10,
+                              color: mainBgColor,
+                              onPressed: () async {
+                                final data = await Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => const SaleEmpDateFilter(),
+                                ));
+                                if(data != null){
+                                  FromDateToDate fromDateToDate = data;
+                                  setState(() {
+                                    _fromDate = fromDateToDate.fromDate;
+                                    _toDate = fromDateToDate.toDate;
+                                    _fromDateToDateString = 'Ngày chốt: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                    _contacts.clear();
+                                  });
+                                  _refreshController.resetNoData();
+                                  _getOverallInfo(_currentPage, _currentAccount);
+                                }
+                              },
+                            ),
+                            IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    _onReset();
+                                  });
+                                  _getOverallInfo(_currentPage, _currentAccount);
+                                },
+                                icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ) : null
                 ),
               ],
@@ -193,6 +223,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                   ),
                 ),
                 margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
+
                 child: _contacts.isNotEmpty ? SmartRefresher(
                   controller: _refreshController,
                   enablePullUp: true,
@@ -204,11 +235,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     print('Current page: $_currentPage');
 
                     if(_isSearching == false || _searchString.isEmpty){
-                      if(_contactOwnerId == -1){
-                        _getOverallInfo(_currentPage, _currentAccount);
-                      }else{
-                        _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-                      }
+                      _getOverallInfo(_currentPage, _currentAccount);
                     }else if(_isSearching == true && _searchString.isNotEmpty){
                       _searchNameAndEmail(currentAccount: _currentAccount, query: _searchString);
                     }
@@ -229,7 +256,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       itemBuilder: (context, index){
                         final contact = _contacts[index];
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
+                          padding: const EdgeInsets.only(bottom: 20.0, left: 2.0, right: 2.0),
                           child: Card(
                               elevation: 10,
                               shape: const RoundedRectangleBorder(
@@ -245,6 +272,43 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                 padding: const EdgeInsets.all(10.0),
                                 child: Column(
                                   children: <Widget>[
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    //   child: Row(
+                                    //     children: <Widget>[
+                                    //
+                                    //       Expanded(
+                                    //         flex: 5,
+                                    //         child: Column(
+                                    //           children: <Widget>[
+                                    //             Text(contact.fullname)
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //       const Spacer(),
+                                    //       Expanded(
+                                    //         flex: 4,
+                                    //         child: Column(
+                                    //           children: <Widget>[
+                                    //             Text(DateFormat('dd-MM-yyyy').format(contact.createdDate)),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //       const Spacer(),
+                                    //       Expanded(
+                                    //         flex: 4,
+                                    //         child: Column(
+                                    //           children: <Widget>[
+                                    //             Text(_getContactOwnerName(contact.contactOwnerId)),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //       // const Text('Tên khách hàng:', style: TextStyle(fontSize: 14),),
+                                    //       // const Spacer(),
+                                    //       // Text(contact.fullname, style: const TextStyle(fontSize: 14),),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
@@ -278,12 +342,25 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                       ),
                                     ),
 
-                                    Row(
-                                      children: <Widget>[
-                                        const Text('Nhân viên tạo: ', style: TextStyle(fontSize: 14),),
-                                        const Spacer(),
-                                        Text(_getContactOwnerName(contact.contactOwnerId)),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Ngày tạo:', style: TextStyle(fontSize: 14),),
+                                          const Spacer(),
+                                          Text(DateFormat('dd-MM-yyyy').format(contact.createdDate), style: const TextStyle(fontSize: 14),),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Nhân viên tạo: ', style: TextStyle(fontSize: 14),),
+                                          const Spacer(),
+                                          Text(_getContactOwnerName(contact.contactOwnerId)),
+                                        ],
+                                      ),
                                     )
                                   ],
                                 ),
@@ -322,7 +399,11 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                 onSubmitted: (value){
                   _currentPage = 0;
                   setState(() {
-                    _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                    _filterAccount = Account();
+                    _fullname = 'Nhân viên tạo';
+                    _fromDate = null;
+                    _toDate = null;
+                    _fromDateToDateString = 'Ngày tạo';
                   });
                   _searchString = value.toString();
                   _searchNameAndEmail(currentAccount: _currentAccount, query: _searchString);
@@ -340,12 +421,14 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       _isSearching = false;
                       _filterAccount = Account();
                       _currentPage = 0;
-                      _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
+                      _fullname = 'Nhân viên tạo';
                       _contactOwnerId = -1;
                       _contacts.clear();
                       _refreshController.resetNoData();
-                      _getOverallInfo(_currentPage, _currentAccount);
+                      _fromDate = null;
+                      _toDate = null;
                     });
+                    _getOverallInfo(_currentPage, _currentAccount);
                   },
                 ) : IconButton(
                   icon: const Icon(
@@ -365,8 +448,23 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     );
   }
 
+  void _onReset(){
+    _filterAccount = Account();
+    _fullname = 'Nhân viên tạo';
+    _contactOwnerId = -1;
+    _contacts.clear();
+    _fromDate = null;
+    _toDate = null;
+    _fromDateToDateString = 'Ngày tạo';
+    _refreshController.resetNoData();
+  }
+
   void _getOverallInfo(int currentPage, Account account){
-      _getAllContactByAccountId(isRefresh: false, accountId: account.accountId!, currentPage: currentPage);
+      if(_contactOwnerId == -1){
+        _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!, fromDate: _fromDate, toDate: _toDate);
+      } else {
+        _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+      }
   }
 
   String _getDepartmentName(int blockId, departmentId){
@@ -379,9 +477,9 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     return name;
   }
 
-  void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage}) async {
+  void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? limit, DateTime? fromDate, DateTime? toDate}) async {
 
-    List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage);
+    List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, limit: limit);
 
     if(contactList.isNotEmpty){
       setState(() {
@@ -397,8 +495,8 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   }
 
-  void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage}) async {
-    List<Contact> contactList = await ContactListViewModel().getAllContactByOwnerId(isRefresh: isRefresh, contactOwnerId: contactOwnerId, currentPage: currentPage);
+  void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
+    List<Contact> contactList = await ContactListViewModel().getAllContactByOwnerId(isRefresh: isRefresh, contactOwnerId: contactOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
     if(contactList.isNotEmpty){
       setState(() {
@@ -425,12 +523,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     setState(() {
       _contacts.clear();
     });
-      
-
-    // setState(() {
-    //   _currentPage = 0;
-    //   _key.currentState?.reset();
-    // });
 
     if(_isSearching == false || _searchString.isEmpty){
       if(_contactOwnerId == -1){

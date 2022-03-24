@@ -25,16 +25,13 @@ class ApiService {
   String stockUrl = 'https://trungpd2022.azurewebsites.net/api/v1/';
 
   //Contacts
-  Future<List<Contact>> getAllContactsByAccountId( {required bool isRefresh, required int accountId, required int currentPage, int? limit} ) async {
+  Future<List<Contact>> getAllContactsByAccountId( {required bool isRefresh, required int accountId, required int currentPage, int? limit, DateTime? fromDate, DateTime? toDate} ) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'contacts?account-id=$accountId&page=$currentPage&limit=10';
+    String url = stockUrl + 'contacts?account-id=$accountId&from-date=${fromDate ?? ''}&to-date=${toDate ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
-    if(limit != null){
-      url = stockUrl + 'contacts?account-id=$accountId&page=$currentPage&limit=$limit';
-    }
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -65,12 +62,12 @@ class ApiService {
     }
   }
 
-  Future<List<Contact>> getAllContactByContactOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage}) async {
+  Future<List<Contact>> getAllContactByContactOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'contacts?contact-owner=$contactOwnerId&page=$currentPage&limit=10';
+    String url = stockUrl + 'contacts?contact-owner=$contactOwnerId&from-date=${fromDate ?? ''}&to-date=${toDate ?? ''}&page=$currentPage&limit=10';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -148,6 +145,7 @@ class ApiService {
       body: jsonEncode(<String, dynamic>{
         'contactId': contact.contactId,
         'fullname': contact.fullname,
+        'createdDate': contact.createdDate.toIso8601String(),
         'email': contact.email,
         'phoneNumber': contact.phoneNumber,
         'contactOwnerId': contact.contactOwnerId,

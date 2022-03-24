@@ -81,7 +81,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                   child: _currentAccount != null ? ListView(
                     children: <Widget>[
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.email!.isEmpty ? 'Chưa cập nhật' : _currentAccount.email!,
                           title: 'Email',
                           readonly: _readOnly,
@@ -89,7 +89,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.fullname!.isEmpty ? 'Chưa cập nhật' : _currentAccount.fullname!,
                           title: 'Họ và tên',
                           readonly: _readOnly,
@@ -97,7 +97,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.phoneNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.phoneNumber!,
                           title: 'Số điện thoại',
                           readonly: _readOnly,
@@ -105,7 +105,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.address!.isEmpty ? 'Chưa cập nhật' : _currentAccount.address!,
                           title: 'Địa chỉ',
                           readonly: _readOnly,
@@ -113,7 +113,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.citizenIdentityCardNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.citizenIdentityCardNumber!,
                           title: 'CMND hoặc CCCD',
                           readonly: _readOnly,
@@ -121,7 +121,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.nationality!.isEmpty ? 'Chưa cập nhật' : _currentAccount.nationality!,
                           title: 'Quốc tịch',
                           readonly: _readOnly,
@@ -129,7 +129,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.bankName!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankName!,
                           title: 'Tên ngân hàng',
                           readonly: _readOnly,
@@ -137,7 +137,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.bankAccountName!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankAccountName!,
                           title: 'Tên chủ tài khoản',
                           readonly: _readOnly,
@@ -145,7 +145,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomEditableTextField(
+                      CustomEditableTextFormField(
                           text: _currentAccount.bankAccountNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankAccountNumber!,
                           title: 'Số tài khoản',
                           readonly: _readOnly,

@@ -42,7 +42,7 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                       children: const <Widget>[
                         Text('Bạn nên sử dụng mật khẩu mà mình chưa sử dụng ở đâu khác', style: TextStyle(color: defaultFontColor, fontSize: 18.0),),
                         SizedBox(height: 40.0,),
-                        CustomEditableTextField(
+                        CustomEditableTextFormField(
                           obscureText: true,
                           text: '',
                           title: 'Mật khẩu hiện tại của bạn',
@@ -50,7 +50,7 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                           width: 300.0,
                         ),
                         SizedBox(height: 20.0,),
-                        CustomEditableTextField(
+                        CustomEditableTextFormField(
                           obscureText: true,
                           text: '',
                           title: 'Mật khẩu mới',
@@ -58,7 +58,7 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                           width: 300.0,
                         ),
                         SizedBox(height: 20.0,),
-                        CustomEditableTextField(
+                        CustomEditableTextFormField(
                           obscureText: true,
                           text: '',
                           title: 'Nhập lại mật khẩu mới',

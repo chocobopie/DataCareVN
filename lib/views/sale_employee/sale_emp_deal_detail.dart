@@ -107,7 +107,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                             const SizedBox(height: 20.0,),
 
                             //Tiêu đề hợp đồng
-                            CustomEditableTextField(
+                            CustomEditableTextFormField(
                               inputNumberOnly: false,
                               borderColor: _readOnly != true ? mainBgColor : null,
                               text: widget.deal.title,
@@ -203,7 +203,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                             const SizedBox(height: 20.0,),
 
                             //Tổng giá trị
-                            CustomEditableTextField(
+                            CustomEditableTextFormField(
                                 borderColor: _readOnly != true ? mainBgColor : null,
                                 inputNumberOnly: true,
                                 text: '${widget.deal.amount}',
@@ -351,7 +351,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                             const SizedBox(height: 20.0,),
 
                             //Link trello
-                            CustomEditableTextField(
+                            CustomEditableTextFormField(
                                 borderColor: _readOnly != true ? mainBgColor : null,
                                 text: widget.deal.linkTrello!.isNotEmpty
                                     ? widget.deal.linkTrello!
@@ -364,7 +364,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                             ),
 
                             //Chủ hợp đồng
-                            CustomEditableTextField(
+                            CustomEditableTextFormField(
                               borderColor: _readOnly != true ? mainBgColor : null,
                               text: account!.fullname!,
                               title: 'Chủ hợp đồng',

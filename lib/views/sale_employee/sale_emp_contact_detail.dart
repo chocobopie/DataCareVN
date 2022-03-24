@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/view_models/account_view_model.dart';
@@ -23,7 +24,7 @@ class SaleEmpContactDetail extends StatefulWidget {
 
 class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
 
-  String fullname = '';
+  String _fullname = '';
   bool _readOnly = true;
 
   final TextEditingController _contactName = TextEditingController();
@@ -41,6 +42,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
     if(_contactOwnerId.text.isEmpty){
       _getAccountFullnameById(accountId: widget.contact.contactOwnerId);
     }
+    print(widget.contact.createdDate);
   }
 
   @override
@@ -79,14 +81,14 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: fullname.isNotEmpty ? ListView(
+                child: _fullname.isNotEmpty ? ListView(
                   children: <Widget>[
                     //Id khách hàng
                     CustomReadOnlyTextField(text: '${widget.contact.contactId}', title: 'Mã số khách hàng'),
                     const SizedBox(height: 20.0,),
 
                     //Tên khách hàng
-                    CustomEditableTextField(
+                    CustomEditableTextFormField(
                         borderColor: _readOnly != true ? mainBgColor : null,
                         text: widget.contact.fullname,
                         title: 'Tên khách hàng',
@@ -114,7 +116,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                     const SizedBox(height: 20.0,),
 
                     //Email của khách hàng
-                    CustomEditableTextField(
+                    CustomEditableTextFormField(
                         borderColor: _readOnly != true ? mainBgColor : null,
                         inputEmailOnly: true,
                         text: widget.contact.email,
@@ -125,7 +127,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                     const SizedBox(height: 20.0,),
 
                     //Số điện thoại
-                    CustomEditableTextField(
+                    CustomEditableTextFormField(
                         borderColor: _readOnly != true ? mainBgColor : null,
                         inputNumberOnly: true,
                         text: widget.contact.phoneNumber,
@@ -136,7 +138,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                     const SizedBox(height: 20.0,),
 
                     //Tên công ty của khách hàng
-                    CustomEditableTextField(
+                    CustomEditableTextFormField(
                         borderColor: _readOnly != true ? mainBgColor : null,
                         text: widget.contact.companyName,
                         title: 'Tên công ty',
@@ -168,9 +170,9 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                     //     } : null,
                     //     child: Text('Khách hàng của: $fullname')
                     // ),
-                    if(fullname.isNotEmpty) CustomEditableTextField(
+                    if(_fullname.isNotEmpty) CustomEditableTextFormField(
                       borderColor: _readOnly != true ? mainBgColor : null,
-                      text: fullname,
+                      text: _fullname,
                       title: 'Nhân viên tạo',
                       readonly: true,
                       textEditingController: _contactOwnerId,
@@ -181,10 +183,16 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                           setState(() {
                             filterAccount = data;
                             _contactOwnerId.text = filterAccount.accountId!.toString();
-                            fullname = filterAccount.fullname!;
+                            _fullname = filterAccount.fullname!;
                           });
                         }
                       } : null,
+                    ),
+                    const SizedBox(height: 20.0,),
+
+                    CustomReadOnlyTextField(
+                        text: 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.contact.createdDate)}',
+                        title: 'Ngày tạo'
                     ),
                     const SizedBox(height: 20.0,),
 
@@ -280,6 +288,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                                           contactOwnerId: _contactOwnerId.text.isEmpty ? widget.contact.contactOwnerId : int.parse(_contactOwnerId.text),
                                           genderId: _contactGender.text.isEmpty ? widget.contact.genderId : int.parse(_contactGender.text),
                                           leadSourceId: _contactLeadSourceId.text.isEmpty ? widget.contact.leadSourceId : int.parse(_contactLeadSourceId.text),
+                                          createdDate: widget.contact.createdDate,
                                       );
                                       ApiService().updateAContact(contact);
                                       _readOnly = true;
@@ -325,7 +334,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
   void _getAccountFullnameById({required accountId}) async {
     Account account = await AccountViewModel().getAccountFullnameById(accountId: accountId);
     setState(() {
-      fullname = account.fullname!;
+      _fullname = account.fullname!;
     });
   }
 }

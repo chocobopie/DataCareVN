@@ -14,8 +14,15 @@ class CustomDropdownFormField2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField2(
       decoration: InputDecoration(
-        contentPadding:
-        const EdgeInsets.only(left: 20.0, right: 20.0),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: borderColor == null ? Colors.grey.shade300 : borderColor!, width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        contentPadding: const EdgeInsets.only(left: 20.0, right: 20.0),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
               color: borderColor == null ? Colors.grey.shade300 : borderColor!,
