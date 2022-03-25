@@ -28,6 +28,13 @@ class PermissionViewModel with ChangeNotifier{
 
     return accountPermission;
   }
+  Future<AccountPermission> updateAccountPermission({required AccountPermission accountPermission}) async {
+    AccountPermission accountPerm = await ApiService().updateAccountPermission(accountPermission: accountPermission);
+
+    notifyListeners();
+
+    return accountPerm;
+  }
 
   //AttendancePermissionId,
   Future<AttendancePermission> getAttendancePermissionById({required int attendancePermissionId}) async {
@@ -36,6 +43,13 @@ class PermissionViewModel with ChangeNotifier{
     notifyListeners();
 
     return attendancePermission;
+  }
+  Future<AttendancePermission> updateAttendancePermission({required AttendancePermission attendancePermission}) async {
+    AttendancePermission attendancePerm = await ApiService().updateAttendancePermission(attendancePermission: attendancePermission);
+
+    notifyListeners();
+
+    return attendancePerm;
   }
 
   //PayrollPermissionId,
@@ -47,6 +61,7 @@ class PermissionViewModel with ChangeNotifier{
     return payrollPermission;
   }
 
+
   //ContactPermissionId,
   Future<ContactPermission> getContactPermissionById({required int contactPermissionId}) async {
     ContactPermission contactPermission = await ApiService().getContactPermissionById(contactPermissionId: contactPermissionId);
@@ -54,6 +69,13 @@ class PermissionViewModel with ChangeNotifier{
     notifyListeners();
 
     return contactPermission;
+  }
+  Future<ContactPermission> updateContactPermission({required ContactPermission contactPermission}) async {
+    ContactPermission contactPerm = await ApiService().updateContactPermission(contactPermission: contactPermission);
+
+    notifyListeners();
+
+    return contactPerm;
   }
 
   //DealPermissionId,
@@ -64,6 +86,13 @@ class PermissionViewModel with ChangeNotifier{
 
     return dealPermission;
   }
+  Future<DealPermission> updateDealPermission({required DealPermission dealPermission}) async {
+    DealPermission dealPerm = await ApiService().updateDealPermission(dealPermission: dealPermission);
+
+    notifyListeners();
+
+    return dealPerm;
+  }
 
   //IssuePermissionId,
   Future<IssuePermission> getIssuePermissionById({required int issuePermissionId}) async {
@@ -73,4 +102,12 @@ class PermissionViewModel with ChangeNotifier{
 
     return issuePermission;
   }
+  Future<IssuePermission> updateIssuePermission({required IssuePermission issuePermission}) async {
+    IssuePermission issuePerm = await ApiService().updateIssuePermission(issuePermission: issuePermission);
+
+    notifyListeners();
+
+    return issuePerm;
+  }
+
 }

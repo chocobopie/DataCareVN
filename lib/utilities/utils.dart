@@ -58,10 +58,10 @@ List<String> saleEmpCreatePermNames = [
 List<String> saleEmpViewUpdateDeletePermNames = [
   'Chỉ bản thân',
   'Chỉ trong nhóm',
-  'Chỉ phòng ban'
+  'Chỉ trong phòng ban'
 ];
 List<String> hrInternViewUpdate = [
-  'Chỉ phòng ban',
+  'Chỉ trong phòng ban',
   'Tất cả'
 ];
 

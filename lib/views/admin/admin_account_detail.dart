@@ -23,6 +23,7 @@ import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomExpansionTile.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:provider/provider.dart';
 
 class AdminAccountDetail extends StatefulWidget {
@@ -56,6 +57,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   final TextEditingController _accountBlockId = TextEditingController();
   final TextEditingController _accountTeamId = TextEditingController();
   final TextEditingController _accountRoleId = TextEditingController();
+
+  int? _contactCreateId, _contactViewId, _contactUpdateId, _contactDeleteId, _dealCreateId, _dealViewId, _dealUpdateId, _dealDeleteId, _issueCreateId, _issueViewId, _issueUpdateId, _issueDeleteId;
+  int? _accountViewId, _attendanceViewId, _attendanceUpdateId;
 
   @override
   void initState() {
@@ -110,24 +114,31 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           readonly: true,
                       ),
                       const SizedBox(height: 20.0,),
-
-                      CustomEditableTextFormField(
-                          text: _currentAccount.phoneNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.phoneNumber!,
-                          title: 'Số điện thoại',
-                          readonly: true,
+                      
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomEditableTextFormField(
+                                text: _currentAccount.phoneNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.phoneNumber!,
+                                title: 'Số điện thoại',
+                                readonly: true,
+                            ),
+                          ),
+                          const SizedBox(width: 5.0,),
+                          Expanded(
+                            child: CustomEditableTextFormField(
+                              text: _currentAccount.citizenIdentityCardNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.citizenIdentityCardNumber!,
+                              title: 'CMND hoặc CCCD',
+                              readonly: true,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
                           text: _currentAccount.address!.isEmpty ? 'Chưa cập nhật' : _currentAccount.address!,
                           title: 'Địa chỉ',
-                          readonly: true,
-                      ),
-                      const SizedBox(height: 20.0,),
-
-                      CustomEditableTextFormField(
-                          text: _currentAccount.citizenIdentityCardNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.citizenIdentityCardNumber!,
-                          title: 'CMND hoặc CCCD',
                           readonly: true,
                       ),
                       const SizedBox(height: 20.0,),
@@ -160,41 +171,44 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomDropdownFormField2(
-                        label: 'Giới tính',
-                        hintText: _currentAccount.genderId != null ? Text(gendersUtilities[_currentAccount.genderId!]) : const Text('Chưa cập nhật'),
-                        items: gendersUtilities,
-                        onChanged: null
-                      ),
-                      const SizedBox(height: 20.0,),
-
-                      //Ngày sinh
-                      SizedBox(
-                        child: TextField(
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            contentPadding: const EdgeInsets.only(left: 20.0),
-                            labelText: 'Ngày sinh',
-                            hintText: _currentAccount.dateOfBirth == null ? 'Chưa cập nhật' : 'Ngày ${DateFormat('dd-MM-yyyy').format(_currentAccount.dateOfBirth!)}',
-                            labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 107, 106, 144),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.grey.shade300, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                              const BorderSide(color: Colors.blue, width: 2),
-                              borderRadius: BorderRadius.circular(10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomDropdownFormField2(
+                              label: 'Giới tính',
+                              hintText: _currentAccount.genderId != null ? Text(gendersUtilities[_currentAccount.genderId!]) : const Text('Chưa cập nhật'),
+                              items: gendersUtilities,
+                              onChanged: null
                             ),
                           ),
-                        ),
-                        width: 150.0,
+                          const SizedBox(width: 5.0,),
+                          Expanded(
+                            child: TextField(
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                floatingLabelBehavior: FloatingLabelBehavior.always,
+                                contentPadding: const EdgeInsets.only(left: 20.0),
+                                labelText: 'Ngày sinh',
+                                hintText: _currentAccount.dateOfBirth == null ? 'Chưa cập nhật' : 'Ngày ${DateFormat('dd-MM-yyyy').format(_currentAccount.dateOfBirth!)}',
+                                labelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 107, 106, 144),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.grey.shade300, width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                  const BorderSide(color: Colors.blue, width: 2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -285,36 +299,68 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                                 child: CustomDropdownFormField2(
                                     label: 'Tạo mới',
-                                    hintText: Text(permissionStatusesNameUtilities[_contactPermission!.create]),
+                                    hintText: Text(permissionStatusesNameUtilities[_contactCreateId == null ? _contactPermission!.create : _contactCreateId!]),
                                     items: saleEmpCreatePermNames,
-                                    onChanged: null
+                                    onChanged: _readOnly != true ? (value){
+                                      for(int i = 0; i < permissionStatuses.length; i++){
+                                        if(value.toString() == permissionStatuses[i].name){
+                                          setState(() {
+                                            _contactCreateId = permissionStatuses[i].permissionStatusId;
+                                          });
+                                        }
+                                      }
+                                    } : null,
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                 child: CustomDropdownFormField2(
                                     label: 'Xem',
-                                    hintText: Text(permissionStatusesNameUtilities[_contactPermission!.view]),
+                                    hintText: Text(permissionStatusesNameUtilities[_contactViewId == null ? _contactPermission!.view : _contactViewId!]),
                                     items: saleEmpViewUpdateDeletePermNames,
-                                    onChanged: null
+                                    onChanged: _readOnly != true ? (value){
+                                      for(int i = 0; i < permissionStatuses.length; i++){
+                                        if(value.toString() == permissionStatuses[i].name){
+                                          setState(() {
+                                            _contactViewId = permissionStatuses[i].permissionStatusId;
+                                          });
+                                        }
+                                      }
+                                    } : null,
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                 child: CustomDropdownFormField2(
                                     label: 'Chỉnh sửa',
-                                    hintText: Text(permissionStatusesNameUtilities[_contactPermission!.update]),
+                                    hintText: Text(permissionStatusesNameUtilities[_contactUpdateId == null ? _contactPermission!.update : _contactUpdateId!]),
                                     items: saleEmpViewUpdateDeletePermNames,
-                                    onChanged: null
+                                    onChanged: _readOnly != true ? (value){
+                                      for(int i = 0; i < permissionStatuses.length; i++){
+                                        if(value.toString() == permissionStatuses[i].name){
+                                          setState(() {
+                                            _contactUpdateId = permissionStatuses[i].permissionStatusId;
+                                          });
+                                        }
+                                      }
+                                    } : null,
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15.0),
                                 child: CustomDropdownFormField2(
                                     label: 'Xóa',
-                                    hintText: Text(permissionStatusesNameUtilities[_contactPermission!.delete]),
+                                    hintText: Text(permissionStatusesNameUtilities[_contactDeleteId == null ? _contactPermission!.delete : _contactDeleteId!]),
                                     items: saleEmpViewUpdateDeletePermNames,
-                                    onChanged: null
+                                    onChanged: _readOnly != true ? (value){
+                                      for(int i = 0; i < permissionStatuses.length; i++){
+                                        if(value.toString() == permissionStatuses[i].name){
+                                          setState(() {
+                                            _contactDeleteId = permissionStatuses[i].permissionStatusId;
+                                          });
+                                        }
+                                      }
+                                    } : null,
                                 ),
                               ),
                             ]
@@ -333,36 +379,68 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Tạo mới',
-                                      hintText: Text(permissionStatusesNameUtilities[_dealPermission!.create]),
+                                      hintText: Text(permissionStatusesNameUtilities[_dealCreateId == null ? _dealPermission!.create : _dealCreateId!]),
                                       items: saleEmpCreatePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _dealCreateId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
-                                      hintText: Text(permissionStatusesNameUtilities[_dealPermission!.view]),
+                                      hintText: Text(permissionStatusesNameUtilities[_dealViewId == null ? _dealPermission!.view : _dealViewId!]),
                                       items: saleEmpViewUpdateDeletePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _dealViewId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Chỉnh sửa',
-                                      hintText: Text(permissionStatusesNameUtilities[_dealPermission!.update]),
+                                      hintText: Text(permissionStatusesNameUtilities[_dealUpdateId == null ?_dealPermission!.update : _dealUpdateId!]),
                                       items: saleEmpViewUpdateDeletePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _dealUpdateId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xóa',
-                                      hintText: Text(permissionStatusesNameUtilities[_dealPermission!.delete]),
+                                      hintText: Text(permissionStatusesNameUtilities[_dealDeleteId == null ?_dealPermission!.delete : _dealDeleteId!]),
                                       items: saleEmpViewUpdateDeletePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _dealDeleteId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                               ]
@@ -381,36 +459,68 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Tạo mới',
-                                      hintText: Text(permissionStatusesNameUtilities[_issuePermission!.create]),
+                                      hintText: Text(permissionStatusesNameUtilities[_issueCreateId == null ?_issuePermission!.create : _issueCreateId!]),
                                       items: saleEmpCreatePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _issueCreateId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
-                                      hintText: Text(permissionStatusesNameUtilities[_issuePermission!.view]),
+                                      hintText: Text(permissionStatusesNameUtilities[_issueViewId == null ? _issuePermission!.view : _issueViewId!]),
                                       items: saleEmpViewUpdateDeletePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _issueViewId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Chỉnh sửa',
-                                      hintText: Text(permissionStatusesNameUtilities[_issuePermission!.update]),
+                                      hintText: Text(permissionStatusesNameUtilities[_issueUpdateId == null ? _issuePermission!.update : _issueUpdateId!]),
                                       items: saleEmpViewUpdateDeletePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _issueUpdateId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xóa',
-                                      hintText: Text(permissionStatusesNameUtilities[_issuePermission!.delete]),
+                                      hintText: Text(permissionStatusesNameUtilities[_issueDeleteId == null ? _issuePermission!.delete : _issueDeleteId!]),
                                       items: saleEmpViewUpdateDeletePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _issueDeleteId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                               ]
@@ -429,9 +539,17 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
-                                      hintText: Text(permissionStatusesNameUtilities[_accountPermission!.view]),
+                                      hintText: Text(permissionStatusesNameUtilities[_accountViewId == null ? _accountPermission!.view : _accountViewId!]),
                                       items: saleEmpCreatePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _accountViewId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                               ]
@@ -450,24 +568,60 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
-                                      hintText: Text(permissionStatusesNameUtilities[_attendancePermission!.view]),
+                                      hintText: Text(permissionStatusesNameUtilities[_attendanceViewId == null ? _attendancePermission!.view : _attendanceViewId!]),
                                       items: saleEmpCreatePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _attendanceViewId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15.0),
                                   child: CustomDropdownFormField2(
                                       label: 'Chỉnh sủa',
-                                      hintText: Text(permissionStatusesNameUtilities[_attendancePermission!.update]),
+                                      hintText: Text(permissionStatusesNameUtilities[_attendanceUpdateId == null ? _attendancePermission!.update : _attendanceUpdateId!]),
                                       items: saleEmpCreatePermNames,
-                                      onChanged: null
+                                      onChanged: _readOnly != true ? (value){
+                                        for(int i = 0; i < permissionStatuses.length; i++){
+                                          if(value.toString() == permissionStatuses[i].name){
+                                            setState(() {
+                                              _attendanceUpdateId = permissionStatuses[i].permissionStatusId;
+                                            });
+                                          }
+                                        }
+                                      } : null,
                                   ),
                                 ),
                               ]
                           ),
                         ),
+                      Row(
+                        children: <Widget>[
+                          if(_readOnly == false)
+                            Expanded(child: CustomTextButton(
+                                color: Colors.deepPurple,
+                                text: 'Hủy',
+                                 onPressed: (){if(_readOnly == false) {setState(() {_readOnly = true;});}},
+                            )),
 
+                          const SizedBox(width: 5.0,),
+                          Expanded(
+                            child: CustomTextButton(
+                                color: Colors.blueAccent,
+                                text: _readOnly == true ? 'Chỉnh sửa' : 'Lưu',
+                                onPressed: (){
+                                  if(_readOnly == true) setState(() {_readOnly = false;});
+                                },
+                            ),
+                          ),
+                        ],
+                      ),
 
                     ],
                   ) : const Center(child: CircularProgressIndicator())
