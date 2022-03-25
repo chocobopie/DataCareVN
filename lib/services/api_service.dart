@@ -1,18 +1,25 @@
 import 'dart:convert';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:login_sample/models/WorldTimeAPI.dart';
 import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/account_permission.dart';
 import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/models/attendance_permission.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/contact.dart';
+import 'package:login_sample/models/contact_permission.dart';
 import 'package:login_sample/models/deal.dart';
+import 'package:login_sample/models/deal_permission.dart';
 import 'package:login_sample/models/deal_stage.dart';
 import 'package:login_sample/models/deal_type.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/excuse_late.dart';
 import 'package:login_sample/models/excuse_late_status.dart';
 import 'package:login_sample/models/gender.dart';
+import 'package:login_sample/models/issue_permission.dart';
 import 'package:login_sample/models/lead_source.dart';
+import 'package:login_sample/models/payroll_permission.dart';
 import 'package:login_sample/models/permission.dart';
 import 'package:login_sample/models/permission_status.dart';
 import 'package:login_sample/models/role.dart';
@@ -719,5 +726,79 @@ class ApiService {
       throw Exception('Failed to get permission by permission id | 400');
     }
   }
+
+  //AccountPermissionId,
+  Future<AccountPermission> getAccountPermissionById({required int accountPermissionId}) async {
+    String url = stockUrl + 'account-permission/$accountPermissionId';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Got account permission | 200');
+      return AccountPermission.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to get account permission | 400');
+    }
+  }
+  //AttendancePermissionId,
+  Future<AttendancePermission> getAttendancePermissionById({required int attendancePermissionId}) async {
+    String url = stockUrl + 'attendance-permission/$attendancePermissionId';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Got attendance permission | 200');
+      return AttendancePermission.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to get attendance permission | 400');
+    }
+  }
+  //PayrollPermissionId,
+  Future<PayrollPermission> getPayrollPermissionById({required int payrollPermissionId}) async {
+    String url = stockUrl + 'payroll-permission/$payrollPermissionId';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Got payroll permission | 200');
+      return PayrollPermission.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to get payroll permission | 400');
+    }
+  }
+  //ContactPermissionId,
+  Future<ContactPermission> getContactPermissionById({required int contactPermissionId}) async {
+    String url = stockUrl + 'contact-permission/$contactPermissionId';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Got contact permission | 200');
+      return ContactPermission.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to get contact permission | 400');
+    }
+  }
+  //DealPermissionId,
+  Future<DealPermission> getDealPermissionById({required int dealPermissionId}) async {
+    String url = stockUrl + 'deal-permission/$dealPermissionId';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Got deal permission | 200');
+      return DealPermission.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to get deal permission | 400');
+    }
+  }
+  //IssuePermissionId,
+  Future<IssuePermission> getIssuePermissionById({required int issuePermissionId}) async {
+    String url = stockUrl + 'issue-permission/$issuePermissionId';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Got issue permission | 200');
+      return IssuePermission.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to get issue permission | 400');
+    }
+  }
+
 }
 

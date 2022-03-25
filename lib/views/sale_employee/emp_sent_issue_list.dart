@@ -21,7 +21,7 @@ class EmpSentIssueList extends StatefulWidget {
 class _EmpSentIssueListState extends State<EmpSentIssueList> {
 
   bool isSearching = false;
-  late String _fromDatetoDateString = 'Deadline';
+  late String _fromDatetoDateString = 'Ngày deadline';
   DateTime? fromDate, toDate;
 
   @override
@@ -56,8 +56,17 @@ class _EmpSentIssueListState extends State<EmpSentIssueList> {
                       const SizedBox(width: 10.0,),
                       Expanded(
                         child: CustomOutlinedButton(
+                          title: 'Tên nhân viên được giao',
+                          radius: 10,
+                          color: mainBgColor,
+                          onPressed: () async {
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomOutlinedButton(
                             title: _fromDatetoDateString,
-                            radius: 30,
+                            radius: 10,
                             color: mainBgColor,
                             onPressed: () async {
                               final data = await Navigator.push(context, MaterialPageRoute(

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/models/temp/deal_temp.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 
 class EmpReceivedIssue extends StatefulWidget {
   const EmpReceivedIssue({Key? key}) : super(key: key);
@@ -12,6 +15,9 @@ class EmpReceivedIssue extends StatefulWidget {
 
 class _EmpReceivedIssueState extends State<EmpReceivedIssue> {
   bool isSearching = false;
+
+  late String _fromDatetoDateString = 'Ngày deadline';
+  DateTime? fromDate, toDate;
 
   List<Deal> deals = [
     Deal(dealId: '1', name: 'Nguyễn Văn A', dealName: 'Hợp đồng 1', dealStage: 'Gửi báo giá', amount: '2.000.000', dealOwner: 'Tên sale 1', department: 'Tên phòng ban', team: 'Tên nhóm', vat: true, service: 'Đào tạo', dealType: 'Ký mới', priority: 'Thấp', dealDate: DateTime.now(), closeDate: DateTime.now()),
@@ -49,38 +55,47 @@ class _EmpReceivedIssueState extends State<EmpReceivedIssue> {
               ),
             ),
             margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
-            child: ListView(
+            child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0,),
+                  padding: const EdgeInsets.only(left: 15.0, top: 10.0),
                   child: Row(
                     children: <Widget>[
-                      //Số vấn đề nhận được
-                      SizedBox(
-                        child: TextField(
-                          autofocus: true,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            contentPadding: const EdgeInsets.only(left: 20.0),
-                            labelText: 'Số lượng hợp đồng có vấn đề nhận được',
-                            hintText: '',
-                            labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 107, 106, 144),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.blue, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.blue, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
+                      const Text('Lọc theo:', style: TextStyle(color: defaultFontColor),),
+                      const SizedBox(width: 10.0,),
+                      Expanded(
+                        child: CustomOutlinedButton(
+                          title: 'Tên nhân viên giao',
+                          radius: 10,
+                          color: mainBgColor,
+                          onPressed: () async {
+                          },
                         ),
-                        width: MediaQuery.of(context).size.width * 0.92,
+                      ),
+                      Expanded(
+                        child: CustomOutlinedButton(
+                          title: _fromDatetoDateString,
+                          radius: 10,
+                          color: mainBgColor,
+                          onPressed: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpDateFilter(),
+                            ));
+                            if(data != null){
+                              FromDateToDate fromDateToDate = data;
+                              setState(() {
+                                fromDate = fromDateToDate.fromDate;
+                                toDate = fromDateToDate.toDate;
+                                _fromDatetoDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: (){
+                          },
+                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                       ),
                     ],
                   ),
