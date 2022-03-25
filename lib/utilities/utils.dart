@@ -43,13 +43,14 @@ List<String> rolesNameUtilities = [];
 List<String> leadSourceNameUtilities = [];
 List<String> excuseLateStatusesNameUtilities = [];
 List<String> gendersUtilities = [];
+List<String> blockNameUtilities = [];
+
 List<String> attendanceStatusUtilities = [
   'Đúng giờ',
   'Cho phép trễ',
   'Trễ',
   'Vắng'
 ];
-List<String> blockNameUtilities = [];
 List<String> saleEmpCreatePermNames = [
   'Không cho phép',
   'Cho phép'

@@ -6,18 +6,18 @@ String contactPermissionToJson(ContactPermission data) => json.encode(data.toJso
 
 class ContactPermission {
   ContactPermission({
-    this.contactPermissionId,
-    this.create,
-    this.view,
-    this.update,
-    this.delete,
+    required this.contactPermissionId,
+    required this.create,
+    required this.view,
+    required this.update,
+    required this.delete,
   });
 
-  int? contactPermissionId;
-  int? create;
-  int? view;
-  int? update;
-  int? delete;
+  int contactPermissionId;
+  int create;
+  int view;
+  int update;
+  int delete;
 
   factory ContactPermission.fromJson(Map<String, dynamic> json) => ContactPermission(
     contactPermissionId: json["contactPermissionId"],

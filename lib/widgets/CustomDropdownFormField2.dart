@@ -67,7 +67,7 @@ class CustomDropdownFormField2 extends StatelessWidget {
           .toList(),
       validator: (value) {
         if (value == null) {
-          return '$label is NULL';
+          return '$label không được để trống';
         }
       },
       onChanged: onChanged,

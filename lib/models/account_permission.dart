@@ -6,18 +6,18 @@ String accountPermissionToJson(AccountPermission data) => json.encode(data.toJso
 
 class AccountPermission {
   AccountPermission({
-    this.accountPermissionId,
-    this.create,
-    this.view,
-    this.update,
-    this.delete,
+    required this.accountPermissionId,
+    required this.create,
+    required this.view,
+    required this.update,
+    required this.delete,
   });
 
-  int? accountPermissionId;
-  int? create;
-  int? view;
-  int? update;
-  int? delete;
+  int accountPermissionId;
+  int create;
+  int view;
+  int update;
+  int delete;
 
   factory AccountPermission.fromJson(Map<String, dynamic> json) => AccountPermission(
     accountPermissionId: json["accountPermissionId"],

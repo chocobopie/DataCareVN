@@ -6,14 +6,14 @@ String attendancePermissionToJson(AttendancePermission data) => json.encode(data
 
 class AttendancePermission {
   AttendancePermission({
-    this.attendancePermissionId,
-    this.view,
-    this.update,
+    required this.attendancePermissionId,
+    required this.view,
+    required this.update,
   });
 
-  int? attendancePermissionId;
-  int? view;
-  int? update;
+  int attendancePermissionId;
+  int view;
+  int update;
 
   factory AttendancePermission.fromJson(Map<String, dynamic> json) => AttendancePermission(
     attendancePermissionId: json["attendancePermissionId"],

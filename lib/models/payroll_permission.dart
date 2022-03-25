@@ -6,14 +6,14 @@ String payrollPermissionToJson(PayrollPermission data) => json.encode(data.toJso
 
 class PayrollPermission {
   PayrollPermission({
-    this.payrollPermissionId,
-    this.view,
-    this.update,
+    required this.payrollPermissionId,
+    required this.view,
+    required this.update,
   });
 
-  int? payrollPermissionId;
-  int? view;
-  int? update;
+  int payrollPermissionId;
+  int view;
+  int update;
 
   factory PayrollPermission.fromJson(Map<String, dynamic> json) => PayrollPermission(
     payrollPermissionId: json["payrollPermissionId"],

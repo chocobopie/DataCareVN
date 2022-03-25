@@ -6,18 +6,18 @@ String dealPermissionToJson(DealPermission data) => json.encode(data.toJson());
 
 class DealPermission {
   DealPermission({
-    this.dealPermissionId,
-    this.create,
-    this.view,
-    this.update,
-    this.delete,
+    required this.dealPermissionId,
+    required this.create,
+    required this.view,
+    required this.update,
+    required this.delete,
   });
 
-  int? dealPermissionId;
-  int? create;
-  int? view;
-  int? update;
-  int? delete;
+  int dealPermissionId;
+  int create;
+  int view;
+  int update;
+  int delete;
 
   factory DealPermission.fromJson(Map<String, dynamic> json) => DealPermission(
     dealPermissionId: json["dealPermissionId"],

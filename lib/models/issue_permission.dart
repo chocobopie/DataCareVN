@@ -6,18 +6,18 @@ String issuePermissionToJson(IssuePermission data) => json.encode(data.toJson())
 
 class IssuePermission {
   IssuePermission({
-    this.issuePermissionId,
-    this.create,
-    this.view,
-    this.update,
-    this.delete,
+    required this.issuePermissionId,
+    required this.create,
+    required this.view,
+    required this.update,
+    required this.delete,
   });
 
-  int? issuePermissionId;
-  int? create;
-  int? view;
-  int? update;
-  int? delete;
+  int issuePermissionId;
+  int create;
+  int view;
+  int update;
+  int delete;
 
   factory IssuePermission.fromJson(Map<String, dynamic> json) => IssuePermission(
     issuePermissionId: json["issuePermissionId"],

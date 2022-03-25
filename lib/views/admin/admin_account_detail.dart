@@ -8,6 +8,7 @@ import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/contact_permission.dart';
 import 'package:login_sample/models/deal_permission.dart';
 import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/issue.dart';
 import 'package:login_sample/models/issue_permission.dart';
 import 'package:login_sample/models/payroll_permission.dart';
 import 'package:login_sample/models/permission.dart';
@@ -39,12 +40,12 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   late final Account _currentAccount = widget.account;
 
   Permission? _permission;
-  AccountPermission _accountPermission = AccountPermission();
-  AttendancePermission _attendancePermission = AttendancePermission();
-  PayrollPermission _payrollPermission = PayrollPermission();
-  ContactPermission _contactPermission = ContactPermission();
-  DealPermission _dealPermission = DealPermission();
-  IssuePermission _issuePermission = IssuePermission();
+  AccountPermission? _accountPermission;
+  AttendancePermission? _attendancePermission;
+  PayrollPermission? _payrollPermission;
+  ContactPermission? _contactPermission;
+  DealPermission? _dealPermission;
+  IssuePermission? _issuePermission;
 
   Block? _filterBlock;
   Department? _filterDepartment;
@@ -272,12 +273,202 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           ),
                         ),
 
-                      const CustomExpansionTile(
-                          label: 'Quyền quản lý thông tin khách hàng',
-                          colors: [Colors.yellow, Colors.white],
-                          children: <Widget>[
-                          ]
+                      //Quyền quản lý thông tin khách hàng
+                      if(_contactPermission != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: CustomExpansionTile(
+                            label: 'Quyền quản lý thông tin khách hàng',
+                            colors: const [Colors.yellow, Colors.white],
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
+                                child: CustomDropdownFormField2(
+                                    label: 'Tạo mới',
+                                    hintText: Text(permissionStatusesNameUtilities[_contactPermission!.create]),
+                                    items: saleEmpCreatePermNames,
+                                    onChanged: null
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                child: CustomDropdownFormField2(
+                                    label: 'Xem',
+                                    hintText: Text(permissionStatusesNameUtilities[_contactPermission!.view]),
+                                    items: saleEmpViewUpdateDeletePermNames,
+                                    onChanged: null
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                child: CustomDropdownFormField2(
+                                    label: 'Chỉnh sửa',
+                                    hintText: Text(permissionStatusesNameUtilities[_contactPermission!.update]),
+                                    items: saleEmpViewUpdateDeletePermNames,
+                                    onChanged: null
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15.0),
+                                child: CustomDropdownFormField2(
+                                    label: 'Xóa',
+                                    hintText: Text(permissionStatusesNameUtilities[_contactPermission!.delete]),
+                                    items: saleEmpViewUpdateDeletePermNames,
+                                    onChanged: null
+                                ),
+                              ),
+                            ]
+                        ),
                       ),
+
+                      //Quyền quản lý họp đồng
+                      if(_dealPermission != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: CustomExpansionTile(
+                              label: 'Quyền quản lý hợp đồng',
+                              colors: const [Colors.greenAccent, Colors.white],
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Tạo mới',
+                                      hintText: Text(permissionStatusesNameUtilities[_dealPermission!.create]),
+                                      items: saleEmpCreatePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Xem',
+                                      hintText: Text(permissionStatusesNameUtilities[_dealPermission!.view]),
+                                      items: saleEmpViewUpdateDeletePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Chỉnh sửa',
+                                      hintText: Text(permissionStatusesNameUtilities[_dealPermission!.update]),
+                                      items: saleEmpViewUpdateDeletePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Xóa',
+                                      hintText: Text(permissionStatusesNameUtilities[_dealPermission!.delete]),
+                                      items: saleEmpViewUpdateDeletePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                              ]
+                          ),
+                        ),
+
+                      //Quyền quả lý vấn đề
+                      if(_issuePermission != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: CustomExpansionTile(
+                              label: 'Quyền quản lý vấn đề',
+                              colors: const [Colors.orange, Colors.white],
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Tạo mới',
+                                      hintText: Text(permissionStatusesNameUtilities[_issuePermission!.create]),
+                                      items: saleEmpCreatePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Xem',
+                                      hintText: Text(permissionStatusesNameUtilities[_issuePermission!.view]),
+                                      items: saleEmpViewUpdateDeletePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Chỉnh sửa',
+                                      hintText: Text(permissionStatusesNameUtilities[_issuePermission!.update]),
+                                      items: saleEmpViewUpdateDeletePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Xóa',
+                                      hintText: Text(permissionStatusesNameUtilities[_issuePermission!.delete]),
+                                      items: saleEmpViewUpdateDeletePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                              ]
+                          ),
+                      ),
+
+                      //Quyền quả lý tài khoản nhân viên
+                      if(_accountPermission != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: CustomExpansionTile(
+                              label: 'Quyền quản lý tài khoản nhân viên',
+                              colors: const [Colors.blue, Colors.white],
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Xem',
+                                      hintText: Text(permissionStatusesNameUtilities[_accountPermission!.view]),
+                                      items: saleEmpCreatePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                              ]
+                          ),
+                        ),
+
+                      //Quyền quả lý điểm danh
+                      if(_attendancePermission != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: CustomExpansionTile(
+                              label: 'Quyền quản lý điểm danh',
+                              colors: const [Colors.blue, Colors.white],
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Xem',
+                                      hintText: Text(permissionStatusesNameUtilities[_attendancePermission!.view]),
+                                      items: saleEmpCreatePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15.0),
+                                  child: CustomDropdownFormField2(
+                                      label: 'Chỉnh sủa',
+                                      hintText: Text(permissionStatusesNameUtilities[_attendancePermission!.update]),
+                                      items: saleEmpCreatePermNames,
+                                      onChanged: null
+                                  ),
+                                ),
+                              ]
+                          ),
+                        ),
+
+
                     ],
                   ) : const Center(child: CircularProgressIndicator())
               )),
@@ -320,27 +511,51 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
 
   void _getAccountPermissionById({required int accountPermissionId}) async {
-    _accountPermission = await PermissionViewModel().getAccountPermissionById(accountPermissionId: accountPermissionId);
+    AccountPermission accountPermission = await PermissionViewModel().getAccountPermissionById(accountPermissionId: accountPermissionId);
+
+    setState(() {
+      _accountPermission = accountPermission;
+    });
   }
 
   void _getAttendancePermissionById({required int attendancePermissionId}) async {
-    _attendancePermission = await PermissionViewModel().getAttendancePermissionById(attendancePermissionId: attendancePermissionId);
+    AttendancePermission attendancePermission = await PermissionViewModel().getAttendancePermissionById(attendancePermissionId: attendancePermissionId);
+
+    setState(() {
+      _attendancePermission = attendancePermission;
+    });
   }
 
   void _getPayrollPermissionById({required int payrollPermissionId}) async {
-    _payrollPermission = await PermissionViewModel().getPayrollPermissionById(payrollPermissionId: payrollPermissionId);
+    PayrollPermission payrollPermission = await PermissionViewModel().getPayrollPermissionById(payrollPermissionId: payrollPermissionId);
+
+    setState(() {
+      _payrollPermission = payrollPermission;
+    });
   }
 
   void _getContactPermissionById({required int contactPermissionId}) async {
-    _contactPermission = await PermissionViewModel().getContactPermissionById(contactPermissionId: contactPermissionId);
+    ContactPermission contactPermission = await PermissionViewModel().getContactPermissionById(contactPermissionId: contactPermissionId);
+
+    setState(() {
+      _contactPermission = contactPermission;
+    });
   }
 
   void _getDealPermissionById({required int dealPermissionId}) async {
-    _dealPermission = await PermissionViewModel().getDealPermissionById(dealPermissionId: dealPermissionId);
+    DealPermission dealPermission = await PermissionViewModel().getDealPermissionById(dealPermissionId: dealPermissionId);
+
+    setState(() {
+      _dealPermission = dealPermission;
+    });
   }
 
   void _getIssuePermissionById({required int issuePermissionId}) async {
-    _issuePermission = await PermissionViewModel().getIssuePermissionById(issuePermissionId: issuePermissionId);
+    IssuePermission issuePermission = await PermissionViewModel().getIssuePermissionById(issuePermissionId: issuePermissionId);
+
+    setState(() {
+      _issuePermission = issuePermission;
+    });
   }
 
 }
