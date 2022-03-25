@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/account_permission.dart';
+import 'package:login_sample/models/attendance_permission.dart';
 import 'package:login_sample/models/block.dart';
+import 'package:login_sample/models/contact_permission.dart';
+import 'package:login_sample/models/deal_permission.dart';
 import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/issue_permission.dart';
+import 'package:login_sample/models/payroll_permission.dart';
 import 'package:login_sample/models/permission.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/team.dart';
@@ -33,6 +39,13 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   late final Account _currentAccount = widget.account;
 
   Permission? _permission;
+  AccountPermission _accountPermission = AccountPermission();
+  AttendancePermission _attendancePermission = AttendancePermission();
+  PayrollPermission _payrollPermission = PayrollPermission();
+  ContactPermission _contactPermission = ContactPermission();
+  DealPermission _dealPermission = DealPermission();
+  IssuePermission _issuePermission = IssuePermission();
+
   Block? _filterBlock;
   Department? _filterDepartment;
   Team? _filterTeam;
@@ -46,7 +59,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   @override
   void initState() {
     super.initState();
-    _getPermByPermId(permId: _currentAccount.permissionId!);
+    _getOverallInfo();
   }
 
   @override
@@ -259,12 +272,12 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           ),
                         ),
 
-                      // const CustomExpansionTile(
-                      //     label: 'Quyền quản lý thông tin khách hàng',
-                      //     colors: [Colors.yellow, Colors.white],
-                      //     children: <Widget>[
-                      //     ]
-                      // ),
+                      const CustomExpansionTile(
+                          label: 'Quyền quản lý thông tin khách hàng',
+                          colors: [Colors.yellow, Colors.white],
+                          children: <Widget>[
+                          ]
+                      ),
                     ],
                   ) : const Center(child: CircularProgressIndicator())
               )),
@@ -291,8 +304,43 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
       ),
     );
   }
+  void _getOverallInfo(){
+    _getPermByPermId(permId: _currentAccount.permissionId!);
+  }
 
   void _getPermByPermId({required int permId}) async {
     _permission = await PermissionViewModel().getPermByPermId(permId: permId);
+
+    if(_permission!.accountPermissionId != null) _getAccountPermissionById(accountPermissionId: _permission!.accountPermissionId!);
+    if(_permission!.attendancePermissionId != null) _getAttendancePermissionById(attendancePermissionId: _permission!.attendancePermissionId!);
+    if(_permission!.payrollPermissionId != null) _getPayrollPermissionById(payrollPermissionId: _permission!.payrollPermissionId!);
+    if(_permission!.contactPermissionId != null) _getContactPermissionById(contactPermissionId: _permission!.contactPermissionId!);
+    if(_permission!.dealPermissionId != null) _getDealPermissionById(dealPermissionId: _permission!.dealPermissionId!);
+    if(_permission!.issuePermissionId != null) _getIssuePermissionById(issuePermissionId: _permission!.issuePermissionId!);
   }
+
+  void _getAccountPermissionById({required int accountPermissionId}) async {
+    _accountPermission = await PermissionViewModel().getAccountPermissionById(accountPermissionId: accountPermissionId);
+  }
+
+  void _getAttendancePermissionById({required int attendancePermissionId}) async {
+    _attendancePermission = await PermissionViewModel().getAttendancePermissionById(attendancePermissionId: attendancePermissionId);
+  }
+
+  void _getPayrollPermissionById({required int payrollPermissionId}) async {
+    _payrollPermission = await PermissionViewModel().getPayrollPermissionById(payrollPermissionId: payrollPermissionId);
+  }
+
+  void _getContactPermissionById({required int contactPermissionId}) async {
+    _contactPermission = await PermissionViewModel().getContactPermissionById(contactPermissionId: contactPermissionId);
+  }
+
+  void _getDealPermissionById({required int dealPermissionId}) async {
+    _dealPermission = await PermissionViewModel().getDealPermissionById(dealPermissionId: dealPermissionId);
+  }
+
+  void _getIssuePermissionById({required int issuePermissionId}) async {
+    _issuePermission = await PermissionViewModel().getIssuePermissionById(issuePermissionId: issuePermissionId);
+  }
+
 }
