@@ -94,7 +94,7 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                         Expanded(
                           child: CustomOutlinedButton(
                             title: fromDateToDateString,
-                            radius: 30,
+                            radius: 10,
                             color: mainBgColor,
                             onPressed: () async {
                               final data = await Navigator.push(context, MaterialPageRoute(
@@ -112,6 +112,14 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                                 _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
                               }
                             },
+                          ),
+                        ),
+                        Expanded(
+                          child: CustomOutlinedButton(
+                              title: 'Trạng thái',
+                              radius: 10,
+                              color: mainBgColor,
+                              onPressed: (){},
                           ),
                         ),
                         IconButton(

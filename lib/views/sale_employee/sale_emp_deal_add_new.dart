@@ -137,73 +137,103 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                       const SizedBox(height: 20.0,),
 
                       //Tiến trình hợp đồng
-                      CustomDropdownFormField2(
-                          borderColor: mainBgColor,
-                          label: 'Tiến trình hợp đồng',
-                          hintText: const Text(''),
-                          items: dealStagesNameUtilities,
-                          onChanged: (value){
-                          if(value.toString() == dealStagesNameUtilities[0].toString()){
-                            _dealStageId.text = '0';
-                          }else if(value.toString() == dealStagesNameUtilities[1].toString()){
-                            _dealStageId.text = '1';
-                          }else if(value.toString() == dealStagesNameUtilities[2].toString()){
-                            _dealStageId.text = '2';
-                          }else if(value.toString() == dealStagesNameUtilities[3].toString()){
-                            _dealStageId.text = '3';
-                          }else if(value.toString() == dealStagesNameUtilities[4].toString()){
-                            _dealStageId.text = '4';
-                          }else if(value.toString() == dealStagesNameUtilities[5].toString()){
-                            _dealStageId.text = '5';
-                          }else if(value.toString() == dealStagesNameUtilities[6].toString()){
-                            _dealStageId.text = '6';
-                          }
-                          print(_dealStageId.text);
-                        },
-                      ),
-                      const SizedBox(height: 20.0,),
-
-                      //Loại hợp đồng
-                      CustomDropdownFormField2(
-                          borderColor: mainBgColor,
-                          label: 'Loại hợp đồng',
-                          hintText: const Text(''),
-                          items: dealTypesNameUtilities,
-                          onChanged: (value){
-                          if(value.toString() == dealTypesNameUtilities[0].toString()){
-                            _dealTypeId.text = '0';
-                          }else{
-                            _dealTypeId.text = '1';
-                          }
-                          print(_dealTypeId.text);
-                        },
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomDropdownFormField2(
+                                borderColor: mainBgColor,
+                                label: 'Tiến trình hợp đồng',
+                                hintText: const Text(''),
+                                items: dealStagesNameUtilities,
+                                onChanged: (value){
+                                if(value.toString() == dealStagesNameUtilities[0].toString()){
+                                  _dealStageId.text = '0';
+                                }else if(value.toString() == dealStagesNameUtilities[1].toString()){
+                                  _dealStageId.text = '1';
+                                }else if(value.toString() == dealStagesNameUtilities[2].toString()){
+                                  _dealStageId.text = '2';
+                                }else if(value.toString() == dealStagesNameUtilities[3].toString()){
+                                  _dealStageId.text = '3';
+                                }else if(value.toString() == dealStagesNameUtilities[4].toString()){
+                                  _dealStageId.text = '4';
+                                }else if(value.toString() == dealStagesNameUtilities[5].toString()){
+                                  _dealStageId.text = '5';
+                                }else if(value.toString() == dealStagesNameUtilities[6].toString()){
+                                  _dealStageId.text = '6';
+                                }
+                                print(_dealStageId.text);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 5.0,),
+                          Expanded(
+                            child: CustomDropdownFormField2(
+                              borderColor: mainBgColor,
+                              label: 'Loại hợp đồng',
+                              hintText: const Text(''),
+                              items: dealTypesNameUtilities,
+                              onChanged: (value){
+                                if(value.toString() == dealTypesNameUtilities[0].toString()){
+                                  _dealTypeId.text = '0';
+                                }else{
+                                  _dealTypeId.text = '1';
+                                }
+                                print(_dealTypeId.text);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20.0,),
 
                       //Loại dịch vụ
-                      CustomDropdownFormField2(
-                        borderColor: mainBgColor,
-                        label: 'Loại dịch vụ',
-                        hintText: const Text(''),
-                        items: dealServicesNameUtilities,
-                        onChanged: (value){
-                          if(value.toString() == dealServicesNameUtilities[0].toString()){
-                            _dealServiceId.text = '0';
-                          }else if(value.toString() == dealServicesNameUtilities[1].toString()){
-                            _dealServiceId.text = '1';
-                          }else if(value.toString() == dealServicesNameUtilities[2].toString()){
-                            _dealServiceId.text = '2';
-                          }else if(value.toString() == dealServicesNameUtilities[3].toString()){
-                            _dealServiceId.text = '3';
-                          }else if(value.toString() == dealServicesNameUtilities[4].toString()){
-                            _dealServiceId.text = '4';
-                          }else if(value.toString() == dealServicesNameUtilities[5].toString()){
-                            _dealServiceId.text = '5';
-                          }else if(value.toString() == dealServicesNameUtilities[6].toString()){
-                            _dealServiceId.text = '6';
-                          }
-                          print(_dealServiceId.text);
-                        },
+                      Row(
+                        children: [
+                          
+                          Expanded(
+                            child: CustomDropdownFormField2(
+                              borderColor: mainBgColor,
+                              label: 'Loại dịch vụ',
+                              hintText: const Text(''),
+                              items: dealServicesNameUtilities,
+                              onChanged: (value){
+                                if(value.toString() == dealServicesNameUtilities[0].toString()){
+                                  _dealServiceId.text = '0';
+                                }else if(value.toString() == dealServicesNameUtilities[1].toString()){
+                                  _dealServiceId.text = '1';
+                                }else if(value.toString() == dealServicesNameUtilities[2].toString()){
+                                  _dealServiceId.text = '2';
+                                }else if(value.toString() == dealServicesNameUtilities[3].toString()){
+                                  _dealServiceId.text = '3';
+                                }else if(value.toString() == dealServicesNameUtilities[4].toString()){
+                                  _dealServiceId.text = '4';
+                                }else if(value.toString() == dealServicesNameUtilities[5].toString()){
+                                  _dealServiceId.text = '5';
+                                }else if(value.toString() == dealServicesNameUtilities[6].toString()){
+                                  _dealServiceId.text = '6';
+                                }
+                                print(_dealServiceId.text);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 5.0,),
+                          Expanded(
+                            child: CustomDropdownFormField2(
+                              borderColor: mainBgColor,
+                              label: 'VAT',
+                              hintText: const Text(''),
+                              items: dealVatsNameUtilities,
+                              onChanged: (value){
+                                if(value.toString() == dealVatsNameUtilities[0].toString()){
+                                  _dealVatId.text = '0';
+                                }else if(value.toString() == dealVatsNameUtilities[1].toString()){
+                                  _dealVatId.text = '1';
+                                }
+                                print(_dealVatId.text);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -219,25 +249,9 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      //Vat
-                      CustomDropdownFormField2(
-                          borderColor: mainBgColor,
-                          label: 'VAT',
-                          hintText: const Text(''),
-                          items: dealVatsNameUtilities,
-                          onChanged: (value){
-                          if(value.toString() == dealVatsNameUtilities[0].toString()){
-                            _dealVatId.text = '0';
-                          }else if(value.toString() == dealVatsNameUtilities[1].toString()){
-                            _dealVatId.text = '1';
-                          }
-                          print(_dealVatId.text);
-                        },
-                      ),
-                      const SizedBox(height: 20.0,),
-
                       //Ngày đóng
                       CustomEditableTextFormField(
+                          borderColor: mainBgColor,
                           text: _closeDate,
                           title: 'Ngày chốt hợp đồng',
                           readonly: false,
@@ -301,11 +315,11 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                       // ),
                       const SizedBox(height: 20.0,),
 
-                      //Chủ hợp đồng
+                      //Người quản lý hợp đồng
                       CustomEditableTextFormField(
                           borderColor: mainBgColor,
                           text: _accountFullname,
-                          title: 'Chủ hợp đồng',
+                          title: 'Người quản lý hợp đồng',
                           readonly: true,
                           textEditingController: _dealOwnerId,
                           onTap: () async {

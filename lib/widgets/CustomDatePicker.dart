@@ -2,16 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomDatePicker extends StatelessWidget {
-  const CustomDatePicker({Key? key, required this.label, required this.hintText, this.borderColor, this.onTap}) : super(key: key);
+  const CustomDatePicker({Key? key, required this.label, required this.hintText, this.borderColor, this.onTap, this.readOnly}) : super(key: key);
 
   final String label;
   final String hintText;
   final dynamic onTap;
   final Color? borderColor;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      readOnly: readOnly ?? false,
       onTap: onTap,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,

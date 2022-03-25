@@ -101,21 +101,30 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                   child: contact != null && account != null
                       ? ListView(
                           children: <Widget>[
-                            CustomReadOnlyTextField(
-                                text: '${widget.deal.dealId}',
-                                title: 'Mã số hợp đồng'),
-                            const SizedBox(height: 20.0,),
-
-                            //Tiêu đề hợp đồng
-                            CustomEditableTextFormField(
-                              inputNumberOnly: false,
-                              borderColor: _readOnly != true ? mainBgColor : null,
-                              text: widget.deal.title,
-                              title: 'Tiêu đề',
-                              readonly: _readOnly,
-                              textEditingController: _dealTitle,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomReadOnlyTextField(
+                                      text: '${widget.deal.dealId}',
+                                      title: 'Mã số hợp đồng'),
+                                  flex: 2,
+                                ),
+                                const SizedBox(width: 5.0,),
+                                Expanded(
+                                  flex: 3,
+                                  child: CustomEditableTextFormField(
+                                    inputNumberOnly: false,
+                                    borderColor: _readOnly != true ? mainBgColor : null,
+                                    text: widget.deal.title,
+                                    title: 'Tiêu đề',
+                                    readonly: _readOnly,
+                                    textEditingController: _dealTitle,
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 20.0,),
+
 
                             //Tên khách hàng
                             CustomReadOnlyTextField(
@@ -131,65 +140,65 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                             const SizedBox(height: 20.0,),
 
                             //Tiến trình hợp đồng
-                            CustomDropdownFormField2(
-                                borderColor: _readOnly != true ? mainBgColor : null,
-                                label: 'Tiến trình hợp đồng',
-                                hintText: Text(
-                                  dealStagesNameUtilities[
-                                          widget.deal.dealStageId]
-                                      .toString(),
-                                  style: const TextStyle(fontSize: 14),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomDropdownFormField2(
+                                      borderColor: _readOnly != true ? mainBgColor : null,
+                                      label: 'Tiến trình hợp đồng',
+                                      hintText: Text(
+                                        dealStagesNameUtilities[
+                                                widget.deal.dealStageId]
+                                            .toString(),
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      items: dealStagesNameUtilities,
+                                      onChanged: widget.deal.dealStageId != 5 &&
+                                              _readOnly != true ? (value) {
+                                              if (value.toString() == dealStagesNameUtilities[0].toString()) {
+                                                _dealStage.text = '0';
+                                              } else if (value.toString() ==
+                                                  dealStagesNameUtilities[1]
+                                                      .toString()) {
+                                                _dealStage.text = '1';
+                                              } else if (value.toString() ==
+                                                  dealStagesNameUtilities[2]
+                                                      .toString()) {
+                                                _dealStage.text = '2';
+                                              } else if (value.toString() ==
+                                                  dealStagesNameUtilities[3]
+                                                      .toString()) {
+                                                _dealStage.text = '3';
+                                              } else if (value.toString() ==
+                                                  dealStagesNameUtilities[4]
+                                                      .toString()) {
+                                                _dealStage.text = '4';
+                                              } else if (value.toString() ==
+                                                  dealStagesNameUtilities[5]
+                                                      .toString()) {
+                                                _dealStage.text = '5';
+                                              } else if (value.toString() ==
+                                                  dealStagesNameUtilities[6]
+                                                      .toString()) {
+                                                _dealStage.text = '6';
+                                              }
+                                              print(_dealStage.text);
+                                            }
+                                          : null),
                                 ),
-                                items: dealStagesNameUtilities,
-                                onChanged: widget.deal.dealStageId != 5 &&
-                                        _readOnly != true
-                                    ? (value) {
-                                        if (value.toString() ==
-                                            dealStagesNameUtilities[0]
-                                                .toString()) {
-                                          _dealStage.text = '0';
-                                        } else if (value.toString() ==
-                                            dealStagesNameUtilities[1]
-                                                .toString()) {
-                                          _dealStage.text = '1';
-                                        } else if (value.toString() ==
-                                            dealStagesNameUtilities[2]
-                                                .toString()) {
-                                          _dealStage.text = '2';
-                                        } else if (value.toString() ==
-                                            dealStagesNameUtilities[3]
-                                                .toString()) {
-                                          _dealStage.text = '3';
-                                        } else if (value.toString() ==
-                                            dealStagesNameUtilities[4]
-                                                .toString()) {
-                                          _dealStage.text = '4';
-                                        } else if (value.toString() ==
-                                            dealStagesNameUtilities[5]
-                                                .toString()) {
-                                          _dealStage.text = '5';
-                                        } else if (value.toString() ==
-                                            dealStagesNameUtilities[6]
-                                                .toString()) {
-                                          _dealStage.text = '6';
-                                        }
-                                        print(_dealStage.text);
-                                      }
-                                    : null),
-                            const SizedBox(height: 20.0,),
-
-                            //Loại hợp đồng
-                            CustomDropdownFormField2(
-                                borderColor: _readOnly != true ? mainBgColor : null,
-                                label: 'Loại hợp đồng',
-                                hintText: Text(
-                                  dealTypesNameUtilities[widget.deal.dealTypeId]
-                                      .toString(),
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                items: dealTypesNameUtilities,
-                                onChanged: _readOnly != true
-                                    ? (value) {
+                                const SizedBox(width: 5.0,),
+                                Expanded(
+                                  child: CustomDropdownFormField2(
+                                      borderColor: _readOnly != true ? mainBgColor : null,
+                                      label: 'Loại hợp đồng',
+                                      hintText: Text(
+                                        dealTypesNameUtilities[widget.deal.dealTypeId]
+                                            .toString(),
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      items: dealTypesNameUtilities,
+                                      onChanged: _readOnly != true
+                                          ? (value) {
                                         if (value.toString() ==
                                             dealTypesNameUtilities[0]
                                                 .toString()) {
@@ -199,54 +208,51 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         }
                                         print(_dealType.text);
                                       }
-                                    : null),
-                            const SizedBox(height: 20.0,),
-
-                            //Tổng giá trị
-                            CustomEditableTextFormField(
-                                borderColor: _readOnly != true ? mainBgColor : null,
-                                inputNumberOnly: true,
-                                text: '${widget.deal.amount}',
-                                title: 'Tổng giá trị (VNĐ)',
-                                readonly: _readOnly,
-                                textEditingController: _dealAmount),
-                            const SizedBox(height: 20.0,),
-
-                            //Vat
-                            CustomDropdownFormField2(
-                              borderColor: _readOnly != true ? mainBgColor : null,
-                              label: 'VAT',
-                              hintText: Text(
-                                dealVatsNameUtilities[widget.deal.vatId],
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              items: dealVatsNameUtilities,
-                              onChanged: _readOnly != true
-                                  ? (value) {
-                                      if (value.toString() ==
-                                          dealVatsNameUtilities[0].toString()) {
-                                        _dealVatId.text = '0';
-                                      } else {
-                                        _dealVatId.text = '1';
-                                      }
-                                    }
-                                  : null,
+                                          : null),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 20.0,),
 
-                            //Loại dịch vụ
-                            CustomDropdownFormField2(
-                                borderColor: _readOnly != true ? mainBgColor : null,
-                                label: 'Loại dịch vụ',
-                                hintText: Text(
-                                  dealServicesNameUtilities[
-                                          widget.deal.serviceId]
-                                      .toString(),
-                                  style: const TextStyle(fontSize: 14),
+                            //Vat
+                            Row(
+                              children: <Widget>[
+                                
+                                Expanded(
+                                  child: CustomDropdownFormField2(
+                                    borderColor: _readOnly != true ? mainBgColor : null,
+                                    label: 'VAT',
+                                    hintText: Text(
+                                      dealVatsNameUtilities[widget.deal.vatId],
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    items: dealVatsNameUtilities,
+                                    onChanged: _readOnly != true
+                                        ? (value) {
+                                            if (value.toString() ==
+                                                dealVatsNameUtilities[0].toString()) {
+                                              _dealVatId.text = '0';
+                                            } else {
+                                              _dealVatId.text = '1';
+                                            }
+                                          }
+                                        : null,
+                                  ),
                                 ),
-                                items: dealServicesNameUtilities,
-                                onChanged: _readOnly != true
-                                    ? (value) {
+                                const SizedBox(width: 5.0,),
+                                Expanded(
+                                  child: CustomDropdownFormField2(
+                                      borderColor: _readOnly != true ? mainBgColor : null,
+                                      label: 'Loại dịch vụ',
+                                      hintText: Text(
+                                        dealServicesNameUtilities[
+                                        widget.deal.serviceId]
+                                            .toString(),
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      items: dealServicesNameUtilities,
+                                      onChanged: _readOnly != true
+                                          ? (value) {
                                         if (value.toString() ==
                                             dealServicesNameUtilities[0]
                                                 .toString()) {
@@ -278,7 +284,21 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         }
                                         print(_dealService.text);
                                       }
-                                    : null),
+                                          : null),
+                                ),
+                                
+                              ],
+                            ),
+                            const SizedBox(height: 20.0,),
+
+                            //Số tiền
+                            CustomEditableTextFormField(
+                                borderColor: _readOnly != true ? mainBgColor : null,
+                                inputNumberOnly: true,
+                                text: '${widget.deal.amount}',
+                                title: 'Số tiền (VNĐ)',
+                                readonly: _readOnly,
+                                textEditingController: _dealAmount),
                             const SizedBox(height: 20.0,),
 
                             //Ngày đóng
@@ -328,6 +348,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                             //   width: 150.0,
                             // ),
                             CustomDatePicker(
+                                readOnly: true,
                                 borderColor: _readOnly != true ? mainBgColor : null,
                                 label: 'Ngày chốt hợp đồng',
                                 hintText: _closeDate.isNotEmpty ? _closeDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
@@ -363,11 +384,11 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                               height: 20.0,
                             ),
 
-                            //Chủ hợp đồng
+                            //Người quản lý họp đồng
                             CustomEditableTextFormField(
                               borderColor: _readOnly != true ? mainBgColor : null,
                               text: account!.fullname!,
-                              title: 'Chủ hợp đồng',
+                              title: 'Người quản lý hợp đồng',
                               readonly: true,
                               textEditingController: _dealOwnerId,
                               onTap: _readOnly != true

@@ -20,7 +20,7 @@ const locale = 'vi';
 String formatNumber(String s) => NumberFormat.decimalPattern(locale).format(int.parse(s));
 String get currency => NumberFormat.compactSimpleCurrency(locale: locale).currencySymbol;
 
-//------------------------------------------------------------------List model
+//------------------------------------------------------------------List model----------------------------------------------------
 List<Service> dealServices = [];
 List<Vat> dealVats = [];
 List<DealStage> dealStages = [];
@@ -33,7 +33,7 @@ List<Gender> genders = [];
 List<Team> teams = [];
 List<Department> departments = [];
 List<Block> blocks = [];
-//------------------------------------------------------------------List String
+//------------------------------------------------------------------List String---------------------------------------------
 List<String> dealServicesNameUtilities = [];
 List<String> dealVatsNameUtilities = [];
 List<String> dealStagesNameUtilities = [];
@@ -50,6 +50,19 @@ List<String> attendanceStatusUtilities = [
   'Vắng'
 ];
 List<String> blockNameUtilities = [];
+List<String> saleEmpCreatePermNames = [
+  'Không cho phép',
+  'Cho phép'
+];
+List<String> saleEmpViewUpdateDeletePermNames = [
+  'Chỉ bản thân',
+  'Chỉ trong nhóm',
+  'Chỉ phòng ban'
+];
+List<String> hrInternViewUpdate = [
+  'Chỉ phòng ban',
+  'Tất cả'
+];
 
 //-------------------------------------------------------------------------------------------------------------------
 String getDepartmentName(int departmentId, int? blockId){

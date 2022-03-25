@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_payroll_list.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_manager/sale_manager_payroll_management.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
+import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
+import 'package:provider/provider.dart';
 
 class EmpPayroll extends StatefulWidget {
   const EmpPayroll({Key? key}) : super(key: key);
@@ -14,6 +20,13 @@ class EmpPayroll extends StatefulWidget {
 class _EmpPayrollState extends State<EmpPayroll> {
 
   DateTime _selectedMonth = DateTime.now();
+  late Account _currentAccount = Account();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +94,30 @@ class _EmpPayrollState extends State<EmpPayroll> {
                   ),
                   const SizedBox(height: 20.0,),
                   //Lương
-                  const PayrollExpansionTile(),
+                  PayrollExpansionTile(
+                    selectedDate: _selectedMonth,
+                  ),
                   const SizedBox(height: 20.0,),
-                  //Thưởng
-                  const BonusExpansionTile2(),
+
+                  if(_currentAccount.roleId == 1)
+                  IconTextButtonSmall2(
+                      imageUrl: 'assets/images/payroll-management.png',
+                      text: 'Quản lý lương của các nhân viên',
+                      colorsButton: const [Colors.green, Colors.white],
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HrManagerPayrollList()));
+                      }
+                  ),
+
+                  if(_currentAccount.roleId ==3)
+                    IconTextButtonSmall2(
+                        imageUrl: 'assets/images/payroll-management.png',
+                        text: 'Xem doanh thu của phòng ban',
+                        colorsButton: const [Colors.green, Colors.white],
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleManagerPayrollManagement()));
+                        }
+                    ),
                 ],
               )
           ),
@@ -201,8 +234,10 @@ class BonusExpansionTile2 extends StatelessWidget {
 
 class PayrollExpansionTile extends StatelessWidget {
   const PayrollExpansionTile({
-    Key? key,
+    Key? key, required this.selectedDate,
   }) : super(key: key);
+
+  final DateTime selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -226,10 +261,10 @@ class PayrollExpansionTile extends StatelessWidget {
       ),
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
-        child: const ExpansionTile(
-          title: Text('Lương'),
-          trailing: Text('3.000.000 VNĐ'),
-          children: <Widget>[
+        child: ExpansionTile(
+          title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(selectedDate).substring(3, 10)}'),
+          trailing: const Text('3.000.000 VNĐ'),
+          children: const <Widget>[
             Divider(color: Colors.blueGrey, thickness: 1.0,),
             ListTile(
               title: Text('Cơ bản', style: TextStyle(fontSize: 12.0,),),

@@ -95,20 +95,37 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      CustomDropdownFormField2(
-                          borderColor: mainBgColor,
-                          label: 'Giới tính',
-                          hintText: const Text(''),
-                          items: gendersUtilities,
-                          onChanged: (value){
-                            if(value.toString() == gendersUtilities[0]){
-                              _contactGender.text = '0';
-                            }else if(value.toString() == gendersUtilities[1]){
-                              _contactGender.text = '1';
-                            }else if(value.toString() == gendersUtilities[2]){
-                              _contactGender.text = '2';
-                            }
-                          }
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: CustomDropdownFormField2(
+                                borderColor: mainBgColor,
+                                label: 'Giới tính',
+                                hintText: const Text(''),
+                                items: gendersUtilities,
+                                onChanged: (value){
+                                  if(value.toString() == gendersUtilities[0]){
+                                    _contactGender.text = '0';
+                                  }else if(value.toString() == gendersUtilities[1]){
+                                    _contactGender.text = '1';
+                                  }else if(value.toString() == gendersUtilities[2]){
+                                    _contactGender.text = '2';
+                                  }
+                                }
+                            ),
+                          ),
+                          const SizedBox(width: 5.0,),
+                          Expanded(
+                            child: CustomEditableTextFormField(
+                                borderColor: mainBgColor,
+                                inputNumberOnly: true,
+                                text: '',
+                                title: 'Số điện thoại',
+                                readonly: false,
+                                textEditingController: _contactPhoneNumber
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -132,21 +149,10 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      //Phone number
-                     CustomEditableTextFormField(
-                         borderColor: mainBgColor,
-                         inputNumberOnly: true,
-                         text: '',
-                         title: 'Số điện thoại',
-                         readonly: false,
-                         textEditingController: _contactPhoneNumber
-                     ),
-                      const SizedBox(height: 20.0,),
-
                       if(fullname.isNotEmpty) CustomEditableTextFormField(
                           borderColor: mainBgColor,
                           text: fullname,
-                          title: 'Nhân viên đại diện',
+                          title: 'Nhân viên tạo',
                           readonly: true,
                           textEditingController: _contactOwnerId,
                           onTap: () async {

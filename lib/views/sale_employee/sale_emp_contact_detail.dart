@@ -97,21 +97,35 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                     ),
                     const SizedBox(height: 20.0,),
                     
-                    CustomDropdownFormField2(
-                        borderColor: _readOnly != true ? mainBgColor : null,
-                        label: 'Giới tính', 
-                        hintText: Text(gendersUtilities[int.parse('${widget.contact.genderId}')]), 
-                        items: gendersUtilities, 
-                        onChanged: _readOnly != true ? (value){
-                          if(value.toString() == gendersUtilities[0]){
-                            _contactGender.text = '0';
-                          }else if(value.toString() == gendersUtilities[1]){
-                            _contactGender.text = '1';
-                          }else if(value.toString() == gendersUtilities[2]){
-                            _contactGender.text = '2';
-                          }
-                          print(_contactGender.text);
-                        } : null
+                    Row(
+                      children: <Widget>[
+                        
+                        Expanded(
+                          child: CustomDropdownFormField2(
+                              borderColor: _readOnly != true ? mainBgColor : null,
+                              label: 'Giới tính',
+                              hintText: Text(gendersUtilities[int.parse('${widget.contact.genderId}')]),
+                              items: gendersUtilities,
+                              onChanged: _readOnly != true ? (value){
+                                if(value.toString() == gendersUtilities[0]){
+                                  _contactGender.text = '0';
+                                }else if(value.toString() == gendersUtilities[1]){
+                                  _contactGender.text = '1';
+                                }else if(value.toString() == gendersUtilities[2]){
+                                  _contactGender.text = '2';
+                                }
+                                print(_contactGender.text);
+                              } : null
+                          ),
+                        ),
+                        const SizedBox(width: 5.0,),
+                        Expanded(
+                          child: CustomReadOnlyTextField(
+                              text: 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.contact.createdDate)}',
+                              title: 'Ngày tạo'
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20.0,),
 
@@ -127,13 +141,38 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                     const SizedBox(height: 20.0,),
 
                     //Số điện thoại
-                    CustomEditableTextFormField(
-                        borderColor: _readOnly != true ? mainBgColor : null,
-                        inputNumberOnly: true,
-                        text: widget.contact.phoneNumber,
-                        title: 'Số điện thoại',
-                        readonly: _readOnly,
-                        textEditingController: _contactPhoneNumber
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: CustomEditableTextFormField(
+                              borderColor: _readOnly != true ? mainBgColor : null,
+                              inputNumberOnly: true,
+                              text: widget.contact.phoneNumber,
+                              title: 'Số điện thoại',
+                              readonly: _readOnly,
+                              textEditingController: _contactPhoneNumber
+                          ),
+                        ),
+                        const SizedBox(width: 5.0,),
+                        Expanded(
+                          child: CustomDropdownFormField2(
+                              borderColor: _readOnly != true ? mainBgColor : null,
+                              label: 'Nguồn',
+                              hintText: Text(leadSourceNameUtilities[int.parse('${widget.contact.leadSourceId}')]),
+                              items: leadSourceNameUtilities,
+                              onChanged: _readOnly != true ? (value){
+                                if(value.toString() == leadSourceNameUtilities[0]){
+                                  _contactLeadSourceId.text = '0';
+                                }else if(value.toString() == leadSourceNameUtilities[1]){
+                                  _contactLeadSourceId.text = '1';
+                                }else if(value.toString() == leadSourceNameUtilities[2]){
+                                  _contactLeadSourceId.text = '2';
+                                }
+                                print(_contactLeadSourceId.text);
+                              } : null
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20.0,),
 
@@ -189,32 +228,6 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                       } : null,
                     ),
                     const SizedBox(height: 20.0,),
-
-                    CustomReadOnlyTextField(
-                        text: 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.contact.createdDate)}',
-                        title: 'Ngày tạo'
-                    ),
-                    const SizedBox(height: 20.0,),
-
-                    //Nguồn
-                    CustomDropdownFormField2(
-                        borderColor: _readOnly != true ? mainBgColor : null,
-                        label: 'Nguồn',
-                        hintText: Text(leadSourceNameUtilities[int.parse('${widget.contact.leadSourceId}')]),
-                        items: leadSourceNameUtilities,
-                        onChanged: _readOnly != true ? (value){
-                          if(value.toString() == leadSourceNameUtilities[0]){
-                            _contactLeadSourceId.text = '0';
-                          }else if(value.toString() == leadSourceNameUtilities[1]){
-                            _contactLeadSourceId.text = '1';
-                          }else if(value.toString() == leadSourceNameUtilities[2]){
-                            _contactLeadSourceId.text = '2';
-                          }
-                          print(_contactLeadSourceId.text);
-                        } : null
-                    ),
-                    const SizedBox(height: 20.0,),
-
 
                     Padding(
                       padding: const EdgeInsets.only(left: 5.0),

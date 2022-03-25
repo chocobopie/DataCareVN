@@ -69,7 +69,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => _currentAccount.roleId == 1 ? const HrManagerPayrollManagement() : const EmpPayroll(),
+                                builder: (context) => const EmpPayroll(),
                               ));
                         },
                       ),
@@ -103,7 +103,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                       const SizedBox(width: 30.0,),
                       ImageTextButton(
                           imageUrl: 'assets/images/attendance-report.png',
-                          text: 'Xem báo cáo điểm danh',
+                          text: 'Xem báo cáo điểm danh các nhân viên',
                           buttonColors: const [Colors.green, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(

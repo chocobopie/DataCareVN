@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_employee/emp_payroll.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_list.dart';
@@ -89,7 +90,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
                           buttonColors: const [Colors.pink, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const SaleManagerManagement(),
+                              builder: (context) => const EmpPayroll(),
                             ));
                           }
                       ),
