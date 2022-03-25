@@ -444,7 +444,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
                               label: 'Quyền quản lý điểm danh',
-                              colors: const [Colors.blue, Colors.white],
+                              colors: const [Colors.green, Colors.white],
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
