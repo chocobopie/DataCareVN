@@ -38,7 +38,7 @@ class AdminAccountDetail extends StatefulWidget {
 
 class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
-  String _blockNameString = '', _departmentNameString = '' , _teamNameString = '', _roleNameString = '';
+  String _departmentPermNameString = '', _departmentNameString = '' , _teamNameString = '', _roleNameString = '';
 
   bool _isSaleExpansionTile = false, _isHrInternExpansionTile = false;
   bool _readOnly = true;
@@ -53,7 +53,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   IssuePermission? _issuePermission;
 
   Block? _filterBlock;
-  Department? _filterDepartment;
+  Department? _filterDepartment, _filterDepartmentPerm;
   Team? _filterTeam;
   Role? _filterRole;
 
@@ -61,6 +61,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   final TextEditingController _accountBlockId = TextEditingController();
   final TextEditingController _accountTeamId = TextEditingController();
   final TextEditingController _accountRoleId = TextEditingController();
+  final TextEditingController _accountDepartmentIdPerm = TextEditingController();
 
   int? _contactCreateId, _contactViewId, _contactUpdateId, _contactDeleteId, _dealCreateId, _dealViewId, _dealUpdateId, _dealDeleteId, _issueCreateId, _issueViewId, _issueUpdateId, _issueDeleteId;
   int? _accountViewId, _attendanceViewId, _attendanceUpdateId;
@@ -79,6 +80,10 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     }else{
       _isSaleExpansionTile = false;
       _isHrInternExpansionTile = true;
+    }
+    if(_permission?.departmentId != null) {
+      _departmentPermNameString = getDepartmentName( _permission!.departmentId!, null);
+      print('Perm department id =: ${_permission!.departmentId!}');
     }
   }
 
@@ -646,6 +651,27 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                               ]
                           ),
                         ),
+                      if(_isHrInternExpansionTile == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: CustomEditableTextFormField(
+                            borderColor: _readOnly != true ? mainBgColor : null,
+                            text: _departmentNameString,
+                            title: 'Quản lý phòng ban',
+                            readonly: true,
+                            onTap: _readOnly != true ? () async {
+                              final data = await Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => AdminDepartmentFilter(departmentList: departments),
+                              ));
+                              if(data != null){
+                                _filterDepartmentPerm = data;
+                                setState(() {
+                                  _departmentNameString = _filterDepartmentPerm!.name;
+                                });
+                              }
+                            } : null,
+                        ),
+                      ),
                       Row(
                         children: <Widget>[
                           if(_readOnly == false)
@@ -733,6 +759,44 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     if(_permission!.issuePermissionId != null) _getIssuePermissionById(issuePermissionId: _permission!.issuePermissionId!);
   }
 
+  void _createSaleEmpPerm(){
+    ContactPermission contactPermission = ContactPermission(
+      create: _contactCreateId!,
+      view: _contactViewId!,
+      update: _contactUpdateId!,
+      delete: _contactDeleteId!,
+    );
+    DealPermission dealPermission = DealPermission(
+        create: _dealCreateId!,
+        view: _dealViewId!,
+        update: _dealUpdateId!,
+        delete: _dealDeleteId!
+    );
+    IssuePermission issuePermission = IssuePermission(
+        create: _issueCreateId!,
+        view: _issueViewId!,
+        update: _issueUpdateId!,
+        delete: _issueDeleteId!
+    );
+    PermissionViewModel().createContactPermission(contactPermission: contactPermission);
+    PermissionViewModel().createDealPermission(dealPermission: dealPermission);
+    PermissionViewModel().createIssuePermission(issuePermission: issuePermission);
+  }
+
+  void _createHrPerm(){
+    AccountPermission accountPermission = AccountPermission(
+      view: _accountViewId!,
+    );
+
+    AttendancePermission attendancePermission = AttendancePermission(
+        view: _attendanceViewId!,
+        update: _attendanceUpdateId!
+    );
+
+    PermissionViewModel().updateAccountPermission(accountPermission: accountPermission);
+    PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
+  }
+
   void _updateSaleEmpPermission(){
     ContactPermission contactPermission = ContactPermission(
       contactPermissionId:_contactPermission!.contactPermissionId,
@@ -780,7 +844,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
 
   void _getAccountPermissionById({required int accountPermissionId}) async {
-    AccountPermission accountPermission = await PermissionViewModel().getAccountPermissionById(accountPermissionId: accountPermissionId);
+    AccountPermission? accountPermission = await PermissionViewModel().getAccountPermissionById(accountPermissionId: accountPermissionId);
 
     setState(() {
       _accountPermission = accountPermission;
@@ -788,7 +852,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
 
   void _getAttendancePermissionById({required int attendancePermissionId}) async {
-    AttendancePermission attendancePermission = await PermissionViewModel().getAttendancePermissionById(attendancePermissionId: attendancePermissionId);
+    AttendancePermission? attendancePermission = await PermissionViewModel().getAttendancePermissionById(attendancePermissionId: attendancePermissionId);
 
     setState(() {
       _attendancePermission = attendancePermission;
@@ -804,7 +868,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
 
   void _getContactPermissionById({required int contactPermissionId}) async {
-    ContactPermission contactPermission = await PermissionViewModel().getContactPermissionById(contactPermissionId: contactPermissionId);
+    ContactPermission? contactPermission = await PermissionViewModel().getContactPermissionById(contactPermissionId: contactPermissionId);
 
     setState(() {
       _contactPermission = contactPermission;
@@ -812,7 +876,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
 
   void _getDealPermissionById({required int dealPermissionId}) async {
-    DealPermission dealPermission = await PermissionViewModel().getDealPermissionById(dealPermissionId: dealPermissionId);
+    DealPermission? dealPermission = await PermissionViewModel().getDealPermissionById(dealPermissionId: dealPermissionId);
 
     setState(() {
       _dealPermission = dealPermission;
@@ -820,7 +884,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
 
   void _getIssuePermissionById({required int issuePermissionId}) async {
-    IssuePermission issuePermission = await PermissionViewModel().getIssuePermissionById(issuePermissionId: issuePermissionId);
+    IssuePermission? issuePermission = await PermissionViewModel().getIssuePermissionById(issuePermissionId: issuePermissionId);
 
     setState(() {
       _issuePermission = issuePermission;

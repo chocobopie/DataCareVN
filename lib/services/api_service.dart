@@ -755,7 +755,7 @@ class ApiService {
   }
 
   //AccountPermissionId,
-  Future<AccountPermission> getAccountPermissionById({required int accountPermissionId}) async {
+  Future<AccountPermission?> getAccountPermissionById({required int accountPermissionId}) async {
     String url = stockUrl + 'account-permission/$accountPermissionId';
 
     final response = await http.get(Uri.parse(url));
@@ -763,7 +763,9 @@ class ApiService {
       print('Got account permission | 200');
       return AccountPermission.fromJson(jsonDecode(response.body));
     }else{
-      throw Exception('Failed to get account permission | 400');
+      print('Failed to get account permission | 400');
+      AccountPermission? accountPermission;
+      return accountPermission;
     }
   }
 
@@ -786,12 +788,35 @@ class ApiService {
     }else{
       print('Update AccountPermission failed | 400');
       AccountPermission? accountPermission;
+      return accountPermission;
+    }
+  }
+
+  Future<AccountPermission?> createAccountPermission({required AccountPermission accountPermission}) async {
+    String url = stockUrl + 'account-permission';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'view':accountPermission.view,
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Create AccountPermission successfully | 200');
+      return AccountPermission.fromJson(jsonDecode(response.body));
+    }else{
+      print('Create AccountPermission failed | 400');
+      AccountPermission? accountPermission;
       print(accountPermission);
       return accountPermission;
     }
   }
+
   //AttendancePermissionId,
-  Future<AttendancePermission> getAttendancePermissionById({required int attendancePermissionId}) async {
+  Future<AttendancePermission?> getAttendancePermissionById({required int attendancePermissionId}) async {
     String url = stockUrl + 'attendance-permission/$attendancePermissionId';
 
     final response = await http.get(Uri.parse(url));
@@ -799,11 +824,13 @@ class ApiService {
       print('Got attendance permission | 200');
       return AttendancePermission.fromJson(jsonDecode(response.body));
     }else{
-      throw Exception('Failed to get attendance permission | 400');
+      print('Failed to get attendance permission | 400');
+      AttendancePermission? attendancePermission;
+      return attendancePermission;
     }
   }
 
-  Future<AttendancePermission> updateAttendancePermission({required AttendancePermission attendancePermission}) async {
+  Future<AttendancePermission?> updateAttendancePermission({required AttendancePermission attendancePermission}) async {
     String url = stockUrl + 'attendance-permission/${attendancePermission.attendancePermissionId}';
 
     final response = await http.put(Uri.parse(url),
@@ -823,7 +850,30 @@ class ApiService {
     }else{
       print('Update AttendancePermission failed | 400');
       AttendancePermission? attendancePermission;
-      return attendancePermission!;
+      return attendancePermission;
+    }
+  }
+
+  Future<AttendancePermission?> createAttendancePermission({required AttendancePermission attendancePermission}) async {
+    String url = stockUrl + 'attendance-permission';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'view': attendancePermission.view,
+        'update': attendancePermission.update,
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update AttendancePermission successfully | 200');
+      return AttendancePermission.fromJson(jsonDecode(response.body));
+    }else{
+      print('Update AttendancePermission failed | 400');
+      AttendancePermission? attendancePermission;
+      return attendancePermission;
     }
   }
 
@@ -841,7 +891,7 @@ class ApiService {
     }
   }
   //ContactPermissionId,
-  Future<ContactPermission> getContactPermissionById({required int contactPermissionId}) async {
+  Future<ContactPermission?> getContactPermissionById({required int contactPermissionId}) async {
     String url = stockUrl + 'contact-permission/$contactPermissionId';
 
     final response = await http.get(Uri.parse(url));
@@ -849,11 +899,13 @@ class ApiService {
       print('Got contact permission | 200');
       return ContactPermission.fromJson(jsonDecode(response.body));
     }else{
-      throw Exception('Failed to get contact permission | 400');
+      print('Failed to get contact permission | 400');
+      ContactPermission? contactPermission;
+      return contactPermission;
     }
   }
 
-  Future<ContactPermission> updateContactPermission({required ContactPermission contactPermission}) async {
+  Future<ContactPermission?> updateContactPermission({required ContactPermission contactPermission}) async {
     String url = stockUrl + 'contact-permission/${contactPermission.contactPermissionId}';
 
     final response = await http.put(Uri.parse(url),
@@ -873,12 +925,35 @@ class ApiService {
     }else{
       print('Update ContactPermission failed | 400');
       ContactPermission? contactPermission;
-      return contactPermission!;
+      return contactPermission;
+    }
+  }
+
+  Future<ContactPermission?> createContactPermission({required ContactPermission contactPermission}) async {
+    String url = stockUrl + 'contact-permission';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8',},
+      body: jsonEncode(<String, dynamic>{
+        'create': contactPermission.create,
+        'view':contactPermission.view,
+        'update':contactPermission.update,
+        'delete':contactPermission.delete
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update ContactPermission successfully | 200');
+      return ContactPermission.fromJson(jsonDecode(response.body));
+    }else{
+      print('Update ContactPermission failed | 400');
+      ContactPermission? contactPermission;
+      return contactPermission;
     }
   }
 
   //DealPermissionId,
-  Future<DealPermission> getDealPermissionById({required int dealPermissionId}) async {
+  Future<DealPermission?> getDealPermissionById({required int dealPermissionId}) async {
     String url = stockUrl + 'deal-permission/$dealPermissionId';
 
     final response = await http.get(Uri.parse(url));
@@ -886,11 +961,13 @@ class ApiService {
       print('Got deal permission | 200');
       return DealPermission.fromJson(jsonDecode(response.body));
     }else{
-      throw Exception('Failed to get deal permission | 400');
+      print('Failed to get deal permission | 400');
+      DealPermission? dealPermission;
+      return dealPermission;
     }
   }
 
-  Future<DealPermission> updateDealPermission({required DealPermission dealPermission}) async {
+  Future<DealPermission?> updateDealPermission({required DealPermission dealPermission}) async {
     String url = stockUrl + 'deal-permission/${dealPermission.dealPermissionId}';
 
     final response = await http.put(Uri.parse(url),
@@ -909,11 +986,38 @@ class ApiService {
     }else{
       print('Update DealPermission failed | 400');
       DealPermission? dealPermission;
-      return dealPermission!;
+      return dealPermission;
     }
   }
+
+  Future<DealPermission?> createDealPermission({required DealPermission dealPermission}) async {
+    String url = stockUrl + 'deal-permission';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'create':dealPermission.create,
+        'view':dealPermission.view,
+        'update':dealPermission.update,
+        'delete':dealPermission.delete
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Create DealPermission successfully | 200');
+      return DealPermission.fromJson(jsonDecode(response.body));
+    }else{
+      print('Create DealPermission failed | 400');
+      DealPermission? dealPermission;
+      print(dealPermission);
+      return dealPermission;
+    }
+  }
+
   //IssuePermissionId,
-  Future<IssuePermission> getIssuePermissionById({required int issuePermissionId}) async {
+  Future<IssuePermission?> getIssuePermissionById({required int issuePermissionId}) async {
     String url = stockUrl + 'issue-permission/$issuePermissionId';
 
     final response = await http.get(Uri.parse(url));
@@ -921,10 +1025,12 @@ class ApiService {
       print('Got issue permission | 200');
       return IssuePermission.fromJson(jsonDecode(response.body));
     }else{
-      throw Exception('Failed to get issue permission | 400');
+      print('Failed to get issue permission | 400');
+      IssuePermission? issuePermission;
+      return issuePermission;
     }
   }
-  Future<IssuePermission> updateIssuePermission({required IssuePermission issuePermission}) async {
+  Future<IssuePermission?> updateIssuePermission({required IssuePermission issuePermission}) async {
     String url = stockUrl + 'issue-permission/${issuePermission.issuePermissionId}';
 
     final response = await http.put(Uri.parse(url),
@@ -943,7 +1049,33 @@ class ApiService {
     }else{
       print('Update IssuePermission failed | 400');
       IssuePermission? issuePermission;
-      return issuePermission!;
+      return issuePermission;
+    }
+  }
+
+  Future<IssuePermission?> createIssuePermission({required IssuePermission issuePermission}) async {
+    String url = stockUrl + 'issue-permission';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'create':issuePermission.create,
+        'view':issuePermission.view,
+        'update':issuePermission.update,
+        'delete':issuePermission.delete
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Create IssuePermission successfully | 200');
+      return IssuePermission.fromJson(jsonDecode(response.body));
+    }else{
+      print('Create IssuePermission failed | 400');
+      IssuePermission? issuePermission;
+      print(issuePermission);
+      return issuePermission;
     }
   }
 }

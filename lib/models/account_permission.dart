@@ -6,14 +6,14 @@ String accountPermissionToJson(AccountPermission data) => json.encode(data.toJso
 
 class AccountPermission {
   AccountPermission({
-    required this.accountPermissionId,
+    this.accountPermissionId,
     this.create,
     required this.view,
     this.update,
     this.delete,
   });
 
-  int accountPermissionId;
+  int? accountPermissionId;
   int? create;
   int view;
   int? update;

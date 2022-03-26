@@ -6,14 +6,14 @@ String issuePermissionToJson(IssuePermission data) => json.encode(data.toJson())
 
 class IssuePermission {
   IssuePermission({
-    required this.issuePermissionId,
+    this.issuePermissionId,
     required this.create,
     required this.view,
     required this.update,
     required this.delete,
   });
 
-  int issuePermissionId;
+  int? issuePermissionId;
   int create;
   int view;
   int update;

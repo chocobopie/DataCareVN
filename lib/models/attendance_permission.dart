@@ -6,12 +6,12 @@ String attendancePermissionToJson(AttendancePermission data) => json.encode(data
 
 class AttendancePermission {
   AttendancePermission({
-    required this.attendancePermissionId,
+    this.attendancePermissionId,
     required this.view,
     required this.update,
   });
 
-  int attendancePermissionId;
+  int? attendancePermissionId;
   int view;
   int update;
 

@@ -21,8 +21,8 @@ class PermissionViewModel with ChangeNotifier{
   }
 
   //AccountPermissionId,
-  Future<AccountPermission> getAccountPermissionById({required int accountPermissionId}) async {
-    AccountPermission accountPermission = await ApiService().getAccountPermissionById(accountPermissionId: accountPermissionId);
+  Future<AccountPermission?> getAccountPermissionById({required int accountPermissionId}) async {
+    AccountPermission? accountPermission = await ApiService().getAccountPermissionById(accountPermissionId: accountPermissionId);
 
     notifyListeners();
 
@@ -35,17 +35,31 @@ class PermissionViewModel with ChangeNotifier{
 
     return accountPerm;
   }
+  Future<AccountPermission?> createAccountPermission(AccountPermission accountPermission) async {
+    AccountPermission? accountPerm = await ApiService().createAccountPermission(accountPermission: accountPermission);
+
+    notifyListeners();
+
+    return accountPerm;
+  }
 
   //AttendancePermissionId,
-  Future<AttendancePermission> getAttendancePermissionById({required int attendancePermissionId}) async {
-    AttendancePermission attendancePermission = await ApiService().getAttendancePermissionById(attendancePermissionId: attendancePermissionId);
+  Future<AttendancePermission?> getAttendancePermissionById({required int attendancePermissionId}) async {
+    AttendancePermission? attendancePermission = await ApiService().getAttendancePermissionById(attendancePermissionId: attendancePermissionId);
 
     notifyListeners();
 
     return attendancePermission;
   }
-  Future<AttendancePermission> updateAttendancePermission({required AttendancePermission attendancePermission}) async {
-    AttendancePermission attendancePerm = await ApiService().updateAttendancePermission(attendancePermission: attendancePermission);
+  Future<AttendancePermission?> updateAttendancePermission({required AttendancePermission attendancePermission}) async {
+    AttendancePermission? attendancePerm = await ApiService().updateAttendancePermission(attendancePermission: attendancePermission);
+
+    notifyListeners();
+
+    return attendancePerm;
+  }
+  Future<AttendancePermission?> createAttendancePermission({required AttendancePermission attendancePermission}) async {
+    AttendancePermission? attendancePerm = await ApiService().createAttendancePermission(attendancePermission: attendancePermission);
 
     notifyListeners();
 
@@ -63,47 +77,70 @@ class PermissionViewModel with ChangeNotifier{
 
 
   //ContactPermissionId,
-  Future<ContactPermission> getContactPermissionById({required int contactPermissionId}) async {
-    ContactPermission contactPermission = await ApiService().getContactPermissionById(contactPermissionId: contactPermissionId);
+  Future<ContactPermission?> getContactPermissionById({required int contactPermissionId}) async {
+    ContactPermission? contactPermission = await ApiService().getContactPermissionById(contactPermissionId: contactPermissionId);
 
     notifyListeners();
 
     return contactPermission;
   }
-  Future<ContactPermission> updateContactPermission({required ContactPermission contactPermission}) async {
-    ContactPermission contactPerm = await ApiService().updateContactPermission(contactPermission: contactPermission);
+  Future<ContactPermission?> updateContactPermission({required ContactPermission contactPermission}) async {
+    ContactPermission? contactPerm = await ApiService().updateContactPermission(contactPermission: contactPermission);
+
+    notifyListeners();
+
+    return contactPerm;
+  }
+  Future<ContactPermission?> createContactPermission({required ContactPermission contactPermission}) async {
+    ContactPermission? contactPerm = await ApiService().createContactPermission(contactPermission: contactPermission);
 
     notifyListeners();
 
     return contactPerm;
   }
 
+
   //DealPermissionId,
-  Future<DealPermission> getDealPermissionById({required int dealPermissionId}) async {
-    DealPermission dealPermission = await ApiService().getDealPermissionById(dealPermissionId: dealPermissionId);
+  Future<DealPermission?> getDealPermissionById({required int dealPermissionId}) async {
+    DealPermission? dealPermission = await ApiService().getDealPermissionById(dealPermissionId: dealPermissionId);
 
     notifyListeners();
 
     return dealPermission;
   }
-  Future<DealPermission> updateDealPermission({required DealPermission dealPermission}) async {
-    DealPermission dealPerm = await ApiService().updateDealPermission(dealPermission: dealPermission);
+  Future<DealPermission?> updateDealPermission({required DealPermission dealPermission}) async {
+    DealPermission? dealPerm = await ApiService().updateDealPermission(dealPermission: dealPermission);
+
+    notifyListeners();
+
+    return dealPerm;
+  }
+  Future<DealPermission?> createDealPermission({required DealPermission dealPermission}) async {
+    DealPermission? dealPerm = await ApiService().createDealPermission(dealPermission: dealPermission);
 
     notifyListeners();
 
     return dealPerm;
   }
 
+
   //IssuePermissionId,
-  Future<IssuePermission> getIssuePermissionById({required int issuePermissionId}) async {
-    IssuePermission issuePermission = await ApiService().getIssuePermissionById(issuePermissionId: issuePermissionId);
+  Future<IssuePermission?> getIssuePermissionById({required int issuePermissionId}) async {
+    IssuePermission? issuePermission = await ApiService().getIssuePermissionById(issuePermissionId: issuePermissionId);
 
     notifyListeners();
 
     return issuePermission;
   }
-  Future<IssuePermission> updateIssuePermission({required IssuePermission issuePermission}) async {
-    IssuePermission issuePerm = await ApiService().updateIssuePermission(issuePermission: issuePermission);
+  Future<IssuePermission?> updateIssuePermission({required IssuePermission issuePermission}) async {
+    IssuePermission? issuePerm = await ApiService().updateIssuePermission(issuePermission: issuePermission);
+
+    notifyListeners();
+
+    return issuePerm;
+  }
+  Future<IssuePermission?> createIssuePermission({required IssuePermission issuePermission}) async {
+    IssuePermission? issuePerm = await ApiService().createIssuePermission(issuePermission: issuePermission);
 
     notifyListeners();
 

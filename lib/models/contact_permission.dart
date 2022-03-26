@@ -6,14 +6,14 @@ String contactPermissionToJson(ContactPermission data) => json.encode(data.toJso
 
 class ContactPermission {
   ContactPermission({
-    required this.contactPermissionId,
+    this.contactPermissionId,
     required this.create,
     required this.view,
     required this.update,
     required this.delete,
   });
 
-  int contactPermissionId;
+  int? contactPermissionId;
   int create;
   int view;
   int update;

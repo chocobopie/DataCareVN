@@ -6,14 +6,14 @@ String dealPermissionToJson(DealPermission data) => json.encode(data.toJson());
 
 class DealPermission {
   DealPermission({
-    required this.dealPermissionId,
+    this.dealPermissionId,
     required this.create,
     required this.view,
     required this.update,
     required this.delete,
   });
 
-  int dealPermissionId;
+  int? dealPermissionId;
   int create;
   int view;
   int update;
