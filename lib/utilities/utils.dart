@@ -55,7 +55,13 @@ List<String> saleEmpCreatePermNames = [
   'Không cho phép',
   'Cho phép'
 ];
-List<String> saleEmpViewUpdateDeletePermNames = [
+List<String> saleEmpViewPermNames = [
+  'Chỉ bản thân',
+  'Chỉ trong nhóm',
+  'Chỉ trong phòng ban'
+];
+List<String> saleEmpUpdateDeletePermNames = [
+  'Không cho phép',
   'Chỉ bản thân',
   'Chỉ trong nhóm',
   'Chỉ trong phòng ban'
@@ -63,6 +69,13 @@ List<String> saleEmpViewUpdateDeletePermNames = [
 List<String> hrInternViewUpdate = [
   'Chỉ trong phòng ban',
   'Tất cả'
+];
+List<String> roleFilter = [
+  'Thực tập sinh nhân sự',
+  'Trưởng phòng kinh doanh',
+  'Trưởng nhóm kinh doanh',
+  'Nhân viên kinh doanh',
+  'Nhân viên kỹ thuật'
 ];
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -92,6 +105,7 @@ Block getBlock({required int blockId}){
 
 String getDepartmentName(int departmentId, int? blockId){
   String name = '';
+
   if(blockId != null){
     for(int i = 0; i < departments.length; i++){
       if(departmentId == departments[i].departmentId && blockId == departments[i].blockId){

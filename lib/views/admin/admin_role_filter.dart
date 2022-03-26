@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/role_list_view_model.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminRoleFilter extends StatefulWidget {
@@ -18,10 +21,13 @@ class _AdminRoleFilterState extends State<AdminRoleFilter> {
   final RefreshController _refreshController = RefreshController();
   final TextEditingController _searchRoleName = TextEditingController();
 
+  Account _currentAccount = Account();
+
   @override
   void initState() {
     super.initState();
     _getallRoles();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
   }
 
   @override
@@ -201,7 +207,16 @@ class _AdminRoleFilterState extends State<AdminRoleFilter> {
   void _getallRoles() async {
 
     List<Role> roleList = await RoleListViewModel().getAllRole();
-
+    if(_currentAccount.roleId == 0){
+      for(int i = 0; i < roleList.length; i++){
+        if(roleList[i].name == 'Quản trị viên') {
+          roleList.removeAt(i);
+        }
+        if(roleList[i].name == 'Trưởng phòng nhân sự') {
+          roleList.removeAt(i);
+        }
+      }
+    }
     setState(() {
       _roles.addAll(roleList);
     });

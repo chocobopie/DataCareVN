@@ -28,8 +28,8 @@ class PermissionViewModel with ChangeNotifier{
 
     return accountPermission;
   }
-  Future<AccountPermission> updateAccountPermission({required AccountPermission accountPermission}) async {
-    AccountPermission accountPerm = await ApiService().updateAccountPermission(accountPermission: accountPermission);
+  Future<AccountPermission?> updateAccountPermission({required AccountPermission accountPermission}) async {
+    AccountPermission? accountPerm = await ApiService().updateAccountPermission(accountPermission: accountPermission);
 
     notifyListeners();
 

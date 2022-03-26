@@ -38,6 +38,9 @@ class AdminAccountDetail extends StatefulWidget {
 
 class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
+  String _blockNameString = '', _departmentNameString = '' , _teamNameString = '', _roleNameString = '';
+
+  bool _isSaleExpansionTile = false, _isHrInternExpansionTile = false;
   bool _readOnly = true;
   late final Account _currentAccount = widget.account;
 
@@ -66,6 +69,17 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   void initState() {
     super.initState();
     _getOverallInfo();
+    if(_currentAccount.departmentId != null) _departmentNameString = getDepartmentName(_currentAccount.departmentId!, null);
+    if(_currentAccount.teamId != null) _teamNameString = getTeamName(_currentAccount.teamId!, _currentAccount.departmentId!);
+    if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 || _currentAccount.roleId == 6){
+      setState(() {
+        _isSaleExpansionTile = true;
+        _isHrInternExpansionTile = false;
+      });
+    }else{
+      _isSaleExpansionTile = false;
+      _isHrInternExpansionTile = true;
+    }
   }
 
   @override
@@ -225,6 +239,10 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                               if (data != null) {
                                 setState(() {
                                   _filterBlock = data;
+                                  _departmentNameString = '';
+                                  _teamNameString = '';
+                                  _filterDepartment = null;
+                                  _filterTeam = null;
                                   _accountBlockId.text = _filterBlock!.blockId.toString();
                                 });
                               }
@@ -236,9 +254,10 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         if(getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock!).isNotEmpty )
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
+                        // _filterDepartment == null ? _currentAccount.departmentId == null ? _filterDepartment == null ? '' : _filterDepartment!.name : getDepartmentName( _currentAccount.departmentId!, null) : _filterDepartment!.name,
                         child: CustomEditableTextFormField(
                             borderColor: _readOnly != true ? mainBgColor : null,
-                            text: _currentAccount.departmentId == null ? _accountDepartmentId.text.isEmpty ? '' : getDepartmentName(int.parse(_accountDepartmentId.text), null) : getDepartmentName(_currentAccount.departmentId!, _currentAccount.blockId),
+                            text: _departmentNameString,
                             title: 'Phòng ban',
                             readonly: true,
                             onTap: _readOnly != true ? () async {
@@ -248,6 +267,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                               if (data != null) {
                                 setState(() {
                                   _filterDepartment = data;
+                                  _departmentNameString = _filterDepartment!.name;
+                                  _teamNameString = '';
+                                  _filterTeam = null;
                                   _accountDepartmentId.text = _filterDepartment!.departmentId.toString();
                                 });
                               }
@@ -255,14 +277,15 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      if(_currentAccount.teamId != null || _filterDepartment != null)
+                      if(_currentAccount.teamId != null || _filterDepartment != null )
                         if(  getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock!).isNotEmpty  )
                         if(  getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentAccount.departmentId!) : _filterDepartment! ).isNotEmpty  )
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
+                        // _filterTeam == null ? _currentAccount.teamId == null ? _accountTeamId.text.isEmpty ? '' : getTeamName(_filterTeam!.teamId, _filterTeam!.departmentId) : getTeamName(_currentAccount.teamId!, _currentAccount.departmentId) : _filterTeam!.name,
                         child: CustomEditableTextFormField(
                             borderColor: _readOnly != true ? mainBgColor : null,
-                            text: _currentAccount.teamId == null ? _accountTeamId.text.isEmpty ? '' : getTeamName(_filterTeam!.teamId, _filterTeam!.departmentId) : getTeamName(_currentAccount.teamId!, _currentAccount.departmentId),
+                            text: _teamNameString,
                             title: 'Nhóm',
                             readonly: true,
                             onTap: _readOnly != true ? () async {
@@ -272,6 +295,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                               if( data != null ){
                                 setState(() {
                                   _filterTeam = data;
+                                  _teamNameString = _filterTeam!.name;
                                   _accountTeamId.text = _filterTeam!.teamId.toString();
                                 });
                               }
@@ -293,6 +317,14 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 setState(() {
                                   _filterRole = data;
                                   _accountRoleId.text = _filterRole!.roleId.toString();
+                                  if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId ==6 ){
+                                    _isSaleExpansionTile = true;
+                                    _isHrInternExpansionTile = false;
+                                  }else{
+                                    _isSaleExpansionTile = false;
+                                    _isHrInternExpansionTile = true;
+                                  }
+                                  print(_filterRole!.name);
                                 });
                               }
                             } : null,
@@ -300,7 +332,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quản lý thông tin khách hàng
-                      if(_contactPermission != null)
+                      if(_isSaleExpansionTile == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
@@ -311,7 +343,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                                 child: CustomDropdownFormField2(
                                     label: 'Tạo mới',
-                                    hintText: Text(permissionStatusesNameUtilities[_contactCreateId == null ? _contactPermission!.create : _contactCreateId!]),
+                                    hintText: _contactPermission != null ? Text(permissionStatusesNameUtilities[_contactCreateId == null ? _contactPermission!.create : _contactCreateId!]) : const Text(''),
                                     items: saleEmpCreatePermNames,
                                     onChanged: _readOnly != true ? (value){
                                       for(int i = 0; i < permissionStatuses.length; i++){
@@ -329,8 +361,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                 child: CustomDropdownFormField2(
                                     label: 'Xem',
-                                    hintText: Text(permissionStatusesNameUtilities[_contactViewId == null ? _contactPermission!.view : _contactViewId!]),
-                                    items: saleEmpViewUpdateDeletePermNames,
+                                    hintText: _contactPermission != null ? Text(permissionStatusesNameUtilities[_contactViewId == null ? _contactPermission!.view : _contactViewId!]) : const Text(''),
+                                    items: saleEmpViewPermNames,
                                     onChanged: _readOnly != true ? (value){
                                       for(int i = 0; i < permissionStatuses.length; i++){
                                         if(value.toString() == permissionStatuses[i].name){
@@ -346,8 +378,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                 child: CustomDropdownFormField2(
                                     label: 'Chỉnh sửa',
-                                    hintText: Text(permissionStatusesNameUtilities[_contactUpdateId == null ? _contactPermission!.update : _contactUpdateId!]),
-                                    items: saleEmpViewUpdateDeletePermNames,
+                                    hintText: _contactPermission != null ? Text(permissionStatusesNameUtilities[_contactUpdateId == null ? _contactPermission!.update : _contactUpdateId!]) : const Text(''),
+                                    items: saleEmpUpdateDeletePermNames,
                                     onChanged: _readOnly != true ? (value){
                                       for(int i = 0; i < permissionStatuses.length; i++){
                                         if(value.toString() == permissionStatuses[i].name){
@@ -363,8 +395,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15.0),
                                 child: CustomDropdownFormField2(
                                     label: 'Xóa',
-                                    hintText: Text(permissionStatusesNameUtilities[_contactDeleteId == null ? _contactPermission!.delete : _contactDeleteId!]),
-                                    items: saleEmpViewUpdateDeletePermNames,
+                                    hintText: _contactPermission != null ? Text(permissionStatusesNameUtilities[_contactDeleteId == null ? _contactPermission!.delete : _contactDeleteId!]) : const Text(''),
+                                    items: saleEmpUpdateDeletePermNames,
                                     onChanged: _readOnly != true ? (value){
                                       for(int i = 0; i < permissionStatuses.length; i++){
                                         if(value.toString() == permissionStatuses[i].name){
@@ -381,7 +413,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       //Quyền quản lý họp đồng
-                      if(_dealPermission != null)
+                      if(_isSaleExpansionTile == true)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -392,7 +424,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Tạo mới',
-                                      hintText: Text(permissionStatusesNameUtilities[_dealCreateId == null ? _dealPermission!.create : _dealCreateId!]),
+                                      hintText: _dealPermission != null ? Text(permissionStatusesNameUtilities[_dealCreateId == null ? _dealPermission!.create : _dealCreateId!]) : const Text(''),
                                       items: saleEmpCreatePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
@@ -409,8 +441,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
-                                      hintText: Text(permissionStatusesNameUtilities[_dealViewId == null ? _dealPermission!.view : _dealViewId!]),
-                                      items: saleEmpViewUpdateDeletePermNames,
+                                      hintText: _dealPermission != null ? Text(permissionStatusesNameUtilities[_dealViewId == null ? _dealPermission!.view : _dealViewId!]) : const Text(''),
+                                      items: saleEmpViewPermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -426,8 +458,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Chỉnh sửa',
-                                      hintText: Text(permissionStatusesNameUtilities[_dealUpdateId == null ?_dealPermission!.update : _dealUpdateId!]),
-                                      items: saleEmpViewUpdateDeletePermNames,
+                                      hintText: _dealPermission != null ? Text(permissionStatusesNameUtilities[_dealUpdateId == null ?_dealPermission!.update : _dealUpdateId!]) : const Text(''),
+                                      items: saleEmpUpdateDeletePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -443,8 +475,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xóa',
-                                      hintText: Text(permissionStatusesNameUtilities[_dealDeleteId == null ?_dealPermission!.delete : _dealDeleteId!]),
-                                      items: saleEmpViewUpdateDeletePermNames,
+                                      hintText: _dealPermission != null ? Text(permissionStatusesNameUtilities[_dealDeleteId == null ?_dealPermission!.delete : _dealDeleteId!]) : const Text(''),
+                                      items: saleEmpUpdateDeletePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -461,7 +493,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quả lý vấn đề
-                      if(_issuePermission != null)
+                      if(_isSaleExpansionTile == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
@@ -472,7 +504,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Tạo mới',
-                                      hintText: Text(permissionStatusesNameUtilities[_issueCreateId == null ?_issuePermission!.create : _issueCreateId!]),
+                                      hintText: _issuePermission != null ? Text(permissionStatusesNameUtilities[_issueCreateId == null ? _issuePermission!.create : _issueCreateId!]) : const Text(''),
                                       items: saleEmpCreatePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
@@ -489,8 +521,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
-                                      hintText: Text(permissionStatusesNameUtilities[_issueViewId == null ? _issuePermission!.view : _issueViewId!]),
-                                      items: saleEmpViewUpdateDeletePermNames,
+                                      hintText: _issuePermission != null ? Text(permissionStatusesNameUtilities[_issueViewId == null ? _issuePermission!.view : _issueViewId!]) : const Text(''),
+                                      items: saleEmpViewPermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -506,8 +538,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Chỉnh sửa',
-                                      hintText: Text(permissionStatusesNameUtilities[_issueUpdateId == null ? _issuePermission!.update : _issueUpdateId!]),
-                                      items: saleEmpViewUpdateDeletePermNames,
+                                      hintText: _issuePermission != null ? Text(permissionStatusesNameUtilities[_issueUpdateId == null ? _issuePermission!.update : _issueUpdateId!]) : const Text(''),
+                                      items: saleEmpUpdateDeletePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -523,8 +555,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xóa',
-                                      hintText: Text(permissionStatusesNameUtilities[_issueDeleteId == null ? _issuePermission!.delete : _issueDeleteId!]),
-                                      items: saleEmpViewUpdateDeletePermNames,
+                                      hintText: _issuePermission != null ? Text(permissionStatusesNameUtilities[_issueDeleteId == null ? _issuePermission!.delete : _issueDeleteId!]) : const Text(''),
+                                      items: saleEmpUpdateDeletePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -541,7 +573,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       //Quyền quả lý tài khoản nhân viên
-                      if(_accountPermission != null)
+                      if(_isHrInternExpansionTile == true)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -552,7 +584,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
-                                      hintText: Text(permissionStatusesNameUtilities[_accountViewId == null ? _accountPermission!.view : _accountViewId!]),
+                                      hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountViewId == null ? _accountPermission!.view : _accountViewId!]) : const Text(''),
                                       items: hrInternViewUpdate,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
@@ -570,7 +602,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quả lý điểm danh
-                      if(_attendancePermission != null)
+                      if(_isHrInternExpansionTile == true)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -581,7 +613,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15),
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
-                                      hintText: Text(permissionStatusesNameUtilities[_attendanceViewId == null ? _attendancePermission!.view : _attendanceViewId!]),
+                                      hintText: _attendancePermission != null ? Text(permissionStatusesNameUtilities[_attendanceViewId == null ? _attendancePermission!.view : _attendanceViewId!]) : const Text(''),
                                       items: hrInternViewUpdate,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
@@ -598,7 +630,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15.0),
                                   child: CustomDropdownFormField2(
                                       label: 'Chỉnh sủa',
-                                      hintText: Text(permissionStatusesNameUtilities[_attendanceUpdateId == null ? _attendancePermission!.update : _attendanceUpdateId!]),
+                                      hintText: _attendancePermission != null ? Text(permissionStatusesNameUtilities[_attendanceUpdateId == null ? _attendancePermission!.update : _attendanceUpdateId!]) : const Text(''),
                                       items: hrInternViewUpdate,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){

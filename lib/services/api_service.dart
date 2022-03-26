@@ -767,7 +767,7 @@ class ApiService {
     }
   }
 
-  Future<AccountPermission> updateAccountPermission({required AccountPermission accountPermission}) async {
+  Future<AccountPermission?> updateAccountPermission({required AccountPermission accountPermission}) async {
     String url = stockUrl + 'account-permission/${accountPermission.accountPermissionId}';
 
     final response = await http.put(Uri.parse(url),
@@ -784,9 +784,10 @@ class ApiService {
       print('Update AccountPermission successfully | 200');
       return AccountPermission.fromJson(jsonDecode(response.body));
     }else{
-      print('Update AttendancePermission failed | 400');
+      print('Update AccountPermission failed | 400');
       AccountPermission? accountPermission;
-      return accountPermission!;
+      print(accountPermission);
+      return accountPermission;
     }
   }
   //AttendancePermissionId,
