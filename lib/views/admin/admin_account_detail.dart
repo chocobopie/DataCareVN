@@ -18,6 +18,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/permission_view_model.dart';
 import 'package:login_sample/views/admin/admin_block_filter.dart';
 import 'package:login_sample/views/admin/admin_department_filter.dart';
+import 'package:login_sample/views/admin/admin_role_filter.dart';
 import 'package:login_sample/views/admin/admin_team_filter.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
@@ -99,7 +100,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: _currentAccount != null ? ListView(
+                  child: _permission != null ? ListView(
                     children: <Widget>[
                       CustomEditableTextFormField(
                           text: _currentAccount.email!.isEmpty ? 'Chưa cập nhật' : _currentAccount.email!,
@@ -215,6 +216,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
+                            borderColor: _readOnly != true ? mainBgColor : null,
                             text: _accountBlockId.text.isEmpty ? blockNameUtilities[_currentAccount.blockId!] : blockNameUtilities[int.parse(_accountBlockId.text)],
                             title: 'Khối',
                             readonly: true,
@@ -234,6 +236,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
+                            borderColor: _readOnly != true ? mainBgColor : null,
                             text: _accountDepartmentId.text.isEmpty ? getDepartmentName(_currentAccount.departmentId!, _currentAccount.blockId) : getDepartmentName(int.parse(_accountDepartmentId.text), null),
                             title: 'Phòng ban',
                             readonly: true,
@@ -253,6 +256,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
+                            borderColor: _readOnly != true ? mainBgColor : null,
                             text: _accountTeamId.text.isEmpty ? getTeamName(_currentAccount.teamId!, _currentAccount.departmentId) : getTeamName(_filterTeam!.teamId, _filterTeam!.departmentId),
                             title: 'Nhóm',
                             readonly: true,
@@ -272,11 +276,12 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomEditableTextFormField(
+                            borderColor: _readOnly != true ? mainBgColor : null,
                             text: _accountRoleId.text.isEmpty ? rolesNameUtilities[_currentAccount.roleId!] : rolesNameUtilities[int.parse(_accountRoleId.text)],
                             title: 'Chức vụ',
                             readonly: true,
                             onTap: _readOnly != true ? () async {
-                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(teamList: getTeamListInDepartment(department: _filterDepartment!))));
+                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter() ));
                               if( data != null ){
                                 setState(() {
                                   _filterRole = data;
@@ -306,6 +311,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                         if(value.toString() == permissionStatuses[i].name){
                                           setState(() {
                                             _contactCreateId = permissionStatuses[i].permissionStatusId;
+                                            print(_contactCreateId);
                                           });
                                         }
                                       }
@@ -540,7 +546,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
                                       hintText: Text(permissionStatusesNameUtilities[_accountViewId == null ? _accountPermission!.view : _accountViewId!]),
-                                      items: saleEmpCreatePermNames,
+                                      items: hrInternViewUpdate,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -569,7 +575,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
                                       hintText: Text(permissionStatusesNameUtilities[_attendanceViewId == null ? _attendancePermission!.view : _attendanceViewId!]),
-                                      items: saleEmpCreatePermNames,
+                                      items: hrInternViewUpdate,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -586,7 +592,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   child: CustomDropdownFormField2(
                                       label: 'Chỉnh sủa',
                                       hintText: Text(permissionStatusesNameUtilities[_attendanceUpdateId == null ? _attendancePermission!.update : _attendanceUpdateId!]),
-                                      items: saleEmpCreatePermNames,
+                                      items: hrInternViewUpdate,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -607,7 +613,17 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             Expanded(child: CustomTextButton(
                                 color: Colors.deepPurple,
                                 text: 'Hủy',
-                                 onPressed: (){if(_readOnly == false) {setState(() {_readOnly = true;});}},
+                                 onPressed: (){
+                                   if(_readOnly == false){
+                                    setState(() {
+                                      _contactCreateId = null; _contactViewId = null; _contactUpdateId = null; _contactDeleteId = null;
+                                      _dealCreateId = null; _dealViewId = null; _dealUpdateId = null; _dealDeleteId = null;
+                                      _issueCreateId = null; _issueViewId = null; _issueUpdateId = null; _issueDeleteId = null;
+                                      _accountViewId = null; _attendanceViewId = null; _attendanceUpdateId = null;
+                                      _readOnly = true;
+                                    });
+                                   }
+                                  },
                             )),
 
                           const SizedBox(width: 5.0,),
@@ -616,6 +632,20 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 color: Colors.blueAccent,
                                 text: _readOnly == true ? 'Chỉnh sửa' : 'Lưu',
                                 onPressed: (){
+                                  if(_readOnly == false){
+
+                                    if(_contactPermission != null && _dealPermission != null && _issuePermission != null){
+                                      _updateSaleEmpPermission();
+                                    }
+
+                                    if(_accountPermission != null && _attendancePermission != null){
+                                      _updateHrInternPermission();
+                                    }
+
+                                    Future.delayed(const Duration(seconds: 2), (){
+                                      Navigator.pop(context);
+                                    });
+                                  }
                                   if(_readOnly == true) setState(() {_readOnly = false;});
                                 },
                             ),
@@ -662,6 +692,52 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     if(_permission!.contactPermissionId != null) _getContactPermissionById(contactPermissionId: _permission!.contactPermissionId!);
     if(_permission!.dealPermissionId != null) _getDealPermissionById(dealPermissionId: _permission!.dealPermissionId!);
     if(_permission!.issuePermissionId != null) _getIssuePermissionById(issuePermissionId: _permission!.issuePermissionId!);
+  }
+
+  void _updateSaleEmpPermission(){
+    ContactPermission contactPermission = ContactPermission(
+      contactPermissionId:_contactPermission!.contactPermissionId,
+      create: _contactCreateId == null ? _contactPermission!.create : _contactCreateId!,
+      view: _contactViewId == null ? _contactPermission!.view : _contactViewId!,
+      update: _contactUpdateId == null ? _contactPermission!.update : _contactUpdateId!,
+      delete: _contactDeleteId == null ? _contactPermission!.delete : _contactDeleteId!,
+    );
+
+    DealPermission dealPermission = DealPermission(
+        dealPermissionId: _dealPermission!.dealPermissionId,
+        create: _dealCreateId == null ? _dealPermission!.create : _dealCreateId!,
+        view: _dealViewId == null ? _dealPermission!.view : _dealViewId!,
+        update: _dealUpdateId == null ? _dealPermission!.update : _dealUpdateId!,
+        delete: _dealDeleteId == null ? _dealPermission!.delete : _dealDeleteId!
+    );
+
+    IssuePermission issuePermission = IssuePermission(
+        issuePermissionId: _issuePermission!.issuePermissionId,
+        create: _issueCreateId == null ? _issuePermission!.create : _issueCreateId!,
+        view: _issueViewId == null ? _issuePermission!.view : _issueViewId!,
+        update: _issueUpdateId == null ? _issuePermission!.update : _issueUpdateId!,
+        delete: _issueDeleteId == null ? _issuePermission!.delete : _issueDeleteId!
+    );
+
+    PermissionViewModel().updateContactPermission(contactPermission: contactPermission);
+    PermissionViewModel().updateDealPermission(dealPermission: dealPermission);
+    PermissionViewModel().updateIssuePermission(issuePermission: issuePermission);
+  }
+
+  void _updateHrInternPermission(){
+    AccountPermission accountPermission = AccountPermission(
+        accountPermissionId: _accountPermission!.accountPermissionId,
+        view: _accountViewId == null ? _accountPermission!.view : _accountViewId!,
+    );
+
+    AttendancePermission attendancePermission = AttendancePermission(
+        attendancePermissionId: _attendancePermission!.attendancePermissionId,
+        view: _attendanceViewId == null ? _attendancePermission!.view : _attendanceViewId!,
+        update: _attendanceUpdateId == null ? _attendancePermission!.update : _attendanceUpdateId!
+    );
+
+    PermissionViewModel().updateAccountPermission(accountPermission: accountPermission);
+    PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
   }
 
   void _getAccountPermissionById({required int accountPermissionId}) async {
