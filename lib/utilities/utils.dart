@@ -66,6 +66,30 @@ List<String> hrInternViewUpdate = [
 ];
 
 //-------------------------------------------------------------------------------------------------------------------
+Department getDepartment({required int departmentId, int? blockId}){
+  Department? department;
+
+  for(int i = 0; i < departments.length; i++){
+    if(departmentId == departments[i].departmentId && blockId == departments[i].blockId){
+      department = departments[i];
+    }else if(departmentId == departments[i].departmentId){
+      department = departments[i];
+    }
+  }
+
+  return department!;
+}
+
+Block getBlock({required int blockId}){
+  Block? block;
+  for(int i = 0; i < blocks.length; i++){
+    if(blockId == blocks[i].blockId){
+      block = blocks[i];
+    }
+  }
+  return block!;
+}
+
 String getDepartmentName(int departmentId, int? blockId){
   String name = '';
   if(blockId != null){

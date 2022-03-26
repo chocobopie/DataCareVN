@@ -232,16 +232,19 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      if(_currentAccount.departmentId != null)
+                      if(_currentAccount.departmentId != null || _filterBlock != null)
+                        if(getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock!).isNotEmpty )
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
                             borderColor: _readOnly != true ? mainBgColor : null,
-                            text: _accountDepartmentId.text.isEmpty ? getDepartmentName(_currentAccount.departmentId!, _currentAccount.blockId) : getDepartmentName(int.parse(_accountDepartmentId.text), null),
+                            text: _currentAccount.departmentId == null ? _accountDepartmentId.text.isEmpty ? '' : getDepartmentName(int.parse(_accountDepartmentId.text), null) : getDepartmentName(_currentAccount.departmentId!, _currentAccount.blockId),
                             title: 'Phòng ban',
                             readonly: true,
                             onTap: _readOnly != true ? () async {
-                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDepartmentFilter(departmentList: getDepartmentListInBlock(block: _filterBlock!))));
+                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDepartmentFilter(
+                                  departmentList: getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock! )
+                              )));
                               if (data != null) {
                                 setState(() {
                                   _filterDepartment = data;
@@ -261,7 +264,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             title: 'Nhóm',
                             readonly: true,
                             onTap: _readOnly != true ? () async {
-                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(teamList: getTeamListInDepartment(department: _filterDepartment!))));
+                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
+                                  teamList: getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentAccount.departmentId!) : _filterDepartment!) )
+                              ));
                               if( data != null ){
                                 setState(() {
                                   _filterTeam = data;
