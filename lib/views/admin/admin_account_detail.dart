@@ -255,12 +255,14 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      if(_currentAccount.teamId != null)
+                      if(_currentAccount.teamId != null || _filterDepartment != null)
+                        if(  getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock!).isNotEmpty  )
+                        if(  getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentAccount.departmentId!) : _filterDepartment! ).isNotEmpty  )
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
                             borderColor: _readOnly != true ? mainBgColor : null,
-                            text: _accountTeamId.text.isEmpty ? getTeamName(_currentAccount.teamId!, _currentAccount.departmentId) : getTeamName(_filterTeam!.teamId, _filterTeam!.departmentId),
+                            text: _currentAccount.teamId == null ? _accountTeamId.text.isEmpty ? '' : getTeamName(_filterTeam!.teamId, _filterTeam!.departmentId) : getTeamName(_currentAccount.teamId!, _currentAccount.departmentId),
                             title: 'Nhóm',
                             readonly: true,
                             onTap: _readOnly != true ? () async {
