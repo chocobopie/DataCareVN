@@ -39,9 +39,9 @@ class AdminAccountDetail extends StatefulWidget {
 class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
   String _departmentPermNameString = '', _departmentNameString = '' , _teamNameString = '', _roleNameString = '';
+  String _contactCreateNew = '';
 
-  bool _isSaleExpansionTile = false, _isHrInternExpansionTile = false;
-  bool _readOnly = true;
+  bool _readOnly = true, _isExpand = false;
   late final Account _currentAccount = widget.account;
 
   Permission? _permission;
@@ -70,21 +70,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   void initState() {
     super.initState();
     _getOverallInfo();
-    if(_currentAccount.departmentId != null) _departmentNameString = getDepartmentName(_currentAccount.departmentId!, null);
-    if(_currentAccount.teamId != null) _teamNameString = getTeamName(_currentAccount.teamId!, _currentAccount.departmentId!);
-    if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 || _currentAccount.roleId == 6){
-      setState(() {
-        _isSaleExpansionTile = true;
-        _isHrInternExpansionTile = false;
-      });
-    }else{
-      _isSaleExpansionTile = false;
-      _isHrInternExpansionTile = true;
-    }
-    if(_permission?.departmentId != null) {
-      _departmentPermNameString = getDepartmentName( _permission!.departmentId!, null);
-      print('Perm department id =: ${_permission!.departmentId!}');
-    }
   }
 
   @override
@@ -235,23 +220,23 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
-                            borderColor: _readOnly != true ? mainBgColor : null,
+                            // borderColor: _currentAccount.roleId != 2 ? _readOnly != true ? mainBgColor : null : null,
                             text: _accountBlockId.text.isEmpty ? blockNameUtilities[_currentAccount.blockId!] : blockNameUtilities[int.parse(_accountBlockId.text)],
                             title: 'Khối',
                             readonly: true,
-                            onTap: _readOnly != true ? () async {
-                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminBlockFilter(),));
-                              if (data != null) {
-                                setState(() {
-                                  _filterBlock = data;
-                                  _departmentNameString = '';
-                                  _teamNameString = '';
-                                  _filterDepartment = null;
-                                  _filterTeam = null;
-                                  _accountBlockId.text = _filterBlock!.blockId.toString();
-                                });
-                              }
-                            } : null,
+                            // onTap: _currentAccount.roleId != 2 ? _readOnly != true ? () async {
+                            //   final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminBlockFilter(),));
+                            //   if (data != null) {
+                            //     setState(() {
+                            //       _filterBlock = data;
+                            //       _departmentNameString = '';
+                            //       _teamNameString = '';
+                            //       _filterDepartment = null;
+                            //       _filterTeam = null;
+                            //       _accountBlockId.text = _filterBlock!.blockId.toString();
+                            //     });
+                            //   }
+                            // } : null : null,
                         ),
                       ),
 
@@ -282,18 +267,19 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      if(_currentAccount.teamId != null || _filterDepartment != null )
+                      if(_currentAccount.teamId != null || _filterDepartment != null || _filterRole != null)
+                        if(_filterRole?.roleId == 4 || _filterRole?.roleId == 5 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5)
                         if(  getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock!).isNotEmpty  )
                         if(  getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentAccount.departmentId!) : _filterDepartment! ).isNotEmpty  )
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         // _filterTeam == null ? _currentAccount.teamId == null ? _accountTeamId.text.isEmpty ? '' : getTeamName(_filterTeam!.teamId, _filterTeam!.departmentId) : getTeamName(_currentAccount.teamId!, _currentAccount.departmentId) : _filterTeam!.name,
                         child: CustomEditableTextFormField(
-                            borderColor: _readOnly != true ? mainBgColor : null,
+                            borderColor: _currentAccount.roleId != 2 ? _readOnly != true ? mainBgColor : null : null,
                             text: _teamNameString,
                             title: 'Nhóm',
                             readonly: true,
-                            onTap: _readOnly != true ? () async {
+                            onTap: _currentAccount.roleId != 2 ? _readOnly != true ? () async {
                               final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
                                   teamList: getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentAccount.departmentId!) : _filterDepartment!) )
                               ));
@@ -304,7 +290,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   _accountTeamId.text = _filterTeam!.teamId.toString();
                                 });
                               }
-                            } : null,
+                            } : null : null,
                         ),
                       ),
 
@@ -312,35 +298,29 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomEditableTextFormField(
-                            borderColor: _readOnly != true ? mainBgColor : null,
+                            borderColor: (_currentAccount.roleId != 2 && _currentAccount.roleId != 6) ? _readOnly != true ? mainBgColor : null : null,
                             text: _accountRoleId.text.isEmpty ? rolesNameUtilities[_currentAccount.roleId!] : rolesNameUtilities[int.parse(_accountRoleId.text)],
                             title: 'Chức vụ',
                             readonly: true,
-                            onTap: _readOnly != true ? () async {
-                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter() ));
+                            onTap: (_currentAccount.roleId != 2 && _currentAccount.roleId != 6) ? _readOnly != true ? () async {
+                              final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter(isAccountDetailFilter: true,) ));
                               if( data != null ){
                                 setState(() {
                                   _filterRole = data;
                                   _accountRoleId.text = _filterRole!.roleId.toString();
-                                  if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId ==6 ){
-                                    _isSaleExpansionTile = true;
-                                    _isHrInternExpansionTile = false;
-                                  }else{
-                                    _isSaleExpansionTile = false;
-                                    _isHrInternExpansionTile = true;
-                                  }
                                   print(_filterRole!.name);
                                 });
                               }
-                            } : null,
+                            } : null : null,
                           ),
                         ),
 
                       //Quyền quản lý thông tin khách hàng
-                      if(_isSaleExpansionTile == true)
-                      Padding(
+                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 )
+                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
+                            isExpand: _isExpand,
                             label: 'Quyền quản lý thông tin khách hàng',
                             colors: const [Colors.yellow, Colors.white],
                             children: <Widget>[
@@ -418,7 +398,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       //Quyền quản lý họp đồng
-                      if(_isSaleExpansionTile == true)
+                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 )
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -498,7 +478,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quả lý vấn đề
-                      if(_isSaleExpansionTile == true)
+                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 || _currentAccount.roleId == 6)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
@@ -578,7 +558,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       //Quyền quả lý tài khoản nhân viên
-                      if(_isHrInternExpansionTile == true)
+                      if(_currentAccount.roleId == 2)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -607,7 +587,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quả lý điểm danh
-                      if(_isHrInternExpansionTile == true)
+                      if(_currentAccount.roleId == 2)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -651,7 +631,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                               ]
                           ),
                         ),
-                      if(_isHrInternExpansionTile == true)
+
+                      if(_currentAccount.roleId == 2)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
@@ -679,15 +660,21 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 color: Colors.deepPurple,
                                 text: 'Hủy',
                                  onPressed: (){
-                                   if(_readOnly == false){
+                                  _getOverallInfo();
                                     setState(() {
+                                      _isExpand = false;
+                                      _filterRole = null;
+                                      _filterDepartmentPerm = null;
+                                      _filterDepartment = null;
+                                      _filterRole = null;
+                                      _filterTeam = null;
                                       _contactCreateId = null; _contactViewId = null; _contactUpdateId = null; _contactDeleteId = null;
                                       _dealCreateId = null; _dealViewId = null; _dealUpdateId = null; _dealDeleteId = null;
                                       _issueCreateId = null; _issueViewId = null; _issueUpdateId = null; _issueDeleteId = null;
                                       _accountViewId = null; _attendanceViewId = null; _attendanceUpdateId = null;
                                       _readOnly = true;
                                     });
-                                   }
+
                                   },
                             )),
 
@@ -746,19 +733,15 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
   void _getOverallInfo(){
     _getPermByPermId(permId: _currentAccount.permissionId!);
+    if(_currentAccount.departmentId != null) _departmentNameString = getDepartmentName(_currentAccount.departmentId!, null);
+    if(_currentAccount.teamId != null) _teamNameString = getTeamName(_currentAccount.teamId!, _currentAccount.departmentId!);
+    if(_permission?.departmentId != null) {
+      _departmentPermNameString = getDepartmentName( _permission!.departmentId!, null);
+      print('Perm department id =: ${_permission!.departmentId!}');
+    }
   }
 
-  void _getPermByPermId({required int permId}) async {
-    _permission = await PermissionViewModel().getPermByPermId(permId: permId);
-
-    if(_permission!.accountPermissionId != null) _getAccountPermissionById(accountPermissionId: _permission!.accountPermissionId!);
-    if(_permission!.attendancePermissionId != null) _getAttendancePermissionById(attendancePermissionId: _permission!.attendancePermissionId!);
-    // if(_permission!.payrollPermissionId != null) _getPayrollPermissionById(payrollPermissionId: _permission!.payrollPermissionId!);
-    if(_permission!.contactPermissionId != null) _getContactPermissionById(contactPermissionId: _permission!.contactPermissionId!);
-    if(_permission!.dealPermissionId != null) _getDealPermissionById(dealPermissionId: _permission!.dealPermissionId!);
-    if(_permission!.issuePermissionId != null) _getIssuePermissionById(issuePermissionId: _permission!.issuePermissionId!);
-  }
-
+  //Create perm
   void _createSaleEmpPerm(){
     ContactPermission contactPermission = ContactPermission(
       create: _contactCreateId!,
@@ -782,7 +765,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     PermissionViewModel().createDealPermission(dealPermission: dealPermission);
     PermissionViewModel().createIssuePermission(issuePermission: issuePermission);
   }
-
   void _createHrPerm(){
     AccountPermission accountPermission = AccountPermission(
       view: _accountViewId!,
@@ -797,6 +779,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
   }
 
+  //Update perm
   void _updateSaleEmpPermission(){
     ContactPermission contactPermission = ContactPermission(
       contactPermissionId:_contactPermission!.contactPermissionId,
@@ -826,7 +809,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     PermissionViewModel().updateDealPermission(dealPermission: dealPermission);
     PermissionViewModel().updateIssuePermission(issuePermission: issuePermission);
   }
-
   void _updateHrInternPermission(){
     AccountPermission accountPermission = AccountPermission(
         accountPermissionId: _accountPermission!.accountPermissionId,
@@ -843,6 +825,17 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
   }
 
+  //Get perm
+  void _getPermByPermId({required int permId}) async {
+    _permission = await PermissionViewModel().getPermByPermId(permId: permId);
+
+    if(_permission!.accountPermissionId != null) _getAccountPermissionById(accountPermissionId: _permission!.accountPermissionId!);
+    if(_permission!.attendancePermissionId != null) _getAttendancePermissionById(attendancePermissionId: _permission!.attendancePermissionId!);
+    // if(_permission!.payrollPermissionId != null) _getPayrollPermissionById(payrollPermissionId: _permission!.payrollPermissionId!);
+    if(_permission!.contactPermissionId != null) _getContactPermissionById(contactPermissionId: _permission!.contactPermissionId!);
+    if(_permission!.dealPermissionId != null) _getDealPermissionById(dealPermissionId: _permission!.dealPermissionId!);
+    if(_permission!.issuePermissionId != null) _getIssuePermissionById(issuePermissionId: _permission!.issuePermissionId!);
+  }
   void _getAccountPermissionById({required int accountPermissionId}) async {
     AccountPermission? accountPermission = await PermissionViewModel().getAccountPermissionById(accountPermissionId: accountPermissionId);
 
@@ -850,7 +843,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
       _accountPermission = accountPermission;
     });
   }
-
   void _getAttendancePermissionById({required int attendancePermissionId}) async {
     AttendancePermission? attendancePermission = await PermissionViewModel().getAttendancePermissionById(attendancePermissionId: attendancePermissionId);
 
@@ -858,7 +850,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
       _attendancePermission = attendancePermission;
     });
   }
-
   void _getPayrollPermissionById({required int payrollPermissionId}) async {
     PayrollPermission payrollPermission = await PermissionViewModel().getPayrollPermissionById(payrollPermissionId: payrollPermissionId);
 
@@ -866,7 +857,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
       _payrollPermission = payrollPermission;
     });
   }
-
   void _getContactPermissionById({required int contactPermissionId}) async {
     ContactPermission? contactPermission = await PermissionViewModel().getContactPermissionById(contactPermissionId: contactPermissionId);
 
@@ -874,7 +864,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
       _contactPermission = contactPermission;
     });
   }
-
   void _getDealPermissionById({required int dealPermissionId}) async {
     DealPermission? dealPermission = await PermissionViewModel().getDealPermissionById(dealPermissionId: dealPermissionId);
 
@@ -882,7 +871,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
       _dealPermission = dealPermission;
     });
   }
-
   void _getIssuePermissionById({required int issuePermissionId}) async {
     IssuePermission? issuePermission = await PermissionViewModel().getIssuePermissionById(issuePermissionId: issuePermissionId);
 

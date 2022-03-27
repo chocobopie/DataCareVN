@@ -8,7 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminRoleFilter extends StatefulWidget {
-  const AdminRoleFilter({Key? key}) : super(key: key);
+  const AdminRoleFilter({Key? key, this.isAccountDetailFilter, this.isAdminFilter, this.isHrManagerFilter}) : super(key: key);
+
+  final bool? isAccountDetailFilter;
+  final bool? isAdminFilter;
+  final bool? isHrManagerFilter;
 
   @override
   State<AdminRoleFilter> createState() => _AdminRoleFilterState();
@@ -207,7 +211,28 @@ class _AdminRoleFilterState extends State<AdminRoleFilter> {
   void _getallRoles() async {
 
     List<Role> roleList = await RoleListViewModel().getAllRole();
-    if(_currentAccount.roleId == 0){
+    if(widget.isAccountDetailFilter == true){
+      for(int i = 0; i < roleList.length; i++){
+        if(roleList[i].name == 'Quản trị viên') {
+          roleList.removeAt(i);
+        }
+        if(roleList[i].name == 'Trưởng phòng nhân sự') {
+          roleList.removeAt(i);
+        }
+        if(roleList[i].name == 'Thực tập sinh nhân sự') {
+          roleList.removeAt(i);
+        }
+        if(roleList[i].name == 'Nhân viên kỹ thuật') {
+          roleList.removeAt(i);
+        }
+      }
+    }else if(widget.isAdminFilter == true){
+      for(int i = 0; i < roleList.length; i++){
+        if(roleList[i].name == 'Quản trị viên') {
+          roleList.removeAt(i);
+        }
+      }
+    }else if(widget.isHrManagerFilter == true){
       for(int i = 0; i < roleList.length; i++){
         if(roleList[i].name == 'Quản trị viên') {
           roleList.removeAt(i);
@@ -217,6 +242,7 @@ class _AdminRoleFilterState extends State<AdminRoleFilter> {
         }
       }
     }
+
     setState(() {
       _roles.addAll(roleList);
     });

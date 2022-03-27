@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
 
 class CustomExpansionTile extends StatelessWidget {
-  const CustomExpansionTile({Key? key, required this.label, required this.children, required this.colors}) : super(key: key);
+  const CustomExpansionTile({Key? key, required this.label, required this.children, required this.colors, this.isExpand}) : super(key: key);
 
   final String label;
   final List<Widget> children;
-
+  final bool? isExpand;
   final List<Color> colors;
 
   @override
@@ -33,6 +33,8 @@ class CustomExpansionTile extends StatelessWidget {
         child: Theme(
           data: ThemeData().copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
+            initiallyExpanded: isExpand ?? false,
+            maintainState: false,
             title: Text(
               label,
               style: const TextStyle(fontSize: 16.0, color: defaultFontColor),
