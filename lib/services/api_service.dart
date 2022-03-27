@@ -725,7 +725,7 @@ class ApiService {
     }
   }
 
-  Future<Permission> updatePermission({required Permission permission}) async {
+  Future<Permission?> updatePermission({required Permission permission}) async {
     String url = stockUrl + 'permission/${permission.permissionId}';
 
     final response = await http.put(Uri.parse(url),
@@ -748,9 +748,9 @@ class ApiService {
       print('Update Permission successfully | 200');
       return Permission.fromJson(jsonDecode(response.body));
     }else{
-      print('Update AttendancePermission failed | 400');
+      print('Update Permission failed | 400');
       Permission? permission;
-      return permission!;
+      return permission;
     }
   }
 
