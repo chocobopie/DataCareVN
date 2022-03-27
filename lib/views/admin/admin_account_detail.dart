@@ -316,7 +316,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quản lý thông tin khách hàng
-                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 )
+                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 || _currentAccount.roleId == 6)
                        Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
@@ -397,7 +397,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       //Quyền quản lý họp đồng
-                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 )
+                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 || _currentAccount.roleId == 6)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -632,7 +632,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           ),
                         ),
 
-                      if(_currentAccount.roleId == 2)
+                      if(_currentAccount.roleId == 2 || _currentAccount.roleId == 6)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
@@ -697,13 +697,13 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                     }
 
                                     if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5){
-                                      _updateSaleEmpPermission();
+                                      _updateSaleTechnicalEmpPermission();
                                     }
 
                                     if(_currentAccount.roleId == 6){
-                                      _updateTechnicalEmpPermission();
+                                      _updateSaleTechnicalEmpPermission();
+                                      _updatePermission();
                                     }
-
 
                                     Future.delayed(const Duration(seconds: 2), (){
                                       Navigator.pop(context);
@@ -748,30 +748,11 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     if(_currentAccount.teamId != null) _teamNameString = getTeamName(_currentAccount.teamId!, _currentAccount.departmentId!);
   }
 
-  void _updatePermission(){
-    Permission permissionHrIntern = Permission(
-        permissionId: _permission!.permissionId,
-        accountPermissionId: _permission!.accountPermissionId,
-        attendancePermissionId: _permission!.attendancePermissionId,
-        departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId
-    );
-
-
-    Permission permissionTechnicalEmp = Permission(
-        permissionId: _permission!.permissionId,
-        issuePermissionId: _permission!.issuePermissionId,
-        departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId
-    );
-
-    if(_currentAccount.roleId == 2){
-      PermissionViewModel().updatePermission(permission: permissionHrIntern);
-    }else if(_currentAccount.roleId == 6){
-      PermissionViewModel().updatePermission(permission: permissionTechnicalEmp);
-    }
+  void _updateAccount(){
 
   }
 
-  //Create perm
+  //============================================================================Create perm
   void _createSaleEmpPerm(){
     ContactPermission contactPermission = ContactPermission(
       create: _contactCreateId!,
@@ -809,8 +790,32 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
   }
 
-  //Update perm
-  void _updateSaleEmpPermission(){
+  //============================================================================Update perm
+  void _updatePermission(){
+    Permission permissionHrIntern = Permission(
+        permissionId: _permission!.permissionId,
+        accountPermissionId: _permission!.accountPermissionId,
+        attendancePermissionId: _permission!.attendancePermissionId,
+        departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId
+    );
+
+
+    Permission permissionTechnicalEmp = Permission(
+        permissionId: _permission!.permissionId,
+        contactPermissionId: _permission!.contactPermissionId,
+        dealPermissionId: _permission!.dealPermissionId,
+        issuePermissionId: _permission!.issuePermissionId,
+        departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId
+    );
+
+    if(_currentAccount.roleId == 2){
+      PermissionViewModel().updatePermission(permission: permissionHrIntern);
+    }else if(_currentAccount.roleId == 6){
+      PermissionViewModel().updatePermission(permission: permissionTechnicalEmp);
+    }
+
+  }
+  void _updateSaleTechnicalEmpPermission(){
     ContactPermission contactPermission = ContactPermission(
       contactPermissionId:_contactPermission!.contactPermissionId,
       create: _contactCreateId == null ? _contactPermission!.create : _contactCreateId!,
@@ -868,7 +873,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
   }
 
-  //Get perm
+  //============================================================================Get perm
   void _getPermByPermId({required int permId}) async {
     _permission = await PermissionViewModel().getPermByPermId(permId: permId);
     if(_permission?.departmentId != null){
