@@ -112,19 +112,21 @@ class SideBar extends StatelessWidget {
                 }
             ),
             const Divider(),
-            ListTile(
-              contentPadding: EdgeInsets.only(left: 15.0, top: logoutHeight),
-              leading: const Icon(
-                  Icons.logout,
-                color: Colors.blueGrey,
-              ),
-              title: const Text(
-                  'Logout',
-                style: TextStyle(
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: ListTile(
+                leading: const Icon(
+                    Icons.logout,
                   color: Colors.blueGrey,
                 ),
+                title: const Text(
+                    'Logout',
+                  style: TextStyle(
+                    color: Colors.blueGrey,
+                  ),
+                ),
+                onTap: () => print('Logout'),
               ),
-              onTap: () => print('Logout'),
             ),
           ],
         ),

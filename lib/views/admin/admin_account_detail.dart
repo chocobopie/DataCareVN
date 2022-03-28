@@ -42,7 +42,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   String _contactCreateNew = '';
 
   bool _readOnly = true;
-  late final Account _currentAccount = widget.account;
+  late final Account _currentEmpAccount = widget.account;
+  late Account _currentAccount;
 
   Permission? _permission;
   AccountPermission? _accountPermission;
@@ -64,11 +65,12 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   final TextEditingController _accountDepartmentIdPerm = TextEditingController();
 
   int? _contactCreateId, _contactViewId, _contactUpdateId, _contactDeleteId, _dealCreateId, _dealViewId, _dealUpdateId, _dealDeleteId, _issueCreateId, _issueViewId, _issueUpdateId, _issueDeleteId;
-  int? _accountViewId, _attendanceViewId, _attendanceUpdateId;
+  int? _accountViewId, _accountCreateId, _accountUpdateId, _accountDeleteId, _attendanceViewId, _attendanceUpdateId;
 
   @override
   void initState() {
     super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getOverallInfo();
   }
 
@@ -107,14 +109,14 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                   child: _permission != null ? ListView(
                     children: <Widget>[
                       CustomEditableTextFormField(
-                          text: _currentAccount.email!.isEmpty ? 'Chưa cập nhật' : _currentAccount.email!,
+                          text: _currentEmpAccount.email!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.email!,
                           title: 'Email',
                           readonly: true,
                       ),
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.fullname!.isEmpty ? 'Chưa cập nhật' : _currentAccount.fullname!,
+                          text: _currentEmpAccount.fullname!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.fullname!,
                           title: 'Họ và tên',
                           readonly: true,
                       ),
@@ -124,7 +126,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         children: [
                           Expanded(
                             child: CustomEditableTextFormField(
-                                text: _currentAccount.phoneNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.phoneNumber!,
+                                text: _currentEmpAccount.phoneNumber!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.phoneNumber!,
                                 title: 'Số điện thoại',
                                 readonly: true,
                             ),
@@ -132,7 +134,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           const SizedBox(width: 5.0,),
                           Expanded(
                             child: CustomEditableTextFormField(
-                              text: _currentAccount.citizenIdentityCardNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.citizenIdentityCardNumber!,
+                              text: _currentEmpAccount.citizenIdentityCardNumber!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.citizenIdentityCardNumber!,
                               title: 'CMND hoặc CCCD',
                               readonly: true,
                             ),
@@ -142,35 +144,35 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.address!.isEmpty ? 'Chưa cập nhật' : _currentAccount.address!,
+                          text: _currentEmpAccount.address!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.address!,
                           title: 'Địa chỉ',
                           readonly: true,
                       ),
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.nationality!.isEmpty ? 'Chưa cập nhật' : _currentAccount.nationality!,
+                          text: _currentEmpAccount.nationality!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.nationality!,
                           title: 'Quốc tịch',
                           readonly: true,
                       ),
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.bankName!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankName!,
+                          text: _currentEmpAccount.bankName!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.bankName!,
                           title: 'Tên ngân hàng',
                           readonly: true,
                       ),
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.bankAccountName!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankAccountName!,
+                          text: _currentEmpAccount.bankAccountName!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.bankAccountName!,
                           title: 'Tên chủ tài khoản',
                           readonly: true,
                       ),
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.bankAccountNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankAccountNumber!,
+                          text: _currentEmpAccount.bankAccountNumber!.isEmpty ? 'Chưa cập nhật' : _currentEmpAccount.bankAccountNumber!,
                           title: 'Số tài khoản',
                           readonly: true,
                       ),
@@ -181,7 +183,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           Expanded(
                             child: CustomDropdownFormField2(
                               label: 'Giới tính',
-                              hintText: _currentAccount.genderId != null ? Text(gendersUtilities[_currentAccount.genderId!]) : const Text('Chưa cập nhật'),
+                              hintText: _currentEmpAccount.genderId != null ? Text(gendersUtilities[_currentEmpAccount.genderId!]) : const Text('Chưa cập nhật'),
                               items: gendersUtilities,
                               onChanged: null
                             ),
@@ -194,7 +196,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                                 contentPadding: const EdgeInsets.only(left: 20.0),
                                 labelText: 'Ngày sinh',
-                                hintText: _currentAccount.dateOfBirth == null ? 'Chưa cập nhật' : 'Ngày ${DateFormat('dd-MM-yyyy').format(_currentAccount.dateOfBirth!)}',
+                                hintText: _currentEmpAccount.dateOfBirth == null ? 'Chưa cập nhật' : 'Ngày ${DateFormat('dd-MM-yyyy').format(_currentEmpAccount.dateOfBirth!)}',
                                 labelStyle: const TextStyle(
                                   color: Color.fromARGB(255, 107, 106, 144),
                                   fontSize: 18,
@@ -221,7 +223,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
                             // borderColor: _currentAccount.roleId != 2 ? _readOnly != true ? mainBgColor : null : null,
-                            text: _accountBlockId.text.isEmpty ? blockNameUtilities[_currentAccount.blockId!] : blockNameUtilities[int.parse(_accountBlockId.text)],
+                            text: _accountBlockId.text.isEmpty ? blockNameUtilities[_currentEmpAccount.blockId!] : blockNameUtilities[int.parse(_accountBlockId.text)],
                             title: 'Khối',
                             readonly: true,
                             // onTap: _currentAccount.roleId != 2 ? _readOnly != true ? () async {
@@ -240,8 +242,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      if(_currentAccount.departmentId != null || _filterBlock != null)
-                        if(getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock!).isNotEmpty )
+                      if(_currentEmpAccount.departmentId != null || _filterBlock != null)
+                        if(getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentEmpAccount.blockId!) : _filterBlock!).isNotEmpty )
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         // _filterDepartment == null ? _currentAccount.departmentId == null ? _filterDepartment == null ? '' : _filterDepartment!.name : getDepartmentName( _currentAccount.departmentId!, null) : _filterDepartment!.name,
@@ -252,7 +254,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             readonly: true,
                             onTap: _readOnly != true ? () async {
                               final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDepartmentFilter(
-                                  departmentList: getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock! )
+                                  departmentList: getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentEmpAccount.blockId!) : _filterBlock! )
                               )));
                               if (data != null) {
                                 setState(() {
@@ -267,21 +269,21 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      if(_currentAccount.teamId != null || _filterDepartment != null || _filterRole != null)
-                        if(_filterRole?.roleId == 4 || _filterRole?.roleId == 5 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5)
-                        if(  getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentAccount.blockId!) : _filterBlock!).isNotEmpty  )
-                        if(  getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentAccount.departmentId!) : _filterDepartment! ).isNotEmpty  )
+                      if(_currentEmpAccount.teamId != null || _filterDepartment != null || _filterRole != null)
+                        if(_filterRole?.roleId == 4 || _filterRole?.roleId == 5 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5)
+                        if(  getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentEmpAccount.blockId!) : _filterBlock!).isNotEmpty  )
+                        if(  getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentEmpAccount.departmentId!) : _filterDepartment! ).isNotEmpty  )
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         // _filterTeam == null ? _currentAccount.teamId == null ? _accountTeamId.text.isEmpty ? '' : getTeamName(_filterTeam!.teamId, _filterTeam!.departmentId) : getTeamName(_currentAccount.teamId!, _currentAccount.departmentId) : _filterTeam!.name,
                         child: CustomEditableTextFormField(
-                            borderColor: _currentAccount.roleId != 2 ? _readOnly != true ? mainBgColor : null : null,
+                            borderColor: _currentEmpAccount.roleId != 2 ? _readOnly != true ? mainBgColor : null : null,
                             text: _teamNameString,
                             title: 'Nhóm',
                             readonly: true,
-                            onTap: _currentAccount.roleId != 2 ? _readOnly != true ? () async {
+                            onTap: _currentEmpAccount.roleId != 2 ? _readOnly != true ? () async {
                               final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
-                                  teamList: getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentAccount.departmentId!) : _filterDepartment!) )
+                                  teamList: getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentEmpAccount.departmentId!) : _filterDepartment!) )
                               ));
                               if( data != null ){
                                 setState(() {
@@ -294,15 +296,15 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      if(_currentAccount.roleId != null)
+                      if(_currentEmpAccount.roleId != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomEditableTextFormField(
-                            borderColor: (_currentAccount.roleId != 2 && _currentAccount.roleId != 6 && _currentAccount.roleId != 1) ? _readOnly != true ? mainBgColor : null : null,
-                            text: _accountRoleId.text.isEmpty ? rolesNameUtilities[_currentAccount.roleId!] : rolesNameUtilities[int.parse(_accountRoleId.text)],
+                            borderColor: (_currentEmpAccount.roleId != 2 && _currentEmpAccount.roleId != 6 && _currentEmpAccount.roleId != 1) ? _readOnly != true ? mainBgColor : null : null,
+                            text: _accountRoleId.text.isEmpty ? rolesNameUtilities[_currentEmpAccount.roleId!] : rolesNameUtilities[int.parse(_accountRoleId.text)],
                             title: 'Chức vụ',
                             readonly: true,
-                            onTap: (_currentAccount.roleId != 2 && _currentAccount.roleId != 6 && _currentAccount.roleId != 1) ? _readOnly != true ? () async {
+                            onTap: (_currentEmpAccount.roleId != 2 && _currentEmpAccount.roleId != 6 && _currentEmpAccount.roleId != 1) ? _readOnly != true ? () async {
                               final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter(isAccountDetailFilter: true,) ));
                               if( data != null ){
                                 setState(() {
@@ -316,7 +318,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quản lý thông tin khách hàng
-                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 || _currentAccount.roleId == 6)
+                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6)
                        Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
@@ -397,7 +399,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       //Quyền quản lý họp đồng
-                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 || _currentAccount.roleId == 6)
+                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -477,7 +479,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quả lý vấn đề
-                      if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5 || _currentAccount.roleId == 6)
+                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
@@ -557,7 +559,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       //Quyền quả lý tài khoản nhân viên
-                      if(_currentAccount.roleId == 2)
+                      if(_currentEmpAccount.roleId == 2)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -567,9 +569,26 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
                                   child: CustomDropdownFormField2(
+                                    label: 'Tạo mới',
+                                    hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountCreateId == null ? _accountPermission!.create : _accountCreateId!]) : const Text(''),
+                                    items: hrInternCreatePermNames,
+                                    onChanged: _readOnly != true ? (value){
+                                      for(int i = 0; i < permissionStatuses.length; i++){
+                                        if(value.toString() == permissionStatuses[i].name){
+                                          setState(() {
+                                            _accountCreateId = permissionStatuses[i].permissionStatusId;
+                                          });
+                                        }
+                                      }
+                                    } : null,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
+                                  child: CustomDropdownFormField2(
                                       label: 'Xem',
                                       hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountViewId == null ? _accountPermission!.view : _accountViewId!]) : const Text(''),
-                                      items: hrInternViewUpdate,
+                                      items: hrInternViewPermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -581,12 +600,46 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                       } : null,
                                   ),
                                 ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
+                                  child: CustomDropdownFormField2(
+                                    label: 'Chỉnh sủa',
+                                    hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountUpdateId == null ? _accountPermission!.update : _accountUpdateId!]) : const Text(''),
+                                    items: hrInternUpdateDeletePermNames,
+                                    onChanged: _readOnly != true ? (value){
+                                      for(int i = 0; i < permissionStatuses.length; i++){
+                                        if(value.toString() == permissionStatuses[i].name){
+                                          setState(() {
+                                            _accountUpdateId = permissionStatuses[i].permissionStatusId;
+                                          });
+                                        }
+                                      }
+                                    } : null,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
+                                  child: CustomDropdownFormField2(
+                                    label: 'Xóa',
+                                    hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountDeleteId == null ? _accountPermission!.delete : _accountDeleteId!]) : const Text(''),
+                                    items: hrInternUpdateDeletePermNames,
+                                    onChanged: _readOnly != true ? (value){
+                                      for(int i = 0; i < permissionStatuses.length; i++){
+                                        if(value.toString() == permissionStatuses[i].name){
+                                          setState(() {
+                                            _accountDeleteId = permissionStatuses[i].permissionStatusId;
+                                          });
+                                        }
+                                      }
+                                    } : null,
+                                  ),
+                                ),
                               ]
                           ),
                         ),
 
                       //Quyền quả lý điểm danh
-                      if(_currentAccount.roleId == 2)
+                      if(_currentEmpAccount.roleId == 2)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -598,7 +651,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   child: CustomDropdownFormField2(
                                       label: 'Xem',
                                       hintText: _attendancePermission != null ? Text(permissionStatusesNameUtilities[_attendanceViewId == null ? _attendancePermission!.view : _attendanceViewId!]) : const Text(''),
-                                      items: hrInternViewUpdate,
+                                      items: hrInternViewPermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -610,13 +663,13 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                       } : null,
                                   ),
                                 ),
-                                if(_currentAccount.roleId != 1)
+                                if(_currentEmpAccount.roleId != 1)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15.0),
                                   child: CustomDropdownFormField2(
                                       label: 'Chỉnh sủa',
                                       hintText: _attendancePermission != null ? Text(permissionStatusesNameUtilities[_attendanceUpdateId == null ? _attendancePermission!.update : _attendanceUpdateId!]) : const Text(''),
-                                      items: hrInternViewUpdate,
+                                      items: hrInternViewPermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -632,7 +685,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           ),
                         ),
 
-                      if(_currentAccount.roleId == 2 || _currentAccount.roleId == 6)
+                      if(_currentEmpAccount.roleId == 2 || _currentEmpAccount.roleId == 6)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
@@ -684,6 +737,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             )),
 
                           const SizedBox(width: 5.0,),
+                          if(_currentAccount.roleId == 0)
                           Expanded(
                             child: CustomTextButton(
                                 color: Colors.blueAccent,
@@ -691,16 +745,16 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 onPressed: (){
                                   if(_readOnly == false){
 
-                                    if(_currentAccount.roleId == 2){
+                                    if(_currentEmpAccount.roleId == 2){
                                       _updateHrInternPermission();
                                       _updatePermission();
                                     }
 
-                                    if(_currentAccount.roleId == 3 || _currentAccount.roleId == 4 || _currentAccount.roleId == 5){
+                                    if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5){
                                       _updateSaleTechnicalEmpPermission();
                                     }
 
-                                    if(_currentAccount.roleId == 6){
+                                    if(_currentEmpAccount.roleId == 6){
                                       _updateSaleTechnicalEmpPermission();
                                       _updatePermission();
                                     }
@@ -743,9 +797,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     );
   }
   void _getOverallInfo(){
-    _getPermByPermId(permId: _currentAccount.permissionId!);
-    if(_currentAccount.departmentId != null) _departmentNameString = getDepartmentName(_currentAccount.departmentId!, null);
-    if(_currentAccount.teamId != null) _teamNameString = getTeamName(_currentAccount.teamId!, _currentAccount.departmentId!);
+    _getPermByPermId(permId: _currentEmpAccount.permissionId!);
+    if(_currentEmpAccount.departmentId != null) _departmentNameString = getDepartmentName(_currentEmpAccount.departmentId!, null);
+    if(_currentEmpAccount.teamId != null) _teamNameString = getTeamName(_currentEmpAccount.teamId!, _currentEmpAccount.departmentId!);
   }
 
   void _updateAccount(){
@@ -778,7 +832,10 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
   void _createHrPerm(){
     AccountPermission accountPermission = AccountPermission(
+      create: _accountCreateId!,
       view: _accountViewId!,
+      update: _accountUpdateId!,
+      delete: _accountDeleteId!,
     );
 
     AttendancePermission attendancePermission = AttendancePermission(
@@ -808,9 +865,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
         departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId
     );
 
-    if(_currentAccount.roleId == 2){
+    if(_currentEmpAccount.roleId == 2){
       PermissionViewModel().updatePermission(permission: permissionHrIntern);
-    }else if(_currentAccount.roleId == 6){
+    }else if(_currentEmpAccount.roleId == 6){
       PermissionViewModel().updatePermission(permission: permissionTechnicalEmp);
     }
 
@@ -861,6 +918,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     AccountPermission accountPermission = AccountPermission(
         accountPermissionId: _accountPermission!.accountPermissionId,
         view: _accountViewId == null ? _accountPermission!.view : _accountViewId!,
+        create: _accountCreateId == null ? _accountPermission!.create : _accountCreateId!,
+        update: _accountUpdateId == null ? _accountPermission!.update : _accountUpdateId!,
+        delete: _accountDeleteId == null ? _accountPermission!.delete : _accountDeleteId!
     );
 
     AttendancePermission attendancePermission = AttendancePermission(

@@ -305,7 +305,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Quản lý lương",
+                "Báo cáo doanh thu",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

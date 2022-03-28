@@ -32,12 +32,14 @@ class IconTextButtonSmall2 extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            Text(
-              text,
-              style: const TextStyle(
-                fontSize: 12.0,
-                color: defaultFontColor,
-                fontWeight: FontWeight.w500,
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 12.0,
+                  color: defaultFontColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             )
           ],

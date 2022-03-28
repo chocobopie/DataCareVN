@@ -101,16 +101,16 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                       ),
 
                       const SizedBox(width: 30.0,),
-                      ImageTextButton(
-                          imageUrl: 'assets/images/attendance-report.png',
-                          text: 'Xem báo cáo điểm danh các nhân viên',
-                          buttonColors: const [Colors.green, Colors.white],
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const HrManagerAttendanceReport(),
-                            ));
-                          }
-                      ),
+                      // ImageTextButton(
+                      //     imageUrl: 'assets/images/attendance-report.png',
+                      //     text: 'Xem báo cáo điểm danh các nhân viên',
+                      //     buttonColors: const [Colors.green, Colors.white],
+                      //     onPressed: (){
+                      //       Navigator.push(context, MaterialPageRoute(
+                      //         builder: (context) => const HrManagerAttendanceReport(),
+                      //       ));
+                      //     }
+                      // ),
                     ],
                   ),
                 ],

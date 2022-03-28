@@ -1,7 +1,17 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:login_sample/main.dart';
+import 'package:login_sample/models/block.dart';
+import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/role.dart';
+import 'package:login_sample/models/team.dart';
+import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
+import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomExpansionTile.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+
+import 'admin_role_filter.dart';
 
 class AdminAccountAdd extends StatefulWidget {
   const AdminAccountAdd({Key? key}) : super(key: key);
@@ -11,48 +21,24 @@ class AdminAccountAdd extends StatefulWidget {
 }
 
 class _AdminAccountAddState extends State<AdminAccountAdd> {
-  bool _saleEmployeePerm = true;
-  bool _hrPerm = false;
 
-  late final GlobalKey<FormFieldState> _key = GlobalKey<FormFieldState>();
-  late final GlobalKey<FormFieldState> _key2 = GlobalKey<FormFieldState>();
-  late final GlobalKey<FormFieldState> _key3 = GlobalKey<FormFieldState>();
+  final TextEditingController _accountEmail = TextEditingController();
 
+  Block? _filterBlock;
+  Department? _filterDepartment, _filterDepartmentPerm;
+  Team? _filterTeam;
+  Role? _filterRole;
 
-  late String role = 'Nhân viên kinh doanh';
-  late String empPermTemp = '';
-  late String hrPermTemp = '';
+  String _filterRoleString = '';
 
-  String? selectedValue;
-  List<String> roles = [
-    'Nhân viên kinh doanh',
-    'Trưởng nhóm kinh doanh',
-    'Trưởng phòng kinh doanh',
-    'Kỹ thuật viên',
-    'Thực tập sinh quản lý nhân sự'
-  ];
+  int? _contactCreateId, _contactViewId, _contactUpdateId, _contactDeleteId, _dealCreateId, _dealViewId, _dealUpdateId, _dealDeleteId, _issueCreateId, _issueViewId, _issueUpdateId, _issueDeleteId;
+  int? _accountViewId, _accountCreateId, _accountUpdateId, _accountDeleteId, _attendanceViewId, _attendanceUpdateId;
 
-  List<String> hrPerms = [
-    'Một phòng ban',
-    'Tất cả',
-  ];
-
-  List<String> hrPerms2 = [
-    'Không cho phép',
-    'Tất cả',
-  ];
-
-  List<String> empPerms = [
-    'Không cho phép',
-    'Cho phép',
-  ];
-
-  List<String> empPerms2 = [
-    'Chỉ bản thân',
-    'Chỉ trong nhóm',
-    'Chỉ trong phòng ban'
-  ];
-
+  @override
+  void dispose() {
+    super.dispose();
+    _accountEmail.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,300 +66,255 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
               padding: const EdgeInsets.only(left: 10.0, right: 10.0),
               child: ListView(
                 children: <Widget>[
-                  //email box
-                  SizedBox(
-                    child: TextField(
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(10.0),
-                        labelText: 'Email',
-                        hintText: 'Địa chỉ email của nhân viên',
-                        labelStyle: const TextStyle(
-                          color: Color.fromARGB(255, 107, 106, 144),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.mail,
-                          color: Color.fromARGB(255, 107, 106, 144),
-                          size: 18,
-                        ),
-                        floatingLabelStyle: const TextStyle(
-                          color: Color.fromARGB(255, 107, 106, 144),
-                          fontSize: 18,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.grey.shade300, width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.blue, width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
+                  //============================================================email box
+                  CustomEditableTextFormField(
+                      borderColor: mainBgColor,
+                      text: '',
+                      title: 'Email của nhân viên',
+                      readonly: false,
+                      textEditingController: _accountEmail,
                   ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  //Chọn chức vụ
-                  DropdownButtonFormField2(
-                    decoration: InputDecoration(
-                      contentPadding:
-                          const EdgeInsets.only(left: 20.0, right: 20.0),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.grey.shade300, width: 2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.blue, width: 2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      labelText: 'Chức vụ',
-                      labelStyle: const TextStyle(
-                        color: Color.fromARGB(255, 107, 106, 144),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                    ),
-                    isExpanded: true,
-                    value: role,
-                    icon: const Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.black45,
-                    ),
-                    iconSize: 30,
-                    buttonHeight: 50,
-                    dropdownDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    items: roles
-                        .map((item) => DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(
-                                item,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Hãy chọn một chức vụ';
-                      }
-                    },
-                    onChanged: (value) {
-                      if (value.toString() == 'Nhân viên kinh doanh' ||
-                          value.toString() == 'Trưởng nhóm kinh doanh' ||
-                          value.toString() == 'Trưởng phòng kinh doanh' ||
-                          value.toString() == 'Kỹ thuật viên') {
+                  const SizedBox(height: 20.0,),
+                  //============================================================Chọn chức vụ
+                  CustomEditableTextFormField(
+                      borderColor: mainBgColor,
+                      text: _filterRoleString,
+                      title: 'Chức vụ',
+                      readonly: true,
+                      onTap: () async {
+                      final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter(isHrManagerFilter: true,) ));
+                      if( data != null ){
                         setState(() {
-                          _key.currentState?.reset();
-                          role = value.toString();
-                          _saleEmployeePerm = true;
-                          _hrPerm = false;
-                        });
-                        print(_saleEmployeePerm);
-                      } else if (value.toString() == 'Thực tập sinh quản lý nhân sự') {
-                        setState(() {
-                          _key2.currentState?.reset();
-                          role = value.toString();
-                          _saleEmployeePerm = false;
-                          _hrPerm = true;
+                          _filterRole = data;
+                          _filterRoleString = _filterRole!.name;
+                          print(_filterRole!.name);
                         });
                       }
-                      print(role);
-                    },
-                    onSaved: (value) {
-                      selectedValue = value.toString();
                     },
                   ),
-                  //======================================================Quyền truy cập của nhân viên Sale===================================
-
-                  if(_hrPerm == true) const SizedBox(height: 20.0,),
-                  //Quyền quản lý tài khoản
-                  if(_hrPerm == true) CustomExpansionTile(
-                    key: _key,
-                      label: 'Quyền quản lý tài khoản',
-                      colors: const [Colors.blue, Colors.white],
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xem', hrPerms, empPermTemp),
-                        ),
-                      ]
+                  const SizedBox(height: 20.0,),
+                  //============================================================Quyền truy cập của nhân viên Sale, KTV===================================
+                  if(_filterRole != null)
+                  if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId == 6)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: CustomExpansionTile(
+                        label: 'Quyền quản lý thông tin khách hàng',
+                        colors: const [Colors.yellow, Colors.white],
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                            child: CustomDropdownFormField2(
+                                label: 'Tạo mới',
+                                hintText: _contactCreateId != null ? Text(permissionStatusesNameUtilities[_contactCreateId!]) : const Text(''),
+                                items: saleEmpCreatePermNames,
+                                onChanged: null,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                            child: CustomDropdownFormField2(
+                              label: 'Xem',
+                              hintText: _contactViewId != null ? Text(permissionStatusesNameUtilities[_contactViewId!]) : const Text(''),
+                              items: saleEmpViewPermNames,
+                              onChanged: null,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                            child: CustomDropdownFormField2(
+                              label: 'Chỉnh sửa',
+                              hintText: _contactUpdateId != null ? Text(permissionStatusesNameUtilities[_contactUpdateId!]) : const Text(''),
+                              items: saleEmpUpdateDeletePermNames,
+                              onChanged: null,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                            child: CustomDropdownFormField2(
+                              label: 'Xóa',
+                              hintText: _contactDeleteId != null ? Text(permissionStatusesNameUtilities[_contactDeleteId!]) : const Text(''),
+                              items: saleEmpUpdateDeletePermNames,
+                              onChanged: null,
+                            ),
+                          ),
+                        ],
+                    ),
                   ),
-                  if(_hrPerm == true) const SizedBox(height: 20.0,),
-                  if(_saleEmployeePerm == true) const SizedBox(height: 20.0,),
-                  //Quyền quản lý thông tin liên lạc của khách hàng
-                  if(_saleEmployeePerm == true) CustomExpansionTile(
-                      label: 'Quyền quản lý thông tin khách hàng',
-                      colors: const [Colors.yellow, Colors.white],
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Thêm', empPerms, empPermTemp),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xem', empPerms2, empPermTemp),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Chỉnh sửa', empPerms2, empPermTemp),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xoá', empPerms2, empPermTemp),
-                        ),
-                      ]
-                  ),
-                  if(_saleEmployeePerm == true) const SizedBox(height: 20.0,),
-                  //Quyền quản lý hợp đồng
-                  if(_saleEmployeePerm == true) CustomExpansionTile(
+                  if(_filterRole != null)
+                  if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId == 6)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: CustomExpansionTile(
                       label: 'Quyền quản lý hợp đồng',
-                      colors: const [Colors.greenAccent, Colors.white],
+                      colors: const [Colors.green, Colors.white],
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Thêm', empPerms, empPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Tạo mới',
+                            hintText: _dealCreateId != null ? Text(permissionStatusesNameUtilities[_dealCreateId!]) : const Text(''),
+                            items: saleEmpCreatePermNames,
+                            onChanged: null,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xem', empPerms2, empPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Xem',
+                            hintText: _dealViewId != null ? Text(permissionStatusesNameUtilities[_dealViewId!]) : const Text(''),
+                            items: saleEmpViewPermNames,
+                            onChanged: null,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Chỉnh sửa', empPerms2, empPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Chỉnh sửa',
+                            hintText: _dealUpdateId != null ? Text(permissionStatusesNameUtilities[_dealUpdateId!]) : const Text(''),
+                            items: saleEmpUpdateDeletePermNames,
+                            onChanged: null,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xoá', empPerms2, empPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Xóa',
+                            hintText: _dealDeleteId != null ? Text(permissionStatusesNameUtilities[_dealDeleteId!]) : const Text(''),
+                            items: saleEmpUpdateDeletePermNames,
+                            onChanged: null,
+                          ),
                         ),
-                      ]
+                      ],
+                    ),
                   ),
-                  if(_saleEmployeePerm == true) const SizedBox(height: 20.0,),
-                  //Quyền quản lý vấn đề
-                  if(_saleEmployeePerm == true) CustomExpansionTile(
+                  if(_filterRole != null)
+                  if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId == 6)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: CustomExpansionTile(
                       label: 'Quyền quản lý vấn đề',
                       colors: const [Colors.orange, Colors.white],
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Thêm', empPerms, empPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Tạo mới',
+                            hintText: _issueCreateId != null ? Text(permissionStatusesNameUtilities[_issueCreateId!]) : const Text(''),
+                            items: saleEmpCreatePermNames,
+                            onChanged: null,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xem', empPerms2, empPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Xem',
+                            hintText: _issueViewId != null ? Text(permissionStatusesNameUtilities[_issueViewId!]) : const Text(''),
+                            items: saleEmpViewPermNames,
+                            onChanged: null,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Chỉnh sửa', empPerms2, empPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Chỉnh sửa',
+                            hintText: _issueUpdateId != null ? Text(permissionStatusesNameUtilities[_issueUpdateId!]) : const Text(''),
+                            items: saleEmpUpdateDeletePermNames,
+                            onChanged: null,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xoá', empPerms2, empPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Xóa',
+                            hintText: _issueDeleteId != null ? Text(permissionStatusesNameUtilities[_issueDeleteId!]) : const Text(''),
+                            items: saleEmpUpdateDeletePermNames,
+                            onChanged: null,
+                          ),
                         ),
-                      ]
-                  ),
 
-                  //========================================================Quyền truy cập của HR=============================================
-                  if(_hrPerm == true) const SizedBox(height: 20.0,),
-                  //Quyền quản lý điểm danh
-                  if(_hrPerm == true) CustomExpansionTile(
-                      key: _key3,
-                      label: 'Quyền quản lý điểm danh',
-                      colors: const [Colors.green, Colors.white],
+                      ],
+                    ),
+                  ),
+                  //============================================================Quyền truy cập của HrIntern
+                  if(_filterRole != null)
+                    if(_filterRole!.roleId == 2)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: CustomExpansionTile(
+                      label: 'Quyền quản lý tài khoản nhân viên',
+                      colors: const [Colors.blue, Colors.white],
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xem', hrPerms, hrPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Tạo mới',
+                            hintText: _accountCreateId != null ? Text(permissionStatusesNameUtilities[_accountCreateId!]) : const Text(''),
+                            items: hrInternViewPermNames,
+                            onChanged: null,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Chỉnh sửa', hrPerms, hrPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Xem',
+                            hintText: _accountViewId != null ? Text(permissionStatusesNameUtilities[_accountViewId!]) : const Text(''),
+                            items: hrInternCreatePermNames,
+                            onChanged: null,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
-                              top: 5.0,
-                              left: leftRight,
-                              right: leftRight,
-                              bottom: 10.0),
-                          child: buildDropdownButtonFormField2('Xoá', hrPerms, hrPermTemp),
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Chỉnh sửa',
+                            hintText: _accountUpdateId != null ? Text(permissionStatusesNameUtilities[_accountUpdateId!]) : const Text(''),
+                            items: hrInternUpdateDeletePermNames,
+                            onChanged: null,
+                          ),
                         ),
-                      ]
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Xóa',
+                            hintText: _accountDeleteId != null ? Text(permissionStatusesNameUtilities[_accountDeleteId!]) : const Text(''),
+                            items: hrInternUpdateDeletePermNames,
+                            onChanged: null,
+                          ),
+                        ),
+
+                      ],
+                    ),
                   ),
-                  if(_hrPerm == true) const SizedBox(height: 20.0,),
-
-
-
-                  //Nút tạo mới
+                  if(_filterRole != null)
+                    if(_filterRole!.roleId == 2)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: CustomExpansionTile(
+                      label: 'Quyền quản lý điểm danh',
+                      colors: const [Colors.yellow, Colors.white],
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Xem',
+                            hintText: _attendanceViewId != null ? Text(permissionStatusesNameUtilities[_accountViewId!]) : const Text(''),
+                            items: hrInternViewPermNames,
+                            onChanged: null,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
+                          child: CustomDropdownFormField2(
+                            label: 'Chỉnh sửa',
+                            hintText: _attendanceUpdateId != null ? Text(permissionStatusesNameUtilities[_accountUpdateId!]) : const Text(''),
+                            items: hrInternViewPermNames,
+                            onChanged: null,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //============================================================Nút tạo mới
                   const SizedBox(
                     height: 20.0,
                   ),

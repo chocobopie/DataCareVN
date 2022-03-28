@@ -6,7 +6,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class CustomEditableTextFormField extends StatelessWidget {
    const CustomEditableTextFormField({
-    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull
+    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity
   }) : super(key: key);
 
   final String title;
@@ -20,6 +20,7 @@ class CustomEditableTextFormField extends StatelessWidget {
   final double? width;
   final bool? obscureText;
   final bool? isNull;
+  final bool? citizenIdentity;
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +41,11 @@ class CustomEditableTextFormField extends StatelessWidget {
         inputFormatters: inputNumberOnly == true ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(10),
-        ] : inputNumberOnly == null ? <TextInputFormatter>[
+        ] : (inputNumberOnly == null && citizenIdentity == null) ? <TextInputFormatter>[
           LengthLimitingTextInputFormatter(50),
+        ] : citizenIdentity == true ? <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(12),
         ] : <TextInputFormatter>[
           LengthLimitingTextInputFormatter(50),
         ],

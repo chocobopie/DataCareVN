@@ -74,26 +74,34 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                     children: <Widget>[
                       const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                       const SizedBox(width: 10.0,),
-
-                      CustomOutlinedButton(
-                          title: fromDateToDateString,
-                          radius: 30.0,
-                          color: mainBgColor,
-                          onPressed: () async {
-                          final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SaleEmpDateFilter(),
-                          ));
-                          if(data != null){
-                            FromDateToDate fromDateToDate = data;
-                            setState(() {
-                              _fromDate = fromDateToDate.fromDate;
-                              _toDate = fromDateToDate.toDate;
-                              fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
-                            });
-                          }
-                        },
+                      Expanded(
+                        child: CustomOutlinedButton(
+                            title: fromDateToDateString,
+                            radius: 10.0,
+                            color: mainBgColor,
+                            onPressed: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpDateFilter(),
+                            ));
+                            if(data != null){
+                              FromDateToDate fromDateToDate = data;
+                              setState(() {
+                                _fromDate = fromDateToDate.fromDate;
+                                _toDate = fromDateToDate.toDate;
+                                fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                              });
+                            }
+                          },
+                        ),
                       ),
-
+                      Expanded(
+                        child: CustomOutlinedButton(
+                          title: 'Trạng thái',
+                          radius: 10,
+                          color: mainBgColor,
+                          onPressed: (){},
+                        ),
+                      ),
                       IconButton(
                           onPressed: (){
                             setState(() {
@@ -140,13 +148,13 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 30.0),
+                      padding: const EdgeInsets.only(left: 30.0, right: 30.0),
                       child: Row(
                         children: const <Widget>[
                           Text('Ngày gửi', style: TextStyle(color: defaultFontColor),),
-                          SizedBox(width: 50.0,),
+                          Spacer(),
                           Text('Ngày xin đi trễ', style: TextStyle(color: defaultFontColor),),
-                          SizedBox(width: 80.0,),
+                          Spacer(),
                           Text('Trạng thái', style: TextStyle(color: defaultFontColor),)
                         ],
                       ),
@@ -155,6 +163,7 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                       child: ListView.builder(
                           itemCount: userLateExcuses.length,
                           itemBuilder: (context, index){
+                            final userLateExcuse = userLateExcuses[index];
                             return Padding(
                               padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
                               child: Card(
@@ -163,7 +172,14 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                                   borderRadius: BorderRadius.all(Radius.circular(25)),
                                 ),
                                 child: ListTile(
-                                  trailing: Text(userLateExcuses[index].attendance),
+                                  trailing: Text(userLateExcuse.attendance, style: TextStyle(
+                                      color: userLateExcuse.attendance != 'Mới'
+                                          ? (userLateExcuse.attendance != 'Chấp nhận')
+                                          ? Colors.red : Colors.blue : Colors.green,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16.0,
+                                  ),
+                                  ),
                                   leading: SizedBox(
                                     height: 50.0,
                                     width: 200.0,
@@ -176,6 +192,7 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                                           ],
                                         ),
                                         const SizedBox(width: 40.0,),
+                                        const Spacer(),
                                         Column(
                                           children: <Widget>[
                                             const SizedBox(height: 15.0,),
@@ -196,8 +213,6 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
               ),
             ),
           ),
-
-
           Positioned(
             top: 0.0,
             left: 0.0,

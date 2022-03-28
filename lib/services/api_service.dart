@@ -435,6 +435,39 @@ class ApiService {
     }
   }
 
+  // Future<Account> updateAnAccount({required Account account}) async {
+  //   String url = stockUrl + 'accounts/${account.accountId}';
+  //
+  //   final response = await http.put(Uri.parse(url), headers: <String, String>{
+  //     'Content-Type': 'application/json; charset=UTF-8',
+  //   },
+  //     body: jsonEncode(<String, dynamic>{
+  //       "accountId": account.accountId,
+  //       "email": account.email,
+  //       "emailToken": account.emailToken,
+  //       "password": account.password,
+  //       "fullname": account.fullname,
+  //       "phoneNumber": account.phoneNumber,
+  //       "address": account.address,
+  //       "citizenIdentityCardNumber": account.citizenIdentityCardNumber,
+  //       "nationality": account.nationality,
+  //       "bankName": account.bankName,
+  //       "bankAccountName": account.bankAccountName,
+  //       "bankAccountNumber": account.bankAccountNumber,
+  //       "roleId": account.roleId,
+  //       "blockId": account.blockId,
+  //       "departmentId": account.departmentId,
+  //       "teamId": account.teamId,
+  //       "permissionId": account.permissionId,
+  //       "statusId": account.statusId,
+  //       "genderId": account.genderId,
+  //       "dateOfBirth": account.dateOfBirth!.toIso8601String(),
+  //     }),
+  //   );
+  //
+  //
+  // }
+
   //Department
   Future<List<Department>> getAllDepartment() async {
     String url = 'https://trungpd2022.azurewebsites.net/api/v1/departments';
@@ -778,7 +811,10 @@ class ApiService {
       },
       body: jsonEncode(<String, dynamic>{
         'accountPermissionId': accountPermission.accountPermissionId,
+        'create': accountPermission.create,
         'view': accountPermission.view,
+        'update':accountPermission.update,
+        'delete':accountPermission.delete
       }),
     );
 

@@ -2,8 +2,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
 
 class HrManagerLateExcuseList extends StatefulWidget {
@@ -18,9 +21,13 @@ class HrManagerLateExcuseList extends StatefulWidget {
 
 class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
 
+  String _lateExcuseFromDateToDateString = 'Ngày gửi đơn';
+  String _lateFromDateToDateString = 'Ngày xin đi trễ';
   bool isSearching = false;
   bool isUpdatedAttendance = false;
   int currentIndex = 0;
+
+  DateTime? _fromDate, _toDate;
 
   TextEditingController lateExcuseController = TextEditingController();
   List<UserAttendance> userLateExcuses = [];
@@ -47,7 +54,6 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
           numberPages: 10,
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
-
           },
         ) ,
       ),
@@ -70,46 +76,80 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
               ),
             ),
             margin: const EdgeInsets.only(top: 100.0),
-            child: ListView(
-              children: <Widget>[
+            child: Column(
+              children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
+                  padding: const EdgeInsets.only(left: 15.0, top: 10.0),
                   child: Row(
                     children: <Widget>[
-                      SizedBox(
-                        child: TextField(
-                          autofocus: true,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            contentPadding: const EdgeInsets.only(left: 20.0),
-                            labelText: 'Số đơn xin phép đi trễ',
-                            hintText: '${userLateExcuses.length}',
-                            labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 107, 106, 144),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.blue, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.blue, width: 2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
+                      const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                      const SizedBox(width: 10.0,),
+                      Expanded(
+                        child: CustomOutlinedButton(
+                          title: _lateExcuseFromDateToDateString,
+                          radius: 10.0,
+                          color: mainBgColor,
+                          onPressed: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpDateFilter(),
+                            ));
+                            if(data != null){
+                              FromDateToDate fromDateToDate = data;
+                              setState(() {
+                                _fromDate = fromDateToDate.fromDate;
+                                _toDate = fromDateToDate.toDate;
+                                _lateExcuseFromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                              });
+                            }
+                          },
                         ),
-                        width: MediaQuery.of(context).size.width * 0.92,
+                      ),
+                      Expanded(
+                        child: CustomOutlinedButton(
+                          title: _lateFromDateToDateString,
+                          radius: 10.0,
+                          color: mainBgColor,
+                          onPressed: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpDateFilter(),
+                            ));
+                            if(data != null){
+                              FromDateToDate fromDateToDate = data;
+                              setState(() {
+                                _fromDate = fromDateToDate.fromDate;
+                                _toDate = fromDateToDate.toDate;
+                                _lateFromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomOutlinedButton(
+                          title: 'Trạng thái',
+                          radius: 10,
+                          color: mainBgColor,
+                          onPressed: (){},
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: (){
+                            setState(() {
+                              _fromDate = null;
+                              _toDate = null;
+                              _lateExcuseFromDateToDateString = 'Ngày gửi đơn';
+                            });
+                          },
+                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                       ),
                     ],
-                  ),
+                  )
                 ),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.25),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

@@ -7,6 +7,7 @@ import 'package:login_sample/models/attendance.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/view_models/world_time_api_view_model.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/emp_attendance_report.dart';
 import 'package:login_sample/views/sale_employee/emp_late_excuse.dart';
@@ -24,7 +25,7 @@ class EmpTakeAttendance extends StatefulWidget {
 class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
 
   late final List<Attendance> _attendances = [];
-  late Account currentAccount;
+  late Account _currentAccount;
   late DateTime _currentTime;
   late double _timeHms;
   late final DateTime _today;
@@ -34,7 +35,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
   @override
   void initState() {
     super.initState();
-    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
   }
 
   @override
@@ -146,6 +147,20 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                             }
                         ),
                       ),
+                      if(_currentAccount.roleId == 2 || _currentAccount.roleId == 1)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                        child: IconTextButtonSmall2(
+                            imageUrl: 'assets/images/late-person.png',
+                            text: 'Xem báo cáo điểm danh các nhân viên',
+                            colorsButton: const [Colors.red, Colors.white],
+                            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const HrManagerAttendanceReport(),
+                              ));
+                            }
+                        ),
+                      ),
                     ],
                   )
                 ],
@@ -198,7 +213,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
       _currentTime = data.datetime;
       _timeHms = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
       _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
-      _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: 0, fromDate: _today, toDate: _today);
+      _getAttendanceListByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: 0, fromDate: _today, toDate: _today);
     }
   }
 }

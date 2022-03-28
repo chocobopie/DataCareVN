@@ -66,7 +66,16 @@ List<String> saleEmpUpdateDeletePermNames = [
   'Chỉ trong nhóm',
   'Chỉ trong phòng ban'
 ];
-List<String> hrInternViewUpdate = [
+List<String> hrInternViewPermNames = [
+  'Chỉ trong phòng ban',
+  'Tất cả'
+];
+List<String> hrInternCreatePermNames = [
+  'Không cho phép',
+  'Cho phép'
+];
+List<String> hrInternUpdateDeletePermNames = [
+  'Không cho phép',
   'Chỉ trong phòng ban',
   'Tất cả'
 ];

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
@@ -170,64 +171,88 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
                   ),
                 ),
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
-                child: _attendances.isNotEmpty ? SmartRefresher(
-                  controller: _refreshController,
-                  enablePullUp: true,
-                  onRefresh: () async {
-                    setState(() {
-                      _attendances.clear();
-                    });
-                    _refreshController.resetNoData();
-                    if(_fromDate == null && _toDate == null){
-                      _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
-                    }else if(_toDate != null && _fromDate != null){
-                      _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
-                    }
+                child: _attendances.isNotEmpty ? Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40.0, right: 30.0),
+                      child: Row(
+                        children: const <Widget>[
+                          Text('Ngày', style: TextStyle(color: defaultFontColor),),
+                          Spacer(),
+                          Text('Trạng thái', style: TextStyle(color: defaultFontColor),)
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: SmartRefresher(
+                        controller: _refreshController,
+                        enablePullUp: true,
+                        onRefresh: () async {
+                          setState(() {
+                            _attendances.clear();
+                          });
+                          _refreshController.resetNoData();
+                          if(_fromDate == null && _toDate == null){
+                            _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                          }else if(_toDate != null && _fromDate != null){
+                            _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+                          }
 
-                    if(_attendances.isNotEmpty){
-                      _refreshController.refreshCompleted();
-                    }else{
-                      _refreshController.refreshFailed();
-                    }
-                  },
-                  // onLoading: () async {
-                  //   if(_currentPage < _maxPages){
-                  //     setState(() {
-                  //       _currentPage++;
-                  //     });
-                  //     if(_fromDate == null && _toDate == null){
-                  //       _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
-                  //     }else if(_toDate != null && _fromDate != null){
-                  //       _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
-                  //     }
-                  //   }
-                  //
-                  //   if(_attendances.isNotEmpty){
-                  //     _refreshController.loadComplete();
-                  //   }else{
-                  //     _refreshController.loadFailed();
-                  //   }
-                  // },
+                          if(_attendances.isNotEmpty){
+                            _refreshController.refreshCompleted();
+                          }else{
+                            _refreshController.refreshFailed();
+                          }
+                        },
+                        // onLoading: () async {
+                        //   if(_currentPage < _maxPages){
+                        //     setState(() {
+                        //       _currentPage++;
+                        //     });
+                        //     if(_fromDate == null && _toDate == null){
+                        //       _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                        //     }else if(_toDate != null && _fromDate != null){
+                        //       _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+                        //     }
+                        //   }
+                        //
+                        //   if(_attendances.isNotEmpty){
+                        //     _refreshController.loadComplete();
+                        //   }else{
+                        //     _refreshController.loadFailed();
+                        //   }
+                        // },
 
-                  child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        final _attendance = _attendances[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
-                          child: Card(
-                            elevation: 5,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(25)),
-                            ),
-                            child: ListTile(
-                              title: Text('Ngày ${DateFormat('dd-MM-yyyy').format(_attendance.date)}'),
-                              trailing: Text(attendanceStatusUtilities[_attendance.attendanceStatusId]),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: _attendances.length
-                  ),
+                        child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              final _attendance = _attendances[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                                  ),
+                                  child: ListTile(
+                                    title: Text(DateFormat('dd-MM-yyyy').format(_attendance.date)),
+                                    trailing: Text(attendanceStatusUtilities[_attendance.attendanceStatusId], style: TextStyle(
+                                        color: _attendance.attendanceStatusId != 0
+                                            ? _attendance.attendanceStatusId == 1
+                                            ?  Colors.blue : _attendance.attendanceStatusId == 2
+                                            ?  Colors.amber : Colors.red : Colors.green,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16.0,
+                                    ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: _attendances.length
+                        ),
+                      ),
+                    ),
+                  ],
                 ) : const Center(child: CircularProgressIndicator())
               ),
             ),
