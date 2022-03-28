@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -8,17 +6,17 @@ import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/models/temp/deal_temp.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
-import 'package:login_sample/views/sale_employee/emp_issue_add_new.dart';
-import 'package:login_sample/views/sale_employee/emp_issue_detail.dart';
+import 'package:login_sample/views/employee/employee_issue_add_new.dart';
+import 'package:login_sample/views/employee/employee_issue_detail.dart';
 
-class EmpSentIssueList extends StatefulWidget {
-  const EmpSentIssueList({Key? key}) : super(key: key);
+class EmployeeSentIssueList extends StatefulWidget {
+  const EmployeeSentIssueList({Key? key}) : super(key: key);
 
   @override
-  _EmpSentIssueListState createState() => _EmpSentIssueListState();
+  _EmployeeSentIssueListState createState() => _EmployeeSentIssueListState();
 }
 
-class _EmpSentIssueListState extends State<EmpSentIssueList> {
+class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
   bool isSearching = false;
   late String _fromDatetoDateString = 'Ngày deadline';

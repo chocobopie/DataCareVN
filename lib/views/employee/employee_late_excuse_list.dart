@@ -8,14 +8,14 @@ import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
 
-class EmpLateExcuseList extends StatefulWidget {
-  const EmpLateExcuseList({Key? key}) : super(key: key);
+class EmployeeLateExcuseList extends StatefulWidget {
+  const EmployeeLateExcuseList({Key? key}) : super(key: key);
 
   @override
-  _EmpLateExcuseListState createState() => _EmpLateExcuseListState();
+  _EmployeeLateExcuseListState createState() => _EmployeeLateExcuseListState();
 }
 
-class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
+class _EmployeeLateExcuseListState extends State<EmployeeLateExcuseList> {
 
   String fromDateToDateString = 'Ngày gửi đơn';
   DateTime? _fromDate, _toDate;

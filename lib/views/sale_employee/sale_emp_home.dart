@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/sale_employee/emp_issue.dart';
-import 'package:login_sample/views/sale_employee/emp_payroll.dart';
+import 'package:login_sample/views/employee/employee_issue.dart';
+import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
 import 'sale_emp_contact_list.dart';
 import 'sale_emp_deal_list.dart';
-import 'emp_take_attendance.dart';
+import '../employee/employee_take_attendance.dart';
 
 class HomeSaleEmployee extends StatefulWidget {
   const HomeSaleEmployee({Key? key}) : super(key: key);
@@ -90,7 +90,7 @@ class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
                           buttonColors: const [Colors.pink, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const EmpPayroll(),
+                              builder: (context) => const EmployeePayroll(),
                             ));
                           }
                       ),
@@ -103,7 +103,7 @@ class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
                           buttonColors: const [Colors.red, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const EmpTakeAttendance(),
+                              builder: (context) => const EmployeeTakeAttendance(),
                             ));
                           }
                       ),

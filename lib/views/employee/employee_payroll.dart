@@ -10,14 +10,14 @@ import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:provider/provider.dart';
 
-class EmpPayroll extends StatefulWidget {
-  const EmpPayroll({Key? key}) : super(key: key);
+class EmployeePayroll extends StatefulWidget {
+  const EmployeePayroll({Key? key}) : super(key: key);
 
   @override
-  State<EmpPayroll> createState() => _EmpPayrollState();
+  State<EmployeePayroll> createState() => _EmployeePayrollState();
 }
 
-class _EmpPayrollState extends State<EmpPayroll> {
+class _EmployeePayrollState extends State<EmployeePayroll> {
 
   DateTime _selectedMonth = DateTime.now();
   late Account _currentAccount = Account();
@@ -263,24 +263,52 @@ class PayrollExpansionTile extends StatelessWidget {
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(selectedDate).substring(3, 10)}'),
-          trailing: const Text('3.000.000 VNĐ'),
+          trailing: const Text('14.670.000.000 VNĐ'),
           children: const <Widget>[
             Divider(color: Colors.blueGrey, thickness: 1.0,),
+            ListTile(
+              title: Text('KPI', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('8.500.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+            ),
+            ListTile(
+              title: Text('Hợp đồng đào tạo - Ký mới', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('1.500.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+            ),
+            ListTile(
+              title: Text('Tiền quảng cáo', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('500.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+            ),
+            ListTile(
+              title: Text('Tiền thưởng hỗ trợ sale', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('500.0000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+            ),
+            ListTile(
+              title: Text('Tiền thưởng quản lý Fanpage', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('200.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+            ),
+            ListTile(
+              title: Text('Tiền thưởng quản lý content cho Fanpage', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('700.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+            ),
             ListTile(
               title: Text('Cơ bản', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('3.000.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
             ListTile(
-              title: Text('Gửi xe', style: TextStyle(fontSize: 12.0,),),
+              title: Text('Tiền gửi xe', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('30.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
             ListTile(
               title: Text('Tiền phạt', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('0 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
             ListTile(
               title: Text('Bảo hiểm cá nhân', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('100.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
             ListTile(
               title: Text('Bảo hiểm công ty đóng', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text('100.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
             ListTile(
               title: Text(
@@ -291,7 +319,7 @@ class PayrollExpansionTile extends StatelessWidget {
                 ),
               ),
               trailing: Text(
-                '3.000.000 VNĐ',
+                '14.670.000.000 VNĐ',
                 style: TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,

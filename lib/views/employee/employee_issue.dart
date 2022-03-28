@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/sale_employee/emp_received_issue_list.dart';
-import 'package:login_sample/views/sale_employee/emp_sent_issue_list.dart';
+import 'package:login_sample/views/employee/employee_received_issue_list.dart';
+import 'package:login_sample/views/employee/employee_sent_issue_list.dart';
 
-class EmpIssue extends StatefulWidget {
-  const EmpIssue({Key? key}) : super(key: key);
+class EmployeeIssue extends StatefulWidget {
+  const EmployeeIssue({Key? key}) : super(key: key);
 
   @override
-  _EmpIssueState createState() => _EmpIssueState();
+  _EmployeeIssueState createState() => _EmployeeIssueState();
 }
 
-class _EmpIssueState extends State<EmpIssue> {
+class _EmployeeIssueState extends State<EmployeeIssue> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +44,7 @@ class _EmpIssueState extends State<EmpIssue> {
                       text: 'Vấn đề đã gửi',
                       colorsButton: const [Colors.greenAccent, Colors.white],
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const EmpSentIssueList()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeSentIssueList()));
                       },
                     ),
                   ),
@@ -55,7 +55,7 @@ class _EmpIssueState extends State<EmpIssue> {
                       text: 'Vấn đề được giao',
                       colorsButton: const [Colors.lightGreen, Colors.white],
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const EmpReceivedIssue()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeReceivedIssue()));
                       },
                     ),
                   ),

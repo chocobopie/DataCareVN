@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
 
-class EmpIssueAddNew extends StatefulWidget {
-  const EmpIssueAddNew({Key? key}) : super(key: key);
+class EmployeeIssueAddNew extends StatefulWidget {
+  const EmployeeIssueAddNew({Key? key}) : super(key: key);
 
   @override
-  _EmpIssueAddNewState createState() => _EmpIssueAddNewState();
+  _EmployeeIssueAddNewState createState() => _EmployeeIssueAddNewState();
 }
 
-class _EmpIssueAddNewState extends State<EmpIssueAddNew> {
+class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

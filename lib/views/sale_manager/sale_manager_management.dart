@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_payroll_management.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/sale_employee/emp_payroll.dart';
+import 'package:login_sample/views/employee/employee_payroll.dart';
 
 class SaleManagerManagement extends StatelessWidget {
   const SaleManagerManagement({Key? key}) : super(key: key);
@@ -39,7 +39,7 @@ class SaleManagerManagement extends StatelessWidget {
                           text: 'Lương của tôi',
                           colorsButton: const [Colors.green, Colors.white],
                           onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const EmpPayroll()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeePayroll()));
                           }
                       ),
                       const SizedBox(height: 20.0,),

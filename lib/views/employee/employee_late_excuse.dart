@@ -3,21 +3,21 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/excuse_late.dart';
 import 'package:login_sample/services/api_service.dart';
-import 'package:login_sample/views/sale_employee/emp_late_excuse_list.dart';
+import 'package:login_sample/views/employee/employee_late_excuse_list.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class EmpLateExcuse extends StatefulWidget {
-  const EmpLateExcuse({Key? key}) : super(key: key);
+class EmployeeLateExcuse extends StatefulWidget {
+  const EmployeeLateExcuse({Key? key}) : super(key: key);
 
   @override
-  _EmpLateExcuseState createState() => _EmpLateExcuseState();
+  _EmployeeLateExcuseState createState() => _EmployeeLateExcuseState();
 }
 
-class _EmpLateExcuseState extends State<EmpLateExcuse> {
+class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
 
   String _lateExcuseDate = '';
   String _lateExcuseTime = '';
@@ -200,7 +200,7 @@ class _EmpLateExcuseState extends State<EmpLateExcuse> {
                       colorsButton: const [Colors.green, Colors.white],
                       onPressed: (){
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => const EmpLateExcuseList()
+                          builder: (context) => const EmployeeLateExcuseList()
                         ));
                       }
                   ),

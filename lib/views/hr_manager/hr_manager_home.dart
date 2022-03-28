@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_account_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
-import 'package:login_sample/views/sale_employee/emp_payroll.dart';
+import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/sale_employee/emp_take_attendance.dart';
+import 'package:login_sample/views/employee/employee_take_attendance.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
 import 'hr_manager_account_list.dart';
@@ -69,7 +69,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const EmpPayroll(),
+                                builder: (context) => const EmployeePayroll(),
                               ));
                         },
                       ),
@@ -80,7 +80,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                           buttonColors: const [Colors.red, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const EmpTakeAttendance(),
+                              builder: (context) => const EmployeeTakeAttendance(),
                             ));
                           }
                       ),

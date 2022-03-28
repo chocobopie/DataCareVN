@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/models/account.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/employee/employee_payroll.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_payroll_list.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_payroll_list.dart';
-import 'package:login_sample/views/sale_employee/emp_payroll.dart';
-import 'package:provider/provider.dart';
 
 class HrManagerPayrollManagement extends StatefulWidget {
   const HrManagerPayrollManagement({Key? key}) : super(key: key);
@@ -46,7 +43,7 @@ class _HrManagerPayrollManagementState extends State<HrManagerPayrollManagement>
                           text: 'Lương của tôi',
                           colorsButton: const [Colors.green, Colors.white],
                           onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const EmpPayroll()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeePayroll()));
                           }
                       ),
                       const SizedBox(height: 20.0,),

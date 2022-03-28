@@ -22,7 +22,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   late DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
 
-  String _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
+  String _filterDayString = 'Ngày';
 
   List<UserAttendance> userAttendances = [
     UserAttendance(id: '1', name: 'Thân Quang Nhân', team: 'Nhóm Thúy Anh', department: 'Đào tạo', attendance: 'Đúng giờ'),

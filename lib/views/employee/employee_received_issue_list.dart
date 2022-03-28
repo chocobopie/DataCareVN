@@ -6,14 +6,14 @@ import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 
-class EmpReceivedIssue extends StatefulWidget {
-  const EmpReceivedIssue({Key? key}) : super(key: key);
+class EmployeeReceivedIssue extends StatefulWidget {
+  const EmployeeReceivedIssue({Key? key}) : super(key: key);
 
   @override
-  _EmpReceivedIssueState createState() => _EmpReceivedIssueState();
+  _EmployeeReceivedIssueState createState() => _EmployeeReceivedIssueState();
 }
 
-class _EmpReceivedIssueState extends State<EmpReceivedIssue> {
+class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
   bool isSearching = false;
 
   late String _fromDatetoDateString = 'Ngày deadline';

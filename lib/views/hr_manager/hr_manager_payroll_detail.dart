@@ -9,7 +9,7 @@ class HrManagerPayrollDetail extends StatefulWidget {
   const HrManagerPayrollDetail({Key? key, required this.empPayrolls})
       : super(key: key);
 
-  final EmployeePayroll empPayrolls;
+  final EmployeePayrollTemp empPayrolls;
 
   @override
   _HrManagerPayrollDetailState createState() => _HrManagerPayrollDetailState();

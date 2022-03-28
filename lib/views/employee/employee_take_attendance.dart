@@ -10,20 +10,20 @@ import 'package:login_sample/view_models/world_time_api_view_model.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
-import 'package:login_sample/views/sale_employee/emp_attendance_report.dart';
-import 'package:login_sample/views/sale_employee/emp_late_excuse.dart';
+import 'package:login_sample/views/employee/employee_attendance_report.dart';
+import 'package:login_sample/views/employee/employee_late_excuse.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:provider/provider.dart';
 
-class EmpTakeAttendance extends StatefulWidget {
-  const EmpTakeAttendance({Key? key}) : super(key: key);
+class EmployeeTakeAttendance extends StatefulWidget {
+  const EmployeeTakeAttendance({Key? key}) : super(key: key);
 
   @override
-  _EmpTakeAttendanceState createState() => _EmpTakeAttendanceState();
+  _EmployeeTakeAttendanceState createState() => _EmployeeTakeAttendanceState();
 }
 
-class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
+class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
 
   late final List<Attendance> _attendances = [];
   late Account _currentAccount;
@@ -141,7 +141,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                             colorsButton: const [Colors.green, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const EmpAttendanceReport(),
+                                builder: (context) => const EmployeeAttendanceReport(),
                               ));
                             }
                         ),
@@ -155,7 +155,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                             colorsButton: const [Colors.red, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const EmpLateExcuse(),
+                                builder: (context) => const EmployeeLateExcuse(),
                               ));
                             }
                         ),

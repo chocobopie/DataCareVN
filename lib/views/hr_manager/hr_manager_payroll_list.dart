@@ -13,8 +13,8 @@ class HrManagerPayrollList extends StatefulWidget {
 }
 
 class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
-  List<EmployeePayroll> empPayrolls = [
-    EmployeePayroll(
+  List<EmployeePayrollTemp> empPayrolls = [
+    EmployeePayrollTemp(
         id: '1',
         name: 'Đỗ Ðức Anh',
         role: 'Nhân viên kinh doanh',
@@ -22,7 +22,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Kiều Thủy',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '2',
         name: 'Tăng Quốc Ðiền',
         role: 'NVKD',
@@ -30,7 +30,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Kiều Thủy',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '3',
         name: 'Phương Thái Ðức',
         role: 'TNKD',
@@ -38,7 +38,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Kiều Thủy',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '4',
         name: 'Đức Ðông Dương',
         role: 'NVKD',
@@ -46,7 +46,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Kiều Thủy',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '5',
         name: 'Chương Tường Lâm',
         role: 'NVKD',
@@ -54,7 +54,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Thúy Anh',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '6',
         name: 'Liễu Quang Tài',
         role: 'TNKD',
@@ -62,7 +62,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Thúy Anh',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '7',
         name: 'Cát Trung Thành',
         role: 'NVKD',
@@ -70,7 +70,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Thúy Anh',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '8',
         name: 'Ao Hữu Vĩnh',
         role: 'NVKD',
@@ -78,7 +78,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Thúy Anh',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '9',
         name: 'Bồ Việt Chính',
         role: 'NVKD',
@@ -86,7 +86,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Văn Đại',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '10',
         name: 'Cung Bảo Ðịnh',
         role: 'NVKD',
@@ -94,7 +94,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
         team: 'Nhóm Văn Đại',
         email: 'email',
         payroll: '3.000.000 VNĐ'),
-    EmployeePayroll(
+    EmployeePayrollTemp(
         id: '11',
         name: 'Đương Hùng Dũng',
         role: 'TPKD',
@@ -348,7 +348,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
   }
 }
 
-class EmployeePayroll {
+class EmployeePayrollTemp {
   String id;
   String name;
   String role;
@@ -357,7 +357,7 @@ class EmployeePayroll {
   String email;
   String payroll;
 
-  EmployeePayroll({
+  EmployeePayrollTemp({
     required this.id,
     required this.name,
     required this.role,

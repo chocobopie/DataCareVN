@@ -13,14 +13,14 @@ import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class EmpAttendanceReport extends StatefulWidget {
-  const EmpAttendanceReport({Key? key}) : super(key: key);
+class EmployeeAttendanceReport extends StatefulWidget {
+  const EmployeeAttendanceReport({Key? key}) : super(key: key);
 
   @override
-  _EmpAttendanceReportState createState() => _EmpAttendanceReportState();
+  _EmployeeAttendanceReportState createState() => _EmployeeAttendanceReportState();
 }
 
-class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
+class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
 
 
   late final List<Attendance> _attendances = [];

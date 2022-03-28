@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
 
-class EmpIssueDetail extends StatefulWidget {
-  const EmpIssueDetail({Key? key}) : super(key: key);
+class EmployeeIssueDetail extends StatefulWidget {
+  const EmployeeIssueDetail({Key? key}) : super(key: key);
 
   @override
-  _EmpIssueDetailState createState() => _EmpIssueDetailState();
+  _EmployeeIssueDetailState createState() => _EmployeeIssueDetailState();
 }
 
-class _EmpIssueDetailState extends State<EmpIssueDetail> {
+class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
 
 
 

@@ -198,13 +198,13 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                 color: mainBgColor,
                                 onPressed: () async {
                                   final data = await Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => const AdminRoleFilter(isAdminFilter: true,)
+                                      builder: (context) => const AdminRoleFilter(isHrManagerFilter: true,)
                                   ));
                                   if(data != null){
                                     _roleFilter = data;
                                     setState(() {
                                       _accounts.clear();
-                                      _roleNameString = _roleFilter!.name;
+                                      _roleNameString = ('Chức vụ: ${_roleFilter!.name}' ) ;
                                     });
                                   }
                                   _getFilter(isRefresh: true);
