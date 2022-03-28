@@ -5,7 +5,7 @@ import 'package:login_sample/models/excuse_late.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/views/sale_employee/emp_late_excuse_list.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -58,7 +58,7 @@ class _EmpLateExcuseState extends State<EmpLateExcuse> {
                   topRight: Radius.circular(25),
                 ),
               ),
-              margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.1),
+              margin: const EdgeInsets.only(top: 90),
               child: ListView(
                 padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
                 children: <Widget>[

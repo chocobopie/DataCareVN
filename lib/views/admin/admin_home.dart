@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -61,7 +61,7 @@ class HomeAdmin extends StatelessWidget {
                           buttonColors: const [Colors.green, Colors.white],
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const HrManagerAttendanceReport(),
+                              builder: (context) => const HrManagerAttendanceReportList(),
                             ));
                           }
                       ),

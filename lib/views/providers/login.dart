@@ -124,6 +124,9 @@ class _LoginState extends State<Login> {
 
                 MaterialButton(
                   onPressed: () async {
+                    setState(() {
+                      _loginFailed = false;
+                    });
                     if(email.text.isEmpty){
                       setState(() {_isEmailEmpty = true;});
                     }else{
@@ -145,27 +148,27 @@ class _LoginState extends State<Login> {
                         Provider.of<AccountProvider>(context, listen: false).setAccount(_account);
 
                         if(_account.roleId == 0){
-                          Navigator.push(context, MaterialPageRoute(
+                          Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) => const HomeAdmin(),
                           ));
                         }else if(_account.roleId == 1){
-                          Navigator.push(context, MaterialPageRoute(
+                          Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) => const HomeHRManager(),
                           ));
                         }else if(_account.roleId == 2){
-                          Navigator.push(context, MaterialPageRoute(
+                          Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) => const HomeHRManager(),
                           ));
                         }else if(_account.roleId == 3){
-                          Navigator.push(context, MaterialPageRoute(
+                          Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) => const HomeSaleManager(),
                           ));
                         }else if(_account.roleId == 4){
-                          Navigator.push(context, MaterialPageRoute(
+                          Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) => const HomeSaleLeader(),
                           ));
                         }else if(_account.roleId == 5){
-                          Navigator.push(context, MaterialPageRoute(
+                          Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) => const HomeSaleEmployee(),
                           ));
                         }

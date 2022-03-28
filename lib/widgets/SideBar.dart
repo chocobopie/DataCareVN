@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/employee/employee_change_password.dart';
 import 'package:login_sample/views/employee/employee_profile.dart';
+import 'package:login_sample/views/providers/login.dart';
 
 
 class SideBar extends StatelessWidget {
@@ -120,12 +121,16 @@ class SideBar extends StatelessWidget {
                   color: Colors.blueGrey,
                 ),
                 title: const Text(
-                    'Logout',
+                    'Đắng xuất',
                   style: TextStyle(
                     color: Colors.blueGrey,
                   ),
                 ),
-                onTap: () => print('Logout'),
+                onTap: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(
+                    builder: (context) => const Login(),
+                  ));
+                },
               ),
             ),
           ],

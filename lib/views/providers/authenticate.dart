@@ -21,7 +21,7 @@ class AuthProvider with ChangeNotifier{
 
   Status get loggedInStatus => _loggedInStatus;
 
-  Future<Account> login(String email, String password) async{
+  Future<Account?> login(String email, String password) async{
     String url = stockUrl + 'authentications';
 
     _loggedInStatus = Status.authenticating;
@@ -47,7 +47,7 @@ class AuthProvider with ChangeNotifier{
       return Account.fromJson(jsonDecode(response.body));
     }else{
 
-      Account account = Account();
+      Account? account;
       _loggedInStatus = Status.loggedInFailed;
       notifyListeners();
 

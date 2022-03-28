@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_list.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class HrManagerAttendanceReport extends StatefulWidget {
-  const HrManagerAttendanceReport({Key? key}) : super(key: key);
+class HrManagerAttendanceReportList extends StatefulWidget {
+  const HrManagerAttendanceReportList({Key? key}) : super(key: key);
 
   @override
-  _HrManagerAttendanceReportState createState() => _HrManagerAttendanceReportState();
+  _HrManagerAttendanceReportListState createState() => _HrManagerAttendanceReportListState();
 }
 
-class _HrManagerAttendanceReportState extends State<HrManagerAttendanceReport> {
+class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceReportList> {
 
   late DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+
+  String _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
 
   List<UserAttendance> userAttendances = [
     UserAttendance(id: '1', name: 'Thân Quang Nhân', team: 'Nhóm Thúy Anh', department: 'Đào tạo', attendance: 'Đúng giờ'),
@@ -61,6 +67,50 @@ class _HrManagerAttendanceReportState extends State<HrManagerAttendanceReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: SpeedDial(
+              switchLabelPosition: true,
+              backgroundColor: mainBgColor,
+              activeForegroundColor: Colors.black,
+              icon: Icons.more_vert,
+              children: [
+                SpeedDialChild(
+                  child: const Icon(Icons.check, color: Colors.white,),
+                  backgroundColor: mainBgColor,
+                  labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                  labelBackgroundColor: mainBgColor,
+                  label: 'Duyệt đơn xin đi trễ',
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => HrManagerLateExcuseList(
+                        attendanceType: 'Duyệt đơn xin phép đi trễ',
+                        userLateExcuses: userLateExcuses,
+                      ),
+                    ));
+                  },
+                ),
+              ],
+            )
+          ),
+          Card(
+            elevation: 10.0,
+            child: NumberPaginator(
+              numberPages: 10,
+              buttonSelectedBackgroundColor: mainBgColor,
+              onPageChange: (int index) {
+                setState(() {
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+
       body: Stack(
         children: <Widget>[
           Container(
@@ -75,14 +125,57 @@ class _HrManagerAttendanceReportState extends State<HrManagerAttendanceReport> {
               elevation: 0.0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50),
-                  topRight: Radius.circular(50),
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 80.0),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.58,
-                child: _buildTableCalendarWithBuilders(),
+              margin: const EdgeInsets.only(top: 90.0),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10, left: 10.0),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                        const SizedBox(width: 5.0,),
+                        CustomOutlinedButton(
+                            title: _filterDayString,
+                            radius: 10,
+                            color: mainBgColor,
+                            onPressed: () async {
+                            // _onPressed(context: context);
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            final date = await DatePicker.showDatePicker(
+                              context,
+                              locale : LocaleType.vi,
+                              minTime: DateTime.now().subtract(const Duration(days: 36500)),
+                              currentTime: DateTime.now(),
+                              maxTime: DateTime.now(),
+                            );
+
+                            if (date != null) {
+                              setState(() {
+                                _selectedDay = date;
+                                _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}';
+                                print(_selectedDay);
+                              });
+                            }
+                          },
+                        ),
+                        const CustomOutlinedButton(
+                            title: 'Trạng thái',
+                            radius: 10,
+                            color: mainBgColor
+                        ),
+                        IconButton(
+                            onPressed: (){
+                            },
+                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               )
           ),
 
@@ -95,53 +188,53 @@ class _HrManagerAttendanceReportState extends State<HrManagerAttendanceReport> {
                 topRight: Radius.circular(15),
               ),
             ),
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.6),
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
             child: ListView(
-              children: <Widget>[
+              children: const <Widget>[
 
                 //Báo cáo điểm danh ngày
-                Padding(
-                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    child: IconTextButtonSmall2(
-                      text: 'Báo cáo điểm danh ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
-                      imageUrl: 'assets/images/attended-person.png',
-                      colorsButton: const [Colors.blue, Colors.white],
-                      onPressed: () {
-                        DateTime _convertSelectDate = DateTime.parse( DateFormat('yyyy-MM-dd').format(_selectedDay) );
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => HrManagerAttendanceList(
-                              attendanceType:  'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
-                              userAttendances: userAttendances,
-                            ),
-                        ));
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20.0,),
+                // Padding(
+                //   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
+                //   child: SizedBox(
+                //     height: MediaQuery.of(context).size.height * 0.07,
+                //     child: IconTextButtonSmall2(
+                //       text: 'Báo cáo điểm danh ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
+                //       imageUrl: 'assets/images/attended-person.png',
+                //       colorsButton: const [Colors.blue, Colors.white],
+                //       onPressed: () {
+                //         DateTime _convertSelectDate = DateTime.parse( DateFormat('yyyy-MM-dd').format(_selectedDay) );
+                //         Navigator.push(context, MaterialPageRoute(
+                //             builder: (context) => HrManagerAttendanceList(
+                //               attendanceType:  'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
+                //               userAttendances: userAttendances,
+                //             ),
+                //         ));
+                //       },
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(height: 20.0,),
 
                 //Số đơn xin phép đi trễ
-                Padding(
-                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    child: IconTextButtonSmall2(
-                      text: 'Đơn xin phép đi trễ ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
-                      imageUrl: 'assets/images/late-excuse.png',
-                      colorsButton: const [Colors.grey, Colors.white],
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => HrManagerLateExcuseList(
-                              attendanceType: 'Xin phép đi trễ',
-                              userLateExcuses: userLateExcuses,
-                            )
-                        ));
-                      },
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
+                //   child: SizedBox(
+                //     height: MediaQuery.of(context).size.height * 0.07,
+                //     child: IconTextButtonSmall2(
+                //       text: 'Đơn xin phép đi trễ ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
+                //       imageUrl: 'assets/images/late-excuse.png',
+                //       colorsButton: const [Colors.grey, Colors.white],
+                //       onPressed: () {
+                //         Navigator.push(context, MaterialPageRoute(
+                //             builder: (context) => HrManagerLateExcuseList(
+                //               attendanceType: 'Xin phép đi trễ',
+                //               userLateExcuses: userLateExcuses,
+                //             )
+                //         ));
+                //       },
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

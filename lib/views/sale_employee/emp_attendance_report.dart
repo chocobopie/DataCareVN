@@ -87,7 +87,7 @@ class _EmpAttendanceReportState extends State<EmpAttendanceReport> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 15.0, top: 20, right: 15.0),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Row(
                       children: <Widget>[
                         const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),

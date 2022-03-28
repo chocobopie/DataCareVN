@@ -7,7 +7,8 @@ import 'package:login_sample/models/attendance.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/view_models/world_time_api_view_model.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/emp_attendance_report.dart';
 import 'package:login_sample/views/sale_employee/emp_late_excuse.dart';
@@ -31,6 +32,18 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
   late final DateTime _today;
   bool isTook = false;
   String takeAttendanceString = '';
+
+  List<UserAttendance> userLateExcuses = [
+    UserAttendance(id: '1', name: 'Hồ Phượng Vy', team: 'Nhóm Kiều Trinh', department: 'Đào tạo', attendance: 'Mới'),
+    UserAttendance(id: '2', name: 'Vĩnh Phương Thảo', team: 'Nhóm Minh Nhân', department: 'Đào tạo', attendance: 'Mới'),
+    UserAttendance(id: '3', name: 'Đỗ Xuân Phượng', team: 'Nhóm Phan Minh', department: 'Đào tạo', attendance: 'Mới'),
+    UserAttendance(id: '4', name: 'Ngư Thanh Hà', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới'),
+    UserAttendance(id: '5', name: 'Ngô Thu Nhiên', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới'),
+    UserAttendance(id: '6', name: 'Vũ Hiền Mai', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới'),
+    UserAttendance(id: '7', name: 'Lý Trúc Vy', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới'),
+    UserAttendance(id: '8', name: 'Đàm An Bình', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới'),
+    UserAttendance(id: '9', name: 'Chung Xuân Nhiên', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới'),
+  ];
 
   @override
   void initState() {
@@ -67,7 +80,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
               ),
               margin: const EdgeInsets.only(top: 100.0),
               child: takeAttendanceString.isNotEmpty ? ListView(
-                padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
+                padding: const EdgeInsets.only(top: 10.0, left: 1.0, right: 10.0, bottom: 5.0),
                 children: <Widget>[
                   Column(
                     children: <Widget>[
@@ -124,7 +137,7 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                         padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                         child: IconTextButtonSmall2(
                             imageUrl: 'assets/images/attendance-report.png',
-                            text: 'Xem báo cáo điểm danh',
+                            text: 'Xem báo cáo điểm danh bản thân',
                             colorsButton: const [Colors.green, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
@@ -151,16 +164,33 @@ class _EmpTakeAttendanceState extends State<EmpTakeAttendance> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                         child: IconTextButtonSmall2(
-                            imageUrl: 'assets/images/late-person.png',
+                            imageUrl: 'assets/images/time-report.png',
                             text: 'Xem báo cáo điểm danh các nhân viên',
-                            colorsButton: const [Colors.red, Colors.white],
+                            colorsButton: const [Colors.orange, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const HrManagerAttendanceReport(),
+                                builder: (context) => const HrManagerAttendanceReportList(),
                               ));
                             }
                         ),
                       ),
+                      if(_currentAccount.roleId == 1)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                          child: IconTextButtonSmall2(
+                              imageUrl: 'assets/images/late-excuse.png',
+                              text: 'Duyệt đơn xin phép đi trễ',
+                              colorsButton: const [Colors.grey, Colors.white],
+                              onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => HrManagerLateExcuseList(
+                                    attendanceType: 'Xin phép đi trễ',
+                                    userLateExcuses: userLateExcuses,
+                                  ),
+                                ));
+                              }
+                          ),
+                        ),
                     ],
                   )
                 ],

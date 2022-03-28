@@ -1,6 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall3.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:number_paginator/number_paginator.dart';

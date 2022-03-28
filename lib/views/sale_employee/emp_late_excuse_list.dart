@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -65,7 +65,7 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
                 topRight: Radius.circular(25),
               ),
             ),
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
+            margin: const EdgeInsets.only(top: 90),
             child: Padding(
               padding: const EdgeInsets.only(left: 15.0, top: 10.0),
               child: Column(
@@ -119,7 +119,7 @@ class _EmpLateExcuseListState extends State<EmpLateExcuseList> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.18),
+            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.20),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

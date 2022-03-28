@@ -9,7 +9,7 @@ import 'package:login_sample/views/sale_employee/emp_take_attendance.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
 import 'hr_manager_account_list.dart';
-import 'hr_manager_attendance_report.dart';
+import 'hr_manager_attendance_report_list.dart';
 import 'hr_manager_payroll_management.dart';
 
 class HomeHRManager extends StatefulWidget {

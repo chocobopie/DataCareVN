@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_report.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
@@ -206,13 +206,16 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
                                     ),
                                   ),
                                   const SizedBox(width: 40.0,),
-                                  Column(
-                                      children: <Widget>[
-                                        if(userLateExcuses[index].attendance == 'Mới')  const Text('Mới', style: TextStyle(fontSize: 12.0, color: Colors.green),),
-                                        if(userLateExcuses[index].attendance == 'Duyệt') const Text('Duyệt', style: TextStyle(fontSize: 12.0, color: Colors.blue),),
-                                        if(userLateExcuses[index].attendance == 'Từ chối') const Text('Từ chối', style: TextStyle(fontSize: 12.0, color: Colors.red),),
-                                        _customDropdownButton(userLateExcuses[index].attendance, userLateExcuses.indexOf(userLateExcuses[index])),
-                                      ]
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5.0),
+                                    child: Column(
+                                        children: <Widget>[
+                                          if(userLateExcuses[index].attendance == 'Mới')  const Text('Mới', style: TextStyle(fontSize: 12.0, color: Colors.green),),
+                                          if(userLateExcuses[index].attendance == 'Duyệt') const Text('Duyệt', style: TextStyle(fontSize: 12.0, color: Colors.blue),),
+                                          if(userLateExcuses[index].attendance == 'Từ chối') const Text('Từ chối', style: TextStyle(fontSize: 12.0, color: Colors.red),),
+                                          _customDropdownButton(userLateExcuses[index].attendance, userLateExcuses.indexOf(userLateExcuses[index])),
+                                        ]
+                                    ),
                                   ),
                                 ],
                               ),
@@ -314,8 +317,8 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
         customButton: attendType == 'Mới' ? const Icon(Icons.watch_later_rounded, size: 30, color: Colors.green,)
-            : attendType == 'Duyệt' ? const Icon(Icons.watch_later_rounded, size: 30, color: Colors.blue,)
-            : const Icon(Icons.watch_later_rounded, size: 30, color: Colors.red,),
+            : attendType == 'Duyệt' ? const Icon(Icons.check, size: 30, color: Colors.blue,)
+            : const Icon(Icons.close_rounded, size: 30, color: Colors.red,),
         customItemsIndexes: const [3],
         customItemsHeight: 8,
         items: [
@@ -406,8 +409,8 @@ class MenuItems {
   static const List<MenuItem> firstItems = [accept, deny];
 
   static const pending = MenuItem(text: 'Mới', icon: Icon(Icons.watch_later_rounded, color: Colors.green));
-  static const accept = MenuItem(text: 'Duyệt', icon: Icon(Icons.watch_later_rounded, color: Colors.blue));
-  static const deny = MenuItem(text: 'Từ chối', icon: Icon(Icons.watch_later_rounded, color: Colors.red));
+  static const accept = MenuItem(text: 'Duyệt', icon: Icon(Icons.check, color: Colors.blue));
+  static const deny = MenuItem(text: 'Từ chối', icon: Icon(Icons.close_rounded, color: Colors.red));
 
   static Widget buildItem(MenuItem item) {
     return Row(
