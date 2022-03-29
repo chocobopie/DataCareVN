@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'package:dropdown_button2/custom_dropdown_button2.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
@@ -28,9 +31,8 @@ class SaleEmpContactList extends StatefulWidget {
 
 class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
-  bool _isSearching = false;
+  bool _isSearching = false, _isAsc = false;
   String _fullname = 'Nhân viên tạo', _searchString = '', _fromDateToDateString = 'Ngày tạo';
-  late final GlobalKey<FormFieldState> _key = GlobalKey();
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
   final RefreshController _refreshController = RefreshController();
@@ -40,16 +42,23 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   DateTime? _fromDate, _toDate;
 
-
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if(_contacts.isEmpty){
-      _currentAccount = Provider.of<AccountProvider>(context).account;
-      _getOverallInfo(_currentPage, _currentAccount);
-    }
+  void initState() {
+    super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getOverallInfo(_currentPage, _currentAccount);
     _getAllSaleEmployee(isRefresh: true);
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   if(_contacts.isEmpty){
+  //     _currentAccount = Provider.of<AccountProvider>(context).account;
+  //     _getOverallInfo(_currentPage, _currentAccount);
+  //   }
+  //   _getAllSaleEmployee(isRefresh: true);
+  // }
 
   @override
   void dispose() {
@@ -87,6 +96,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
               buttonSelectedBackgroundColor: mainBgColor,
               onPageChange: (int index) {
                 setState(() {
+                  _contacts.clear();
                   _currentPage = index;
                 });
                 _getOverallInfo(_currentPage, _currentAccount);
@@ -169,13 +179,49 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                   setState(() {
                                     _fromDate = fromDateToDate.fromDate;
                                     _toDate = fromDateToDate.toDate;
-                                    _fromDateToDateString = 'Ngày chốt: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                    _fromDateToDateString = 'Ngày tạo: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                     _contacts.clear();
                                   });
                                   _refreshController.resetNoData();
                                   _getOverallInfo(_currentPage, _currentAccount);
                                 }
                               },
+                            ),
+                            DropdownButton2(
+                              customButton: const Icon(
+                                Icons.sort,
+                                size: 40,
+                                color: mainBgColor,
+                              ),
+                                items: [
+                                  ...SortItems.firstItems.map(
+                                        (item) =>
+                                        DropdownMenuItem<SortItem>(
+                                          value: item,
+                                          child: SortItems.buildItem(item),
+                                        ),
+                                  ),
+                                ],
+                              onChanged: (value) {
+                                _isAsc = SortItems.onChanged(context, value as SortItem);
+                                setState(() {
+                                  if(_isAsc == true ){
+                                    _contacts.sort( (a,b) => a.createdDate.compareTo(b.createdDate) );
+                                  }else{
+                                    _contacts.sort( (a,b) => b.createdDate.compareTo(a.createdDate) );
+                                  }
+                                });
+                              },
+                              itemHeight: 40,
+                              itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                              dropdownWidth: 200,
+                              dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                              dropdownDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: mainBgColor,
+                              ),
+                              dropdownElevation: 8,
+                              offset: const Offset(0, 8),
                             ),
                             IconButton(
                                 onPressed: (){
@@ -332,7 +378,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                     ),
 
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 30.0),
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
                                           const Text('Số điện thoại:', style: TextStyle(fontSize: 14),),
@@ -341,7 +387,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                         ],
                                       ),
                                     ),
-
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
@@ -548,6 +593,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     List<Account> accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
 
     setState(() {
+      _contacts.clear();
       _saleEmployeeList.addAll(accountList);
     });
   }
@@ -561,5 +607,43 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     }
     return name;
   }
+}
 
+class SortItems {
+  static const List<SortItem> firstItems = [asc, des];
+
+  static const asc = SortItem(text: 'Ngày tạo tăng dần', icon: Icons.arrow_drop_up);
+  static const des = SortItem(text: 'Ngày tạo giảm dần', icon: Icons.arrow_drop_down);
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        Icon(
+            item.icon,
+            color: Colors.white,
+            size: 22
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.asc:
+        return true;
+      case SortItems.des:
+      //Do something
+        return false;
+    }
+  }
 }

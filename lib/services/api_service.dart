@@ -661,25 +661,18 @@ class ApiService {
   }
 
   //Attendance
-  Future<Attendance> takeAttendance({required Attendance attendance}) async {
+  Future<Attendance?> takeAttendance({required Account account}) async {
 
-    String url = stockUrl + 'attendances';
+    String url = stockUrl + 'attendances/take-attendance?account-id=${account.accountId}';
 
-    final response = await http.post(Uri.parse(url), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-      body: jsonEncode(<String, dynamic>{
-        "accountId": attendance.accountId,
-        "date": attendance.date.toIso8601String(),
-        "attendanceStatusId": attendance.attendanceStatusId,
-      }),
-    );
-
+    final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
-      print('Take attendance for ${attendance.date} successfully');
+      print('Take attendance for ${account.fullname} successfully');
       return Attendance.fromJson(jsonDecode(response.body));
     }else{
-      throw Exception('Failed to create album');
+      print('Failed to take attendance for ${account.fullname}');
+      Attendance? attendance;
+      return attendance;
     }
   }
 

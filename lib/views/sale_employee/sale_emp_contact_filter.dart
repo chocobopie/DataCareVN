@@ -52,6 +52,7 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
           onPageChange: (int index) {
             setState(() {
               _currentPage = index;
+              _contacts.clear();
             });
             if(_searchContactNameOrEmail.text.isNotEmpty){
               _searchContactByNameOrEmail(currentAccount: _currentAccount, query: _searchContactNameOrEmail.text);
@@ -299,6 +300,7 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
 
     if(contactList.isNotEmpty){
       setState(() {
+        _contacts.clear();
         _contacts.addAll(contactList);
       });
       _maxPages = _contacts[0].maxPage!;
@@ -312,6 +314,7 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
 
     if(contactList.isNotEmpty){
       setState(() {
+        _contacts.clear();
         _contacts.addAll(contactList);
       });
       _maxPages = _contacts[0].maxPage!;

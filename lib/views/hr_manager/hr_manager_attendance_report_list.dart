@@ -1,9 +1,11 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -156,11 +158,16 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                       children: <Widget>[
                         const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                         const SizedBox(width: 5.0,),
-                        CustomOutlinedButton(
-                            title: _filterDayString,
+                        const CustomOutlinedButton(
+                            title: 'Trạng thái',
                             radius: 10,
-                            color: mainBgColor,
-                            onPressed: () async {
+                            color: mainBgColor
+                        ),
+                        CustomOutlinedButton(
+                          title: _filterDayString,
+                          radius: 10,
+                          color: mainBgColor,
+                          onPressed: () async {
                             // _onPressed(context: context);
                             FocusScope.of(context).requestFocus(FocusNode());
                             final date = await DatePicker.showDatePicker(
@@ -180,10 +187,33 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                             }
                           },
                         ),
-                        const CustomOutlinedButton(
-                            title: 'Trạng thái',
-                            radius: 10,
-                            color: mainBgColor
+                        DropdownButton2(
+                          customButton: const Icon(
+                            Icons.sort,
+                            size: 40,
+                            color: mainBgColor,
+                          ),
+                          items: [
+                            ...SortItems.firstItems.map(
+                                  (item) =>
+                                  DropdownMenuItem<SortItem>(
+                                    value: item,
+                                    child: SortItems.buildItem(item),
+                                  ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                          },
+                          itemHeight: 40,
+                          itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                          dropdownWidth: 160,
+                          dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: mainBgColor,
+                          ),
+                          dropdownElevation: 8,
+                          offset: const Offset(0, 8),
                         ),
                         IconButton(
                             onPressed: (){
@@ -235,10 +265,10 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                 child: Row(
-                                  children: <Widget>[
-                                    const Text('Tên nhân viên:'),
-                                    const Spacer(),
-                                    Text('${attendance.accountId}'),
+                                  children: const <Widget>[
+                                    Text('Tên nhân viên:'),
+                                    Spacer(),
+                                    Text('Lê Nguyễn Thanh Vân'),
                                   ],
                                 ),
                               ),
@@ -373,4 +403,43 @@ class UserAttendance{
     return 'id: $id, name: $name, team: $team, department: $department, attendance: $attendance';
   }
 
+}
+
+class SortItems {
+  static const List<SortItem> firstItems = [asc, des];
+
+  static const asc = SortItem(text: 'Ngày tăng dần', icon: Icons.arrow_drop_up);
+  static const des = SortItem(text: 'Ngày giảm dần', icon: Icons.arrow_drop_down);
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        Icon(
+            item.icon,
+            color: Colors.white,
+            size: 22
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.asc:
+        return true;
+      case SortItems.des:
+      //Do something
+        return false;
+    }
+  }
 }

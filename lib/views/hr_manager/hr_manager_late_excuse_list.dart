@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
@@ -14,6 +15,7 @@ class HrManagerLateExcuseList extends StatefulWidget {
 
   final String attendanceType;
   final List<UserAttendance> userLateExcuses;
+  final bool _isAsc = true;
 
   @override
   _HrManagerLateExcuseListState createState() => _HrManagerLateExcuseListState();
@@ -26,7 +28,7 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
   bool isSearching = false;
   bool isUpdatedAttendance = false;
   int currentIndex = 0;
-
+  bool _isAsc = true;
   DateTime? _fromDate, _toDate;
 
   TextEditingController lateExcuseController = TextEditingController();
@@ -78,14 +80,19 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
             margin: const EdgeInsets.only(top: 100.0),
             child: Column(
               children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 2.0),
+                  child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, top: 10.0),
-                  child: Row(
-                    children: <Widget>[
-                      const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                      const SizedBox(width: 10.0,),
-                      Expanded(
-                        child: CustomOutlinedButton(
+                  padding: const EdgeInsets.only(left: 15.0, top: 2.0),
+                  child: SizedBox(
+                    height: 40.0,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        const SizedBox(width: 10.0,),
+                        CustomOutlinedButton(
                           title: _lateExcuseFromDateToDateString,
                           radius: 10.0,
                           color: mainBgColor,
@@ -103,9 +110,7 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
                             }
                           },
                         ),
-                      ),
-                      Expanded(
-                        child: CustomOutlinedButton(
+                        CustomOutlinedButton(
                           title: _lateFromDateToDateString,
                           radius: 10.0,
                           color: mainBgColor,
@@ -123,26 +128,55 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
                             }
                           },
                         ),
-                      ),
-                      Expanded(
-                        child: CustomOutlinedButton(
+                        CustomOutlinedButton(
                           title: 'Trạng thái',
                           radius: 10,
                           color: mainBgColor,
                           onPressed: (){},
                         ),
-                      ),
-                      IconButton(
-                          onPressed: (){
+                        DropdownButton2(
+                          customButton: const Icon(
+                            Icons.sort,
+                            size: 40,
+                            color: mainBgColor,
+                          ),
+                          items: [
+                            ...SortItems.firstItems.map(
+                                  (item) =>
+                                  DropdownMenuItem<SortItem>(
+                                    value: item,
+                                    child: SortItems.buildItem(item),
+                                  ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            _isAsc = SortItems.onChanged(context, value as SortItem);
                             setState(() {
-                              _fromDate = null;
-                              _toDate = null;
-                              _lateExcuseFromDateToDateString = 'Ngày gửi đơn';
                             });
                           },
-                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
-                      ),
-                    ],
+                          itemHeight: 40,
+                          itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                          dropdownWidth: 220,
+                          dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: mainBgColor,
+                          ),
+                          dropdownElevation: 8,
+                          offset: const Offset(0, 8),
+                        ),
+                        IconButton(
+                            onPressed: (){
+                              setState(() {
+                                _fromDate = null;
+                                _toDate = null;
+                                _lateExcuseFromDateToDateString = 'Ngày gửi đơn';
+                              });
+                            },
+                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
+                        ),
+                      ],
+                    ),
                   )
                 ),
               ],
@@ -436,6 +470,45 @@ class MenuItems {
         return 'Duyệt';
       case MenuItems.deny:
         return 'Từ chối';
+    }
+  }
+}
+
+class SortItems {
+  static const List<SortItem> firstItems = [asc, des];
+
+  static const asc = SortItem(text: 'Ngày xin đi trễ tăng dần', icon: Icons.arrow_drop_up);
+  static const des = SortItem(text: 'Ngày xin đi trễ giảm dần', icon: Icons.arrow_drop_down);
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        Icon(
+            item.icon,
+            color: Colors.white,
+            size: 22
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.asc:
+        return true;
+      case SortItems.des:
+      //Do something
+        return false;
     }
   }
 }

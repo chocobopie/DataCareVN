@@ -1,7 +1,9 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/models/issue.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/models/temp/deal_temp.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/issue_list_view_model.dart';
@@ -110,6 +112,34 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                             }
                           },
                         ),
+                      ),
+                      DropdownButton2(
+                        customButton: const Icon(
+                          Icons.sort,
+                          size: 40,
+                          color: mainBgColor,
+                        ),
+                        items: [
+                          ...SortItems.firstItems.map(
+                                (item) =>
+                                DropdownMenuItem<SortItem>(
+                                  value: item,
+                                  child: SortItems.buildItem(item),
+                                ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                        },
+                        itemHeight: 40,
+                        itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                        dropdownWidth: 220,
+                        dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                        dropdownDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: mainBgColor,
+                        ),
+                        dropdownElevation: 8,
+                        offset: const Offset(0, 8),
                       ),
                       IconButton(
                           onPressed: (){
@@ -269,6 +299,45 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
       setState(() {
         issues.addAll(issueList);
       });
+    }
+  }
+}
+
+class SortItems {
+  static const List<SortItem> firstItems = [asc, des];
+
+  static const asc = SortItem(text: 'Ngày deadline tăng dần', icon: Icons.arrow_drop_up);
+  static const des = SortItem(text: 'Ngày deadline giảm dần', icon: Icons.arrow_drop_down);
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        Icon(
+            item.icon,
+            color: Colors.white,
+            size: 22
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.asc:
+        return true;
+      case SortItems.des:
+      //Do something
+        return false;
     }
   }
 }

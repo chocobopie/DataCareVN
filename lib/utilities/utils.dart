@@ -45,6 +45,12 @@ List<String> excuseLateStatusesNameUtilities = [];
 List<String> gendersUtilities = [];
 List<String> blockNameUtilities = [];
 
+
+List<String> sortUtilities = [
+  'Tăng dần',
+  'Giảm dần'
+];
+
 List<String> attendanceStatusUtilities = [
   'Đúng giờ',
   'Cho phép trễ',

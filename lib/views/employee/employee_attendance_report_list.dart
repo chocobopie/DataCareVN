@@ -1,9 +1,11 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
@@ -13,28 +15,38 @@ import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class EmployeeAttendanceReport extends StatefulWidget {
-  const EmployeeAttendanceReport({Key? key}) : super(key: key);
+class EmployeeAttendanceReportList extends StatefulWidget {
+  const EmployeeAttendanceReportList({Key? key}) : super(key: key);
 
   @override
-  _EmployeeAttendanceReportState createState() => _EmployeeAttendanceReportState();
+  _EmployeeAttendanceReportListState createState() => _EmployeeAttendanceReportListState();
 }
 
-class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
+class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportList> {
 
 
   late final List<Attendance> _attendances = [];
-  late Account currentAccount;
+  late Account _currentAccount;
   int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
-  String fromDateToDateString = 'Ngày';
+  String _fromDateToDateString = 'Ngày';
   DateTime? _fromDate, _toDate;
+  bool _isAsc = true;
+  late DateTime _currentTime;
+  late double _timeHms;
+  late final DateTime _today;
 
   @override
   void initState() {
     super.initState();
-    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getSelfAttendanceListByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getCurrentTime();
   }
 
   @override
@@ -59,9 +71,9 @@ class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
               _attendances.clear();
             });
             if(_fromDate == null && _toDate == null){
-              _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
+              _getSelfAttendanceListByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage);
             }else if(_toDate != null && _fromDate != null){
-              _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+              _getSelfAttendanceListByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
             }
           },
         ) : null,
@@ -88,13 +100,24 @@ class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
                 padding: const EdgeInsets.only(left: 15.0, top: 20, right: 15.0),
                 child: Column(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                        const SizedBox(width: 10.0,),
-                        Expanded(
-                          child: CustomOutlinedButton(
-                            title: fromDateToDateString,
+                    SizedBox(
+                      height: 40.0,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.only(top: 15.0),
+                            child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                          ),
+                          const SizedBox(width: 10.0,),
+                          CustomOutlinedButton(
+                              title: 'Trạng thái',
+                              radius: 10,
+                              color: mainBgColor,
+                              onPressed: (){},
+                          ),
+                          CustomOutlinedButton(
+                            title: _fromDateToDateString,
                             radius: 10,
                             color: mainBgColor,
                             onPressed: () async {
@@ -106,38 +129,68 @@ class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
                                 setState(() {
                                   _fromDate = fromDateToDate.fromDate;
                                   _toDate = fromDateToDate.toDate;
-                                  fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                  _fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                   _attendances.clear();
                                 });
                                 _refreshController.resetNoData();
-                                _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+                                _getSelfAttendanceListByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
                               }
                             },
                           ),
-                        ),
-                        Expanded(
-                          child: CustomOutlinedButton(
-                              title: 'Trạng thái',
-                              radius: 10,
+                          DropdownButton2(
+                            customButton: const Icon(
+                              Icons.sort,
+                              size: 40,
                               color: mainBgColor,
-                              onPressed: (){},
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: (){
+                            ),
+                            items: [
+                              ...SortItems.firstItems.map(
+                                    (item) =>
+                                    DropdownMenuItem<SortItem>(
+                                      value: item,
+                                      child: SortItems.buildItem(item),
+                                    ),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              _isAsc = SortItems.onChanged(context, value as SortItem);
                               setState(() {
-                                _attendances.clear();
-                                _currentPage = 0;
-                                _fromDate = null;
-                                _toDate = null;
-                                fromDateToDateString = 'Ngày';
+                                if(_isAsc == true ){
+                                  _attendances.sort( (a,b) => a.date.compareTo(b.date) );
+                                  _isAsc = false;
+                                }else{
+                                  _attendances.sort( (a,b) => b.date.compareTo(a.date) );
+                                  _isAsc = true;
+                                }
                               });
-                              _refreshController.resetNoData();
-                              _getAttendanceListByAccountId(isRefresh: true, accountId: currentAccount.accountId!, currentPage: _currentPage);
                             },
-                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
-                        ),
-                      ],
+                            itemHeight: 40,
+                            itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                            dropdownWidth: 160,
+                            dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                            dropdownDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: mainBgColor,
+                            ),
+                            dropdownElevation: 8,
+                            offset: const Offset(0, 8),
+                          ),
+                          IconButton(
+                              onPressed: (){
+                                setState(() {
+                                  _attendances.clear();
+                                  _currentPage = 0;
+                                  _fromDate = null;
+                                  _toDate = null;
+                                  _fromDateToDateString = 'Ngày';
+                                });
+                                _refreshController.resetNoData();
+                                _getSelfAttendanceListByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage);
+                              },
+                              icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 )
@@ -193,9 +246,9 @@ class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
                           });
                           _refreshController.resetNoData();
                           if(_fromDate == null && _toDate == null){
-                            _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage);
+                            _getSelfAttendanceListByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage);
                           }else if(_toDate != null && _fromDate != null){
-                            _getAttendanceListByAccountId(isRefresh: false, accountId: currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
+                            _getSelfAttendanceListByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate);
                           }
 
                           if(_attendances.isNotEmpty){
@@ -235,14 +288,19 @@ class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
                                   ),
                                   child: ListTile(
                                     title: Text(DateFormat('dd-MM-yyyy').format(_attendance.date)),
-                                    trailing: Text(attendanceStatusUtilities[_attendance.attendanceStatusId], style: TextStyle(
+                                    trailing: ( _today.isAtSameMomentAs(_attendance.date) && _timeHms <= 17 && _attendance.attendanceStatusId == 3) ? const Text('Chưa điểm danh', style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16.0,
+                                    ),) : Text(attendanceStatusUtilities[_attendance.attendanceStatusId],
+                                      style: TextStyle(
                                         color: _attendance.attendanceStatusId != 0
                                             ? _attendance.attendanceStatusId == 1
                                             ?  Colors.blue : _attendance.attendanceStatusId == 2
                                             ?  Colors.amber : Colors.red : Colors.green,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16.0,
-                                    ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -281,7 +339,7 @@ class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
     );
   }
 
-  void _getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
+  void _getSelfAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
     List<Attendance> listAttendance = await AttendanceListViewModel().getSelfAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
     _attendances.clear();
@@ -294,6 +352,51 @@ class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
       setState(() {
         _refreshController.loadNoData();
       });
+    }
+  }
+
+  void _getCurrentTime() async {
+    _currentTime = DateTime.now();
+    _timeHms = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
+    _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
+  }
+}
+
+class SortItems {
+  static const List<SortItem> firstItems = [asc, des];
+
+  static const asc = SortItem(text: 'Ngày tăng dần', icon: Icons.arrow_drop_up);
+  static const des = SortItem(text: 'Ngày giảm dần', icon: Icons.arrow_drop_down);
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        Icon(
+            item.icon,
+            color: Colors.white,
+            size: 22
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.asc:
+        return true;
+      case SortItems.des:
+      //Do something
+        return false;
     }
   }
 }

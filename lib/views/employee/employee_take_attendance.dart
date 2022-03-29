@@ -3,12 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/WorldTimeAPI.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
+import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/view_models/world_time_api_view_model.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
-import 'package:login_sample/views/employee/employee_attendance_report.dart';
+import 'package:login_sample/views/employee/employee_attendance_report_list.dart';
 import 'package:login_sample/views/employee/employee_late_excuse.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
@@ -28,8 +30,8 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
   late DateTime _currentTime;
   late double _timeHms;
   late final DateTime _today;
-  bool isTook = false;
-  String takeAttendanceString = '', attendanceStatus = '';
+  bool _isTook = false;
+  String _takeAttendanceString = '';
 
   List<UserAttendance> userLateExcuses = [
     UserAttendance(id: '1', name: 'Hồ Phượng Vy', team: 'Nhóm Kiều Trinh', department: 'Đào tạo', attendance: 'Mới'),
@@ -47,12 +49,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _getCorrectData();
+    _getOverallInfo();
   }
 
   @override
@@ -77,7 +74,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                 ),
               ),
               margin: const EdgeInsets.only(top: 100.0),
-              child: takeAttendanceString.isNotEmpty ? ListView(
+              child: _takeAttendanceString.isNotEmpty ? ListView(
                 padding: const EdgeInsets.only(top: 10.0, left: 1.0, right: 10.0, bottom: 5.0),
                 children: <Widget>[
                   Column(
@@ -90,7 +87,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                         children: <Widget>[
                           Container(
                             decoration: BoxDecoration(
-                              color: isTook == false ? Colors.red : mainBgColor,
+                              color: Colors.red,
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(25.0),
                               ),
@@ -103,30 +100,21 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                                 ),
                               ],
                             ),
-                            child: TextButton(
-                              onPressed: isTook == false ? () async {
-                                // _getCorrectData();
-                                // Attendance attendance = Attendance(
-                                //     accountId: currentAccount.accountId!,
-                                //     date: _currentTime.toLocal(),
-                                //     attendanceStatusId: _timeHms <= 9.0 ? 0 : 2
-                                // );
-                                // final data = await AttendanceViewModel().takeAttendance(attendance: attendance);
-                                // if(data.attendanceStatusId.toString().isNotEmpty){
-                                //   setState(() {
-                                //     isTook = true;
-                                //     takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
-                                //   });
-                                // }
-                              } : null,
-                              child: Text(
-                                takeAttendanceString,
-                                style: const TextStyle(
+
+                            child: (_isTook == false && _timeHms < 17) ? TextButton(
+                              onPressed: () async {
+                                _takeAttendance(account: _currentAccount);
+                              },
+                              child: const Text(
+                                'Điểm danh',
+                                style: TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
-                            ),
+                            ) : null,
                           ),
+                          const SizedBox(height: 10.0,),
+                          Text(_takeAttendanceString, style: const TextStyle(color: defaultFontColor),),
                         ],
                       ),
                       const SizedBox(height: 20.0,),
@@ -139,7 +127,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                             colorsButton: const [Colors.green, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const EmployeeAttendanceReport(),
+                                builder: (context) => const EmployeeAttendanceReportList(),
                               ));
                             }
                         ),
@@ -223,27 +211,33 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
     if(listAttendance.isNotEmpty){
       setState(() {
         _attendances.addAll(listAttendance);
-        isTook = true;
         if(_attendances[0].attendanceStatusId == 3){
-          takeAttendanceString = 'Bạn chưa điểm danh cho hôm nay';
+          _isTook = false;
+          _takeAttendanceString = 'Bạn chưa điểm danh cho hôm nay';
+        }else{
+          _isTook = true;
+          _takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
         }
       });
-    }else{
-      setState(() {
-        takeAttendanceString = 'Điểm danh hôm nay';
-      });
-      isTook;
     }
   }
 
-  void _getCorrectData() async {
-    WorldTimeApi data = await WorldTimeApiViewModel().getCorrectTime();
-
-    if(data.datetime.toString().isNotEmpty){
-      _currentTime = data.datetime;
+  void _getOverallInfo() async {
+      _currentTime = DateTime.now();
       _timeHms = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
+      print(_timeHms);
       _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
       _getAttendanceListByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: 0, fromDate: _today, toDate: _today);
+  }
+
+  void _takeAttendance({required Account account}) async {
+    Attendance? attendance = await AttendanceViewModel().takeAttendance(account: account);
+
+    if(attendance != null){
+      setState(() {
+        _isTook = true;
+        _attendances.add(attendance);
+      });
     }
   }
 }

@@ -99,25 +99,25 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                   ),
                   const SizedBox(height: 20.0,),
 
-                  if(_currentAccount.roleId == 1)
-                  IconTextButtonSmall2(
-                      imageUrl: 'assets/images/payroll-management.png',
-                      text: 'Quản lý lương của các nhân viên',
-                      colorsButton: const [Colors.green, Colors.white],
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HrManagerPayrollList()));
-                      }
-                  ),
+                  // if(_currentAccount.roleId == 1)
+                  // IconTextButtonSmall2(
+                  //     imageUrl: 'assets/images/payroll-management.png',
+                  //     text: 'Quản lý lương của các nhân viên',
+                  //     colorsButton: const [Colors.green, Colors.white],
+                  //     onPressed: (){
+                  //       Navigator.push(context, MaterialPageRoute(builder: (context) => const HrManagerPayrollList()));
+                  //     }
+                  // ),
 
-                  if(_currentAccount.roleId ==3)
-                    IconTextButtonSmall2(
-                        imageUrl: 'assets/images/payroll-management.png',
-                        text: 'Xem doanh thu của phòng ban',
-                        colorsButton: const [Colors.green, Colors.white],
-                        onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleManagerPayrollManagement()));
-                        }
-                    ),
+                  // if(_currentAccount.roleId ==3)
+                  //   IconTextButtonSmall2(
+                  //       imageUrl: 'assets/images/payroll-management.png',
+                  //       text: 'Xem doanh thu của phòng ban',
+                  //       colorsButton: const [Colors.green, Colors.white],
+                  //       onPressed: (){
+                  //         Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleManagerPayrollManagement()));
+                  //       }
+                  //   ),
                 ],
               )
           ),
@@ -130,7 +130,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Lương của tôi",
+                "Xem lương",
                 style: TextStyle(
                     letterSpacing: 0.0,
                     fontSize: 20.0,
@@ -263,7 +263,7 @@ class PayrollExpansionTile extends StatelessWidget {
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(selectedDate).substring(3, 10)}'),
-          trailing: const Text('14.670.000.000 VNĐ'),
+          trailing: const Text('14.670.000 VNĐ'),
           children: const <Widget>[
             Divider(color: Colors.blueGrey, thickness: 1.0,),
             ListTile(
@@ -319,7 +319,7 @@ class PayrollExpansionTile extends StatelessWidget {
                 ),
               ),
               trailing: Text(
-                '14.670.000.000 VNĐ',
+                '14.670.000 VNĐ',
                 style: TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,

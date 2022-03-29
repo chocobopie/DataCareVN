@@ -31,8 +31,7 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                   topRight: Radius.circular(50),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
-
+              margin: const EdgeInsets.only(top: 100.0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Card(
@@ -40,14 +39,13 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       children: const <Widget>[
-                        Text('Bạn nên sử dụng mật khẩu mà mình chưa sử dụng ở đâu khác', style: TextStyle(color: defaultFontColor, fontSize: 18.0),),
                         SizedBox(height: 40.0,),
                         CustomEditableTextFormField(
                           obscureText: true,
                           text: '',
                           title: 'Mật khẩu hiện tại của bạn',
                           readonly: false,
-                          width: 300.0,
+                          width: 400.0,
                         ),
                         SizedBox(height: 20.0,),
                         CustomEditableTextFormField(
@@ -55,7 +53,7 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                           text: '',
                           title: 'Mật khẩu mới',
                           readonly: false,
-                          width: 300.0,
+                          width: 400.0,
                         ),
                         SizedBox(height: 20.0,),
                         CustomEditableTextFormField(
@@ -63,7 +61,7 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                           text: '',
                           title: 'Nhập lại mật khẩu mới',
                           readonly: false,
-                          width: 300.0,
+                          width: 400.0,
                         ),
                         SizedBox(height: 20.0,),
                         CustomTextButton(

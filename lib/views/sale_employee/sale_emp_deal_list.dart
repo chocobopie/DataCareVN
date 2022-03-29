@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/view_models/deal_list_view_model.dart';
@@ -17,6 +19,7 @@ import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/widgets/CustomDropdownButtonSortAscDes.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:number_paginator/number_paginator.dart';
@@ -32,7 +35,7 @@ class SaleEmpDealList extends StatefulWidget {
 
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
-  bool _isSearching = false;
+  bool _isSearching = false, _isAsc = false;
   String _fullname = 'Người quản lý hợp đồng', _fromDateToDateString = 'Ngày chốt', _contactName = 'Tên khách hàng', _searchString = '';
   int _currentPage = 0, _maxPages = 0;
 
@@ -162,7 +165,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 _currentPage = 0;
                                 setState(() {
                                   _filterAccount = data;
-                                  _fullname = 'Nhân viên: ${_filterAccount.fullname!}';
+                                  _fullname = 'Người quản lý hợp đồng: ${_filterAccount.fullname!}';
                                   _deals.clear();
                                 });
                                 _refreshController.resetNoData();
@@ -214,8 +217,42 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               }
                             },
                         ),
-
-
+                        DropdownButton2(
+                          customButton: const Icon(
+                            Icons.sort,
+                            size: 40,
+                            color: mainBgColor,
+                          ),
+                          items: [
+                            ...SortItems.firstItems.map(
+                                  (item) =>
+                                  DropdownMenuItem<SortItem>(
+                                    value: item,
+                                    child: SortItems.buildItem(item),
+                                  ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            _isAsc = SortItems.onChanged(context, value as SortItem);
+                            setState(() {
+                              if(_isAsc == true ){
+                                _deals.sort( (a,b) => a.closedDate.compareTo(b.closedDate) );
+                              }else{
+                              _deals.sort( (a,b) => b.closedDate.compareTo(a.closedDate) );
+                              }
+                            });
+                          },
+                          itemHeight: 40,
+                          itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                          dropdownWidth: 220,
+                          dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: mainBgColor,
+                          ),
+                          dropdownElevation: 8,
+                          offset: const Offset(0, 8),
+                        ),
                         IconButton(
                             onPressed: (){
                               if(_deals.isNotEmpty){
@@ -327,18 +364,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 padding: const EdgeInsets.all(10.0),
                                 child: Column(
                                   children: <Widget>[
-
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Tiêu đề:', style: TextStyle(fontSize: 12.0),),
-                                          const Spacer(),
-                                          Text(deal.title, style: const TextStyle(fontSize: 14.0),),
-                                        ],
-                                      ),
-                                    ),
-
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
@@ -354,36 +379,12 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
-                                          const Text('Tên khách hàng:', style: TextStyle(fontSize: 12.0),),
+                                          const Text('Tiêu đề:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
-                                          Text(_getContactName(deal.contactId), style: const TextStyle(fontSize: 14.0),),
+                                          Text(deal.title, style: const TextStyle(fontSize: 14.0),),
                                         ],
                                       ),
                                     ),
-
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Người quản lý hợp đồng:', style: TextStyle(fontSize: 12.0),),
-                                          const Spacer(),
-                                          Text(_getDealOwnerName(deal.dealOwnerId), style: const TextStyle(fontSize: 14.0)),
-                                        ],
-                                      ),
-                                    ),
-
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 30.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Ngày chốt hợp đồng:', style: TextStyle(fontSize: 12.0),),
-                                          const Spacer(),
-                                          Text(DateFormat('dd-MM-yyyy').format(deal.closedDate), style: const TextStyle(fontSize: 14.0),)
-                                        ],
-                                      ),
-                                    ),
-
-
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
@@ -405,7 +406,37 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                         ],
                                       ),
                                     ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Tên khách hàng:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(_getContactName(deal.contactId), style: const TextStyle(fontSize: 14.0),),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Người quản lý hợp đồng:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(_getDealOwnerName(deal.dealOwnerId), style: const TextStyle(fontSize: 14.0)),
+                                        ],
+                                      ),
+                                    ),
 
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Ngày chốt hợp đồng:', style: TextStyle(fontSize: 12.0),),
+                                          const Spacer(),
+                                          Text(DateFormat('dd-MM-yyyy').format(deal.closedDate), style: const TextStyle(fontSize: 14.0),)
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -653,4 +684,43 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     return name;
   }
 
+}
+
+class SortItems {
+  static const List<SortItem> firstItems = [asc, des];
+
+  static const asc = SortItem(text: 'Ngày chốt tăng dần', icon: Icons.arrow_drop_up);
+  static const des = SortItem(text: 'Ngày chốt giảm dần', icon: Icons.arrow_drop_down);
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        Icon(
+            item.icon,
+            color: Colors.white,
+            size: 22
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.asc:
+        return true;
+      case SortItems.des:
+      //Do something
+        return false;
+    }
+  }
 }

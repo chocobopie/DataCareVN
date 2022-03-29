@@ -1,7 +1,9 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
@@ -76,10 +78,18 @@ class _EmployeeLateExcuseListState extends State<EmployeeLateExcuseList> {
                       const SizedBox(width: 10.0,),
                       Expanded(
                         child: CustomOutlinedButton(
-                            title: fromDateToDateString,
-                            radius: 10.0,
-                            color: mainBgColor,
-                            onPressed: () async {
+                          title: 'Trạng thái',
+                          radius: 10,
+                          color: mainBgColor,
+                          onPressed: (){},
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomOutlinedButton(
+                          title: fromDateToDateString,
+                          radius: 10.0,
+                          color: mainBgColor,
+                          onPressed: () async {
                             final data = await Navigator.push(context, MaterialPageRoute(
                               builder: (context) => const SaleEmpDateFilter(),
                             ));
@@ -94,13 +104,33 @@ class _EmployeeLateExcuseListState extends State<EmployeeLateExcuseList> {
                           },
                         ),
                       ),
-                      Expanded(
-                        child: CustomOutlinedButton(
-                          title: 'Trạng thái',
-                          radius: 10,
+                      DropdownButton2(
+                        customButton: const Icon(
+                          Icons.sort,
+                          size: 40,
                           color: mainBgColor,
-                          onPressed: (){},
                         ),
+                        items: [
+                          ...SortItems.firstItems.map(
+                                (item) =>
+                                DropdownMenuItem<SortItem>(
+                                  value: item,
+                                  child: SortItems.buildItem(item),
+                                ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                        },
+                        itemHeight: 40,
+                        itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                        dropdownWidth: 240,
+                        dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                        dropdownDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: mainBgColor,
+                        ),
+                        dropdownElevation: 8,
+                        offset: const Offset(0, 8),
                       ),
                       IconButton(
                           onPressed: (){
@@ -235,5 +265,44 @@ class _EmployeeLateExcuseListState extends State<EmployeeLateExcuseList> {
         ],
       ),
     );
+  }
+}
+
+class SortItems {
+  static const List<SortItem> firstItems = [asc, des];
+
+  static const asc = SortItem(text: 'Ngày gửi đơn tăng dần', icon: Icons.arrow_drop_up);
+  static const des = SortItem(text: 'Ngày gửi đơn giảm dần', icon: Icons.arrow_drop_down);
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        Icon(
+            item.icon,
+            color: Colors.white,
+            size: 22
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.asc:
+        return true;
+      case SortItems.des:
+      //Do something
+        return false;
+    }
   }
 }
