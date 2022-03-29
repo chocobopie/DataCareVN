@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/models/issue.dart';
 import 'package:login_sample/models/temp/deal_temp.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/issue_list_view_model.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:number_paginator/number_paginator.dart';
+
+import 'employee_issue_detail.dart';
 
 class EmployeeReceivedIssue extends StatefulWidget {
   const EmployeeReceivedIssue({Key? key}) : super(key: key);
@@ -14,8 +20,9 @@ class EmployeeReceivedIssue extends StatefulWidget {
 }
 
 class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
-  bool isSearching = false;
 
+  List<Issue> issues = [];
+  bool isSearching = false;
   late String _fromDatetoDateString = 'Ngày deadline';
   DateTime? fromDate, toDate;
 
@@ -34,8 +41,20 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _getAllIssue();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: const Card(
+        child: NumberPaginator(
+            numberPages: 10
+        ),
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -104,7 +123,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.24),
+            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -130,7 +149,64 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                   ),
                 ),
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
-                child: Column(),
+                child: issues.isNotEmpty ? ListView.builder(
+                  itemBuilder: (context, index) {
+                    final issue = issues[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeIssueDetail()
+                          ));
+                        },
+                        child: Card(
+                          elevation: 10,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      const Text('Tiêu đề:'),
+                                      const Spacer(),
+                                      Text(issue.title),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: const <Widget>[
+                                      Text('Nhân viên giao:'),
+                                      Spacer(),
+                                      Text('Nguyễn Thanh Vân'),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      const Text('Deadline:'),
+                                      const Spacer(),
+                                      Text('Ngày ${DateFormat('dd-MM-yyyy').format(issue.dealineDate)}'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: issues.length,
+                ) : const Center(child: CircularProgressIndicator()),
               ),
             ),
           ),
@@ -184,5 +260,15 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
         ],
       ),
     );
+  }
+
+  void _getAllIssue() async {
+    List<Issue>? issueList = await IssueListViewModel().getAllIssue();
+
+    if(issueList != null){
+      setState(() {
+        issues.addAll(issueList);
+      });
+    }
   }
 }

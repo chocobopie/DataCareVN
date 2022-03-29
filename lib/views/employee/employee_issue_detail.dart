@@ -195,7 +195,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                             ),
                           ),
                           child: TextButton(onPressed: (){},
-                            child: const Text('Lưu', style: TextStyle(color: Colors.white),),
+                            child: const Text('Chỉnh sửa', style: TextStyle(color: Colors.white),),
                           ),
                           width: MediaQuery.of(context).size.width * 0.4,
                         ),

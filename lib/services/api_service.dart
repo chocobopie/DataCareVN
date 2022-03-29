@@ -17,6 +17,7 @@ import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/excuse_late.dart';
 import 'package:login_sample/models/excuse_late_status.dart';
 import 'package:login_sample/models/gender.dart';
+import 'package:login_sample/models/issue.dart';
 import 'package:login_sample/models/issue_permission.dart';
 import 'package:login_sample/models/lead_source.dart';
 import 'package:login_sample/models/payroll_permission.dart';
@@ -1112,6 +1113,22 @@ class ApiService {
       IssuePermission? issuePermission;
       print(issuePermission);
       return issuePermission;
+    }
+  }
+
+  //issue
+  Future<List<Issue>?> getAllIssue() async {
+    String url = stockUrl + 'issues';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print('Got all issue | 200');
+      return jsonResponse.map((data) => Issue.fromJson(data)).toList();
+    } else {
+      print('Failed to get all issue | 400');
+      List<Issue>? issueList;
+      return issueList;
     }
   }
 }

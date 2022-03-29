@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_list.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
 import 'package:number_paginator/number_paginator.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HrManagerAttendanceReportList extends StatefulWidget {
@@ -21,6 +24,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
 
   late DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  late Account _currentAccount;
 
   String _filterDayString = 'Ngày';
 
@@ -62,6 +66,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   @override
   void initState() {
     super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
   }
 
   @override
@@ -71,6 +76,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          if(_currentAccount.roleId == 0)
           Align(
             alignment: Alignment.bottomLeft,
             child: SpeedDial(

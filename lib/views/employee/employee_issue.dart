@@ -44,7 +44,8 @@ class _EmployeeIssueState extends State<EmployeeIssue> {
                       text: 'Vấn đề đã gửi',
                       colorsButton: const [Colors.greenAccent, Colors.white],
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeSentIssueList()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeSentIssueList()
+                        ));
                       },
                     ),
                   ),

@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
+import 'package:login_sample/models/issue.dart';
+import 'package:login_sample/services/api_service.dart';
+import 'package:login_sample/view_models/issue_list_view_model.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
@@ -8,6 +14,8 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/views/employee/employee_issue_add_new.dart';
 import 'package:login_sample/views/employee/employee_issue_detail.dart';
+import 'package:number_paginator/number_paginator.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeSentIssueList extends StatefulWidget {
   const EmployeeSentIssueList({Key? key}) : super(key: key);
@@ -18,13 +26,28 @@ class EmployeeSentIssueList extends StatefulWidget {
 
 class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
+  List<Issue> issues = [];
   bool isSearching = false;
   late String _fromDatetoDateString = 'Ngày deadline';
   DateTime? fromDate, toDate;
+  late Account _currentAccount;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getAllIssue();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: const Card(
+        child: NumberPaginator(
+            numberPages: 10
+        ),
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -95,7 +118,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.24),
+            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -121,7 +144,64 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                   ),
                 ),
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
-                child: Column(),
+                child: issues.isNotEmpty ? ListView.builder(
+                    itemBuilder: (context, index) {
+                      final issue = issues[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeIssueDetail()
+                            ));
+                          },
+                          child: Card(
+                            elevation: 10,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Tiêu đề:'),
+                                        const Spacer(),
+                                        Text(issue.title),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: const <Widget>[
+                                        Text('Nhân viên được giao:'),
+                                        Spacer(),
+                                        Text('Nguyễn Thành Tiến'),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Deadline:'),
+                                        const Spacer(),
+                                        Text('Ngày ${DateFormat('dd-MM-yyyy').format(issue.dealineDate)}'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: issues.length,
+                ) : const Center(child: CircularProgressIndicator()),
               ),
             ),
           ),
@@ -175,5 +255,15 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
         ],
       ),
     );
+  }
+
+  void _getAllIssue() async {
+    List<Issue>? issueList = await IssueListViewModel().getAllIssue();
+
+    if(issueList != null){
+      setState(() {
+        issues.addAll(issueList);
+      });
+    }
   }
 }

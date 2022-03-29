@@ -14,7 +14,7 @@ class Issue {
     required this.description,
     required this.createdDate,
     required this.dealineDate,
-    required this.maxPage,
+    this.maxPage,
   });
 
   int issueId;
@@ -25,7 +25,7 @@ class Issue {
   String description;
   DateTime createdDate;
   DateTime dealineDate;
-  int maxPage;
+  int? maxPage;
 
   factory Issue.fromJson(Map<String, dynamic> json) => Issue(
     issueId: json["issueId"],

@@ -71,7 +71,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-
           Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: Align(
