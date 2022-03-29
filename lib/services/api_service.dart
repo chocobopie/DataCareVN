@@ -699,7 +699,7 @@ class ApiService {
     }
   }
 
-  Future<List<Attendance>> getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
+  Future<List<Attendance>> getSelfAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
@@ -712,10 +712,29 @@ class ApiService {
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
       List jsonResponse = json.decode(response.body);
-      print('Got attendance list by accountId | 200');
+      print('Got self attendance list by accountId | 200');
       return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get attendance list");
+      throw Exception("Failed to get self attendance list");
+    }
+  }
+
+  Future<List<Attendance>?> getOtherAttendanceListByAccountId({required bool isRefresh, int? accountId, required int currentPage, DateTime? date, int? attendanceStatusId}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'attendances/other?account-id=${accountId ?? ''}&date=${date ?? ''}&attendance-status-id=${attendanceStatusId ?? ''}&page=$currentPage&limit=10';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Got other attendance list by accountId | 200');
+      return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
+    } else {
+      print('Failed to other attendance list by accountId | 400');
+      List<Attendance>? attendanceList;
+      return attendanceList;
     }
   }
 

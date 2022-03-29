@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/WorldTimeAPI.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
-import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/view_models/world_time_api_view_model.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
@@ -31,7 +29,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
   late double _timeHms;
   late final DateTime _today;
   bool isTook = false;
-  String takeAttendanceString = '';
+  String takeAttendanceString = '', attendanceStatus = '';
 
   List<UserAttendance> userLateExcuses = [
     UserAttendance(id: '1', name: 'Hồ Phượng Vy', team: 'Nhóm Kiều Trinh', department: 'Đào tạo', attendance: 'Mới'),
@@ -220,13 +218,15 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
   }
 
   void _getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
-    List<Attendance> listAttendance = await AttendanceListViewModel().getAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
+    List<Attendance> listAttendance = await AttendanceListViewModel().getSelfAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
     if(listAttendance.isNotEmpty){
       setState(() {
         _attendances.addAll(listAttendance);
         isTook = true;
-        takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
+        if(_attendances[0].attendanceStatusId == 3){
+          takeAttendanceString = 'Bạn chưa điểm danh cho hôm nay';
+        }
       });
     }else{
       setState(() {

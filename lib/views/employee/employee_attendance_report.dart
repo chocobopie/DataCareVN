@@ -282,7 +282,7 @@ class _EmployeeAttendanceReportState extends State<EmployeeAttendanceReport> {
   }
 
   void _getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
-    List<Attendance> listAttendance = await AttendanceListViewModel().getAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
+    List<Attendance> listAttendance = await AttendanceListViewModel().getSelfAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
     _attendances.clear();
     if(listAttendance.isNotEmpty){

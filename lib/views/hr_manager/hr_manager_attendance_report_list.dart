@@ -3,6 +3,8 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
@@ -11,6 +13,7 @@ import 'package:login_sample/views/hr_manager/hr_manager_attendance_list.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HrManagerAttendanceReportList extends StatefulWidget {
@@ -24,9 +27,14 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
 
   late DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  late Account _currentAccount;
+  final RefreshController _refreshController = RefreshController();
 
+  late Account _currentAccount;
+  late final List<Attendance> _attendances = [];
   String _filterDayString = 'Ngày';
+  bool _attendanceIsEmpty = false;
+
+  int _currentPage = 0, _maxPages = 0;
 
   List<UserAttendance> userAttendances = [
     UserAttendance(id: '1', name: 'Thân Quang Nhân', team: 'Nhóm Thúy Anh', department: 'Đào tạo', attendance: 'Đúng giờ'),
@@ -67,6 +75,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getOtherAttendanceListByAccountId(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
   }
 
   @override
@@ -105,14 +114,17 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
           ),
           Card(
             elevation: 10.0,
-            child: NumberPaginator(
-              numberPages: 10,
+            child: _maxPages > 0 ? NumberPaginator(
+              numberPages: _maxPages,
               buttonSelectedBackgroundColor: mainBgColor,
               onPageChange: (int index) {
                 setState(() {
+                  _currentPage = index;
+                  _attendances.clear();
                 });
+                _getOtherAttendanceListByAccountId(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
               },
-            ),
+            ) : null,
           ),
         ],
       ),
@@ -195,54 +207,70 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               ),
             ),
             margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
-            child: ListView(
-              children: const <Widget>[
-
-                //Báo cáo điểm danh ngày
-                // Padding(
-                //   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
-                //   child: SizedBox(
-                //     height: MediaQuery.of(context).size.height * 0.07,
-                //     child: IconTextButtonSmall2(
-                //       text: 'Báo cáo điểm danh ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
-                //       imageUrl: 'assets/images/attended-person.png',
-                //       colorsButton: const [Colors.blue, Colors.white],
-                //       onPressed: () {
-                //         DateTime _convertSelectDate = DateTime.parse( DateFormat('yyyy-MM-dd').format(_selectedDay) );
-                //         Navigator.push(context, MaterialPageRoute(
-                //             builder: (context) => HrManagerAttendanceList(
-                //               attendanceType:  'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
-                //               userAttendances: userAttendances,
-                //             ),
-                //         ));
-                //       },
-                //     ),
-                //   ),
-                // ),
-                // const SizedBox(height: 20.0,),
-
-                //Số đơn xin phép đi trễ
-                // Padding(
-                //   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
-                //   child: SizedBox(
-                //     height: MediaQuery.of(context).size.height * 0.07,
-                //     child: IconTextButtonSmall2(
-                //       text: 'Đơn xin phép đi trễ ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}',
-                //       imageUrl: 'assets/images/late-excuse.png',
-                //       colorsButton: const [Colors.grey, Colors.white],
-                //       onPressed: () {
-                //         Navigator.push(context, MaterialPageRoute(
-                //             builder: (context) => HrManagerLateExcuseList(
-                //               attendanceType: 'Xin phép đi trễ',
-                //               userLateExcuses: userLateExcuses,
-                //             )
-                //         ));
-                //       },
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
+            child: _attendances.isNotEmpty ? SmartRefresher(
+              controller: _refreshController,
+              enablePullUp: true,
+              onRefresh: () async {
+                setState(() {
+                  _attendances.clear();
+                });
+                _getOtherAttendanceListByAccountId(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
+              },
+              child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    final attendance = _attendances[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
+                      child: Card(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15.0)
+                          )
+                        ),
+                        elevation: 10.0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    const Text('Tên nhân viên:'),
+                                    const Spacer(),
+                                    Text('${attendance.accountId}'),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    const Text('Ngày:'),
+                                    const Spacer(),
+                                    Text('Ngày ${DateFormat('dd-MM-yyyy').format(attendance.date)}'),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    const Text('Trạng thái:'),
+                                    const Spacer(),
+                                    Text(attendanceStatusUtilities[attendance.attendanceStatusId]),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: _attendances.length,
+              ),
+            ) : const Center(child: CircularProgressIndicator()),
           ),
           Positioned(
             top: 0.0,
@@ -265,6 +293,23 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
         ],
       ),
     );
+  }
+
+  void _getOtherAttendanceListByAccountId({required bool isRefresh, int? accountId, required int currentPage, DateTime? date, int? attendanceStatusId}) async {
+    List<Attendance>? attendanceList = await AttendanceListViewModel().getOtherAttendanceListByAccountId(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, attendanceStatusId: attendanceStatusId, date: date);
+
+    if(attendanceList != null){
+      setState(() {
+        _attendances.clear();
+        _attendances.addAll(attendanceList);
+        _maxPages = _attendances[0].maxPage!;
+      });
+    }else{
+      setState(() {
+        _attendanceIsEmpty = true;
+      });
+    }
+
   }
 
   Widget _buildTableCalendarWithBuilders() {
@@ -327,4 +372,5 @@ class UserAttendance{
   String toString() {
     return 'id: $id, name: $name, team: $team, department: $department, attendance: $attendance';
   }
+
 }
