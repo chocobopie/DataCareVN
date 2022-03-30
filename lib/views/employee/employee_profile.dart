@@ -17,17 +17,17 @@ class EmployeeProfile extends StatefulWidget {
 
 class _EmployeeProfileState extends State<EmployeeProfile> {
 
-  late TextEditingController _email = TextEditingController();
-  late TextEditingController _fullname = TextEditingController();
-  late TextEditingController _phonenumber = TextEditingController();
-  late TextEditingController _address = TextEditingController();
-  late TextEditingController _citizenIdentityCardNumber = TextEditingController();
-  late TextEditingController _nationality = TextEditingController();
-  late TextEditingController _bankName = TextEditingController();
-  late TextEditingController _bankAccountName = TextEditingController();
-  late TextEditingController _bankAccountNumber = TextEditingController();
-  late TextEditingController _dateOfBirth = TextEditingController();
-  late TextEditingController _gender = TextEditingController();
+  late final TextEditingController _email = TextEditingController();
+  late final TextEditingController _fullname = TextEditingController();
+  late final TextEditingController _phonenumber = TextEditingController();
+  late final TextEditingController _address = TextEditingController();
+  late final TextEditingController _citizenIdentityCardNumber = TextEditingController();
+  late final TextEditingController _nationality = TextEditingController();
+  late final TextEditingController _bankName = TextEditingController();
+  late final TextEditingController _bankAccountName = TextEditingController();
+  late final TextEditingController _bankAccountNumber = TextEditingController();
+  late final TextEditingController _dateOfBirth = TextEditingController();
+  late final TextEditingController _gender = TextEditingController();
 
   final bool _readOnly = true;
   late Account _currentAccount;
@@ -78,11 +78,11 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
               child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: _currentAccount != null ? ListView(
+                  child: ListView(
                     children: <Widget>[
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.email!.isEmpty ? 'Chưa cập nhật' : _currentAccount.email!,
+                          text: _currentAccount.email == null ? 'Chưa cập nhật' : _currentAccount.email!,
                           title: 'Email',
                           readonly: _readOnly,
                           textEditingController: _email
@@ -90,7 +90,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.fullname!.isEmpty ? 'Chưa cập nhật' : _currentAccount.fullname!,
+                          text: _currentAccount.fullname == null ? 'Chưa cập nhật' : _currentAccount.fullname!,
                           title: 'Họ và tên',
                           readonly: _readOnly,
                           textEditingController: _fullname
@@ -98,7 +98,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.phoneNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.phoneNumber!,
+                          text: _currentAccount.phoneNumber == null ? 'Chưa cập nhật' : _currentAccount.phoneNumber!,
                           title: 'Số điện thoại',
                           readonly: _readOnly,
                           textEditingController: _phonenumber
@@ -106,7 +106,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.address!.isEmpty ? 'Chưa cập nhật' : _currentAccount.address!,
+                          text: _currentAccount.address == null ? 'Chưa cập nhật' : _currentAccount.address!,
                           title: 'Địa chỉ',
                           readonly: _readOnly,
                           textEditingController: _address
@@ -114,7 +114,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.citizenIdentityCardNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.citizenIdentityCardNumber!,
+                          text: _currentAccount.citizenIdentityCardNumber == null ? 'Chưa cập nhật' : _currentAccount.citizenIdentityCardNumber!,
                           title: 'CMND hoặc CCCD',
                           readonly: _readOnly,
                           textEditingController: _citizenIdentityCardNumber
@@ -122,7 +122,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.nationality!.isEmpty ? 'Chưa cập nhật' : _currentAccount.nationality!,
+                          text: _currentAccount.nationality == null ? 'Chưa cập nhật' : _currentAccount.nationality!,
                           title: 'Quốc tịch',
                           readonly: _readOnly,
                           textEditingController: _nationality
@@ -130,7 +130,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.bankName!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankName!,
+                          text: _currentAccount.bankName == null ? 'Chưa cập nhật' : _currentAccount.bankName!,
                           title: 'Tên ngân hàng',
                           readonly: _readOnly,
                           textEditingController: _bankName
@@ -138,7 +138,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.bankAccountName!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankAccountName!,
+                          text: _currentAccount.bankAccountName == null ? 'Chưa cập nhật' : _currentAccount.bankAccountName!,
                           title: 'Tên chủ tài khoản',
                           readonly: _readOnly,
                           textEditingController: _bankAccountName
@@ -146,7 +146,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                       const SizedBox(height: 20.0,),
 
                       CustomEditableTextFormField(
-                          text: _currentAccount.bankAccountNumber!.isEmpty ? 'Chưa cập nhật' : _currentAccount.bankAccountNumber!,
+                          text: _currentAccount.bankAccountNumber == null ? 'Chưa cập nhật' : _currentAccount.bankAccountNumber!,
                           title: 'Số tài khoản',
                           readonly: _readOnly,
                           textEditingController: _bankAccountNumber
@@ -216,7 +216,7 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
 
 
                     ],
-                  ) : const Center(child: CircularProgressIndicator())
+                  ),
               )),
           Positioned(
             top: 0.0,

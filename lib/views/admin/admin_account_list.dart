@@ -212,34 +212,34 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   _getFilter(isRefresh: true);
                                 },
                             ),
-                            DropdownButton2(
-                              customButton: const Icon(
-                                Icons.sort,
-                                size: 40,
-                                color: mainBgColor,
-                              ),
-                              items: [
-                                ...SortItems.firstItems.map(
-                                      (item) =>
-                                      DropdownMenuItem<SortItem>(
-                                        value: item,
-                                        child: SortItems.buildItem(item),
-                                      ),
-                                ),
-                              ],
-                              onChanged: (value) {
-                              },
-                              itemHeight: 40,
-                              itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                              dropdownWidth: 250,
-                              dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                              dropdownDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: mainBgColor,
-                              ),
-                              dropdownElevation: 8,
-                              offset: const Offset(0, 8),
-                            ),
+                            // DropdownButton2(
+                            //   customButton: const Icon(
+                            //     Icons.sort,
+                            //     size: 40,
+                            //     color: mainBgColor,
+                            //   ),
+                            //   items: [
+                            //     ...SortItems.firstItems.map(
+                            //           (item) =>
+                            //           DropdownMenuItem<SortItem>(
+                            //             value: item,
+                            //             child: SortItems.buildItem(item),
+                            //           ),
+                            //     ),
+                            //   ],
+                            //   onChanged: (value) {
+                            //   },
+                            //   itemHeight: 40,
+                            //   itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                            //   dropdownWidth: 250,
+                            //   dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                            //   dropdownDecoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.circular(25),
+                            //     color: mainBgColor,
+                            //   ),
+                            //   dropdownElevation: 8,
+                            //   offset: const Offset(0, 8),
+                            // ),
                             IconButton(
                               icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
                               onPressed: () {

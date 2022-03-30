@@ -16,7 +16,6 @@ class SideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double widthDrawer = MediaQuery.of(context).size.width * 0.65;
-    double logoutHeight = MediaQuery.of(context).size.height * 0.55;
     return Drawer(
       child: Container(
         color: mainBgColor,
