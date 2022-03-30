@@ -365,6 +365,46 @@ class ApiService {
     }
   }
 
+  Future<Account?> updateAnAccount(Account account) async{
+    String url = stockUrl + 'accounts/${account.accountId}';
+
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "accountId": account.accountId,
+        "email": account.email,
+        "fullname": account.fullname,
+        "phoneNumber": account.phoneNumber,
+        "address": account.address,
+        "citizenIdentityCardNumber": account.citizenIdentityCardNumber,
+        "nationality": account.nationality,
+        "bankName": account.bankName,
+        "bankAccountName": account.bankAccountName,
+        "bankAccountNumber": account.bankAccountNumber,
+        "roleId": account.roleId,
+        "blockId": account.blockId,
+        "departmentId": account.departmentId,
+        "teamId": account.teamId,
+        "permissionId": account.permissionId,
+        "statusId": account.statusId,
+        "genderId": account.genderId,
+        "dateOfBirth": account.dateOfBirth?.toIso8601String()
+      }),
+    );
+
+    if(response.statusCode == 200){
+      final jsonResponse = json.decode(response.body);
+      print('Update account profile successfully | 200');
+      return Account.fromJson(jsonResponse);
+    }else{
+      print('Update account profile failed | 400');
+      Account? account;
+      return account;
+    }
+  }
+
   Future<List<Account>> getAllAccounts({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId}) async {
     if(isRefresh == true){
       currentPage = 0;
@@ -435,6 +475,8 @@ class ApiService {
       throw Exception("Failed to get all accounts by fullname");
     }
   }
+
+
 
   // Future<Account> updateAnAccount({required Account account}) async {
   //   String url = stockUrl + 'accounts/${account.accountId}';

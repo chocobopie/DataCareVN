@@ -72,6 +72,15 @@ List<String> saleEmpUpdateDeletePermNames = [
   'Chỉ trong nhóm',
   'Chỉ trong phòng ban'
 ];
+List<String> saleEmpUpdateDeletePermTeamOnlyNames = [
+  'Không cho phép',
+  'Chỉ bản thân',
+  'Chỉ trong nhóm',
+];
+List<String> saleEmpUpdateDeletePermSelfOnlyNames = [
+  'Không cho phép',
+  'Chỉ bản thân',
+];
 List<String> hrInternViewPermNames = [
   'Chỉ trong phòng ban',
   'Tất cả'

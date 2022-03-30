@@ -13,6 +13,7 @@ class CustomDropdownFormField2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField2(
+      key: UniqueKey(),
       decoration: InputDecoration(
         focusedErrorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: borderColor == null ? Colors.grey.shade300 : borderColor!, width: 2),

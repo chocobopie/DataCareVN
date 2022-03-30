@@ -19,4 +19,13 @@ class AccountViewModel with ChangeNotifier{
 
     return account;
   }
+
+  Future<Account?> updateAnAccount(Account account) async {
+    Account? accountTemp = await ApiService().updateAnAccount(account);
+
+    notifyListeners();
+
+    return accountTemp;
+  }
+
 }

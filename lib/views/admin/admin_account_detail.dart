@@ -15,6 +15,7 @@ import 'package:login_sample/models/permission.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/account_view_model.dart';
 import 'package:login_sample/view_models/permission_view_model.dart';
 import 'package:login_sample/views/admin/admin_block_filter.dart';
 import 'package:login_sample/views/admin/admin_department_filter.dart';
@@ -65,6 +66,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
   int? _contactCreateId, _contactViewId, _contactUpdateId, _contactDeleteId, _dealCreateId, _dealViewId, _dealUpdateId, _dealDeleteId, _issueCreateId, _issueViewId, _issueUpdateId, _issueDeleteId;
   int? _accountViewId, _accountCreateId, _accountUpdateId, _accountDeleteId, _attendanceViewId, _attendanceUpdateId;
+  int? _filterViewId;
+
+  final GlobalKey<FormFieldState> _key = GlobalKey();
 
   @override
   void initState() {
@@ -315,12 +319,76 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             } : null : null,
                           ),
                         ),
+                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: CustomExpansionTile(
+                            label: 'Quyền xem thông tin khách hàng & hợp đồng & vấn đề',
+                            colors: const [Colors.red, Colors.white],
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5.0, left: 15, right: 15, bottom: 10.0),
+                                child: CustomDropdownFormField2(
+                                    label: 'Xem',
+                                    hintText: _filterViewId != null ? Text( permissionStatusesNameUtilities[_filterViewId!] ) : const Text(''),
+                                    items: saleEmpViewPermNames,
+                                    onChanged: _readOnly != true ? (value) async {
+                                      for(int i = 0; i < permissionStatuses.length; i++){
+                                        if(value.toString() == permissionStatuses[i].name){
+                                          setState(() {
+                                            _filterViewId = permissionStatuses[i].permissionStatusId;
+
+
+                                            if(_contactUpdateId != null){if(_contactUpdateId! > _filterViewId!){
+                                                _contactUpdateId = _filterViewId!;
+                                            }}
+                                            if(_contactDeleteId != null){if(_contactDeleteId! > _filterViewId!){
+                                              _contactDeleteId = _filterViewId!;
+                                            }}
+
+                                            if(_dealUpdateId != null){if(_dealUpdateId! > _filterViewId!){
+                                              _dealUpdateId = _filterViewId!;
+                                            }}
+                                            if(_dealDeleteId != null){if(_dealDeleteId! > _filterViewId!){
+                                              _dealDeleteId = _filterViewId!;
+                                            }}
+
+                                            if(_issueUpdateId != null){if(_issueUpdateId! > _filterViewId!){
+                                              _issueUpdateId = _filterViewId!;
+                                            }}
+                                            if(_issueDeleteId != null){if(_issueDeleteId! > _filterViewId!){
+                                              _issueDeleteId = _filterViewId!;
+                                            }}
+
+                                            if(_contactPermission!.update > _filterViewId! ){_contactUpdateId = _filterViewId!;}
+                                            if(_contactPermission!.delete > _filterViewId! ){_contactDeleteId = _filterViewId!;}
+
+                                            if(_dealPermission!.update > _filterViewId! ){_dealUpdateId = _filterViewId!;}
+                                            if(_dealPermission!.delete > _filterViewId! ){_dealDeleteId = _filterViewId!;}
+
+                                            if(_issuePermission!.update > _filterViewId! ){_issueUpdateId = _filterViewId!;}
+                                            if(_issuePermission!.delete > _filterViewId! ){_issueDeleteId = _filterViewId!;}
+
+
+                                          });
+                                          _contactViewId = _filterViewId;
+                                          _dealViewId = _filterViewId;
+                                          _issueViewId = _filterViewId;
+                                        }
+                                      }
+                                    } : null,
+                                ),
+                              ),
+                            ],
+                        ),
+                      ),
 
                       //Quyền quản lý thông tin khách hàng
-                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6)
+                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5)
                        Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
+                            key: _key,
                             label: 'Quyền quản lý thông tin khách hàng',
                             colors: const [Colors.yellow, Colors.white],
                             children: <Widget>[
@@ -342,29 +410,31 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                     } : null,
                                 ) : null,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                                child: CustomDropdownFormField2(
-                                    label: 'Xem',
-                                    hintText: _contactPermission != null ? Text(permissionStatusesNameUtilities[_contactViewId == null ? _contactPermission!.view : _contactViewId!]) : const Text(''),
-                                    items: saleEmpViewPermNames,
-                                    onChanged: _readOnly != true ? (value){
-                                      for(int i = 0; i < permissionStatuses.length; i++){
-                                        if(value.toString() == permissionStatuses[i].name){
-                                          setState(() {
-                                            _contactViewId = permissionStatuses[i].permissionStatusId;
-                                          });
-                                        }
-                                      }
-                                    } : null,
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                              //   child: CustomDropdownFormField2(
+                              //       label: 'Xem',
+                              //       hintText: _contactPermission != null ? Text(permissionStatusesNameUtilities[_contactViewId == null ? _contactPermission!.view : _contactViewId!]) : const Text(''),
+                              //       items: saleEmpViewPermNames,
+                              //       onChanged: _readOnly != true ? (value){
+                              //         for(int i = 0; i < permissionStatuses.length; i++){
+                              //           if(value.toString() == permissionStatuses[i].name){
+                              //             setState(() {
+                              //               _contactViewId = permissionStatuses[i].permissionStatusId;
+                              //             });
+                              //           }
+                              //         }
+                              //       } : null,
+                              //   ),
+                              // ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                 child: _currentEmpAccount.roleId != 6 ?  CustomDropdownFormField2(
                                     label: 'Chỉnh sửa',
                                     hintText: _contactPermission != null ? Text(permissionStatusesNameUtilities[_contactUpdateId == null ? _contactPermission!.update : _contactUpdateId!]) : const Text(''),
-                                    items: saleEmpUpdateDeletePermNames,
+                                    items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
+                                     : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
+                                     : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
                                     onChanged: _readOnly != true ? (value){
                                       for(int i = 0; i < permissionStatuses.length; i++){
                                         if(value.toString() == permissionStatuses[i].name){
@@ -381,7 +451,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 child:_currentEmpAccount.roleId != 6 ?  CustomDropdownFormField2(
                                     label: 'Xóa',
                                     hintText: _contactPermission != null ? Text(permissionStatusesNameUtilities[_contactDeleteId == null ? _contactPermission!.delete : _contactDeleteId!]) : const Text(''),
-                                    items: saleEmpUpdateDeletePermNames,
+                                    items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
+                                        : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
+                                        : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
                                     onChanged: _readOnly != true ? (value){
                                       for(int i = 0; i < permissionStatuses.length; i++){
                                         if(value.toString() == permissionStatuses[i].name){
@@ -398,7 +470,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       //Quyền quản lý họp đồng
-                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6)
+                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: CustomExpansionTile(
@@ -422,29 +494,31 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                       } : null,
                                   ) : null,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                                  child: CustomDropdownFormField2(
-                                      label: 'Xem',
-                                      hintText: _dealPermission != null ? Text(permissionStatusesNameUtilities[_dealViewId == null ? _dealPermission!.view : _dealViewId!]) : const Text(''),
-                                      items: saleEmpViewPermNames,
-                                      onChanged: _readOnly != true ? (value){
-                                        for(int i = 0; i < permissionStatuses.length; i++){
-                                          if(value.toString() == permissionStatuses[i].name){
-                                            setState(() {
-                                              _dealViewId = permissionStatuses[i].permissionStatusId;
-                                            });
-                                          }
-                                        }
-                                      } : null,
-                                  ),
-                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                //   child: CustomDropdownFormField2(
+                                //       label: 'Xem',
+                                //       hintText: _dealPermission != null ? Text(permissionStatusesNameUtilities[_dealViewId == null ? _dealPermission!.view : _dealViewId!]) : const Text(''),
+                                //       items: saleEmpViewPermNames,
+                                //       onChanged: _readOnly != true ? (value){
+                                //         for(int i = 0; i < permissionStatuses.length; i++){
+                                //           if(value.toString() == permissionStatuses[i].name){
+                                //             setState(() {
+                                //               _dealViewId = permissionStatuses[i].permissionStatusId;
+                                //             });
+                                //           }
+                                //         }
+                                //       } : null,
+                                //   ),
+                                // ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: _currentEmpAccount.roleId != 6 ?  CustomDropdownFormField2(
                                       label: 'Chỉnh sửa',
                                       hintText: _dealPermission != null ? Text(permissionStatusesNameUtilities[_dealUpdateId == null ?_dealPermission!.update : _dealUpdateId!]) : const Text(''),
-                                      items: saleEmpUpdateDeletePermNames,
+                                      items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
+                                          : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
+                                          : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -461,7 +535,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   child: _currentEmpAccount.roleId != 6 ?  CustomDropdownFormField2(
                                       label: 'Xóa',
                                       hintText: _dealPermission != null ? Text(permissionStatusesNameUtilities[_dealDeleteId == null ?_dealPermission!.delete : _dealDeleteId!]) : const Text(''),
-                                      items: saleEmpUpdateDeletePermNames,
+                                      items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
+                                          : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
+                                          : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -478,7 +554,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
 
                       //Quyền quả lý vấn đề
-                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6)
+                      if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
@@ -502,29 +578,31 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                       } : null,
                                   ) : null,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-                                  child: CustomDropdownFormField2(
-                                      label: 'Xem',
-                                      hintText: _issuePermission != null ? Text(permissionStatusesNameUtilities[_issueViewId == null ? _issuePermission!.view : _issueViewId!]) : const Text(''),
-                                      items: saleEmpViewPermNames,
-                                      onChanged: _readOnly != true ? (value){
-                                        for(int i = 0; i < permissionStatuses.length; i++){
-                                          if(value.toString() == permissionStatuses[i].name){
-                                            setState(() {
-                                              _issueViewId = permissionStatuses[i].permissionStatusId;
-                                            });
-                                          }
-                                        }
-                                      } : null,
-                                  ),
-                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+                                //   child: CustomDropdownFormField2(
+                                //       label: 'Xem',
+                                //       hintText: _issuePermission != null ? Text(permissionStatusesNameUtilities[_issueViewId == null ? _issuePermission!.view : _issueViewId!]) : const Text(''),
+                                //       items: saleEmpViewPermNames,
+                                //       onChanged: _readOnly != true ? (value){
+                                //         for(int i = 0; i < permissionStatuses.length; i++){
+                                //           if(value.toString() == permissionStatuses[i].name){
+                                //             setState(() {
+                                //               _issueViewId = permissionStatuses[i].permissionStatusId;
+                                //             });
+                                //           }
+                                //         }
+                                //       } : null,
+                                //   ),
+                                // ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
                                   child: _currentEmpAccount.roleId != 6 ? CustomDropdownFormField2(
                                       label: 'Chỉnh sửa',
                                       hintText: _issuePermission != null ? Text(permissionStatusesNameUtilities[_issueUpdateId == null ? _issuePermission!.update : _issueUpdateId!]) : const Text(''),
-                                      items: saleEmpUpdateDeletePermNames,
+                                      items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
+                                          : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
+                                          : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -541,7 +619,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   child: _currentEmpAccount.roleId != 6 ? CustomDropdownFormField2(
                                       label: 'Xóa',
                                       hintText: _issuePermission != null ? Text(permissionStatusesNameUtilities[_issueDeleteId == null ? _issuePermission!.delete : _issueDeleteId!]) : const Text(''),
-                                      items: saleEmpUpdateDeletePermNames,
+                                      items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
+                                          : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
+                                          : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
                                       onChanged: _readOnly != true ? (value){
                                         for(int i = 0; i < permissionStatuses.length; i++){
                                           if(value.toString() == permissionStatuses[i].name){
@@ -565,23 +645,23 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                               label: 'Quyền quản lý tài khoản nhân viên',
                               colors: const [Colors.blue, Colors.white],
                               children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
-                                  child: CustomDropdownFormField2(
-                                    label: 'Tạo mới',
-                                    hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountCreateId == null ? _accountPermission!.create : _accountCreateId!]) : const Text(''),
-                                    items: hrInternCreatePermNames,
-                                    onChanged: _readOnly != true ? (value){
-                                      for(int i = 0; i < permissionStatuses.length; i++){
-                                        if(value.toString() == permissionStatuses[i].name){
-                                          setState(() {
-                                            _accountCreateId = permissionStatuses[i].permissionStatusId;
-                                          });
-                                        }
-                                      }
-                                    } : null,
-                                  ),
-                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
+                                //   child: CustomDropdownFormField2(
+                                //     label: 'Tạo mới',
+                                //     hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountCreateId == null ? _accountPermission!.create : _accountCreateId!]) : const Text(''),
+                                //     items: hrInternCreatePermNames,
+                                //     onChanged: _readOnly != true ? (value){
+                                //       for(int i = 0; i < permissionStatuses.length; i++){
+                                //         if(value.toString() == permissionStatuses[i].name){
+                                //           setState(() {
+                                //             _accountCreateId = permissionStatuses[i].permissionStatusId;
+                                //           });
+                                //         }
+                                //       }
+                                //     } : null,
+                                //   ),
+                                // ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
                                   child: CustomDropdownFormField2(
@@ -599,40 +679,40 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                       } : null,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
-                                  child: CustomDropdownFormField2(
-                                    label: 'Chỉnh sủa',
-                                    hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountUpdateId == null ? _accountPermission!.update : _accountUpdateId!]) : const Text(''),
-                                    items: hrInternUpdateDeletePermNames,
-                                    onChanged: _readOnly != true ? (value){
-                                      for(int i = 0; i < permissionStatuses.length; i++){
-                                        if(value.toString() == permissionStatuses[i].name){
-                                          setState(() {
-                                            _accountUpdateId = permissionStatuses[i].permissionStatusId;
-                                          });
-                                        }
-                                      }
-                                    } : null,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
-                                  child: CustomDropdownFormField2(
-                                    label: 'Xóa',
-                                    hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountDeleteId == null ? _accountPermission!.delete : _accountDeleteId!]) : const Text(''),
-                                    items: hrInternUpdateDeletePermNames,
-                                    onChanged: _readOnly != true ? (value){
-                                      for(int i = 0; i < permissionStatuses.length; i++){
-                                        if(value.toString() == permissionStatuses[i].name){
-                                          setState(() {
-                                            _accountDeleteId = permissionStatuses[i].permissionStatusId;
-                                          });
-                                        }
-                                      }
-                                    } : null,
-                                  ),
-                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
+                                //   child: CustomDropdownFormField2(
+                                //     label: 'Chỉnh sủa',
+                                //     hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountUpdateId == null ? _accountPermission!.update : _accountUpdateId!]) : const Text(''),
+                                //     items: hrInternUpdateDeletePermNames,
+                                //     onChanged: _readOnly != true ? (value){
+                                //       for(int i = 0; i < permissionStatuses.length; i++){
+                                //         if(value.toString() == permissionStatuses[i].name){
+                                //           setState(() {
+                                //             _accountUpdateId = permissionStatuses[i].permissionStatusId;
+                                //           });
+                                //         }
+                                //       }
+                                //     } : null,
+                                //   ),
+                                // ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15.0),
+                                //   child: CustomDropdownFormField2(
+                                //     label: 'Xóa',
+                                //     hintText: _accountPermission != null ? Text(permissionStatusesNameUtilities[_accountDeleteId == null ? _accountPermission!.delete : _accountDeleteId!]) : const Text(''),
+                                //     items: hrInternUpdateDeletePermNames,
+                                //     onChanged: _readOnly != true ? (value){
+                                //       for(int i = 0; i < permissionStatuses.length; i++){
+                                //         if(value.toString() == permissionStatuses[i].name){
+                                //           setState(() {
+                                //             _accountDeleteId = permissionStatuses[i].permissionStatusId;
+                                //           });
+                                //         }
+                                //       }
+                                //     } : null,
+                                //   ),
+                                // ),
                               ]
                           ),
                         ),
@@ -762,6 +842,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             )),
 
                           const SizedBox(width: 5.0,),
+
                           if(_currentAccount.roleId == 0)
                           Expanded(
                             child: CustomTextButton(
@@ -777,6 +858,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
                                     if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5){
                                       _updateSaleTechnicalEmpPermission();
+                                      if(_filterTeam != null || _filterDepartment != null || _filterRole != null){
+                                        _updateSaleEmpAccount();
+                                      }
                                     }
 
                                     if(_currentEmpAccount.roleId == 6){
@@ -881,16 +965,15 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
         departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId
     );
 
-
     Permission permissionTechnicalEmp = Permission(
         permissionId: _permission!.permissionId,
         contactPermissionId: _permission!.contactPermissionId,
         dealPermissionId: _permission!.dealPermissionId,
         issuePermissionId: _permission!.issuePermissionId,
-        departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId,
-        teamId: _filterTeamPerm?.teamId == null ? _permission!.teamId : _filterTeam!.teamId,
+        departmentId: _filterDepartmentPerm?.departmentId ?? _permission?.departmentId,
+        teamId: _filterTeamPerm?.teamId ?? _permission?.teamId,
     );
-    print(_filterTeam?.name);
+    print(_filterTeamPerm?.teamId);
 
     if(_currentEmpAccount.roleId == 2){
       PermissionViewModel().updatePermission(permission: permissionHrIntern);
@@ -920,6 +1003,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
       genderId: _currentEmpAccount.genderId,
       dateOfBirth: _currentEmpAccount.dateOfBirth,
     );
+
+    AccountViewModel().updateAnAccount(account);
   }
 
   void _updateSaleTechnicalEmpPermission(){
@@ -965,13 +1050,13 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
 
   void _updateHrInternPermission(){
-    AccountPermission accountPermission = AccountPermission(
-        accountPermissionId: _accountPermission!.accountPermissionId,
-        view: _accountViewId == null ? _accountPermission!.view : _accountViewId!,
-        create: _accountCreateId == null ? _accountPermission!.create : _accountCreateId!,
-        update: _accountUpdateId == null ? _accountPermission!.update : _accountUpdateId!,
-        delete: _accountDeleteId == null ? _accountPermission!.delete : _accountDeleteId!
-    );
+    // AccountPermission accountPermission = AccountPermission(
+    //     accountPermissionId: _accountPermission!.accountPermissionId,
+    //     view: _accountViewId == null ? _accountPermission!.view : _accountViewId!,
+    //     create: _accountCreateId == null ? _accountPermission!.create : _accountCreateId!,
+    //     update: _accountUpdateId == null ? _accountPermission!.update : _accountUpdateId!,
+    //     delete: _accountDeleteId == null ? _accountPermission!.delete : _accountDeleteId!
+    // );
 
     AttendancePermission attendancePermission = AttendancePermission(
         attendancePermissionId: _attendancePermission!.attendancePermissionId,
@@ -979,7 +1064,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
         update: _attendanceUpdateId == null ? _attendancePermission!.update : _attendanceUpdateId!
     );
 
-    PermissionViewModel().updateAccountPermission(accountPermission: accountPermission);
+    // PermissionViewModel().updateAccountPermission(accountPermission: accountPermission);
     PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
   }
 
@@ -1027,6 +1112,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
     setState(() {
       _contactPermission = contactPermission;
+      _filterViewId = _contactPermission!.view;
     });
   }
   void _getDealPermissionById({required int dealPermissionId}) async {
