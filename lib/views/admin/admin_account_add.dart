@@ -6,11 +6,13 @@ import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/views/admin/admin_department_filter.dart';
+import 'package:login_sample/views/admin/admin_team_filter.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomExpansionTile.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 
 import 'admin_role_filter.dart';
@@ -85,49 +87,96 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                     ),
                     const SizedBox(height: 20.0,),
                     //============================================================Chọn chức vụ===============================================================
-                    CustomEditableTextFormField(
-                        borderColor: mainBgColor,
-                        text: _filterRoleString,
-                        title: 'Chức vụ',
-                        readonly: true,
-                        onTap: () async {
-                        final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter(isHrManagerFilter: true,) ));
-                        if( data != null ){
-                          setState(() {
-                            _filterRole = data;
-                            _filterRoleString = _filterRole!.name;
-                            if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5){
-                              _filterBlockId == 1;
-                            }
-                            if(_filterRole!.roleId == 2){
-                              _filterBlockId == 0;
-                            }
-                            if(_filterRole!.roleId == 6){
-                              _filterBlockId == 2;
-                            }
-                          });
-                        }
-                      },
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: _filterRoleString,
+                          title: 'Chức vụ',
+                          readonly: true,
+                          onTap: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter(isHrManagerFilter: true,) ));
+                          if( data != null ){
+                            setState(() {
+                              _filterRole = data;
+                              _filterRoleString = _filterRole!.name;
+                              if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5){
+                                _filterBlockId = 1;
+                              }
+                              if(_filterRole!.roleId == 2){
+                                _filterBlockId = 0;
+                              }
+                              if(_filterRole!.roleId == 6){
+                                _filterBlockId = 2;
+                              }
+                              _filterDepartmentString = '';
+                              _filterDepartment = null;
+                              _filterTeamString = '';
+                              _filterTeam = null;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    if(_filterBlockId != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: CustomReadOnlyTextField(
+                          text: getBlock(blockId: _filterBlockId!).name,
+                          title: 'Khối',
+                      ),
                     ),
                     //============================================================Chọn phòng ban===============================================================
-                    if(_filterBlockId != 0)
-                    CustomEditableTextFormField(
-                      borderColor: mainBgColor,
-                      text: _filterDepartmentString,
-                      title: 'Phòng ban',
-                      readonly: true,
-                      onTap: () async {
-                        final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminDepartmentFilter(departmentList: departmentList)
-                        ));
-                        if( data != null ){
-                          setState(() {
-
-                          });
-                        }
-                      },
+                    if(_filterBlockId != null)
+                      if( getDepartmentListInBlock(block: getBlock(blockId: _filterBlockId!)).isNotEmpty )
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: CustomEditableTextFormField(
+                        borderColor: mainBgColor,
+                        text: _filterDepartmentString,
+                        title: 'Phòng ban',
+                        readonly: true,
+                        onTap: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDepartmentFilter(departmentList: getDepartmentListInBlock(block: getBlock(blockId: _filterBlockId!)) )
+                          ));
+                          if( data != null ){
+                            setState(() {
+                              setState(() {
+                                _filterDepartment = data;
+                                _filterDepartmentString = _filterDepartment!.name;
+                                _filterTeamString = '';
+                                _filterTeam = null;
+                              });
+                            });
+                          }
+                        },
+                      ),
                     ),
                     //============================================================Chọn nhóm===============================================================
-                    const SizedBox(height: 20.0,),
+                    if(_filterRole != null)
+                    if(_filterDepartment != null && _filterRole!.roleId != 3)
+                      if( getTeamListInDepartment(department: _filterDepartment!).isNotEmpty )
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: CustomEditableTextFormField(
+                        borderColor: mainBgColor,
+                        text: _filterTeamString,
+                        title: 'Nhóm',
+                        readonly: true,
+                        onTap: () async {
+                          final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(teamList: getTeamListInDepartment(department: _filterDepartment!))
+                          ));
+                          if( data != null ){
+                            setState(() {
+                              setState(() {
+                                _filterTeam = data;
+                                _filterTeamString = _filterTeam!.name;
+                              });
+                            });
+                          }
+                        },
+                      ),
+                    ),
                     //============================================================Quyền truy cập của nhân viên Sale, KTV===================================
                     if(_filterRole != null)
                     if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId == 6)
