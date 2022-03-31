@@ -99,15 +99,15 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                   ),
                   const SizedBox(height: 20.0,),
 
-                  // if(_currentAccount.roleId == 1)
-                  // IconTextButtonSmall2(
-                  //     imageUrl: 'assets/images/payroll-management.png',
-                  //     text: 'Quản lý lương của các nhân viên',
-                  //     colorsButton: const [Colors.green, Colors.white],
-                  //     onPressed: (){
-                  //       Navigator.push(context, MaterialPageRoute(builder: (context) => const HrManagerPayrollList()));
-                  //     }
-                  // ),
+                  if(_currentAccount.roleId == 1)
+                  IconTextButtonSmall2(
+                      imageUrl: 'assets/images/payroll-management.png',
+                      text: 'Quản lý lương của các nhân viên',
+                      colorsButton: const [Colors.green, Colors.white],
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HrManagerPayrollList()));
+                      }
+                  ),
 
                   // if(_currentAccount.roleId ==3)
                   //   IconTextButtonSmall2(

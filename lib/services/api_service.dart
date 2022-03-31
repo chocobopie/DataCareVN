@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:login_sample/models/RegisterAccount.dart';
 import 'package:login_sample/models/WorldTimeAPI.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/account_permission.dart';
@@ -258,8 +259,7 @@ class ApiService {
   Future<Deal> createNewDeal(Deal deal) async {
     String url = 'https://trungpd2022.azurewebsites.net/api/v1/deals';
 
-    final response = await http.post(
-      Uri.parse(url),
+    final response = await http.post(Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -362,6 +362,49 @@ class ApiService {
       return Account.fromJson(jsonResponse);
     } else {
       throw Exception("Failed to account by accountId");
+    }
+  }
+
+  Future<RegisterAccount?> registerAnAccount(RegisterAccount registerAccount) async {
+    String url = stockUrl + 'accounts';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "email": registerAccount.email,
+        "roleId": registerAccount.roleId,
+        "blockId": registerAccount.blockId,
+        "departmentId": registerAccount.departmentId,
+        "teamId": registerAccount.teamId,
+        "viewAccountPermissionId": registerAccount.viewAccountPermissionId,
+        "viewAttendancePermissionId": registerAccount.viewAttendancePermissionId,
+        "updateAttendancePermissionId": registerAccount.updateAttendancePermissionId,
+        "hrInternManageDepartmentId": registerAccount.hrInternManageDepartmentId,
+        "createContactPermissionId": registerAccount.createContactPermissionId,
+        "viewContactPermissionId": registerAccount.viewContactPermissionId,
+        "updateContactPermissionId": registerAccount.updateContactPermissionId,
+        "deleteContactPermissionId": registerAccount.deleteContactPermissionId,
+        "createDealPermissionId": registerAccount.createDealPermissionId,
+        "viewDealPermissionId": registerAccount.viewDealPermissionId,
+        "updateDealPermissionId": registerAccount.updateDealPermissionId,
+        "deleteDealPermissionId": registerAccount.deleteDealPermissionId,
+        "createIssuePermissionId": registerAccount.createIssuePermissionId,
+        "viewIssuePermissionId": registerAccount.viewIssuePermissionId,
+        "updateIssuePermissionId": registerAccount.updateIssuePermissionId,
+        "deleteIssuePermissionId": registerAccount.deleteIssuePermissionId
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      print('Register an account successfully | 200');
+      return RegisterAccount.fromJson(jsonResponse);
+    } else {
+      print("Failed to Register an account | 400");
+      RegisterAccount? registerAccount;
+      return registerAccount;
     }
   }
 

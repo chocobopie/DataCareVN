@@ -24,7 +24,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String fullname = '';
+  String fullname = '', _gender = '', _leadSource = '';
 
   final TextEditingController _contactName = TextEditingController();
   final TextEditingController _contactEmail = TextEditingController();
@@ -78,11 +78,11 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                   topRight: Radius.circular(50),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
+              margin: const EdgeInsets.only(top: 100.0),
               child: Form(
                 key: _formKey,
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
                   child: fullname.isNotEmpty ? ListView(
                     children: <Widget>[
                       //Tên khách hàng
@@ -95,37 +95,33 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: CustomDropdownFormField2(
-                                borderColor: mainBgColor,
-                                label: 'Giới tính',
-                                hintText: const Text(''),
-                                items: gendersUtilities,
-                                onChanged: (value){
-                                  if(value.toString() == gendersUtilities[0]){
-                                    _contactGender.text = '0';
-                                  }else if(value.toString() == gendersUtilities[1]){
-                                    _contactGender.text = '1';
-                                  }else if(value.toString() == gendersUtilities[2]){
-                                    _contactGender.text = '2';
-                                  }
-                                }
-                            ),
-                          ),
-                          const SizedBox(width: 5.0,),
-                          Expanded(
-                            child: CustomEditableTextFormField(
-                                borderColor: mainBgColor,
-                                inputNumberOnly: true,
-                                text: '',
-                                title: 'Số điện thoại',
-                                readonly: false,
-                                textEditingController: _contactPhoneNumber
-                            ),
-                          ),
-                        ],
+                      CustomDropdownFormField2(
+                          value: _contactGender.text.isNotEmpty ? _gender : null,
+                          borderColor: mainBgColor,
+                          label: 'Giới tính',
+                          hintText: const Text(''),
+                          items: gendersUtilities,
+                          onChanged: (value){
+                            setState(() {
+                              _gender = value.toString();
+                            });
+                            if(value.toString() == gendersUtilities[0]){
+                              _contactGender.text = '0';
+                            }else if(value.toString() == gendersUtilities[1]){
+                              _contactGender.text = '1';
+                            }else if(value.toString() == gendersUtilities[2]){
+                              _contactGender.text = '2';
+                            }
+                          }
+                      ),
+                      const SizedBox(height: 20.0,),
+                      CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          inputNumberOnly: true,
+                          text: '',
+                          title: 'Số điện thoại',
+                          readonly: false,
+                          textEditingController: _contactPhoneNumber
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -141,11 +137,13 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
                       //Email khách hàng
                       CustomEditableTextFormField(
+                          isNull: false,
+                          isEmailCheck: true,
                           borderColor: mainBgColor,
                           text: '',
                           title: 'Email của khách hàng',
                           readonly: false,
-                          textEditingController: _contactEmail
+                          textEditingController: _contactEmail,
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -173,11 +171,15 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
                       //Nguồn
                       CustomDropdownFormField2(
+                          value: _contactLeadSourceId.text.isNotEmpty ? _leadSource : null,
                           borderColor: mainBgColor,
                           label: 'Nguồn',
                           hintText: const Text(''),
                           items: leadSourceNameUtilities,
                           onChanged: (value){
+                            setState(() {
+                              _leadSource = value.toString();
+                            });
                             if(value.toString() == leadSourceNameUtilities[0]){
                               _contactLeadSourceId.text = '0';
                             }else if(value.toString() == leadSourceNameUtilities[1]){

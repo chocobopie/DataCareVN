@@ -141,6 +141,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                         children: [
                           Expanded(
                             child: CustomDropdownFormField2(
+                                value: _dealStageId.text.isEmpty ? null : dealStagesNameUtilities[int.parse(_dealStageId.text)],
                                 borderColor: mainBgColor,
                                 label: 'Tiến trình hợp đồng',
                                 hintText: const Text(''),
@@ -168,6 +169,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           const SizedBox(width: 5.0,),
                           Expanded(
                             child: CustomDropdownFormField2(
+                              value: _dealTypeId.text.isEmpty ? null : dealTypesNameUtilities[int.parse(_dealTypeId.text)],
                               borderColor: mainBgColor,
                               label: 'Loại hợp đồng',
                               hintText: const Text(''),
@@ -186,12 +188,24 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                       ),
                       const SizedBox(height: 20.0,),
 
+                      //Tổng giá trị
+                      CustomEditableTextFormField(
+                          isNull: true,
+                          borderColor: mainBgColor,
+                          inputNumberOnly: true,
+                          text: '',
+                          title: 'Số tiền (VNĐ)',
+                          readonly: false,
+                          textEditingController: _dealAmount
+                      ),
+                      const SizedBox(height: 20.0,),
+
                       //Loại dịch vụ
                       Row(
                         children: [
-                          
                           Expanded(
                             child: CustomDropdownFormField2(
+                              value: _dealServiceId.text.isEmpty ? null : dealServicesNameUtilities[int.parse(_dealServiceId.text)],
                               borderColor: mainBgColor,
                               label: 'Loại dịch vụ',
                               hintText: const Text(''),
@@ -219,6 +233,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           const SizedBox(width: 5.0,),
                           Expanded(
                             child: CustomDropdownFormField2(
+                              value: _dealVatId.text.isEmpty ? null : dealVatsNameUtilities[int.parse(_dealVatId.text)],
                               borderColor: mainBgColor,
                               label: 'VAT',
                               hintText: const Text(''),
@@ -234,18 +249,6 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                             ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 20.0,),
-
-                      //Tổng giá trị
-                      CustomEditableTextFormField(
-                          isNull: true,
-                          borderColor: mainBgColor,
-                          inputNumberOnly: true,
-                          text: '',
-                          title: 'Số tiền (VNĐ)',
-                          readonly: false,
-                          textEditingController: _dealAmount
                       ),
                       const SizedBox(height: 20.0,),
 

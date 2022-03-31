@@ -273,7 +273,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                       ),
 
                       if(_currentEmpAccount.teamId != null || _filterDepartment != null || _filterRole != null)
-                        if(_filterRole?.roleId == 4 || _filterRole?.roleId == 5 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5)
+                        if(_filterRole?.roleId == 4 || _filterRole?.roleId == 5 || _filterRole?.roleId == 6 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6)
                         if(  getDepartmentListInBlock(block: _filterBlock == null ? getBlock(blockId: _currentEmpAccount.blockId!) : _filterBlock!).isNotEmpty  )
                         if(  getTeamListInDepartment(department: _filterDepartment == null ? getDepartment(departmentId: _currentEmpAccount.departmentId!) : _filterDepartment! ).isNotEmpty  )
                       Padding(
@@ -764,7 +764,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           ),
                         ),
 
-                      if(_currentEmpAccount.roleId == 2 || _currentEmpAccount.roleId == 6)
+                      if(_currentEmpAccount.roleId == 2)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
@@ -788,29 +788,29 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      if(_currentEmpAccount.roleId == 6)
-                        if(_permission!.departmentId != null || _filterDepartmentPerm != null)
-                          if( getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!).isNotEmpty )
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: CustomEditableTextFormField(
-                          borderColor: _readOnly != true ? mainBgColor : null,
-                          text: _teamPermNameString,
-                          title: 'Quản lý nhóm',
-                          readonly: true,
-                          onTap: _readOnly != true ? () async {
-                            final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
-                                teamList: getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!) )
-                            ));
-                            if(data != null){
-                              _filterTeamPerm = data;
-                              setState(() {
-                                _teamPermNameString = _filterTeamPerm!.name;
-                              });
-                            }
-                          } : null,
-                        ),
-                      ),
+                      // if(_currentEmpAccount.roleId == 6)
+                      //   if(_permission!.departmentId != null || _filterDepartmentPerm != null)
+                      //     if( getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!).isNotEmpty )
+                      // Padding(
+                      //   padding: const EdgeInsets.only(bottom: 20.0),
+                      //   child: CustomEditableTextFormField(
+                      //     borderColor: _readOnly != true ? mainBgColor : null,
+                      //     text: _teamPermNameString,
+                      //     title: 'Quản lý nhóm',
+                      //     readonly: true,
+                      //     onTap: _readOnly != true ? () async {
+                      //       final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
+                      //           teamList: getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!) )
+                      //       ));
+                      //       if(data != null){
+                      //         _filterTeamPerm = data;
+                      //         setState(() {
+                      //           _teamPermNameString = _filterTeamPerm!.name;
+                      //         });
+                      //       }
+                      //     } : null,
+                      //   ),
+                      // ),
                       Row(
                         children: <Widget>[
                           if(_readOnly == false)
@@ -856,16 +856,11 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                       _updatePermission();
                                     }
 
-                                    if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5){
+                                    if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6){
                                       _updateSaleTechnicalEmpPermission();
                                       if(_filterTeam != null || _filterDepartment != null || _filterRole != null){
-                                        _updateSaleEmpAccount();
+                                        _updateSaleTechnicalEmpAccount();
                                       }
-                                    }
-
-                                    if(_currentEmpAccount.roleId == 6){
-                                      _updateSaleTechnicalEmpPermission();
-                                      _updatePermission();
                                     }
 
                                     Future.delayed(const Duration(seconds: 2), (){
@@ -965,24 +960,12 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
         departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId
     );
 
-    Permission permissionTechnicalEmp = Permission(
-        permissionId: _permission!.permissionId,
-        contactPermissionId: _permission!.contactPermissionId,
-        dealPermissionId: _permission!.dealPermissionId,
-        issuePermissionId: _permission!.issuePermissionId,
-        departmentId: _filterDepartmentPerm?.departmentId ?? _permission?.departmentId,
-        teamId: _filterTeamPerm?.teamId ?? _permission?.teamId,
-    );
-    print(_filterTeamPerm?.teamId);
-
     if(_currentEmpAccount.roleId == 2){
       PermissionViewModel().updatePermission(permission: permissionHrIntern);
-    }else if(_currentEmpAccount.roleId == 6){
-      PermissionViewModel().updatePermission(permission: permissionTechnicalEmp);
     }
 
   }
-  void _updateSaleEmpAccount(){
+  void _updateSaleTechnicalEmpAccount(){
     Account account = Account(
       accountId: _currentEmpAccount.accountId,
       email: _currentEmpAccount.email,

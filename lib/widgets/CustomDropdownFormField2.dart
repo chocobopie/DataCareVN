@@ -17,6 +17,7 @@ class CustomDropdownFormField2 extends StatelessWidget {
       value: value,
       key: UniqueKey(),
       decoration: InputDecoration(
+        errorMaxLines: 5,
         focusedErrorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: borderColor == null ? Colors.grey.shade300 : borderColor!, width: 2),
           borderRadius: BorderRadius.circular(10),

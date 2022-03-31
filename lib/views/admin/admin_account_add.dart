@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:login_sample/main.dart';
+import 'package:login_sample/models/RegisterAccount.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/role.dart';
@@ -28,7 +29,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
 
   final TextEditingController _accountEmail = TextEditingController();
 
-  Block? _filterBlock;
   Department? _filterDepartment, _filterDepartmentPerm;
   Team? _filterTeam, _filterTeamPerm;
   Role? _filterRole;
@@ -100,14 +100,11 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             setState(() {
                               _filterRole = data;
                               _filterRoleString = _filterRole!.name;
-                              if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5){
+                              if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId == 6){
                                 _filterBlockId = 1;
                               }
                               if(_filterRole!.roleId == 2){
                                 _filterBlockId = 0;
-                              }
-                              if(_filterRole!.roleId == 6){
-                                _filterBlockId = 2;
                               }
                               _filterDepartmentString = '';
                               _filterDepartment = null;
@@ -404,9 +401,8 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       ),
                     ),
                     //==========================================================Quyền truy cập KTV=========================================================
-                    if(_filterViewId != null)
-                    if(_filterRole != null && (_filterViewId == 4 || _filterViewId == 3))
-                    if(_filterRole!.roleId == 2 ||_filterRole!.roleId == 6)
+                    if(_filterRole != null)
+                    if(_filterRole!.roleId == 2)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
@@ -429,29 +425,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                           },
                         ),
                       ),
-                          if(_filterViewId != null && _filterRole != null && _filterDepartmentPerm != null)
-                            if(_filterRole!.roleId == 6 && _filterViewId == 3)
-                              if(getTeamListInDepartment(department: _filterDepartmentPerm!).isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
-                            child: CustomEditableTextFormField(
-                              borderColor: mainBgColor,
-                              text: _teamPermNameString,
-                              title: 'Quản lý nhóm',
-                              readonly: true,
-                              onTap: () async {
-                                final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
-                                    teamList: getTeamListInDepartment(department: _filterDepartmentPerm!) )
-                                ));
-                                if(data != null){
-                                  _filterTeamPerm = data;
-                                  setState(() {
-                                    _teamPermNameString = _filterTeamPerm!.name;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
                     //============================================================Nút tạo mới
                     const SizedBox(height: 20.0,),
                     CustomTextButton(
@@ -495,62 +468,89 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
     );
   }
 
-  DropdownButtonFormField2<String> buildDropdownButtonFormField2(String label, List items, String result) {
-    return DropdownButtonFormField2(
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.only(left: 15.0, right: 10.0),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blue, width: 2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        labelText: label,
-        labelStyle: const TextStyle(
-          color: defaultFontColor,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-      ),
-      isExpanded: true,
-      icon: const Icon(
-        Icons.arrow_drop_down,
-        color: Colors.black45,
-      ),
-      iconSize: 20,
-      buttonHeight: 50,
-      dropdownDecoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      items: items
-          .map((item) => DropdownMenuItem<String>(
-                value: item,
-                child: Text(
-                  item,
-                  style: const TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ))
-          .toList(),
-      validator: (value) {
-        if (value == null) {
-          return 'Hãy chọn quyền truy cập';
-        }
-      },
-      onChanged: (value) {
-        setState(() {
-          result = value.toString();
-          print(result);
-        });
-      },
-      // onSaved: (value) {
-      //   selectedValue = value.toString();
-      // },
+  void _registerAnAccount(){
+    RegisterAccount registerAccount = RegisterAccount(
+        email: _accountEmail.text,
+        roleId: _filterRole!.roleId,
+        blockId: _filterBlockId!,
+        teamId: _filterTeam?.teamId,
+        departmentId: _filterDepartment!.departmentId,
+        createContactPermissionId: _contactCreateId,
+        createDealPermissionId: _dealCreateId,
+        createIssuePermissionId: _issueCreateId,
+        deleteContactPermissionId: _contactDeleteId,
+        deleteDealPermissionId:  _dealDeleteId,
+        deleteIssuePermissionId: _issueDeleteId,
+        hrInternManageDepartmentId: _filterDepartmentPerm?.departmentId,
+        updateAttendancePermissionId: _attendanceUpdateId,
+        updateContactPermissionId: _contactUpdateId,
+        updateDealPermissionId: _dealUpdateId,
+        updateIssuePermissionId: _issueUpdateId,
+        viewAccountPermissionId: _accountViewId,
+        viewAttendancePermissionId: _attendanceViewId,
+        viewContactPermissionId: _contactViewId,
+        viewDealPermissionId: _dealViewId,
+        viewIssuePermissionId: _issueViewId
     );
+
   }
+
+  // DropdownButtonFormField2<String> buildDropdownButtonFormField2(String label, List items, String result) {
+  //   return DropdownButtonFormField2(
+  //     decoration: InputDecoration(
+  //       contentPadding: const EdgeInsets.only(left: 15.0, right: 10.0),
+  //       enabledBorder: OutlineInputBorder(
+  //         borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
+  //         borderRadius: BorderRadius.circular(10),
+  //       ),
+  //       focusedBorder: OutlineInputBorder(
+  //         borderSide: const BorderSide(color: Colors.blue, width: 2),
+  //         borderRadius: BorderRadius.circular(10),
+  //       ),
+  //       labelText: label,
+  //       labelStyle: const TextStyle(
+  //         color: defaultFontColor,
+  //         fontSize: 14,
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //       floatingLabelBehavior: FloatingLabelBehavior.always,
+  //     ),
+  //     isExpanded: true,
+  //     icon: const Icon(
+  //       Icons.arrow_drop_down,
+  //       color: Colors.black45,
+  //     ),
+  //     iconSize: 20,
+  //     buttonHeight: 50,
+  //     dropdownDecoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(15),
+  //     ),
+  //     items: items
+  //         .map((item) => DropdownMenuItem<String>(
+  //               value: item,
+  //               child: Text(
+  //                 item,
+  //                 style: const TextStyle(
+  //                   fontSize: 12,
+  //                 ),
+  //               ),
+  //             ))
+  //         .toList(),
+  //     validator: (value) {
+  //       if (value == null) {
+  //         return 'Hãy chọn quyền truy cập';
+  //       }
+  //     },
+  //     onChanged: (value) {
+  //       setState(() {
+  //         result = value.toString();
+  //         print(result);
+  //       });
+  //     },
+  //     // onSaved: (value) {
+  //     //   selectedValue = value.toString();
+  //     // },
+  //   );
+  // }
 
 }

@@ -36,7 +36,7 @@ class SaleEmpDealList extends StatefulWidget {
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   bool _isSearching = false, _isAsc = false;
-  String _fullname = 'Người quản lý hợp đồng', _fromDateToDateString = 'Ngày chốt', _contactName = 'Tên khách hàng', _searchString = '';
+  String _fullname = 'Người quản lý hợp đồng', _fromDateToDateString = 'Ngày chốt hợp đồng', _contactName = 'Tên khách hàng', _searchString = '';
   int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
@@ -209,7 +209,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 setState(() {
                                   _fromDate = fromDateToDate.fromDate;
                                   _toDate = fromDateToDate.toDate;
-                                  _fromDateToDateString = 'Ngày chốt: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                  _fromDateToDateString = 'Ngày chốt hợp đồng: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                   _deals.clear();
                                 });
                                 _refreshController.resetNoData();
@@ -266,7 +266,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 _filterAccount = Account();
                                 _fromDate = null;
                                 _toDate = null;
-                                _fromDateToDateString = 'Ngày chốt';
+                                _fromDateToDateString = 'Ngày chốt hợp đồng';
                               });
                               _refreshController.resetNoData();
                               _getOverallInfo(_currentPage, _currentAccount);
@@ -499,7 +499,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       _filterAccount = Account();
                       _fromDate = null;
                       _toDate = null;
-                      _fromDateToDateString = 'Ngày chốt';
+                      _fromDateToDateString = 'Ngày chốt hợp đồng';
                       _getOverallInfo(_currentPage, _currentAccount);
                     });
                     _refreshController.resetNoData();
