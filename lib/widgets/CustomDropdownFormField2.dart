@@ -2,17 +2,19 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropdownFormField2 extends StatelessWidget {
-  const CustomDropdownFormField2({Key? key, required this.label, required this.hintText, required this.items, required this.onChanged, this.borderColor}) : super(key: key);
+  const CustomDropdownFormField2({Key? key, required this.label, required this.hintText, required this.items, required this.onChanged, this.borderColor, this.value}) : super(key: key);
 
   final String label;
   final Widget hintText;
   final List<dynamic> items;
   final dynamic onChanged;
   final Color? borderColor;
+  final String? value;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField2(
+      value: value,
       key: UniqueKey(),
       decoration: InputDecoration(
         focusedErrorBorder: OutlineInputBorder(
@@ -70,6 +72,7 @@ class CustomDropdownFormField2 extends StatelessWidget {
         if (value == null) {
           return '$label không được để trống';
         }
+        return null;
       },
       onChanged: onChanged,
     );

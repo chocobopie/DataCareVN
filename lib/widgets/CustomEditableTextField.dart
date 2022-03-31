@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +7,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class CustomEditableTextFormField extends StatelessWidget {
    const CustomEditableTextFormField({
-    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity
+    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity, this.isEmailCheck
   }) : super(key: key);
 
   final String title;
@@ -21,6 +22,7 @@ class CustomEditableTextFormField extends StatelessWidget {
   final bool? obscureText;
   final bool? isNull;
   final bool? citizenIdentity;
+  final bool? isEmailCheck;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,13 @@ class CustomEditableTextFormField extends StatelessWidget {
         validator: isNull != true ? (value) {
           if(value!.isEmpty){
             return '$title không được bỏ trống';
+          }else if(value.isNotEmpty && isEmailCheck == true){
+            if(EmailValidator.validate(value) == true){
+              return null;
+            }
+            if(EmailValidator.validate(value) == false){
+              return 'Email không đúng định dạng';
+            }
           }
           return null;
         } : null,

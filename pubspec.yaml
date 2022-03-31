@@ -47,6 +47,7 @@ dependencies:
   shared_preferences: ^2.0.13
   pull_to_refresh: ^2.0.0
   flutter_speed_dial: ^5.0.0+1
+  email_validator: ^2.0.1
   flutter_localizations:
     sdk: flutter
 
