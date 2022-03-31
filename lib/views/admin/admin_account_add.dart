@@ -35,7 +35,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _filterRoleString = '', _filterDepartmentString = '', _filterTeamString = '';
+  String _filterRoleString = '', _filterDepartmentString = '', _filterTeamString = '', _departmentPermNameString = '', _teamPermNameString = '';
 
   int? _contactCreateId, _contactViewId, _contactUpdateId, _contactDeleteId, _dealCreateId, _dealViewId, _dealUpdateId, _dealDeleteId, _issueCreateId, _issueViewId, _issueUpdateId, _issueDeleteId;
   int? _accountViewId, _accountCreateId, _accountUpdateId, _accountDeleteId, _attendanceViewId, _attendanceUpdateId;
@@ -233,7 +233,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                     ),
 
                     if(_filterRole != null && _filterViewId != null)
-                    if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId == 6)
+                    if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: CustomExpansionTile(
@@ -273,7 +273,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       ),
                     ),
                     if(_filterRole != null && _filterViewId != null)
-                    if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId == 6)
+                    if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: CustomExpansionTile(
@@ -313,7 +313,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       ),
                     ),
                     if(_filterRole != null && _filterViewId != null)
-                    if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5 || _filterRole!.roleId == 6)
+                    if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: CustomExpansionTile(
@@ -403,10 +403,57 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                         ],
                       ),
                     ),
+                    //==========================================================Quyền truy cập KTV=========================================================
+                    if(_filterViewId != null)
+                    if(_filterRole != null && (_filterViewId == 4 || _filterViewId == 3))
+                    if(_filterRole!.roleId == 2 ||_filterRole!.roleId == 6)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: CustomEditableTextFormField(
+                          borderColor: mainBgColor,
+                          text: _departmentPermNameString,
+                          title: 'Quản lý phòng ban',
+                          readonly: true,
+                          onTap: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => AdminDepartmentFilter(departmentList: departments),
+                            ));
+                            if(data != null){
+                              _filterDepartmentPerm = data;
+                              _filterTeamPerm = null;
+                              setState(() {
+                                _departmentPermNameString = _filterDepartmentPerm!.name;
+                                _teamPermNameString = '';
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                          if(_filterViewId != null && _filterRole != null && _filterDepartmentPerm != null)
+                            if(_filterRole!.roleId == 6 && _filterViewId == 3)
+                              if(getTeamListInDepartment(department: _filterDepartmentPerm!).isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: CustomEditableTextFormField(
+                              borderColor: mainBgColor,
+                              text: _teamPermNameString,
+                              title: 'Quản lý nhóm',
+                              readonly: true,
+                              onTap: () async {
+                                final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
+                                    teamList: getTeamListInDepartment(department: _filterDepartmentPerm!) )
+                                ));
+                                if(data != null){
+                                  _filterTeamPerm = data;
+                                  setState(() {
+                                    _teamPermNameString = _filterTeamPerm!.name;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
                     //============================================================Nút tạo mới
-                    const SizedBox(
-                      height: 20.0,
-                    ),
+                    const SizedBox(height: 20.0,),
                     CustomTextButton(
                         color: Colors.blueAccent,
                         text: 'Tạo mới',
@@ -414,6 +461,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                           if(!_formKey.currentState!.validate()){
                             return;
                           }
+
                         },
                     ),
                   ],
