@@ -6,6 +6,7 @@ import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/views/employee/employee_late_excuse_list.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
+import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -19,9 +20,11 @@ class EmployeeLateExcuse extends StatefulWidget {
 
 class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
 
-  String _lateExcuseDate = '';
-  String _lateExcuseTime = '';
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  String _lateExcuseDate = '', _lateExcuseTime = '', _lateExcuseError = '';
   String _lateReason = '';
+  bool _isAllowTime = true;
 
   final double _panelHeightClosed = 50.0;
 
@@ -59,152 +62,99 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                 ),
               ),
               margin: const EdgeInsets.only(top: 90),
-              child: ListView(
-                padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
-                children: <Widget>[
-                  //Ngày xin đi trễ
-                  const SizedBox(height: 20.0,),
-                  SizedBox(
-                    child: TextField(
-                      readOnly: true,
-                      onTap: () async {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        final excuseDate = await DatePicker.showDatePicker(
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
+                  children: <Widget>[
+                    //Ngày xin đi trễ
+                    const SizedBox(height: 20.0,),
+                    CustomEditableTextFormField(
+                        text: _lateExcuseDate,
+                        title: 'Ngày xin đi trễ',
+                        readonly: true,
+                        onTap: () async {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          final excuseDate = await DatePicker.showDatePicker(
                             context,
                             locale : LocaleType.vi,
                             minTime: DateTime.now(),
                             currentTime: DateTime.now(),
                             maxTime: DateTime.now().add(const Duration(days: 36500)),
-                        );
-                        if(excuseDate != null){
-                          _lateExcuseDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(excuseDate)}';
-                          print('Ngày xin đi trễ $excuseDate');
+                          );
+                          if(excuseDate != null){
+                            setState(() {
+                              _lateExcuseDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(excuseDate)}';
+                            });
+                            print('Ngày xin đi trễ $excuseDate');
+                          }
+                        },
+
+                    ),
+
+                    //Thời gian dự kiến đến công ty
+                    const SizedBox(height: 20.0,),
+                    CustomEditableTextFormField(
+                        text: _lateExcuseTime,
+                        title: 'Thời gian dự kiến đến công ty',
+                        readonly: true,
+                        onTap: () async {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          DatePicker.showTime12hPicker(context,
+                              showTitleActions: true,
+                              onConfirm: (date){
+                                _lateExcuseTime = DateFormat.jm().format(date);
+                                if( (date.hour + date.month/100) > 9.05 ){
+                                  setState(() {
+                                    _isAllowTime = false;
+                                    _lateExcuseError = 'Bạn không được phép đi trễ quá 9 giờ sáng';
+                                  });
+                                }else{
+                                  setState(() {
+                                    _isAllowTime = true;
+                                    _lateExcuseError = '';
+                                  });
+                                }
+                                print(_lateExcuseTime);
+                              },
+                              locale: LocaleType.vi
+                          );
+                        },
+                    ),
+                    Center(child: Text(_lateExcuseError, style: const TextStyle(color: Colors.red),)),
+
+                    //Lý do
+                    const SizedBox(height: 10.0,),
+                    CustomEditableTextFormField(
+                        text: _lateReason,
+                        title: 'Lý do',
+                        readonly: false
+                    ),
+
+                    //Nút gửi đơn xin phép đi trễ
+                    const SizedBox(height: 20.0,),
+                    CustomTextButton(
+                        color: Colors.blue,
+                        text: 'Gửi',
+                        onPressed: (){
+                          if(!_formKey.currentState!.validate()){
+                            return;
+                          }
+                        },
+                    ),
+                    const SizedBox(height: 20.0),
+                    IconTextButtonSmall2(
+                        imageUrl: 'assets/images/attendance-report.png',
+                        text: 'Danh sách đơn xin đi trễ',
+                        colorsButton: const [Colors.green, Colors.white],
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const EmployeeLateExcuseList()
+                          ));
                         }
-                      },
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0),
-                        labelText: 'Ngày xin đi trễ',
-                        hintText: _lateExcuseDate.isNotEmpty ? _lateExcuseDate : '',
-                        labelStyle: const TextStyle(
-                          color: Color.fromARGB(255, 107, 106, 144),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
                     ),
-                    width: 150.0,
-                  ),
-
-                  //Thời gian dự kiến đến công ty
-                  const SizedBox(height: 20.0,),
-                  SizedBox(
-                    child: TextField(
-                      readOnly: true,
-                      onTap: () async {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        DatePicker.showTime12hPicker(context,
-                            showTitleActions: true,
-                            onConfirm: (date){
-                              _lateExcuseTime = DateFormat.jm().format(date);
-                            },
-                            locale: LocaleType.vi
-                        );
-                      },
-                      showCursor: false,
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0),
-                        labelText: 'Thời gian dự kiến đến công ty',
-                        hintText: _lateExcuseTime.isEmpty ? '' : _lateExcuseTime,
-                        labelStyle: const TextStyle(
-                          color: Color.fromARGB(255, 107, 106, 144),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Lý do
-                  const SizedBox(height: 20.0,),
-                  SizedBox(
-                    child: TextField(
-                      maxLines: null,
-                      onChanged: (val) {
-                        _lateReason = val;
-                      },
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'Lý do',
-                        labelStyle: const TextStyle(
-                          color: Color.fromARGB(255, 107, 106, 144),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Nút gửi đơn xin phép đi trễ
-                  const SizedBox(height: 20.0,),
-                  CustomTextButton(
-                      color: Colors.blue,
-                      text: 'Gửi',
-                      onPressed: (){
-                      },
-                  ),
-                  const SizedBox(height: 20.0),
-                  IconTextButtonSmall2(
-                      imageUrl: 'assets/images/attendance-report.png',
-                      text: 'Danh sách đơn xin đi trễ',
-                      colorsButton: const [Colors.green, Colors.white],
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => const EmployeeLateExcuseList()
-                        ));
-                      }
-                  ),
-                ],
+                  ],
+                ),
               ),
           ),
 

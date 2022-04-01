@@ -59,9 +59,10 @@ class _AdminAccountListState extends State<AdminAccountList> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-       floatingActionButton: Column(
+      floatingActionButton: Column(
          mainAxisAlignment: MainAxisAlignment.end,
          children: <Widget>[
+           if(_currentAccount.roleId == 0)
            Padding(
              padding: const EdgeInsets.only(left: 10.0),
              child: Align(

@@ -21,6 +21,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
 
   DateTime _selectedMonth = DateTime.now();
   late Account _currentAccount = Account();
+  String _payrollTitleStatus = 'Dự kiến';
 
   @override
   void initState() {
@@ -76,6 +77,15 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         if (date != null) {
                           setState(() {
                             _selectedMonth = date;
+                            if(_selectedMonth.year <= DateTime.now().year){
+                              if(_selectedMonth.month < DateTime.now().month){
+                                _payrollTitleStatus = 'Đã trả lương';
+                              }
+                              if(_selectedMonth.month == DateTime.now().month){
+                                _payrollTitleStatus = 'Dự kiến';
+                              }
+                            }
+
                             print(_selectedMonth);
                           });
                         }
@@ -96,18 +106,20 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                   //Lương
                   PayrollExpansionTile(
                     selectedDate: _selectedMonth,
+                    payrollTitleStatus: _payrollTitleStatus,
                   ),
                   const SizedBox(height: 20.0,),
 
-                  if(_currentAccount.roleId == 1)
-                  IconTextButtonSmall2(
-                      imageUrl: 'assets/images/payroll-management.png',
-                      text: 'Quản lý lương của các nhân viên',
-                      colorsButton: const [Colors.green, Colors.white],
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HrManagerPayrollList()));
-                      }
-                  ),
+                  // if(_currentAccount.roleId == 1)
+                  // IconTextButtonSmall2(
+                  //     imageUrl: 'assets/images/payroll-management.png',
+                  //     text: 'Quản lý lương của các nhân viên',
+                  //     colorsButton: const [Colors.green, Colors.white],
+                  //     onPressed: (){
+                  //       Navigator.push(context, MaterialPageRoute(builder: (context) => const HrManagerPayrollList()
+                  //       ));
+                  //     }
+                  // ),
 
                   // if(_currentAccount.roleId ==3)
                   //   IconTextButtonSmall2(
@@ -234,10 +246,11 @@ class BonusExpansionTile2 extends StatelessWidget {
 
 class PayrollExpansionTile extends StatelessWidget {
   const PayrollExpansionTile({
-    Key? key, required this.selectedDate,
+    Key? key, required this.selectedDate, required this.payrollTitleStatus,
   }) : super(key: key);
 
   final DateTime selectedDate;
+  final String payrollTitleStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +275,7 @@ class PayrollExpansionTile extends StatelessWidget {
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(selectedDate).substring(3, 10)}'),
+          title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(selectedDate).substring(3, 10)} - $payrollTitleStatus', style: const TextStyle(fontSize: 14.0),),
           trailing: const Text('14.670.000 VNĐ'),
           children: const <Widget>[
             Divider(color: Colors.blueGrey, thickness: 1.0,),

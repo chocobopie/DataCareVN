@@ -5,9 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:login_sample/utilities/utils.dart';
 
 class SaleManagerPayrollDetail extends StatefulWidget {
-  const SaleManagerPayrollDetail({Key? key, required this.empName}) : super(key: key);
+  const SaleManagerPayrollDetail({Key? key, required this.empName, required this.selectMonth, required this.revenueStatusTitle}) : super(key: key);
 
   final String empName;
+  final String selectMonth;
+  final String revenueStatusTitle;
 
   @override
   _SaleManagerPayrollDetailState createState() => _SaleManagerPayrollDetailState();
@@ -63,7 +65,7 @@ class _SaleManagerPayrollDetailState extends State<SaleManagerPayrollDetail> {
                       data: ThemeData().copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                           initiallyExpanded: true,
-                          title: const Text('Doanh thu'),
+                          title: Text('Doanh thu ${widget.selectMonth} - ${widget.revenueStatusTitle}'),
                           trailing: const Text('13.200.000 VNĐ'),
                         children: <Widget>[
                           const Divider(color: Colors.blueGrey, thickness: 1.0,),

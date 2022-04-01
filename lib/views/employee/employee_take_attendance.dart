@@ -85,6 +85,8 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                       //Nút điểm danh
                       Column(
                         children: <Widget>[
+                          Text(_takeAttendanceString, style: const TextStyle(color: defaultFontColor),),
+                          const SizedBox(height: 20.0,),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.red,
@@ -100,10 +102,14 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                                 ),
                               ],
                             ),
-
                             child: (_isTook == false && _timeHms < 17) ? TextButton(
                               onPressed: () async {
                                 _takeAttendance(account: _currentAccount);
+                                if(_attendances.isNotEmpty){
+                                  setState(() {
+                                    _takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
+                                  });
+                                }
                               },
                               child: const Text(
                                 'Điểm danh',
@@ -114,7 +120,6 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                             ) : null,
                           ),
                           const SizedBox(height: 10.0,),
-                          Text(_takeAttendanceString, style: const TextStyle(color: defaultFontColor),),
                         ],
                       ),
                       const SizedBox(height: 20.0,),
@@ -211,13 +216,19 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
     if(listAttendance.isNotEmpty){
       setState(() {
         _attendances.addAll(listAttendance);
-        if(_attendances[0].attendanceStatusId == 3){
-          _isTook = false;
-          _takeAttendanceString = 'Bạn chưa điểm danh cho hôm nay';
+        if(_timeHms < 17){
+          if(_attendances[0].attendanceStatusId == 3){
+            _isTook = false;
+            _takeAttendanceString = 'Bạn chưa điểm danh cho hôm nay';
+          }else{
+            _isTook = true;
+            _takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
+          }
         }else{
           _isTook = true;
-          _takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
+          _takeAttendanceString = 'Bạn không thể điểm danh vì đã quá giờ điểm danh';
         }
+
       });
     }
   }

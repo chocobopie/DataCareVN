@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/team.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_payroll_detail.dart';
@@ -17,13 +18,28 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
 
   DateTime _selectedMonth = DateTime.now();
 
-  final List<Map> teams =
-  List.generate(5, (index) => {"id": index, "name": "Nhóm $index"})
-      .toList();
+  String _revenueStatusTitle = 'Dự kiến';
 
-  final List<Map> employees =
-  List.generate(10, (index) => {"id": index, "name": "Nhân viên $index"})
-      .toList();
+  // final List<Map> teams =
+  // List.generate(1, (index) => {"id": index, "name": "Nhóm $index"})
+  //     .toList();
+
+  List<Map> teams = [
+    {"id": 1, "name": "Nhóm Hải Yến"},
+    {"id": 2, "name": "Nhóm Bùi Tuấn"},
+  ];
+
+  // final List<Map> employees =
+  // List.generate(10, (index) => {"id": index, "name": "Nhân viên $index"})
+  //     .toList();
+
+  List<Map> employees = [
+    {"id": 0, "name": "Trà Bảo Hiển", "role": 'Trưởng nhóm kinh doanh', "KPI:": "70%", "revenue:" : '5.000.000 VNĐ'},
+    {"id": 1, "name": "Khưu Quang Tú", "role": 'Nhân viên kinh doanh', "KPI:": "30%", "revenue:" : '3.000.000 VNĐ'},
+    {"id": 2, "name": "Lường Cao Thọ", "role": 'Nhân viên kinh doanh', "KPI:": "60%", "revenue:" : '2.000.000 VNĐ'},
+    {"id": 3, "name": "Tăng Quang Vinh", "role": 'Nhân viên kinh doanh', "KPI:": "40%", "revenue:" : '6.000.000 VNĐ'},
+    {"id": 4, "name": "Ngô Kim Sơn", "role": 'Nhân viên kinh doanh', "KPI:": "50%", "revenue:" : '7.000.000 VNĐ'}
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +92,14 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                         if (date != null) {
                           setState(() {
                             _selectedMonth = date;
+                            if(_selectedMonth.year <= DateTime.now().year){
+                              if(_selectedMonth.month < DateTime.now().month){
+                                _revenueStatusTitle = 'Đã chốt';
+                              }
+                              if(_selectedMonth.month == DateTime.now().month){
+                                _revenueStatusTitle = 'Dự kiến';
+                              }
+                            }
                             print(_selectedMonth);
                           });
                         }
@@ -133,8 +157,8 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                            decoration: InputDecoration(
                              floatingLabelBehavior: FloatingLabelBehavior.always,
                              contentPadding: const EdgeInsets.only(left: 20.0),
-                             labelText: 'Tổng doanh thu của phòng tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
-                             hintText: '32.490.000 VNĐ',
+                             labelText: 'Tổng doanh thu của phòng tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)} - $_revenueStatusTitle',
+                             hintText: '145.200.000 VNĐ',
                              labelStyle: const TextStyle(
                                color: Color.fromARGB(255, 107, 106, 144),
                                fontSize: 18,
@@ -187,7 +211,11 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                TextButton.icon(
                                  onPressed: (){
                                    Navigator.push(context, MaterialPageRoute(
-                                       builder: (context) => const SaleManagerPayrollDetail(empName: 'của bản thân',),
+                                       builder: (context) => SaleManagerPayrollDetail(
+                                         empName: 'của bản thân',
+                                         selectMonth: DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10),
+                                         revenueStatusTitle: _revenueStatusTitle,
+                                       ),
                                    ));
                                  },
                                  icon: const Icon(Icons.attach_money),
@@ -234,7 +262,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                  child: ExpansionTile(
                                    collapsedBackgroundColor: mainBgColor,
                                    trailing: TextButton.icon(onPressed: (){}, icon: const Icon(Icons.attach_money),
-                                       label: const Text('32.490.000 VNĐ')),
+                                       label: const Text('66.000.000 VNĐ')),
                                    subtitle: const Text(
                                      'Tổng doanh thu của nhóm:',
                                      style: TextStyle(
@@ -261,7 +289,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                mainAxisSize: MainAxisSize.min,
                                                children: <Widget>[
                                                  const Text(
-                                                   'KPI: 58.2%',
+                                                   'KPI: 52.8%',
                                                    style: TextStyle(
                                                      fontSize: 10.0,
                                                    ),
@@ -269,7 +297,11 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                  TextButton.icon(
                                                    onPressed: (){
                                                      Navigator.push(context, MaterialPageRoute(
-                                                         builder: (context) => SaleManagerPayrollDetail(empName: employees[index]['name'],)
+                                                         builder: (context) => SaleManagerPayrollDetail(
+                                                           empName: employees[index]['name'],
+                                                           selectMonth: DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10),
+                                                           revenueStatusTitle: _revenueStatusTitle,
+                                                         )
                                                      ));
                                                    },
                                                    icon: const Icon(Icons.attach_money),
@@ -277,7 +309,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                  ),
                                                ],
                                              ),
-                                             subtitle: const Text('NVKD', style: TextStyle(fontSize: 12.0,),),
+                                             subtitle: Text(employees[index]['role'], style: const TextStyle(fontSize: 12.0,),),
                                              dense: true,
                                            );
                                          }

@@ -25,7 +25,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
 
   List<Issue> issues = [];
   bool isSearching = false;
-  late String _fromDatetoDateString = 'Ngày deadline';
+  late String _fromDatetoDateString = 'Hạn chót';
   DateTime? fromDate, toDate;
 
   List<Deal> deals = [
@@ -222,9 +222,9 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                                   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                   child: Row(
                                     children: <Widget>[
-                                      const Text('Deadline:'),
+                                      const Text('Hạn chót:'),
                                       const Spacer(),
-                                      Text('Ngày ${DateFormat('dd-MM-yyyy').format(issue.dealineDate)}'),
+                                      Text(DateFormat('dd-MM-yyyy').format(issue.dealineDate)),
                                     ],
                                   ),
                                 ),
@@ -306,8 +306,8 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
 class SortItems {
   static const List<SortItem> firstItems = [asc, des];
 
-  static const asc = SortItem(text: 'Ngày deadline tăng dần', icon: Icons.arrow_drop_up);
-  static const des = SortItem(text: 'Ngày deadline giảm dần', icon: Icons.arrow_drop_down);
+  static const asc = SortItem(text: 'Ngày hạn chót tăng dần', icon: Icons.arrow_drop_up);
+  static const des = SortItem(text: 'Ngày hạn chót giảm dần', icon: Icons.arrow_drop_down);
 
 
   static Widget buildItem(SortItem item) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_account_list.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_payroll_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
@@ -101,16 +102,16 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                       ),
 
                       const SizedBox(width: 30.0,),
-                      // ImageTextButton(
-                      //     imageUrl: 'assets/images/attendance-report.png',
-                      //     text: 'Xem báo cáo điểm danh các nhân viên',
-                      //     buttonColors: const [Colors.green, Colors.white],
-                      //     onPressed: (){
-                      //       Navigator.push(context, MaterialPageRoute(
-                      //         builder: (context) => const HrManagerAttendanceReport(),
-                      //       ));
-                      //     }
-                      // ),
+                      ImageTextButton(
+                          imageUrl: 'assets/images/payroll-management.png',
+                          text: 'Quản lý lương của các nhân viên',
+                          buttonColors: const [Colors.green, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const HrManagerPayrollList(),
+                            ));
+                          }
+                      ),
                     ],
                   ),
                 ],

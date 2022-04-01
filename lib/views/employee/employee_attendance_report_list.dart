@@ -179,13 +179,12 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                               onPressed: (){
                                 setState(() {
                                   _attendances.clear();
-                                  _currentPage = 0;
                                   _fromDate = null;
                                   _toDate = null;
                                   _fromDateToDateString = 'Ngày';
                                 });
                                 _refreshController.resetNoData();
-                                _getSelfAttendanceListByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage);
+                                _getSelfAttendanceListByAccountId(isRefresh: false, accountId: _currentAccount.accountId!, currentPage: _currentPage);
                               },
                               icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                           ),
