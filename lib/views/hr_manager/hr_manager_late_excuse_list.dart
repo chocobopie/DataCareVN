@@ -92,24 +92,24 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
                         const SizedBox(width: 10.0,),
-                        CustomOutlinedButton(
-                          title: _lateExcuseFromDateToDateString,
-                          radius: 10.0,
-                          color: mainBgColor,
-                          onPressed: () async {
-                            final data = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const SaleEmpDateFilter(),
-                            ));
-                            if(data != null){
-                              FromDateToDate fromDateToDate = data;
-                              setState(() {
-                                _fromDate = fromDateToDate.fromDate;
-                                _toDate = fromDateToDate.toDate;
-                                _lateExcuseFromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
-                              });
-                            }
-                          },
-                        ),
+                        // CustomOutlinedButton(
+                        //   title: _lateExcuseFromDateToDateString,
+                        //   radius: 10.0,
+                        //   color: mainBgColor,
+                        //   onPressed: () async {
+                        //     final data = await Navigator.push(context, MaterialPageRoute(
+                        //       builder: (context) => const SaleEmpDateFilter(),
+                        //     ));
+                        //     if(data != null){
+                        //       FromDateToDate fromDateToDate = data;
+                        //       setState(() {
+                        //         _fromDate = fromDateToDate.fromDate;
+                        //         _toDate = fromDateToDate.toDate;
+                        //         _lateExcuseFromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                        //       });
+                        //     }
+                        //   },
+                        // ),
                         CustomOutlinedButton(
                           title: _lateFromDateToDateString,
                           radius: 10.0,
@@ -225,21 +225,43 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
                           child: Theme(
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
-                              title: Text(userLateExcuses[index].name, style: const TextStyle(fontSize: 12.0),),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
+                              title: Column(
+                                children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, right: 40.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text('Phòng: ${userLateExcuses[index].department}', style: const TextStyle(fontSize: 12.0),),
-                                        const SizedBox(height: 5.0,),
-                                        Text(userLateExcuses[index].team,style: const TextStyle(fontSize: 12.0),),
+                                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                    child: Row(
+                                      children: [
+                                        const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
+                                        Text(userLateExcuses[index].name, style: const TextStyle(fontSize: 14.0),),
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(width: 40.0,),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                    child: Row(
+                                      children: [
+                                        const Text('Ngày xin đi trễ:', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
+                                        Text(userLateExcuses[index].lateExcuseDate!, style: const TextStyle(fontSize: 14.0),),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                    child: Row(
+                                      children: [
+                                        const Text('Giờ dự kiến có mặt:', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
+                                        Text(userLateExcuses[index].lateTime!, style: const TextStyle(fontSize: 14.0),),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5.0),
                                     child: Column(
@@ -253,37 +275,15 @@ class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
                                   ),
                                 ],
                               ),
-                              subtitle: const Text('Nhân viên kinh doanh'),
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 15.0, bottom: 5.0),
-                                  child: Align(
-                                      child: Text(
-                                          'Xin đi trễ ngày: ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
-                                        style: const TextStyle(color: Colors.blue, fontSize: 14.0),
-                                      ),
-                                    alignment: Alignment.centerLeft,
+                                  padding: const EdgeInsets.only(top: 20.0, left: 15.0, right: 15.0, bottom: 20.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(child: Text('Lý do: ${userLateExcuses[index].lateReason!}', style: const TextStyle(fontSize: 16.0, color: defaultFontColor),)),
+                                    ],
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 5.0),
-                                  child: Align(
-                                    child: Text('Thời gian dự kiến có mặt: ${DateFormat.Hm().format(DateTime.now())}',
-                                      style: const TextStyle(color: Colors.blue, fontSize: 14.0),
-                                    ),
-                                    alignment: Alignment.centerLeft,
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                                  child: Align(
-                                      child: Text('Lý do: Xe xẹp lốp',
-                                        style: TextStyle(color: Colors.blue, fontSize: 14.0),
-                                      ),
-                                    alignment: Alignment.centerLeft,
-                                  ),
-                                ),
-                                const SizedBox(height: 10.0,),
+                                )
                               ],
                             ),
                           ),

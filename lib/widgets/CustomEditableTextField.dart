@@ -28,7 +28,7 @@ class CustomEditableTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextFormField(
-        key: Key(text.toString()),
+        key: Key(text.trim().toString()),
         validator: isNull != true ? (value) {
           if(value!.isEmpty){
             return '$title không được bỏ trống';
@@ -42,7 +42,7 @@ class CustomEditableTextFormField extends StatelessWidget {
           }
           return null;
         } : null,
-        initialValue: text.toString(),
+        initialValue: text.trim().toString(),
         onTap: onTap,
         obscureText: obscureText == null ? false : obscureText!,
         minLines: 1,
@@ -60,7 +60,7 @@ class CustomEditableTextFormField extends StatelessWidget {
         ],
         keyboardType: inputNumberOnly == true ? TextInputType.number : inputEmailOnly == true ? TextInputType.emailAddress : TextInputType.text,
         onChanged: (val) {
-          textEditingController?.text = val;
+          textEditingController?.text = val.trim();
         },
         decoration: InputDecoration(
           focusedErrorBorder: OutlineInputBorder(

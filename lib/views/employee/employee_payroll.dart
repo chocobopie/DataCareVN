@@ -107,6 +107,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                   PayrollExpansionTile(
                     selectedDate: _selectedMonth,
                     payrollTitleStatus: _payrollTitleStatus,
+                    currentAccount: _currentAccount,
                   ),
                   const SizedBox(height: 20.0,),
 
@@ -160,7 +161,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
 
 class BonusExpansionTile2 extends StatelessWidget {
   const BonusExpansionTile2({
-    Key? key,
+    Key? key
   }) : super(key: key);
 
   @override
@@ -246,11 +247,12 @@ class BonusExpansionTile2 extends StatelessWidget {
 
 class PayrollExpansionTile extends StatelessWidget {
   const PayrollExpansionTile({
-    Key? key, required this.selectedDate, required this.payrollTitleStatus,
+    Key? key, required this.selectedDate, required this.payrollTitleStatus, required this.currentAccount,
   }) : super(key: key);
 
   final DateTime selectedDate;
   final String payrollTitleStatus;
+  final Account currentAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -277,63 +279,63 @@ class PayrollExpansionTile extends StatelessWidget {
         child: ExpansionTile(
           title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(selectedDate).substring(3, 10)} - $payrollTitleStatus', style: const TextStyle(fontSize: 14.0),),
           trailing: const Text('14.670.000 VNĐ'),
-          children: const <Widget>[
-            Divider(color: Colors.blueGrey, thickness: 1.0,),
-            ListTile(
-              title: Text('KPI', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('8.500.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            ListTile(
+          children: <Widget>[
+            const Divider(color: Colors.blueGrey, thickness: 1.0,),
+            if(currentAccount.roleId != 1)
+            const ListTile(
               title: Text('Hợp đồng đào tạo - Ký mới', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('1.500.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
-            ListTile(
+            if(currentAccount.roleId != 1)
+            const ListTile(
               title: Text('Tiền quảng cáo', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('500.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
-            ListTile(
+            if(currentAccount.roleId != 1)
+            const ListTile(
               title: Text('Tiền thưởng hỗ trợ sale', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('500.0000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
-            ListTile(
+            if(currentAccount.roleId != 1)
+            const ListTile(
               title: Text('Tiền thưởng quản lý Fanpage', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('200.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
-            ListTile(
+            if(currentAccount.roleId != 1)
+            const ListTile(
               title: Text('Tiền thưởng quản lý content cho Fanpage', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('700.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
             ListTile(
-              title: Text('Cơ bản', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('3.000.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+              title: const Text('Lương cơ bản', style: TextStyle(fontSize: 12.0,),),
+              trailing: Text(currentAccount.roleId == 1 ? '10.000.000 VNĐ' : '3.000.000 VNĐ' , style: const TextStyle(fontSize: 12.0,),),
             ),
-            ListTile(
+            const ListTile(
               title: Text('Tiền gửi xe', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('30.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
-            ListTile(
+            const ListTile(
               title: Text('Tiền phạt', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('0 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
-            ListTile(
+            const ListTile(
               title: Text('Bảo hiểm cá nhân', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('100.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
-            ListTile(
+            const ListTile(
               title: Text('Bảo hiểm công ty đóng', style: TextStyle(fontSize: 12.0,),),
               trailing: Text('100.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
             ),
             ListTile(
-              title: Text(
+              title: const Text(
                 'Thực nhận',
                 style: TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              trailing: Text(
-                '14.670.000 VNĐ',
-                style: TextStyle(
+              trailing: Text( currentAccount.roleId != 1 ? '14.670.000 VNĐ' : '9.770.000 VNĐ',
+                style: const TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,
                 ),

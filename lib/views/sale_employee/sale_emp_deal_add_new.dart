@@ -193,7 +193,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           isNull: true,
                           borderColor: mainBgColor,
                           inputNumberOnly: true,
-                          text: '',
+                          text: _dealAmount.text,
                           title: 'Số tiền (VNĐ)',
                           readonly: false,
                           textEditingController: _dealAmount

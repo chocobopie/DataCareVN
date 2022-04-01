@@ -88,7 +88,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       //Tên khách hàng
                       CustomEditableTextFormField(
                           borderColor: mainBgColor,
-                          text: '',
+                          text: _contactName.text,
                           title: 'Tên khách hàng',
                           readonly: false,
                           textEditingController: _contactName,
@@ -118,7 +118,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       CustomEditableTextFormField(
                           borderColor: mainBgColor,
                           inputNumberOnly: true,
-                          text: '',
+                          text: _contactPhoneNumber.text,
                           title: 'Số điện thoại',
                           readonly: false,
                           textEditingController: _contactPhoneNumber
@@ -128,7 +128,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       //Tên công ty
                       CustomEditableTextFormField(
                           borderColor: mainBgColor,
-                          text: '',
+                          text: _contactCompanyName.text,
                           title: 'Tên công ty khách hàng',
                           readonly: false,
                           textEditingController: _contactCompanyName
@@ -140,7 +140,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                           isNull: false,
                           isEmailCheck: true,
                           borderColor: mainBgColor,
-                          text: '',
+                          text: _contactEmail.text,
                           title: 'Email của khách hàng',
                           readonly: false,
                           textEditingController: _contactEmail,

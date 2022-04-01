@@ -25,7 +25,7 @@ class CustomListTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (listTileLabel == 'Gửi xe' ||
+          if (listTileLabel == 'Tiền gửi xe' ||
               listTileLabel == 'Tiền phạt' ||
               listTileLabel == 'Bảo hiểm cá nhân' ||
               listTileLabel == 'Bảo hiểm công ty đóng')
@@ -35,7 +35,7 @@ class CustomListTile extends StatelessWidget {
                 fontSize: 12.0,
               ),
             ),
-          if (listTileLabel == 'Cơ bản' ||
+          if (listTileLabel == 'Lương cơ bản' ||
               listTileLabel == 'Quản lý' ||
               listTileLabel == 'Người hỗ trợ' ||
               listTileLabel == 'CLB 20' ||
@@ -44,7 +44,9 @@ class CustomListTile extends StatelessWidget {
               listTileLabel == 'Thưởng nóng cá nhân' ||
               listTileLabel == 'Thưởng nóng nhóm' ||
               listTileLabel == 'Cá nhân ký mới' ||
-              listTileLabel == 'Cá nhân tái ký'
+              listTileLabel == 'Cá nhân tái ký' ||
+              listTileLabel == 'Thưởng thi đua' ||
+              listTileLabel == 'Thưởng tuyển dụng'
           )
             Text(
               '+ ${numberEditController.text}',

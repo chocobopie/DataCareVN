@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sample/widgets/BonusExpansionTile.dart';
+import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'package:login_sample/widgets/PayrollExpansionTile.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -19,11 +22,11 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   final TextEditingController _basicPayrollController = TextEditingController();
   final TextEditingController _carParkController = TextEditingController();
   final TextEditingController _fineController = TextEditingController();
-  final TextEditingController _personalInsuranceController =
-      TextEditingController();
-  final TextEditingController _paidInsuranceController =
-      TextEditingController();
+  final TextEditingController _personalInsuranceController = TextEditingController();
+  final TextEditingController _paidInsuranceController = TextEditingController();
   late double finalPayroll;
+
+  DateTime _selectedMonth = DateTime.now();
 
   final TextEditingController personalNewSignController = TextEditingController();
   final TextEditingController personalReSignController = TextEditingController();
@@ -34,6 +37,8 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   final TextEditingController cttdBonusController = TextEditingController();
   final TextEditingController personalBonusController = TextEditingController();
   final TextEditingController teamBonusController = TextEditingController();
+  final TextEditingController? emulationBonusController = TextEditingController();
+  final TextEditingController? recruitmentBonusController = TextEditingController();
 
   @override
   void dispose() {
@@ -88,37 +93,71 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                       text: widget.empPayrolls.department,
                       title: 'Phòng ban',
                     ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
+                    const SizedBox(height: 20.0,),
                     CustomReadOnlyTextField(
                       text: widget.empPayrolls.team,
                       title: 'Nhóm',
                     ),
-                    const SizedBox(
-                      height: 20.0,
+                    const SizedBox(height: 20.0,),
+
+                    Container(
+                      width: 200.0,
+                      decoration: const BoxDecoration(
+                        color: Colors.blueAccent,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                      ),
+                      child: TextButton.icon(
+                        onPressed: () async {
+                          // _onPressed(context: context);
+                          final date = await DatePicker.showPicker(context,
+                            pickerModel: CustomMonthPicker(
+                              currentTime: DateTime.now(),
+                              minTime: DateTime(2016),
+                              maxTime: DateTime.now(),
+                              locale: LocaleType.vi,
+                            ),
+                          );
+
+                          if (date != null) {
+                            setState(() {
+                              _selectedMonth = date;
+                              print(_selectedMonth);
+                            });
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.calendar_today,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          'Tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
+
+                    const SizedBox(height: 20.0,),
                     PayrollExpansionTile(
+                        selectMonth: 'Tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
                         basicPayrollController: _basicPayrollController,
                         carParkController: _carParkController,
                         fineController: _fineController,
-                        personalInsuranceController:
-                            _personalInsuranceController,
-                        paidInsuranceController: _paidInsuranceController),
+                        personalInsuranceController: _personalInsuranceController,
+                        paidInsuranceController: _paidInsuranceController
+                    ),
                     const SizedBox(
                       height: 20.0,
                     ),
-                    // BonusExpansionTile(
-                    //     personalNewSignController: personalNewSignController,
-                    //     personalReSignController: personalReSignController,
-                    //     manageController: manageController,
-                    //     supporterController: supporterController,
-                    //     club20Controller: club20Controller,
-                    //     recruitmentController: recruitmentController,
-                    //     personalBonusController: personalBonusController,
-                    //     teamBonusController: teamBonusController,
-                    //     cttdBonusController: cttdBonusController
-                    // ),
+                    BonusExpansionTile(
+                      emulationBonusController: emulationBonusController,
+                      recruitmentBonusController: recruitmentBonusController,
+                      personalBonusController: personalBonusController,
+                      teamBonusController: teamBonusController,
+                    ),
                   ],
                 ),
               )),

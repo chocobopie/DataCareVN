@@ -4,7 +4,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class PayrollExpansionTile extends StatelessWidget {
   const PayrollExpansionTile({
-    Key? key, required this.basicPayrollController, required this.carParkController, required this.fineController, required this.personalInsuranceController, required this.paidInsuranceController,
+    Key? key, required this.basicPayrollController, required this.carParkController, required this.fineController, required this.personalInsuranceController, required this.paidInsuranceController, required this.selectMonth,
   }) : super(key: key);
 
   final TextEditingController basicPayrollController;
@@ -12,6 +12,7 @@ class PayrollExpansionTile extends StatelessWidget {
   final TextEditingController fineController;
   final TextEditingController personalInsuranceController;
   final TextEditingController paidInsuranceController;
+  final String selectMonth;
 
   String calculateMoney(){
 
@@ -46,8 +47,6 @@ class PayrollExpansionTile extends StatelessWidget {
 
     String finalPayrollString = '${formatNumber(finalPayroll.toString().substring(0, finalPayroll.toString().length - 2).replaceAll('.', ''))} VNĐ';
 
-    print(finalPayroll);
-    print(finalPayrollString);
 
     return finalPayrollString;
   }
@@ -79,8 +78,8 @@ class PayrollExpansionTile extends StatelessWidget {
           trailing: Text(calculateMoney().toString()),
           children: <Widget>[
             const Divider(color: Colors.blue, thickness: 1.0,),
-            CustomListTile(listTileLabel: 'Cơ bản', alertDialogLabel: 'Cập nhật lương cơ bản', numberEditController: basicPayrollController,),
-            CustomListTile(listTileLabel: 'Gửi xe', alertDialogLabel: 'Cập nhật tiền gửi xe', numberEditController: carParkController,),
+            CustomListTile(listTileLabel: 'Lương cơ bản', alertDialogLabel: 'Cập nhật lương cơ bản', numberEditController: basicPayrollController,),
+            CustomListTile(listTileLabel: 'Tiền gửi xe', alertDialogLabel: 'Cập nhật tiền gửi xe', numberEditController: carParkController,),
             CustomListTile(listTileLabel: 'Tiền phạt', alertDialogLabel: 'Cập nhật tiền phạt', numberEditController: fineController,),
             CustomListTile(listTileLabel: 'Bảo hiểm cá nhân', alertDialogLabel: 'Cập nhật tiền bảo hiểm cá nhân', numberEditController: personalInsuranceController,),
             CustomListTile(listTileLabel: 'Bảo hiểm công ty đóng', alertDialogLabel: 'Cập nhật tiền bảo hiểm công ty đóng', numberEditController: paidInsuranceController,),
