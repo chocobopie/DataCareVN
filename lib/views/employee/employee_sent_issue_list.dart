@@ -6,6 +6,7 @@ import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/models/issue.dart';
 import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/services/api_service.dart';
+import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/issue_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
@@ -28,6 +29,7 @@ class EmployeeSentIssueList extends StatefulWidget {
 
 class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
+  late final List<Account> _employeeList = [];
   List<Issue> issues = [];
   bool isSearching = false;
   late String _fromDatetoDateString = 'Hạn chót';
@@ -39,6 +41,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getAllIssue();
+    _getAllEmployee();
   }
 
   @override
@@ -71,23 +74,30 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
             margin: const EdgeInsets.only(top: 100.0),
             child: Column(
               children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.only(top: 10.0),
+                  child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor),),
+                ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 15, top: 10.0),
-                  child: Row(
-                    children: <Widget>[
-                      const Text('Lọc theo:', style: TextStyle(color: defaultFontColor),),
-                      const SizedBox(width: 10.0,),
-                      Expanded(
-                        child: CustomOutlinedButton(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: SizedBox(
+                    height: 40.0,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        CustomOutlinedButton(
                           title: 'Tên nhân viên được giao',
                           radius: 10,
                           color: mainBgColor,
                           onPressed: () async {
                           },
                         ),
-                      ),
-                      Expanded(
-                        child: CustomOutlinedButton(
+                        const CustomOutlinedButton(
+                            title: 'Ngày tạo vấn đề',
+                            radius: 10,
+                            color: mainBgColor
+                        ),
+                        CustomOutlinedButton(
                             title: _fromDatetoDateString,
                             radius: 10,
                             color: mainBgColor,
@@ -105,41 +115,41 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                               }
                             },
                         ),
-                      ),
-                      DropdownButton2(
-                        customButton: const Icon(
-                          Icons.sort,
-                          size: 40,
-                          color: mainBgColor,
-                        ),
-                        items: [
-                          ...SortItems.firstItems.map(
-                                (item) =>
-                                DropdownMenuItem<SortItem>(
-                                  value: item,
-                                  child: SortItems.buildItem(item),
-                                ),
+                        DropdownButton2(
+                          customButton: const Icon(
+                            Icons.sort,
+                            size: 40,
+                            color: mainBgColor,
                           ),
-                        ],
-                        onChanged: (value) {
-                        },
-                        itemHeight: 40,
-                        itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                        dropdownWidth: 240,
-                        dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                        dropdownDecoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: mainBgColor,
-                        ),
-                        dropdownElevation: 8,
-                        offset: const Offset(0, 8),
-                      ),
-                      IconButton(
-                          onPressed: (){
+                          items: [
+                            ...SortItems.firstItems.map(
+                                  (item) =>
+                                  DropdownMenuItem<SortItem>(
+                                    value: item,
+                                    child: SortItems.buildItem(item),
+                                  ),
+                            ),
+                          ],
+                          onChanged: (value) {
                           },
-                          icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
-                      ),
-                    ],
+                          itemHeight: 40,
+                          itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                          dropdownWidth: 240,
+                          dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: mainBgColor,
+                          ),
+                          dropdownElevation: 8,
+                          offset: const Offset(0, 8),
+                        ),
+                        IconButton(
+                            onPressed: (){
+                            },
+                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -148,7 +158,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.22),
+            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.24),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -199,17 +209,37 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                       children: <Widget>[
                                         const Text('Tiêu đề:'),
                                         const Spacer(),
-                                        Text(issue.title),
+                                        Text(issue.description),
                                       ],
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                     child: Row(
-                                      children: const <Widget>[
-                                        Text('Nhân viên được giao:'),
-                                        Spacer(),
-                                        Text('Nguyễn Thành Tiến'),
+                                      children: <Widget>[
+                                        const Text('Nhân viên tạo vấn đề:'),
+                                        const Spacer(),
+                                        Text(_getEmployeeNamee(issue.ownerId)),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Nhân viên được giao:'),
+                                        const Spacer(),
+                                        Text(_getEmployeeNamee(issue.taggedAccountId)),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Ngày tạo vấn đề:'),
+                                        const Spacer(),
+                                        Text(DateFormat('dd-MM-yyyy').format(issue.createdDate)),
                                       ],
                                     ),
                                   ),
@@ -287,6 +317,25 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
     );
   }
 
+  String _getEmployeeNamee(int accountId){
+    String name = '';
+    for(int i = 0; i < _employeeList.length; i++){
+      if(accountId == _employeeList[i].accountId){
+        name = _employeeList[i].fullname!;
+      }
+    }
+    return name;
+  }
+
+
+  void _getAllEmployee() async {
+    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: true, currentPage: 0, accountId: 0, limit: 100000);
+
+    setState(() {
+      _employeeList.addAll(accountList);
+    });
+  }
+
   void _getAllIssue() async {
     List<Issue>? issueList = await IssueListViewModel().getAllIssue();
 
@@ -297,6 +346,8 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
     }
   }
 }
+
+// ========================================================================Class
 
 class SortItems {
   static const List<SortItem> firstItems = [asc, des];

@@ -210,7 +210,9 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
   void _getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
     List<Attendance> listAttendance = await AttendanceListViewModel().getSelfAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
+
     if(listAttendance.isNotEmpty){
+      print('Helolo');
       setState(() {
         _attendances.addAll(listAttendance);
         if(_timeHms < 17){

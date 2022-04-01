@@ -841,8 +841,16 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   },
                             )),
 
+                          if(_currentAccount.roleId == 0 && _readOnly == true)
+                          Expanded(
+                            child: CustomTextButton(
+                              color: Colors.red,
+                              text: 'Xóa tài khoản',
+                              onPressed: (){
+                              },
+                            ),
+                          ),
                           const SizedBox(width: 5.0,),
-
                           if(_currentAccount.roleId == 0)
                           Expanded(
                             child: CustomTextButton(
