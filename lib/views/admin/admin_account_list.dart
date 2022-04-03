@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/block.dart';
@@ -62,22 +63,72 @@ class _AdminAccountListState extends State<AdminAccountList> {
       floatingActionButton: Column(
          mainAxisAlignment: MainAxisAlignment.end,
          children: <Widget>[
-           if(_currentAccount.roleId == 0)
-           Padding(
-             padding: const EdgeInsets.only(left: 10.0),
-             child: Align(
-               alignment: Alignment.bottomLeft,
-               child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => const AdminAccountAdd(),
-                  ));
-                },
-                backgroundColor: Colors.green,
-                child: const Icon(Icons.plus_one),
+             if(_currentAccount.roleId == 0)
+             Padding(
+               padding: const EdgeInsets.only(left: 10.0),
+               child: Align(
+                   alignment: Alignment.bottomLeft,
+                   child: SpeedDial(
+                     switchLabelPosition: true,
+                     backgroundColor: mainBgColor,
+                     activeForegroundColor: Colors.black,
+                     icon: Icons.more_vert,
+                     children: [
+                       SpeedDialChild(
+                         child: const Icon(Icons.plus_one, color: Colors.white,),
+                         backgroundColor: mainBgColor,
+                         labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                         labelBackgroundColor: mainBgColor,
+                         label: 'Tạo tài khoản cho nhân viên',
+                         onTap: () {
+                           Navigator.push(context, MaterialPageRoute(
+                             builder: (context) => const AdminAccountAdd(),
+                           ));
+                         },
+                       ),
+                       SpeedDialChild(
+                         child: const Icon(Icons.group_add, color: Colors.white,),
+                         backgroundColor: mainBgColor,
+                         labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                         labelBackgroundColor: mainBgColor,
+                         label: 'Tạo thêm Nhóm',
+                         onTap: () {
+                           // Navigator.push(context, MaterialPageRoute(
+                           //   builder: (context) => const AdminAccountAdd(),
+                           // ));
+                         },
+                       ),
+                       SpeedDialChild(
+                         child: const Icon(Icons.warehouse_rounded, color: Colors.white,),
+                         backgroundColor: mainBgColor,
+                         labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                         labelBackgroundColor: mainBgColor,
+                         label: 'Tạo thêm phòng ban',
+                         onTap: () {
+                           // Navigator.push(context, MaterialPageRoute(
+                           //   builder: (context) => const AdminAccountAdd(),
+                           // ));
+                         },
+                       ),
+                     ],
+                   )
                ),
              ),
-           ),
+           // Padding(
+           //   padding: const EdgeInsets.only(left: 10.0),
+           //   child: Align(
+           //     alignment: Alignment.bottomLeft,
+           //     child: FloatingActionButton(
+           //      onPressed: () {
+           //        Navigator.push(context, MaterialPageRoute(
+           //          builder: (context) => const AdminAccountAdd(),
+           //        ));
+           //      },
+           //      backgroundColor: Colors.green,
+           //      child: const Icon(Icons.plus_one),
+           //     ),
+           //   ),
+           // ),
 
            Card(
              elevation: 10.0,
