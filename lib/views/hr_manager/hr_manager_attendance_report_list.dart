@@ -87,6 +87,13 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _refreshController.dispose();
+    attendanceController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

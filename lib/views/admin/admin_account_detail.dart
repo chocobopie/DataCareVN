@@ -765,7 +765,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           ),
                         ),
 
-                      if(_currentEmpAccount.roleId == 2)
+                      if(_currentEmpAccount.roleId == 2 || _currentEmpAccount.roleId == 6)
+                        if(_filterViewId != 2)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomEditableTextFormField(
@@ -775,7 +776,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             readonly: true,
                             onTap: _readOnly != true ? () async {
                               final data = await Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => AdminDepartmentFilter(departmentList: departments),
+                                builder: (context) => AdminDepartmentFilter(departmentList: _currentEmpAccount.roleId == 6 ? getDepartmentListInBlock(block: getBlock(blockId: 1)) : departments ),
                               ));
                               if(data != null){
                                 _filterDepartmentPerm = data;
@@ -789,29 +790,29 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                         ),
                       ),
 
-                      // if(_currentEmpAccount.roleId == 6)
-                      //   if(_permission!.departmentId != null || _filterDepartmentPerm != null)
-                      //     if( getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!).isNotEmpty )
-                      // Padding(
-                      //   padding: const EdgeInsets.only(bottom: 20.0),
-                      //   child: CustomEditableTextFormField(
-                      //     borderColor: _readOnly != true ? mainBgColor : null,
-                      //     text: _teamPermNameString,
-                      //     title: 'Quản lý nhóm',
-                      //     readonly: true,
-                      //     onTap: _readOnly != true ? () async {
-                      //       final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
-                      //           teamList: getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!) )
-                      //       ));
-                      //       if(data != null){
-                      //         _filterTeamPerm = data;
-                      //         setState(() {
-                      //           _teamPermNameString = _filterTeamPerm!.name;
-                      //         });
-                      //       }
-                      //     } : null,
-                      //   ),
-                      // ),
+                      if(_currentEmpAccount.roleId == 6 && _filterViewId == 3)
+                        if(_permission!.departmentId != null || _filterDepartmentPerm != null)
+                          if( getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!).isNotEmpty )
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: CustomEditableTextFormField(
+                          borderColor: _readOnly != true ? mainBgColor : null,
+                          text: _teamPermNameString,
+                          title: 'Quản lý nhóm',
+                          readonly: true,
+                          onTap: _readOnly != true ? () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => AdminTeamFilter(
+                                teamList: getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!) )
+                            ));
+                            if(data != null){
+                              _filterTeamPerm = data;
+                              setState(() {
+                                _teamPermNameString = _filterTeamPerm!.name;
+                              });
+                            }
+                          } : null,
+                        ),
+                      ),
                       Row(
                         children: <Widget>[
                           if(_readOnly == false)
@@ -857,24 +858,43 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             child: CustomTextButton(
                                 color: Colors.blueAccent,
                                 text: _readOnly == true ? 'Chỉnh sửa' : 'Lưu',
-                                onPressed: (){
+                                onPressed: () async {
                                   if(_readOnly == false){
+                                    showLoaderDialog(context);
+
+                                    bool? check, check2, check3;
 
                                     if(_currentEmpAccount.roleId == 2){
-                                      _updateHrInternPermission();
-                                      _updatePermission();
+                                      check = await _updateHrInternPermission();
+                                      check2 = await _updatePermission();
                                     }
 
-                                    if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5 || _currentEmpAccount.roleId == 6){
-                                      _updateSaleTechnicalEmpPermission();
-                                      if(_filterTeam != null || _filterDepartment != null || _filterRole != null){
-                                        _updateSaleTechnicalEmpAccount();
-                                      }
+                                    if(_currentEmpAccount.roleId == 3 || _currentEmpAccount.roleId == 4 || _currentEmpAccount.roleId == 5){
+                                      check = await _updateSaleTechnicalEmpPermission();
+                                      check2 = await _updateSaleTechnicalEmpAccount();
                                     }
 
-                                    Future.delayed(const Duration(seconds: 2), (){
+                                    if(_currentEmpAccount.roleId == 6){
+                                      check = await _updateSaleTechnicalEmpPermission();
+                                      check2 = await _updatePermission();
+                                      check3 = await _updateSaleTechnicalEmpAccount();
+                                    }
+
+
+                                    if( (check == true && check2 == true) || (check == true && check2 == true) || (check == true && check2 == true && check3 == true) ){
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Cập nhật tài khoản thành công')),
+                                      );
                                       Navigator.pop(context);
-                                    });
+                                      Future.delayed(const Duration(seconds: 1), (){
+                                        Navigator.pop(context);
+                                      });
+                                    }else{
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Cập nhật tài khoản thất bại')),
+                                      );
+                                    }
+
                                   }
                                   if(_readOnly == true) setState(() {_readOnly = false;});
                                 },
@@ -961,7 +981,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   }
 
   //============================================================================Update perm
-  void _updatePermission(){
+  Future<bool> _updatePermission() async {
     Permission permissionHrIntern = Permission(
         permissionId: _permission!.permissionId,
         accountPermissionId: _permission!.accountPermissionId,
@@ -969,12 +989,30 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
         departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId
     );
 
+    Permission permissionTechnicalEmp = Permission(
+        permissionId: _permission!.permissionId,
+        contactPermissionId: _permission!.contactPermissionId,
+        dealPermissionId: _permission!.dealPermissionId,
+        issuePermissionId: _permission!.issuePermissionId,
+        departmentId: _filterDepartmentPerm?.departmentId == null ? _permission!.departmentId : _filterDepartmentPerm!.departmentId,
+        teamId: _filterTeamPerm?.teamId == null ? _permission!.teamId : _filterTeamPerm!.teamId
+    );
+
+    Permission? data;
     if(_currentEmpAccount.roleId == 2){
-      PermissionViewModel().updatePermission(permission: permissionHrIntern);
+      data = await PermissionViewModel().updatePermission(permission: permissionHrIntern);
+    }else{
+      data = await PermissionViewModel().updatePermission(permission: permissionTechnicalEmp);
+    }
+
+    if(data != null){
+      return true;
+    }else{
+      return false;
     }
 
   }
-  void _updateSaleTechnicalEmpAccount(){
+  Future<bool> _updateSaleTechnicalEmpAccount() async {
     Account account = Account(
       accountId: _currentEmpAccount.accountId,
       email: _currentEmpAccount.email,
@@ -996,37 +1034,49 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
       dateOfBirth: _currentEmpAccount.dateOfBirth,
     );
 
-    AccountViewModel().updateAnAccount(account);
+    final data = await AccountViewModel().updateAnAccount(account);
+
+    if(data != null ){
+      return true;
+    }else{
+      return false;
+    }
   }
 
-  void _updateSaleTechnicalEmpPermission(){
+  Future<bool> _updateSaleTechnicalEmpPermission() async {
     ContactPermission contactPermission = ContactPermission(
       contactPermissionId:_contactPermission!.contactPermissionId,
-      create: _contactCreateId == null ? _contactPermission!.create : _contactCreateId!,
+      create: _currentEmpAccount.roleId != 6 ? _contactCreateId == null ? _contactPermission!.create : _contactCreateId! : 0,
       view: _contactViewId == null ? _contactPermission!.view : _contactViewId!,
-      update: _contactUpdateId == null ? _contactPermission!.update : _contactUpdateId!,
-      delete: _contactDeleteId == null ? _contactPermission!.delete : _contactDeleteId!,
+      update: _currentEmpAccount.roleId != 6 ? _contactUpdateId == null ? _contactPermission!.update : _contactUpdateId! : 0,
+      delete: _currentEmpAccount.roleId != 6 ? _contactDeleteId == null ? _contactPermission!.delete : _contactDeleteId! : 0,
     );
 
     DealPermission dealPermission = DealPermission(
         dealPermissionId: _dealPermission!.dealPermissionId,
-        create: _dealCreateId == null ? _dealPermission!.create : _dealCreateId!,
+        create: _currentEmpAccount.roleId != 6 ? _dealCreateId == null ? _dealPermission!.create : _dealCreateId! : 0,
         view: _dealViewId == null ? _dealPermission!.view : _dealViewId!,
-        update: _dealUpdateId == null ? _dealPermission!.update : _dealUpdateId!,
-        delete: _dealDeleteId == null ? _dealPermission!.delete : _dealDeleteId!
+        update: _currentEmpAccount.roleId != 6 ? _dealUpdateId == null ? _dealPermission!.update : _dealUpdateId! : 0,
+        delete: _currentEmpAccount.roleId != 6 ? _dealDeleteId == null ? _dealPermission!.delete : _dealDeleteId! : 0
     );
 
     IssuePermission issuePermission = IssuePermission(
         issuePermissionId: _issuePermission!.issuePermissionId,
-        create: _issueCreateId == null ? _issuePermission!.create : _issueCreateId!,
+        create: _currentEmpAccount.roleId != 6 ? _issueCreateId == null ? _issuePermission!.create : _issueCreateId! : 0,
         view: _issueViewId == null ? _issuePermission!.view : _issueViewId!,
-        update: _issueUpdateId == null ? _issuePermission!.update : _issueUpdateId!,
-        delete: _issueDeleteId == null ? _issuePermission!.delete : _issueDeleteId!
+        update: _currentEmpAccount.roleId != 6 ? _issueUpdateId == null ? _issuePermission!.update : _issueUpdateId! : 0,
+        delete: _currentEmpAccount.roleId != 6 ? _issueDeleteId == null ? _issuePermission!.delete : _issueDeleteId! : 0
     );
 
-    PermissionViewModel().updateContactPermission(contactPermission: contactPermission);
-    PermissionViewModel().updateDealPermission(dealPermission: dealPermission);
-    PermissionViewModel().updateIssuePermission(issuePermission: issuePermission);
+    final data = await PermissionViewModel().updateContactPermission(contactPermission: contactPermission);
+    final data2 = await PermissionViewModel().updateDealPermission(dealPermission: dealPermission);
+    final data3 = await PermissionViewModel().updateIssuePermission(issuePermission: issuePermission);
+
+    if(data != null && data2 != null && data3 != null){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   void _updateTechnicalEmpPermission(){
@@ -1041,14 +1091,14 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     PermissionViewModel().updateIssuePermission(issuePermission: issuePermission);
   }
 
-  void _updateHrInternPermission(){
-    // AccountPermission accountPermission = AccountPermission(
-    //     accountPermissionId: _accountPermission!.accountPermissionId,
-    //     view: _accountViewId == null ? _accountPermission!.view : _accountViewId!,
-    //     create: _accountCreateId == null ? _accountPermission!.create : _accountCreateId!,
-    //     update: _accountUpdateId == null ? _accountPermission!.update : _accountUpdateId!,
-    //     delete: _accountDeleteId == null ? _accountPermission!.delete : _accountDeleteId!
-    // );
+  Future<bool> _updateHrInternPermission() async {
+    AccountPermission accountPermission = AccountPermission(
+        accountPermissionId: _accountPermission!.accountPermissionId,
+        view: _accountViewId == null ? _accountPermission!.view : _accountViewId!,
+        create: _accountCreateId == null ? _accountPermission!.create : _accountCreateId!,
+        update: _accountUpdateId == null ? _accountPermission!.update : _accountUpdateId!,
+        delete: _accountDeleteId == null ? _accountPermission!.delete : _accountDeleteId!
+    );
 
     AttendancePermission attendancePermission = AttendancePermission(
         attendancePermissionId: _attendancePermission!.attendancePermissionId,
@@ -1056,8 +1106,14 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
         update: _attendanceUpdateId == null ? _attendancePermission!.update : _attendanceUpdateId!
     );
 
-    // PermissionViewModel().updateAccountPermission(accountPermission: accountPermission);
-    PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
+    final data = await PermissionViewModel().updateAccountPermission(accountPermission: accountPermission);
+    final data2 = await PermissionViewModel().updateAttendancePermission(attendancePermission: attendancePermission);
+
+    if(data != null && data2 != null){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   //============================================================================Get perm

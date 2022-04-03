@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_home.dart';
+import 'package:login_sample/views/employee/employee_active_account.dart';
 import 'package:login_sample/views/employee/employee_forget_password.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_home.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
@@ -22,7 +23,6 @@ class _LoginState extends State<Login> {
   
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-  late Account _account = Account();
   bool _loginFailed = false, _isEmailEmpty = false, _isPasswordEmpty = false;
   Account? account;
 
@@ -144,36 +144,43 @@ class _LoginState extends State<Login> {
 
                       if(account != null){
 
-                        _account = account!;
-                        Provider.of<AccountProvider>(context, listen: false).setAccount(_account);
+                        Provider.of<AccountProvider>(context, listen: false).setAccount(account!);
 
-                        if(_account.roleId == 0){
+                        if(account!.statusId == 1){
+
+                          if(account!.roleId == 0){
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (context) => const HomeAdmin(),
+                            ));
+                          }else if(account!.roleId == 1){
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (context) => const HomeHRManager(),
+                            ));
+                          }else if(account!.roleId == 2){
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (context) => const HomeHRManager(),
+                            ));
+                          }else if(account!.roleId == 3){
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (context) => const HomeSaleManager(),
+                            ));
+                          }else if(account!.roleId == 4){
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (context) => const HomeSaleLeader(),
+                            ));
+                          }else if(account!.roleId == 5){
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (context) => const HomeSaleEmployee(),
+                            ));
+                          }else if(account!.roleId == 6){
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (context) => const HomeSaleManager(),
+                            ));
+                          }
+
+                        }else if(account!.statusId == 0){
                           Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => const HomeAdmin(),
-                          ));
-                        }else if(_account.roleId == 1){
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => const HomeHRManager(),
-                          ));
-                        }else if(_account.roleId == 2){
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => const HomeHRManager(),
-                          ));
-                        }else if(_account.roleId == 3){
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => const HomeSaleManager(),
-                          ));
-                        }else if(_account.roleId == 4){
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => const HomeSaleLeader(),
-                          ));
-                        }else if(_account.roleId == 5){
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => const HomeSaleEmployee(),
-                          ));
-                        }else if(_account.roleId == 6){
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => const HomeSaleManager(),
+                            builder: (context) => const EmployeeActiveAccount(),
                           ));
                         }
                       }else{

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/deal_stage.dart';
@@ -19,7 +20,22 @@ const defaultFontColor = Color.fromARGB(255, 107, 106, 144);
 const locale = 'vi';
 String formatNumber(String s) => NumberFormat.decimalPattern(locale).format(int.parse(s));
 String get currency => NumberFormat.compactSimpleCurrency(locale: locale).currencySymbol;
-
+//==================================================================Loading dialog
+showLoaderDialog(BuildContext context){
+  AlertDialog alert=AlertDialog(
+    content: Row(
+      children: [
+        const CircularProgressIndicator(),
+        Container(margin: const EdgeInsets.only(left: 7),child:const Text("Loading..." )),
+      ],),
+  );
+  showDialog(barrierDismissible: false,
+    context:context,
+    builder:(BuildContext context){
+      return alert;
+    },
+  );
+}
 //------------------------------------------------------------------List model----------------------------------------------------
 List<Service> dealServices = [];
 List<Vat> dealVats = [];
@@ -45,6 +61,11 @@ List<String> excuseLateStatusesNameUtilities = [];
 List<String> gendersUtilities = [];
 List<String> blockNameUtilities = [];
 
+List<String> statusUtilities = [
+  'Mới',
+  'Kích hoạt',
+  'Vô hiệu hóa'
+];
 
 List<String> sortUtilities = [
   'Tăng dần',

@@ -11,8 +11,10 @@ import 'package:login_sample/models/team.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/views/admin/admin_account_detail.dart';
 import 'package:login_sample/views/admin/admin_block_filter.dart';
+import 'package:login_sample/views/admin/admin_department_add_new.dart';
 import 'package:login_sample/views/admin/admin_department_filter.dart';
 import 'package:login_sample/views/admin/admin_role_filter.dart';
+import 'package:login_sample/views/admin/admin_team_add_new.dart';
 import 'package:login_sample/views/admin/admin_team_filter.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -65,7 +67,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
          children: <Widget>[
              if(_currentAccount.roleId == 0)
              Padding(
-               padding: const EdgeInsets.only(left: 10.0),
+               padding: const EdgeInsets.only(left: 5.0),
                child: Align(
                    alignment: Alignment.bottomLeft,
                    child: SpeedDial(
@@ -93,9 +95,9 @@ class _AdminAccountListState extends State<AdminAccountList> {
                          labelBackgroundColor: mainBgColor,
                          label: 'Tạo thêm Nhóm',
                          onTap: () {
-                           // Navigator.push(context, MaterialPageRoute(
-                           //   builder: (context) => const AdminAccountAdd(),
-                           // ));
+                           Navigator.push(context, MaterialPageRoute(
+                             builder: (context) => const AdminTeamAddNew(),
+                           ));
                          },
                        ),
                        SpeedDialChild(
@@ -105,9 +107,9 @@ class _AdminAccountListState extends State<AdminAccountList> {
                          labelBackgroundColor: mainBgColor,
                          label: 'Tạo thêm phòng ban',
                          onTap: () {
-                           // Navigator.push(context, MaterialPageRoute(
-                           //   builder: (context) => const AdminAccountAdd(),
-                           // ));
+                           Navigator.push(context, MaterialPageRoute(
+                             builder: (context) => const AdminDepartmentAddNew(),
+                           ));
                          },
                        ),
                      ],
@@ -375,7 +377,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                               onTap: (){
                                 Navigator.push(context, MaterialPageRoute(
                                     builder: (context) => AdminAccountDetail(account: account)
-                                ));
+                                )).then((value) => _onGoBack());
                               },
                               child: Card(
                                   elevation: 10.0,
@@ -507,6 +509,13 @@ class _AdminAccountListState extends State<AdminAccountList> {
         ],
       ),
     );
+  }
+  
+  void _onGoBack(){
+    setState(() {
+      _accounts.clear();
+      _getFilter(isRefresh: false);
+    });
   }
 
   void _getFilter({required bool isRefresh}){
