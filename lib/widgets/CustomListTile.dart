@@ -6,12 +6,13 @@ class CustomListTile extends StatelessWidget {
     Key? key,
     required this.numberEditController,
     required this.listTileLabel,
-    required this.alertDialogLabel,
+    required this.alertDialogLabel, this.readOnly,
   }) : super(key: key);
 
   final TextEditingController numberEditController;
   final String listTileLabel;
   final String alertDialogLabel;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +55,7 @@ class CustomListTile extends StatelessWidget {
                 fontSize: 12.0,
               ),
             ),
+          if(readOnly == false)
           EditMoneyButton(
             numberController: numberEditController,
             label: alertDialogLabel,

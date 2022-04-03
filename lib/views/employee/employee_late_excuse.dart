@@ -104,7 +104,7 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                               showTitleActions: true,
                               onConfirm: (date){
                                 _lateExcuseTime = DateFormat.jm().format(date);
-                                if( (date.hour + date.month/100) > 9.05 ){
+                                if( (date.hour + date.month/100) > 9 ){
                                   setState(() {
                                     _isAllowTime = false;
                                     _lateExcuseError = 'Bạn không được phép đi trễ quá 9 giờ sáng';

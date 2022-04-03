@@ -34,6 +34,8 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
   final TextEditingController _contactGender = TextEditingController();
   final TextEditingController _contactLeadSourceId = TextEditingController();
 
+  late Account _currentAccount;
+
 
   @override
   void dispose() {
@@ -53,12 +55,12 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
     if(_contactOwnerId.text.isEmpty){
       _getAccountFullnameById(accountId: widget.account.accountId!);
     }
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final _account = Provider.of<AccountProvider>(context).account;
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -219,7 +221,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                                 contactId: 0,
                                 fullname: _contactName.text,
                                 companyName: _contactCompanyName.text,
-                                contactOwnerId: _contactOwnerId.text.isEmpty ? _account.accountId! : int.parse(_contactOwnerId.text),
+                                contactOwnerId: _contactOwnerId.text.isEmpty ? _currentAccount.accountId! : int.parse(_contactOwnerId.text),
                                 phoneNumber: _contactPhoneNumber.text,
                                 email: _contactEmail.text,
                                 genderId: int.parse(_contactGender.text),

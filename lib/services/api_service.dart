@@ -113,7 +113,7 @@ class ApiService {
     return response;
   }
 
-  Future<Contact> createNewContact(Contact contact) async {
+  Future<Contact?> createNewContact(Contact contact) async {
     String url = 'https://trungpd2022.azurewebsites.net/api/v1/contacts';
 
     final response = await http.post(Uri.parse(url),
@@ -133,14 +133,13 @@ class ApiService {
 
     if(response.statusCode == 200){
       print('Create new contact successfully');
-
       return Contact.fromJson(jsonDecode(response.body));
     }else{
       print('Create new contact failed');
 
       Contact? contact;
 
-      return contact!;
+      return contact;
     }
   }
 
@@ -465,19 +464,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllAccountByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+  Future<List<Account>?> getAllAccountByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
-    String url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=10';
 
-    if(teamId != null && limit == null){
-      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=10';
-    }else if(teamId != null && limit != null){
-      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&team-id=$teamId&page=$currentPage&limit=$limit';
-    }else if(teamId == null && limit != null){
-      url = stockUrl + 'accounts/sales-ignore-technical-employee?block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=$limit';
-    }
+    String url = stockUrl + 'accounts/sales-for-contact?block-id=$blockId&department-id=$departmentId&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -485,7 +477,9 @@ class ApiService {
       print('Got all accounts by BlockId, DepartmentId or TeamId | 200');
       return jsonResponse.map((data) => Account.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get all accounts by BlockId, DepartmentId or TeamId");
+      print("Failed to get all accounts by BlockId, DepartmentId or TeamId");
+      List<Account>? accountList;
+      return accountList;
     }
   }
 
@@ -502,12 +496,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAccountByFullname({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, required String fullname}) async{
+  Future<List<Account>?> getAccountByFullname({required bool isRefresh, required int currentPage, required int accountId, required String fullname}) async{
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'accounts/sales?fullname=$fullname&block-id=$blockId&department-id=$departmentId&page=$currentPage&limit=10';
+    String url = stockUrl + 'accounts/sales-for-contact?account-id=$accountId&fullname=$fullname&page=$currentPage&limit=10';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -515,7 +509,9 @@ class ApiService {
       print('Got all accounts by fullname| 200');
       return jsonResponse.map((data) => Account.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get all accounts by fullname");
+      print("Failed to get all accounts by fullname");
+      List<Account>? accountList;
+      return accountList;
     }
   }
 
@@ -782,10 +778,7 @@ class ApiService {
       currentPage = 0;
     }
 
-    String url = stockUrl + 'attendances/self?account-id=$accountId&page=$currentPage&limit=10';
-    if(fromDate != null && toDate != null){
-      url = stockUrl + 'attendances/self?account-id=$accountId&from-date=$fromDate&to-date=$toDate&page=$currentPage&limit=10';
-    }
+    String url = stockUrl + 'attendances/self?account-id=$accountId&from-date=${fromDate ?? ''}&to-date=${toDate ?? ''}&page=$currentPage&limit=10';
 
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){

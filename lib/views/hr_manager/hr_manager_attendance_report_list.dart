@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
 import 'package:login_sample/models/sort_item.dart';
+import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -30,6 +31,13 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   late DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   final RefreshController _refreshController = RefreshController();
+  TextEditingController attendanceController = TextEditingController();
+  late final List<Account> _employeeList = [];
+
+  bool isSearching = false;
+  bool isUpdatedAttendance = false;
+  int currentIndex = 0;
+  List<int> listUpdateAttendId = [];
 
   late Account _currentAccount;
   late final List<Attendance> _attendances = [];
@@ -75,6 +83,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getOtherAttendanceListByAccountId(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
+    _getAllEmployee();
   }
 
   @override
@@ -262,10 +271,10 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                 child: Row(
-                                  children: const <Widget>[
-                                    Text('Tên nhân viên:'),
-                                    Spacer(),
-                                    Text('Lê Nguyễn Thanh Vân'),
+                                  children: <Widget>[
+                                    const Text('Tên nhân viên:'),
+                                    const Spacer(),
+                                    Text(_getEmployeeNamee(attendance.accountId)),
                                   ],
                                 ),
                               ),
@@ -275,7 +284,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                   children: <Widget>[
                                     const Text('Ngày:'),
                                     const Spacer(),
-                                    Text('Ngày ${DateFormat('dd-MM-yyyy').format(attendance.date)}'),
+                                    Text(DateFormat('dd-MM-yyyy').format(attendance.date)),
                                   ],
                                 ),
                               ),
@@ -285,7 +294,11 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                   children: <Widget>[
                                     const Text('Trạng thái:'),
                                     const Spacer(),
-                                    Text(attendanceStatusUtilities[attendance.attendanceStatusId]),
+                                    _customDropdownButton(attendance.attendanceStatusId, _attendances.indexOf(attendance)),
+                                    if(attendance.attendanceStatusId == 0) const Text('Đúng giờ', style: TextStyle(fontSize: 16.0, color: Colors.green),),
+                                    if(attendance.attendanceStatusId == 1) const Text('Cho phép trễ', style: TextStyle(fontSize: 16.0, color: Colors.blue),),
+                                    if(attendance.attendanceStatusId == 2) const Text('Trễ', style: TextStyle(fontSize: 16.0, color: Colors.yellow),),
+                                    if(attendance.attendanceStatusId == 3) const Text('Vắng', style: TextStyle(fontSize: 16.0, color: Colors.red,),),
                                   ],
                                 ),
                               ),
@@ -320,6 +333,24 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
         ],
       ),
     );
+  }
+
+  String _getEmployeeNamee(int accountId){
+    String name = '';
+    for(int i = 0; i < _employeeList.length; i++){
+      if(accountId == _employeeList[i].accountId){
+        name = _employeeList[i].fullname!;
+      }
+    }
+    return name;
+  }
+
+  void _getAllEmployee() async {
+    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: true, currentPage: 0, accountId: 0, limit: 100000);
+
+    setState(() {
+      _employeeList.addAll(accountList);
+    });
   }
 
   void _getOtherAttendanceListByAccountId({required bool isRefresh, int? accountId, required int currentPage, DateTime? date, int? attendanceStatusId}) async {
@@ -377,6 +408,161 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
         formatButtonVisible: false,
       ),
     );
+  }
+
+  Widget _customDropdownButton(int attendanceStatusId, int index){
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        customButton: attendanceStatusId == 0 ? const Icon(Icons.access_time_filled, size: 30, color: Colors.green,)
+            : attendanceStatusId == 2 ? const Icon(Icons.access_time_filled, size: 30, color: Colors.yellow,)
+            : attendanceStatusId == 3 ? const Icon(Icons.access_time_filled, size: 30, color: Colors.red,)
+            : const Icon(Icons.access_time_filled, size: 30, color: Colors.blue,),
+        customItemsIndexes: const [4],
+        customItemsHeight: 8,
+        items: [
+          ...MenuItems.firstItems.map(
+                (item) =>
+                DropdownMenuItem<MenuItem>(
+                  value: item,
+                  child: MenuItems.buildItem(item),
+                ),
+          ),
+        ],
+        onChanged: (value) {
+          String _attendanceType = MenuItems.onChanged(context, value as MenuItem);
+          if(_attendanceType.isNotEmpty){
+            if(_attendanceType == 'Đúng giờ'){
+              setState(() {
+                currentIndex = index;
+                attendanceController.text = _attendanceType;
+                listUpdateAttendId.add(currentIndex);
+                _updateAttendances(attendanceStatusId);
+                print(currentIndex);
+                print(attendanceController.text);
+              });
+            }else if(_attendanceType == 'Vắng'){
+              setState(() {
+                currentIndex = index;
+                attendanceController.text = _attendanceType;
+                listUpdateAttendId.add(currentIndex);
+                _updateAttendances(attendanceStatusId);
+                print(currentIndex);
+                print(attendanceController.text);
+              });
+            }else if(_attendanceType == 'Cho phép trễ'){
+              setState(() {
+                currentIndex = index;
+                attendanceController.text = _attendanceType;
+                listUpdateAttendId.add(currentIndex);
+                _updateAttendances(attendanceStatusId);
+                print(currentIndex);
+                print(attendanceController.text);
+              });
+            }else{
+              setState(() {
+                currentIndex = index;
+                attendanceController.text = _attendanceType;
+                listUpdateAttendId.add(currentIndex);
+                _updateAttendances(attendanceStatusId);
+                print(currentIndex);
+                print(attendanceController.text);
+              });
+            }
+          }
+        },
+        itemHeight: 48,
+        itemPadding: const EdgeInsets.only(left: 10),
+        dropdownWidth: 150,
+        dropdownDecoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25.0),
+          color: Colors.white,
+        ),
+        dropdownElevation: 8,
+        offset: const Offset(0, 8),
+      ),
+    );
+  }
+
+  void _updateAttendances(int attendanceStatusId){
+    if(attendanceStatusUtilities[attendanceStatusId] != attendanceController.text) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text(
+            'Thay đổi trạng thái từ ${attendanceStatusUtilities[attendanceStatusId]} thành ${attendanceController.text}',
+            style: const TextStyle(fontSize: 18.0, color: defaultFontColor),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Huỷ"),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text("Lưu"),
+              onPressed: () {
+                setState(() {
+                  userAttendances[currentIndex].attendance = attendanceController.text;
+                  Navigator.pop(context);
+                });
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+}
+
+class MenuItem {
+  final String text;
+  final Icon icon;
+
+  const MenuItem({
+    required this.text,
+    required this.icon,
+  });
+}
+
+class MenuItems {
+  static const List<MenuItem> firstItems = [attend, late, absent, lateAccepted];
+
+  static const attend = MenuItem(text: 'Có mặt', icon: Icon(Icons.access_time_filled, color: Colors.green));
+  static const absent = MenuItem(text: 'Vắng', icon: Icon(Icons.access_time_filled, color: Colors.red));
+  static const late = MenuItem(text: 'Trễ', icon: Icon(Icons.access_time_filled, color: Colors.yellow));
+  static const lateAccepted = MenuItem(text: 'Được đi trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
+
+  static Widget buildItem(MenuItem item) {
+    return Row(
+      children: [
+        item.icon,
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: defaultFontColor,
+            fontSize: 16.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, MenuItem item) {
+    switch (item) {
+      case MenuItems.attend:
+        return 'Đúng giờ';
+      case MenuItems.late:
+        return 'Trễ';
+      case MenuItems.absent:
+        return 'Vắng';
+      case MenuItems.lateAccepted:
+        return 'Cho phép trễ';
+    }
   }
 }
 

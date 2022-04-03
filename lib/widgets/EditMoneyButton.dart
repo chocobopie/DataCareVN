@@ -4,7 +4,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class EditMoneyButton extends StatelessWidget {
   const EditMoneyButton({
-    Key? key, required this.numberController, required this.label,
+    Key? key, required this.numberController, required this.label
   }) : super(key: key);
 
   final TextEditingController numberController;

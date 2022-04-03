@@ -201,7 +201,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                 color: mainBgColor,
                                 onPressed: () async {
                                   final data = await Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => const AdminRoleFilter(isHrManagerFilter: true,)
+                                      builder: (context) => _currentAccount.roleId == 1 ? const AdminRoleFilter(isHrManagerFilter: true,) : const AdminRoleFilter(isAdminFilter: true,)
                                   ));
                                   if(data != null){
                                     _roleFilter = data;
@@ -361,7 +361,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                           children: <Widget>[
                                             const Text('Phòng:', style: TextStyle(fontSize: 12.0),),
                                             const Spacer(),
-                                            Text(getDepartmentName(account.departmentId!, account.blockId))
+                                            Text(getDepartmentName(account.departmentId!, null))
                                           ],
                                         ),
                                       ),

@@ -132,7 +132,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                               //Tên khách hàng
                               CustomReadOnlyTextField(
-                                  borderColor: _readOnly != true ? mainBgColor : null,
                                   text: contact!.fullname,
                                   title: 'Tên khách hàng'),
                               const SizedBox(height: 20.0,),
@@ -372,6 +371,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                               //Link trello
                               CustomEditableTextFormField(
+                                  isNull: true,
                                   borderColor: _readOnly != true ? mainBgColor : null,
                                   text: widget.deal.linkTrello!.isNotEmpty
                                       ? widget.deal.linkTrello!

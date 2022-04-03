@@ -4,7 +4,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class PayrollExpansionTile extends StatelessWidget {
   const PayrollExpansionTile({
-    Key? key, required this.basicPayrollController, required this.carParkController, required this.fineController, required this.personalInsuranceController, required this.paidInsuranceController, required this.selectMonth,
+    Key? key, required this.basicPayrollController, required this.carParkController, required this.fineController, required this.personalInsuranceController, required this.paidInsuranceController, required this.selectMonth, this.readOnly,
   }) : super(key: key);
 
   final TextEditingController basicPayrollController;
@@ -13,6 +13,7 @@ class PayrollExpansionTile extends StatelessWidget {
   final TextEditingController personalInsuranceController;
   final TextEditingController paidInsuranceController;
   final String selectMonth;
+  final bool? readOnly;
 
   String calculateMoney(){
 
@@ -22,6 +23,10 @@ class PayrollExpansionTile extends StatelessWidget {
     double fine = 0;
     double personalInsurance = 0;
     double paidInsurance = 0;
+
+    if(basicPayrollController.text.isEmpty){
+      basicPayrollController.text = '3000000';
+    }
 
     if(basicPayrollController.text.isNotEmpty){
       basicPayroll = double.parse(basicPayrollController.text.replaceAll('.', ''));
@@ -74,15 +79,15 @@ class PayrollExpansionTile extends StatelessWidget {
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          title: const Text('Lương'),
+          title: Text('Tiền lương $selectMonth'),
           trailing: Text(calculateMoney().toString()),
           children: <Widget>[
             const Divider(color: Colors.blue, thickness: 1.0,),
-            CustomListTile(listTileLabel: 'Lương cơ bản', alertDialogLabel: 'Cập nhật lương cơ bản', numberEditController: basicPayrollController,),
-            CustomListTile(listTileLabel: 'Tiền gửi xe', alertDialogLabel: 'Cập nhật tiền gửi xe', numberEditController: carParkController,),
-            CustomListTile(listTileLabel: 'Tiền phạt', alertDialogLabel: 'Cập nhật tiền phạt', numberEditController: fineController,),
-            CustomListTile(listTileLabel: 'Bảo hiểm cá nhân', alertDialogLabel: 'Cập nhật tiền bảo hiểm cá nhân', numberEditController: personalInsuranceController,),
-            CustomListTile(listTileLabel: 'Bảo hiểm công ty đóng', alertDialogLabel: 'Cập nhật tiền bảo hiểm công ty đóng', numberEditController: paidInsuranceController,),
+            CustomListTile(listTileLabel: 'Lương cơ bản', alertDialogLabel: 'Cập nhật lương cơ bản', numberEditController: basicPayrollController, readOnly: readOnly),
+            CustomListTile(listTileLabel: 'Tiền gửi xe', alertDialogLabel: 'Cập nhật tiền gửi xe', numberEditController: carParkController,readOnly: readOnly),
+            CustomListTile(listTileLabel: 'Tiền phạt', alertDialogLabel: 'Cập nhật tiền phạt', numberEditController: fineController,readOnly: readOnly),
+            CustomListTile(listTileLabel: 'Bảo hiểm cá nhân', alertDialogLabel: 'Cập nhật tiền bảo hiểm cá nhân', numberEditController: personalInsuranceController,readOnly: readOnly),
+            CustomListTile(listTileLabel: 'Bảo hiểm công ty đóng', alertDialogLabel: 'Cập nhật tiền bảo hiểm công ty đóng', numberEditController: paidInsuranceController,readOnly: readOnly),
             ListTile(
               title: const Text(
                 'Thực nhận',

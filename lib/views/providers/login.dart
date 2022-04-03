@@ -171,6 +171,10 @@ class _LoginState extends State<Login> {
                           Navigator.pushReplacement(context, MaterialPageRoute(
                             builder: (context) => const HomeSaleEmployee(),
                           ));
+                        }else if(_account.roleId == 6){
+                          Navigator.pushReplacement(context, MaterialPageRoute(
+                            builder: (context) => const HomeSaleManager(),
+                          ));
                         }
                       }else{
                         setState(() {

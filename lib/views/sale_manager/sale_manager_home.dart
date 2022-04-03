@@ -20,6 +20,7 @@ class HomeSaleManager extends StatefulWidget {
 }
 
 class _HomeSaleManagerState extends State<HomeSaleManager> {
+
   
   @override
   Widget build(BuildContext context) {
@@ -53,6 +54,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
                 padding: const EdgeInsets.only(top: 10.0, left: 35.0, bottom: 5.0),
                 children: <Widget>[
                   //Hàng 1
+                  if(_account.roleId != 6)
                   Row(
                     children: <Widget>[
                       //Thông tin liên lạc khách hàng
@@ -82,6 +84,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
                   ),
                   const SizedBox(height: 20.0,),
                   //Hàng 2
+                  if(_account.roleId != 6)
                   Row(
                     children: <Widget>[
                       //Nút xem lương
@@ -124,6 +127,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
                           }
                       ),
                       const SizedBox(width: 20.0,),
+                      if(_account.roleId != 6)
                       ImageTextButton(
                           imageUrl: 'assets/images/payroll-management.png',
                           text: 'Xem doanh thu của phòng ban',

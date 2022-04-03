@@ -27,6 +27,8 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   late double finalPayroll;
 
   DateTime _selectedMonth = DateTime.now();
+  final DateTime _currentTime = DateTime.now();
+  late final DateTime _thisMonthYear;
 
   final TextEditingController personalNewSignController = TextEditingController();
   final TextEditingController personalReSignController = TextEditingController();
@@ -39,6 +41,13 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   final TextEditingController teamBonusController = TextEditingController();
   final TextEditingController? emulationBonusController = TextEditingController();
   final TextEditingController? recruitmentBonusController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _thisMonthYear = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
+    print(_thisMonthYear);
+  }
 
   @override
   void dispose() {
@@ -142,6 +151,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
 
                     const SizedBox(height: 20.0,),
                     PayrollExpansionTile(
+                        readOnly: _selectedMonth.isBefore(_thisMonthYear) ? true : false,
                         selectMonth: 'Tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
                         basicPayrollController: _basicPayrollController,
                         carParkController: _carParkController,
@@ -153,6 +163,8 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                       height: 20.0,
                     ),
                     BonusExpansionTile(
+                      readOnly: _selectedMonth.isBefore(_thisMonthYear) ? true : false,
+                      selectMonth: 'Tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
                       emulationBonusController: emulationBonusController,
                       recruitmentBonusController: recruitmentBonusController,
                       personalBonusController: personalBonusController,

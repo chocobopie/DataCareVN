@@ -266,6 +266,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   _teamNameString = '';
                                   _filterTeam = null;
                                   _accountDepartmentId.text = _filterDepartment!.departmentId.toString();
+                                  print(_filterDepartment!.departmentId);
                                 });
                               }
                             } : null,
@@ -841,7 +842,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   },
                             )),
 
-                          if(_currentAccount.roleId == 0 && _readOnly == true)
+                          if(_currentAccount.roleId == 0 && _readOnly == true && _currentEmpAccount.roleId != 1)
                           Expanded(
                             child: CustomTextButton(
                               color: Colors.red,
@@ -851,7 +852,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             ),
                           ),
                           const SizedBox(width: 5.0,),
-                          if(_currentAccount.roleId == 0)
+                          if(_currentAccount.roleId == 0 && _currentEmpAccount.roleId != 1)
                           Expanded(
                             child: CustomTextButton(
                                 color: Colors.blueAccent,

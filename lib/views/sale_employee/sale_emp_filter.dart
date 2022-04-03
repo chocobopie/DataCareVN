@@ -51,7 +51,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
               _currentPage = index;
             });
             if(_searchEmployeeName.text.isNotEmpty){
-              _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
+              _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!, fullname: _searchEmployeeName.text);
             }else{
               _filterSaleEmployee(isRefresh: false);
             }
@@ -91,7 +91,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                             _salesEmployees.clear();
                           }
                           _currentPage = 0;
-                          _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, departmentId: _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
+                          _getAccountsByFullname(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!, fullname: _searchEmployeeName.text);
                         },
                         decoration: InputDecoration(
                           icon: const Icon(Icons.search,
@@ -154,7 +154,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                       });
                       _refreshController.resetNoData();
                       if(_searchEmployeeName.text.isNotEmpty){
-                        _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, departmentId:  _currentAccount.departmentId!, blockId:  _currentAccount.blockId!, fullname: _searchEmployeeName.text);
+                        _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!, fullname: _searchEmployeeName.text);
                       }else{
                         _filterSaleEmployee(isRefresh: false);
                       }
@@ -301,9 +301,9 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   }
 
   void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId}) async {
-    List<Account> accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId);
+    List<Account>? accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId);
 
-    if(accountList.isNotEmpty){
+    if(accountList != null){
       setState(() {
         _salesEmployees.addAll(accountList);
         _maxPages = _salesEmployees[0].maxPage!;
@@ -313,10 +313,10 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
     }
   }
 
-  void _getAccountsByFullname({required bool isRefresh, required int currentPage, required int departmentId, required int blockId, required String fullname}) async {
-    List<Account> accountList = await AccountListViewModel().getAccountsByFullname(isRefresh: isRefresh, currentPage: currentPage, departmentId: departmentId, blockId: blockId, fullname: fullname);
+  void _getAccountsByFullname({required bool isRefresh, required int currentPage, required int accountId, required String fullname}) async {
+    List<Account>? accountList = await AccountListViewModel().getAccountsByFullname(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, fullname: fullname);
 
-    if(accountList.isNotEmpty){
+    if(accountList != null){
       setState(() {
         _salesEmployees.addAll(accountList);
         _maxPages = _salesEmployees[0].maxPage!;

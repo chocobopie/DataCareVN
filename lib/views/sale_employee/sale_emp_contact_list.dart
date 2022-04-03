@@ -50,16 +50,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     _getAllSaleEmployee(isRefresh: true);
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   if(_contacts.isEmpty){
-  //     _currentAccount = Provider.of<AccountProvider>(context).account;
-  //     _getOverallInfo(_currentPage, _currentAccount);
-  //   }
-  //   _getAllSaleEmployee(isRefresh: true);
-  // }
-
   @override
   void dispose() {
     super.dispose();
@@ -512,16 +502,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
       }
   }
 
-  String _getDepartmentName(int blockId, departmentId){
-    String name = '';
-    for(int i = 0; i < departments.length; i++){
-      if(blockId == departments[i].blockId && departmentId == departments[i].departmentId){
-        name = departments[i].name;
-      }
-    }
-    return name;
-  }
-
   void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? limit, DateTime? fromDate, DateTime? toDate}) async {
 
     List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, limit: limit);
@@ -590,12 +570,14 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
-    List<Account> accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
+    List<Account>? accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
 
-    setState(() {
-      _contacts.clear();
-      _saleEmployeeList.addAll(accountList);
-    });
+    if(accountList != null){
+      setState(() {
+        _contacts.clear();
+        _saleEmployeeList.addAll(accountList);
+      });
+    }
   }
 
   String _getContactOwnerName(int contactOwnerId){

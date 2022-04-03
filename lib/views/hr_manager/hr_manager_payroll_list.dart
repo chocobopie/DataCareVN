@@ -25,7 +25,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '2',
         name: 'Tăng Quốc Ðiền',
-        role: 'NVKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng quảng cáo',
         team: 'Nhóm Kiều Thủy',
         email: 'email',
@@ -33,7 +33,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '3',
         name: 'Phương Thái Ðức',
-        role: 'TNKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng quảng cáo',
         team: 'Nhóm Kiều Thủy',
         email: 'email',
@@ -41,7 +41,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '4',
         name: 'Đức Ðông Dương',
-        role: 'NVKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng quảng cáo',
         team: 'Nhóm Kiều Thủy',
         email: 'email',
@@ -49,7 +49,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '5',
         name: 'Chương Tường Lâm',
-        role: 'NVKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng quảng cáo',
         team: 'Nhóm Thúy Anh',
         email: 'email',
@@ -57,7 +57,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '6',
         name: 'Liễu Quang Tài',
-        role: 'TNKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng đào tạo',
         team: 'Nhóm Thúy Anh',
         email: 'email',
@@ -65,7 +65,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '7',
         name: 'Cát Trung Thành',
-        role: 'NVKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng đào tạo',
         team: 'Nhóm Thúy Anh',
         email: 'email',
@@ -73,7 +73,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '8',
         name: 'Ao Hữu Vĩnh',
-        role: 'NVKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng đào tạo',
         team: 'Nhóm Thúy Anh',
         email: 'email',
@@ -81,7 +81,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '9',
         name: 'Bồ Việt Chính',
-        role: 'NVKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng đào tạo',
         team: 'Nhóm Văn Đại',
         email: 'email',
@@ -89,7 +89,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '10',
         name: 'Cung Bảo Ðịnh',
-        role: 'NVKD',
+        role: 'Nhân viên kinh doanh',
         department: 'Phòng đào tạo',
         team: 'Nhóm Văn Đại',
         email: 'email',
@@ -97,7 +97,7 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
     EmployeePayrollTemp(
         id: '11',
         name: 'Đương Hùng Dũng',
-        role: 'TPKD',
+        role: 'Trưởng nhóm kinh doanh',
         department: 'Phòng đào tạo',
         team: 'Nhóm Văn Đại',
         email: 'email',

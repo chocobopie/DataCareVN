@@ -87,7 +87,7 @@ class _HomeSaleLeaderState extends State<HomeSaleLeader> {
                                         child: Padding(
                                           padding: EdgeInsets.only(top: 10.0),
                                           child: Text(
-                                            'Thông tin liên lạc khách hàng',
+                                            'Xem thông tin khách hàng',
                                             style: TextStyle(
                                               fontSize: 12.0,
                                               color: Color.fromARGB(255, 107, 106, 144),
@@ -152,7 +152,7 @@ class _HomeSaleLeaderState extends State<HomeSaleLeader> {
                                         child: Padding(
                                           padding: EdgeInsets.only(top: 10.0),
                                           child: Text(
-                                            'Hợp đồng',
+                                            'Xem hợp đồng',
                                             style: TextStyle(
                                               fontSize: 12.0,
                                               color: Color.fromARGB(255, 107, 106, 144),

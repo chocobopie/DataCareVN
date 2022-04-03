@@ -212,7 +212,6 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
 
 
     if(listAttendance.isNotEmpty){
-      print('Helolo');
       setState(() {
         _attendances.addAll(listAttendance);
         if(_timeHms < 17){
@@ -228,6 +227,11 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
           _takeAttendanceString = 'Bạn không thể điểm danh vì đã quá giờ điểm danh';
         }
 
+      });
+    }else{
+      setState(() {
+        _isTook = true;
+        _takeAttendanceString = 'Hôm nay là ngày nghỉ';
       });
     }
   }

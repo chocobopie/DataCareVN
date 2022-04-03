@@ -16,6 +16,8 @@ class BonusExpansionTile extends StatelessWidget {
     this.personalReSignController,
     this.emulationBonusController,
     this.recruitmentBonusController,
+    required this.selectMonth,
+    this.readOnly,
   }) : super(key: key);
 
   final TextEditingController? personalNewSignController;
@@ -29,6 +31,8 @@ class BonusExpansionTile extends StatelessWidget {
   final TextEditingController? teamBonusController;
   final TextEditingController? emulationBonusController;
   final TextEditingController? recruitmentBonusController;
+  final String selectMonth;
+  final bool? readOnly;
 
   String calculateMoney(){
 
@@ -87,7 +91,7 @@ class BonusExpansionTile extends StatelessWidget {
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          title: const Text('Thưởng'),
+          title: Text('Tiền thưởng $selectMonth'),
           trailing: Text(calculateMoney().toString()),
           children: <Widget>[
             const Divider(
@@ -95,18 +99,23 @@ class BonusExpansionTile extends StatelessWidget {
               thickness: 1.0,
             ),
             CustomListTile(
+                readOnly: readOnly,
                 numberEditController: emulationBonusController!,
                 listTileLabel: 'Thưởng thi đua',
-                alertDialogLabel: 'Cập nhật thưởng thi đua'),
+                alertDialogLabel: 'Cập nhật thưởng thi đua'
+            ),
             CustomListTile(
+                readOnly: readOnly,
                 numberEditController: recruitmentBonusController!,
                 listTileLabel: 'Thưởng tuyển dụng',
                 alertDialogLabel: 'Cập nhật thưởng tuyển dụng'),
             CustomListTile(
+                readOnly: readOnly,
                 numberEditController: personalBonusController!,
                 listTileLabel: 'Thưởng nóng cá nhân',
                 alertDialogLabel: 'Cập nhật thưởng nóng cá nhân'),
             CustomListTile(
+                readOnly: readOnly,
                 numberEditController: teamBonusController!,
                 listTileLabel: 'Thưởng nóng nhóm',
                 alertDialogLabel: 'Cập nhật thưởng nóng nhóm'),
