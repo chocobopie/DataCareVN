@@ -120,6 +120,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       CustomEditableTextFormField(
                           borderColor: mainBgColor,
                           inputNumberOnly: true,
+                          isPhoneNumber: true,
                           text: _contactPhoneNumber.text,
                           title: 'Số điện thoại',
                           readonly: false,

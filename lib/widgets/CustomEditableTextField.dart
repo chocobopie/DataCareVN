@@ -7,7 +7,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class CustomEditableTextFormField extends StatelessWidget {
    const CustomEditableTextFormField({
-    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity, this.isEmailCheck
+    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity, this.isEmailCheck, this.isPhoneNumber, this.isBankAccountNumber
   }) : super(key: key);
 
   final String title;
@@ -23,13 +23,15 @@ class CustomEditableTextFormField extends StatelessWidget {
   final bool? isNull;
   final bool? citizenIdentity;
   final bool? isEmailCheck;
+  final bool? isPhoneNumber;
+  final bool? isBankAccountNumber;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextFormField(
         key: Key(text.trim().toString()),
-        validator: isNull != true ? (value) {
+        validator: (isNull != true) ? (value) {
           if(value!.isEmpty){
             return '$title không được bỏ trống';
           }else if(value.isNotEmpty && isEmailCheck == true){
@@ -39,6 +41,10 @@ class CustomEditableTextFormField extends StatelessWidget {
             if(EmailValidator.validate(value) == false){
               return 'Email không đúng định dạng';
             }
+          }else if(isPhoneNumber == true){
+            if(value.length < 10){
+              return 'Số điện thoại phải hơn 9 chữ số';
+            }
           }
           return null;
         } : null,
@@ -47,15 +53,21 @@ class CustomEditableTextFormField extends StatelessWidget {
         obscureText: obscureText == null ? false : obscureText!,
         minLines: 1,
         maxLines: obscureText == null || obscureText == false ? 5 : 1,
-        inputFormatters: inputNumberOnly == true ? <TextInputFormatter>[
+        inputFormatters: (inputNumberOnly == true && citizenIdentity == null && isPhoneNumber == null && isBankAccountNumber == null) ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(10),
-        ] : (inputNumberOnly == null && citizenIdentity == null) ? <TextInputFormatter>[
+        ] : (inputNumberOnly == null && citizenIdentity == null && isPhoneNumber == null && isBankAccountNumber == null) ? <TextInputFormatter>[
           LengthLimitingTextInputFormatter(50),
-        ] : citizenIdentity == true ? <TextInputFormatter>[
+        ] : (inputNumberOnly == true && citizenIdentity == true && isPhoneNumber == null && isBankAccountNumber == null) ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(12),
-        ] : <TextInputFormatter>[
+        ] : (inputNumberOnly == true && isPhoneNumber == true && citizenIdentity == null && isBankAccountNumber == null) ? <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(11),
+        ] :(inputNumberOnly == true && isPhoneNumber == null && citizenIdentity == null && isBankAccountNumber == true) ? <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(20),
+        ] :<TextInputFormatter>[
           LengthLimitingTextInputFormatter(50),
         ],
         keyboardType: inputNumberOnly == true ? TextInputType.number : inputEmailOnly == true ? TextInputType.emailAddress : TextInputType.text,
@@ -63,6 +75,7 @@ class CustomEditableTextFormField extends StatelessWidget {
           textEditingController?.text = val.trim();
         },
         decoration: InputDecoration(
+          errorMaxLines: 5,
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(color: borderColor == null ? Colors.grey.shade300 : borderColor!, width: 2),
             borderRadius: BorderRadius.circular(10),

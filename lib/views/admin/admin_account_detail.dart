@@ -881,7 +881,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                     }
 
 
-                                    if( (check == true && check2 == true) || (check == true && check2 == true) || (check == true && check2 == true && check3 == true) ){
+                                    if( (check == true && check2 == true) || (check == true && check2 == true && check3 == true) ){
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(content: Text('Cập nhật tài khoản thành công')),
                                       );

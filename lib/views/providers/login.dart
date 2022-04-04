@@ -124,9 +124,13 @@ class _LoginState extends State<Login> {
 
                 MaterialButton(
                   onPressed: () async {
+
+                    showLoaderDialog(context);
+
                     setState(() {
                       _loginFailed = false;
                     });
+
                     if(email.text.isEmpty){
                       setState(() {_isEmailEmpty = true;});
                     }else{
@@ -139,6 +143,10 @@ class _LoginState extends State<Login> {
                       setState(() {_isPasswordEmpty = false;});
                     }
 
+                    if(_isEmailEmpty == true && _isPasswordEmpty == true){
+                      Navigator.pop(context);
+                    }
+
                     if(_isPasswordEmpty == false && _isEmailEmpty == false){
                       account = await auth.login( email.text, password.text );
 
@@ -147,7 +155,6 @@ class _LoginState extends State<Login> {
                         Provider.of<AccountProvider>(context, listen: false).setAccount(account!);
 
                         if(account!.statusId == 1){
-
                           if(account!.roleId == 0){
                             Navigator.pushReplacement(context, MaterialPageRoute(
                               builder: (context) => const HomeAdmin(),
@@ -187,6 +194,7 @@ class _LoginState extends State<Login> {
                         setState(() {
                           _loginFailed = true;
                         });
+                        Navigator.pop(context);
                       }
                     }
 

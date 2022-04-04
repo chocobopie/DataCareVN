@@ -34,9 +34,9 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
   late String _dateOfBirthString = '';
 
   @override
-  void initState() {
-    super.initState();
-    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: true).account;
   }
 
   @override
