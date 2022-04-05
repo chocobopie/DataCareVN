@@ -124,6 +124,16 @@ List<String> roleFilter = [
 ];
 
 //-------------------------------------------------------------------------------------------------------------------
+Role? getRole({required int roleId}){
+  Role? role;
+  for(int i = 0; i < roles.length; i++){
+    if(roleId == roles[i].roleId){
+      role = roles[i];
+    }
+  }
+  return role;
+}
+
 Department getDepartment({required int departmentId, int? blockId}){
   Department? department;
 

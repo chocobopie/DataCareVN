@@ -238,7 +238,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                   label: 'Xem',
                                   hintText: Text(_filterViewId == null ? '' : permissionStatusesNameUtilities[_filterViewId!]),
                                   items: saleEmpViewPermNames,
-                                  onChanged: _filterRole!.roleId != 3 ? (value){
+                                  onChanged: (_filterRole!.roleId != 3 && _filterRole!.roleId != 6) ? (value){
                                     for(int i = 0; i < permissionStatuses.length; i++){
                                       if(value.toString() == permissionStatuses[i].name){
                                         setState(() {

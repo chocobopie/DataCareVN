@@ -97,7 +97,7 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                           textEditingController: _newPasswordConfirm
                         ),
                         const SizedBox(height: 10.0,),
-                        if(_isSimilar == false) const Text('Mật khẩu mới của bạn không giống nhau'),
+                        if(_isSimilar == false) const Text('Mật khẩu mới của bạn không giống nhau', style: TextStyle(color: Colors.red),),
                         const SizedBox(height: 20.0,),
                         CustomTextButton(
                             color: Colors.blueAccent,
