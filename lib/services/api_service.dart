@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:login_sample/models/RegisterAccount.dart';
+import 'package:login_sample/models/change_password.dart';
+import 'package:login_sample/models/register_account.dart';
 import 'package:login_sample/models/WorldTimeAPI.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/account_permission.dart';
@@ -347,6 +348,31 @@ class ApiService {
       return jsonResponse.map((data) => DealStage.fromJson(data)).toList();
     } else {
       throw Exception("Failed to get all deals");
+    }
+  }
+
+  //password
+  Future<bool> changePassword(ChangePassword changePassword) async {
+    String url = stockUrl + 'authentications/change-password?id=${changePassword.accountId}';
+
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "accountId": changePassword.accountId,
+        "email": changePassword.email,
+        "currentPassword": changePassword.currentPassword,
+        "newPassword": changePassword.newPassword
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Change password successfully | 200');
+      return true;
+    }else{
+      print('Change password failed | 400');
+      return false;
     }
   }
 

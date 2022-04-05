@@ -1,7 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:login_sample/main.dart';
-import 'package:login_sample/models/RegisterAccount.dart';
+import 'package:login_sample/models/register_account.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/role.dart';
@@ -105,7 +105,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                         isNull: false,
                         isEmailCheck: true,
                         borderColor: mainBgColor,
-                        text: '',
+                        text: _accountEmail.text.isEmpty ? '' : _accountEmail.text,
                         title: 'Email của nhân viên',
                         readonly: false,
                         textEditingController: _accountEmail,
@@ -124,6 +124,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                           if( data != null ){
                             setState(() {
                               _filterRole = data;
+
                               _filterRoleString = _filterRole!.name;
                               _filterDepartmentString = '';
                               _filterDepartment = null;
@@ -133,6 +134,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                               _departmentPermNameString = '';
                               _filterTeamPerm = null;
                               _teamPermNameString = '';
+
                               if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5){
                                 _filterBlockId = 1;
                                 if(_filterRole!.roleId == 3){
@@ -141,9 +143,15 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                   _contactCreateId = _dealCreateId = _issueCreateId = 1;
                                   _contactDeleteId = _contactUpdateId = _dealDeleteId = _dealUpdateId = _issueDeleteId = _issueUpdateId = _filterViewId;
                                   _accountViewId = _accountDeleteId = _accountUpdateId = _accountCreateId = 0;
-                                  _attendanceViewId = 0; _attendanceUpdateId = 0;
+
+                                  print('contactView: $_contactDeleteId');
+                                  print('dealView: $_issueUpdateId');
+                                  print('issueViewId: $_dealDeleteId');
                                 }
                               }
+
+                              
+
                               if(_filterRole!.roleId == 2){
                                 _filterBlockId = 0;
                               }
@@ -502,9 +510,10 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                           Padding(
                             padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                             child: CustomDropdownFormField2(
+                              value:  _accountViewId != null ? permissionStatusesNameUtilities[_accountViewId!] : null,
                               label: 'Xem',
                               hintText: _accountViewId != null ? Text(permissionStatusesNameUtilities[_accountViewId!]) : const Text(''),
-                              items: hrInternCreatePermNames,
+                              items: hrInternViewPermNames,
                               onChanged: (value){
                                 for(int i = 0; i < permissionStatuses.length; i++){
                                   if(value.toString() == permissionStatuses[i].name){
@@ -531,8 +540,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                           Padding(
                             padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                             child: CustomDropdownFormField2(
+                              value: _attendanceViewId != null ? permissionStatusesNameUtilities[_attendanceViewId!] : null,
                               label: 'Xem',
-                              hintText: _attendanceViewId != null ? Text(permissionStatusesNameUtilities[_accountViewId!]) : const Text(''),
+                              hintText: _attendanceViewId != null ? Text(permissionStatusesNameUtilities[_attendanceViewId!]) : const Text(''),
                               items: hrInternViewPermNames,
                               onChanged: (value){
                                 for(int i = 0; i < permissionStatuses.length; i++){
@@ -549,8 +559,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                           Padding(
                             padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                             child: CustomDropdownFormField2(
+                              value: _attendanceUpdateId != null ? permissionStatusesNameUtilities[_attendanceUpdateId!] : null,
                               label: 'Chỉnh sửa',
-                              hintText: _attendanceUpdateId != null ? Text(permissionStatusesNameUtilities[_accountUpdateId!]) : const Text(''),
+                              hintText: _attendanceUpdateId != null ? Text(permissionStatusesNameUtilities[_attendanceUpdateId!]) : const Text(''),
                               items: hrInternViewPermNames,
                               onChanged: (value){
                                 for(int i = 0; i < permissionStatuses.length; i++){
@@ -568,7 +579,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       ),
                     ),
                     //==========================================================Quyền truy cập KTV=========================================================
-                    if(_filterRole != null && _filterBlockId != null && _filterViewId != null)
+                    if(_filterRole != null && _filterBlockId != null && (_filterViewId != null || _accountViewId != null))
                     if(_filterRole!.roleId == 2 || _filterRole!.roleId == 6)
                       if(_filterViewId != 2)
                       Padding(
@@ -650,33 +661,44 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
   }
 
   Future<RegisterAccount?> _registerAnAccount() async {
-    RegisterAccount registerAccount = RegisterAccount(
-        email: _accountEmail.text,
-        roleId: _filterRole!.roleId,
-        blockId: _filterBlockId!,
-        teamId: _filterTeam?.teamId,
-        departmentId: _filterDepartment!.departmentId,
-        createContactPermissionId: _contactCreateId ?? 0,
-        createDealPermissionId: _dealCreateId ?? 0,
-        createIssuePermissionId: _issueCreateId ?? 0,
-        deleteContactPermissionId: _contactDeleteId ?? 0,
-        deleteDealPermissionId:  _dealDeleteId ?? 0,
-        deleteIssuePermissionId: _issueDeleteId ?? 0,
-        hrInternManageDepartmentId: _filterDepartmentPerm?.departmentId ?? 0,
-        updateAttendancePermissionId: _attendanceUpdateId ?? 0,
-        updateContactPermissionId: _contactUpdateId ?? 0,
-        updateDealPermissionId: _dealUpdateId ?? 0,
-        updateIssuePermissionId: _issueUpdateId ?? 0,
-        viewAccountPermissionId: _accountViewId ?? 0,
-        viewAttendancePermissionId: _attendanceViewId ?? 0,
-        viewContactPermissionId: _contactViewId ?? 0,
-        viewDealPermissionId: _dealViewId ?? 0,
-        viewIssuePermissionId: _issueViewId ?? 0
-    );
 
-    RegisterAccount? result = await AccountRegisterViewModel().registerAnAccount(registerAccount);
+    if(_filterRole != null && _filterBlockId != null){
+      print(_filterRole!.roleId);
+      print(_filterTeam?.teamId);
+      print(_filterDepartment?.departmentId);
+      print(_filterDepartmentPerm?.departmentId);
 
-    return result;
+      RegisterAccount registerAccount = RegisterAccount(
+          email: _accountEmail.text,
+          roleId: _filterRole!.roleId,
+          blockId: _filterBlockId!,
+          teamId: _filterTeam?.teamId,
+          departmentId: _filterDepartment?.departmentId,
+          createContactPermissionId: _contactCreateId ?? 0,
+          createDealPermissionId: _dealCreateId ?? 0,
+          createIssuePermissionId: _issueCreateId ?? 0,
+          deleteContactPermissionId: _contactDeleteId ?? 0,
+          deleteDealPermissionId:  _dealDeleteId ?? 0,
+          deleteIssuePermissionId: _issueDeleteId ?? 0,
+          hrInternManageDepartmentId: _filterDepartmentPerm?.departmentId,
+          updateAttendancePermissionId: _attendanceUpdateId ?? 0,
+          updateContactPermissionId: _contactUpdateId ?? 0,
+          updateDealPermissionId: _dealUpdateId ?? 0,
+          updateIssuePermissionId: _issueUpdateId ?? 0,
+          viewAccountPermissionId: _accountViewId ?? 0,
+          viewAttendancePermissionId: _attendanceViewId ?? 0,
+          viewContactPermissionId: _contactViewId ?? 0,
+          viewDealPermissionId: _dealViewId ?? 0,
+          viewIssuePermissionId: _issueViewId ?? 0
+      );
+
+      RegisterAccount? result = await AccountRegisterViewModel().registerAnAccount(registerAccount);
+
+      return result;
+    }else{
+      print('Lỗi ko add được');
+      return null;
+    }
   }
 
   // DropdownButtonFormField2<String> buildDropdownButtonFormField2(String label, List items, String result) {

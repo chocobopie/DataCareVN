@@ -278,6 +278,7 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Cập nhật tài thất bại')),
                                 );
+                                Navigator.pop(context);
                               }
                             },
                         ),

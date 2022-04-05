@@ -1,6 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:login_sample/models/RegisterAccount.dart';
+import 'package:login_sample/models/register_account.dart';
 import 'package:login_sample/services/api_service.dart';
 
 class RegisterAccountViewModel with ChangeNotifier{

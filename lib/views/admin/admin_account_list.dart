@@ -377,7 +377,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                               onTap: (){
                                 Navigator.push(context, MaterialPageRoute(
                                     builder: (context) => AdminAccountDetail(account: account)
-                                )).then((value) => _onGoBack());
+                                ));
                               },
                               child: Card(
                                   elevation: 10.0,

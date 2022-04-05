@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/change_password.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/change_password_view_model.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeChangePassword extends StatefulWidget {
   const EmployeeChangePassword({Key? key}) : super(key: key);
@@ -11,6 +16,30 @@ class EmployeeChangePassword extends StatefulWidget {
 }
 
 class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
+
+  late Account _currentAccount;
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  late bool _isSimilar = true;
+
+  final TextEditingController _currentPassword = TextEditingController();
+  final TextEditingController _newPassword  = TextEditingController();
+  final TextEditingController _newPasswordConfirm = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _currentPassword.dispose();
+    _newPassword.dispose();
+    _newPasswordConfirm.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,39 +63,78 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
               margin: const EdgeInsets.only(top: 100.0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Card(
+                child: Form(
+                  key: _formKey,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
-                      children: const <Widget>[
-                        SizedBox(height: 40.0,),
+                      children: <Widget>[
+                        const SizedBox(height: 40.0,),
                         CustomEditableTextFormField(
                           obscureText: true,
-                          text: '',
+                          text: _currentPassword.text.isEmpty ? '' : _currentPassword.text,
                           title: 'Mật khẩu hiện tại của bạn',
                           readonly: false,
                           width: 400.0,
+                          textEditingController: _currentPassword,
                         ),
-                        SizedBox(height: 20.0,),
+                        const SizedBox(height: 20.0,),
                         CustomEditableTextFormField(
                           obscureText: true,
-                          text: '',
+                          text: _newPassword.text.isEmpty ? '' : _newPassword.text,
                           title: 'Mật khẩu mới',
                           readonly: false,
                           width: 400.0,
+                          textEditingController: _newPassword,
                         ),
-                        SizedBox(height: 20.0,),
+                        const SizedBox(height: 20.0,),
                         CustomEditableTextFormField(
                           obscureText: true,
-                          text: '',
+                          text: _newPasswordConfirm.text.isEmpty ? '' : _newPasswordConfirm.text,
                           title: 'Nhập lại mật khẩu mới',
                           readonly: false,
                           width: 400.0,
+                          textEditingController: _newPasswordConfirm
                         ),
-                        SizedBox(height: 20.0,),
+                        const SizedBox(height: 10.0,),
+                        if(_isSimilar == false) const Text('Mật khẩu mới của bạn không giống nhau'),
+                        const SizedBox(height: 20.0,),
                         CustomTextButton(
                             color: Colors.blueAccent,
-                            text: 'Đổi mật khẩu'
+                            text: 'Đổi mật khẩu',
+                            onPressed: () async {
+                              if(!_formKey.currentState!.validate()) {
+                                return;
+                              }
+                              if(_newPassword.text != _newPasswordConfirm.text){
+                                setState(() {
+                                  _isSimilar = false;
+                                });
+                              }else{
+                                setState(() {
+                                  _isSimilar = true;
+                                });
+
+                                showLoaderDialog(context);
+
+                                bool data = await _changePassword();
+                                if(data == true){
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Đổi mật khẩu thành công')),
+                                  );
+
+                                }else{
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Mật khẩu hiện tại của bạn không chính xác')),
+                                  );
+                                }
+
+                              }
+
+                            },
+
                         ),
                       ],
                     ),
@@ -96,5 +164,18 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
         ],
       ),
     );
+  }
+
+  Future<bool> _changePassword() async {
+    ChangePassword changePassword = ChangePassword(
+        accountId: _currentAccount.accountId!,
+        email: _currentAccount.email!,
+        currentPassword: _currentPassword.text,
+        newPassword: _newPasswordConfirm.text
+    );
+
+    bool result = await ChangePasswordViewModel().changePassword(changePassword);
+
+    return result;
   }
 }
