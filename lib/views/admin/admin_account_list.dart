@@ -9,6 +9,8 @@ import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
+import 'package:login_sample/view_models/department_list_view_model.dart';
+import 'package:login_sample/view_models/team_list_view_model.dart';
 import 'package:login_sample/views/admin/admin_account_detail.dart';
 import 'package:login_sample/views/admin/admin_block_filter.dart';
 import 'package:login_sample/views/admin/admin_department_add_new.dart';
@@ -50,6 +52,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getFilter(isRefresh: true);
+    _onGoBackGetDepartmentList();
+    _onGoBackGetTeamList();
   }
 
   @override
@@ -97,7 +101,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                          onTap: () {
                            Navigator.push(context, MaterialPageRoute(
                              builder: (context) => const AdminTeamAddNew(),
-                           ));
+                           )).then((value) => _onGoBackGetTeamList());
                          },
                        ),
                        SpeedDialChild(
@@ -109,7 +113,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                          onTap: () {
                            Navigator.push(context, MaterialPageRoute(
                              builder: (context) => const AdminDepartmentAddNew(),
-                           ));
+                           )).then((value) => _onGoBackGetDepartmentList());
                          },
                        ),
                      ],
@@ -315,6 +319,8 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                 _refreshController.resetNoData();
                                 // _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
                                 _getFilter(isRefresh: false);
+                                _onGoBackGetDepartmentList();
+                                _onGoBackGetTeamList();
                               },
                             ),
                           ],
@@ -552,6 +558,14 @@ class _AdminAccountListState extends State<AdminAccountList> {
     }else{
       _getFilter(isRefresh: false);
     }
+  }
+
+  void _onGoBackGetDepartmentList() async {
+    departments = await DepartmentListViewModel().getAllDepartment();
+  }
+  
+  void _onGoBackGetTeamList() async {
+    teams = await TeamListViewModel().getAllTeams();
   }
 
   void _getFilter({required bool isRefresh}){

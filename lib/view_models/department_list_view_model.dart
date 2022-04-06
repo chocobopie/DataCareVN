@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/services/api_service.dart';

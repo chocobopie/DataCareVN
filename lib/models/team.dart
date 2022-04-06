@@ -6,24 +6,28 @@ String teamToJson(Team data) => json.encode(data.toJson());
 
 class Team {
   Team({
-    required this.teamId,
+    this.teamId,
     required this.departmentId,
     required this.name,
+    this.maxPage,
   });
 
-  int teamId;
+  int? teamId;
   int departmentId;
   String name;
+  int? maxPage;
 
   factory Team.fromJson(Map<String, dynamic> json) => Team(
     teamId: json["teamId"],
     departmentId: json["departmentId"],
     name: json["name"],
+    maxPage: json["maxPage"],
   );
 
   Map<String, dynamic> toJson() => {
     "teamId": teamId,
     "departmentId": departmentId,
     "name": name,
+    "maxPage": maxPage,
   };
 }

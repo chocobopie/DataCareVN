@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/team_list_view_model.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminTeamFilter extends StatefulWidget {
@@ -35,6 +36,18 @@ class _AdminTeamFilterState extends State<AdminTeamFilter> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // floatingActionButton: Card(
+      //   elevation: 10.0,
+      //   child: _maxPages > 0 ? NumberPaginator(
+      //     numberPages: _maxPages,
+      //     buttonSelectedBackgroundColor: mainBgColor,
+      //     onPageChange: (int index) {
+      //       setState(() {
+      //         _currentPage = index;
+      //       });
+      //     },
+      //   ) : null,
+      // ),
       body: Stack(
         children: <Widget>[
           Container(

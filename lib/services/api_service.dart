@@ -593,6 +593,30 @@ class ApiService {
     }
   }
 
+  Future<Department?> createNewDepartment(Department department) async {
+
+    String url = stockUrl + 'departments';
+
+    final response = await http.post(Uri.parse(url), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+      body: jsonEncode(<String, dynamic>{
+        "blockId": department.blockId,
+        "name" : department.name
+      }),
+    );
+
+    if(response.statusCode == 200){
+      final jsonResponse = json.decode(response.body);
+      print('Create new department successfully | 200');
+      return Department.fromJson(jsonResponse);
+    }else{
+      print('Create new department failed | 400');
+      Department? department;
+      return department;
+    }
+  }
+
   //Team
   Future<List<Team>> getAllTeam() async {
     String url = stockUrl + 'teams';
@@ -604,6 +628,30 @@ class ApiService {
       return jsonResponse.map((data) => Team.fromJson(data)).toList();
     } else {
       throw Exception("Failed to get all deals");
+    }
+  }
+
+  Future<Team?> createNewTeam(Team team) async {
+
+    String url = stockUrl + 'teams';
+
+    final response = await http.post(Uri.parse(url), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+      body: jsonEncode(<String, dynamic>{
+        "departmentId": team.departmentId,
+        "name": team.name
+      }),
+    );
+
+    if(response.statusCode == 200){
+      final jsonResponse = json.decode(response.body);
+      print('Create new team successfully | 200');
+      return Team.fromJson(jsonResponse);
+    }else{
+      print('Create new team failed | 400');
+      Team? team;
+      return team;
     }
   }
 
