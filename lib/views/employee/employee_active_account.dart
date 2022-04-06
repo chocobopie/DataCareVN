@@ -79,212 +79,285 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
                 ),
               ),
               margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: ListView(
-                      children: <Widget>[
-                        CustomEditableTextFormField(
-                          text: _currentAccount.email == null ? '' : _currentAccount.email!,
-                          title: 'Email',
-                          readonly: true,
-                        ),
-                        const SizedBox(height: 20.0,),
-
-                        CustomEditableTextFormField(
-                          borderColor: mainBgColor,
-                          text: _accountName.text.isEmpty ? '' : _accountName.text,
-                          title: 'Họ và tên',
-                          readonly: false,
-                          textEditingController: _accountName,
-                        ),
-                        const SizedBox(height: 20.0,),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomEditableTextFormField(
-                                textEditingController: _accountPhoneNumber,
-                                borderColor: mainBgColor,
-                                inputNumberOnly: true,
-                                isPhoneNumber: true,
-                                text: _accountPhoneNumber.text.isEmpty ? '' : _accountPhoneNumber.text,
-                                title: 'Số điện thoại',
-                                readonly: false,
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: <Widget>[
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  text: _currentAccount.email == null ? '' : _currentAccount.email!,
+                                  title: 'Email',
+                                  readonly: true,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 5.0,),
-                            Expanded(
-                              child: CustomEditableTextFormField(
-                                textEditingController: _accountCitizenIdentityCardNumber,
-                                borderColor: mainBgColor,
-                                inputNumberOnly: true,
-                                citizenIdentity: true,
-                                text: _accountCitizenIdentityCardNumber.text.isEmpty ? '' : _accountCitizenIdentityCardNumber.text,
-                                title: 'CMND hoặc CCCD',
-                                readonly: false,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20.0,),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
 
-                        CustomEditableTextFormField(
-                          textEditingController: _accountAddress,
-                          borderColor: mainBgColor,
-                          text: _accountAddress.text.isEmpty ? '' : _accountAddress.text,
-                          title: 'Địa chỉ',
-                          readonly: false,
-                        ),
-                        const SizedBox(height: 20.0,),
-
-                        CustomEditableTextFormField(
-                          textEditingController: _accountNationality,
-                          borderColor: mainBgColor,
-                          text: _accountNationality.text.isEmpty ? '' : _accountNationality.text,
-                          title: 'Quốc tịch',
-                          readonly: false,
-                        ),
-                        const SizedBox(height: 20.0,),
-
-                        CustomEditableTextFormField(
-                          textEditingController: _accountBankName,
-                          borderColor: mainBgColor,
-                          text: _accountBankName.text.isEmpty ? '' : _accountBankName.text,
-                          title: 'Tên ngân hàng',
-                          readonly: false,
-                        ),
-                        const SizedBox(height: 20.0,),
-
-                        CustomEditableTextFormField(
-                          textEditingController: _accountBankAccountOwnerName,
-                          borderColor: mainBgColor,
-                          text: _accountBankAccountOwnerName.text.isEmpty ? '' : _accountBankAccountOwnerName.text,
-                          title: 'Tên chủ tài khoản ngân hàng',
-                          readonly: false,
-                        ),
-                        const SizedBox(height: 20.0,),
-
-                        CustomEditableTextFormField(
-                          textEditingController: _accountBankAccountNumber,
-                          borderColor: mainBgColor,
-                          inputNumberOnly: true,
-                          isBankAccountNumber: true,
-                          text: _accountBankAccountNumber.text.isEmpty ? '' : _accountBankAccountNumber.text,
-                          title: 'Số tài khoản ngân hàng',
-                          readonly: false,
-                        ),
-                        const SizedBox(height: 20.0,),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomDropdownFormField2(
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
                                   borderColor: mainBgColor,
-                                  label: 'Giới tính',
-                                  value: _genderId != null ? gendersUtilities[_genderId!] : null,
-                                  hintText: const Text(''),
-                                  items: gendersUtilities,
-                                  onChanged: (value){
-                                    for(int i = 0; i < gendersUtilities.length; i++){
-                                      if(value.toString() == genders[i].name){
-                                        setState(() {
-                                          _genderId = genders[i].genderId;
-                                        });
+                                  text: _accountName.text.isEmpty ? '' : _accountName.text,
+                                  title: 'Họ và tên',
+                                  readonly: false,
+                                  textEditingController: _accountName,
+                                  isLimit: true,
+                                  limitNumbChar: 50,
+                                  inputNumberOnly: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomDropdownFormField2(
+                                    borderColor: mainBgColor,
+                                    label: 'Giới tính',
+                                    value: _genderId != null ? gendersUtilities[_genderId!] : null,
+                                    hintText: const Text(''),
+                                    items: gendersUtilities,
+                                    onChanged: (value){
+                                      for(int i = 0; i < gendersUtilities.length; i++){
+                                        if(value.toString() == genders[i].name){
+                                          setState(() {
+                                            _genderId = genders[i].genderId;
+                                          });
+                                        }
                                       }
                                     }
-                                  }
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 5.0,),
+                              const SizedBox(width: 5.0,),
 
-                            Expanded(
-                              child: CustomEditableTextFormField(
-                                borderColor: mainBgColor,
-                                text: _dob,
-                                title: 'Ngày sinh',
-                                readonly: true,
-                                onTap: () async {
-                                  FocusScope.of(context).requestFocus(FocusNode());
-                                  final date = await DatePicker.showDatePicker(
-                                    context,
-                                    locale : LocaleType.vi,
-                                    minTime: DateTime.now().subtract(const Duration(days: 36500)),
-                                    currentTime: DateTime.now(),
-                                    maxTime: DateTime.now(),
-                                  );
-                                  if(date != null){
-                                    _accountDob = date;
-                                    print(_accountDob);
-                                    _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_accountDob)}';
-                                  }
-                                },
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  borderColor: mainBgColor,
+                                  text: _dob,
+                                  title: 'Ngày sinh',
+                                  readonly: true,
+                                  onTap: () async {
+                                    FocusScope.of(context).requestFocus(FocusNode());
+                                    final date = await DatePicker.showDatePicker(
+                                      context,
+                                      locale : LocaleType.vi,
+                                      minTime: DateTime.now().subtract(const Duration(days: 36500)),
+                                      currentTime: DateTime.now(),
+                                      maxTime: DateTime.now(),
+                                    );
+                                    if(date != null){
+                                      _accountDob = date;
+                                      print(_accountDob);
+                                      _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_accountDob)}';
+                                    }
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20.0,),
-                        CustomTextButton(
-                            color: mainBgColor,
-                            text: 'Lưu',
-                            onPressed: () async {
-                              if(!_formKey.currentState!.validate()){
-                                return;
-                              }
-                              showLoaderDialog(context);
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  textEditingController: _accountPhoneNumber,
+                                  borderColor: mainBgColor,
+                                  inputNumberOnly: true,
+                                  isPhoneNumber: true,
+                                  text: _accountPhoneNumber.text.isEmpty ? '' : _accountPhoneNumber.text,
+                                  title: 'Số điện thoại',
+                                  readonly: false,
+                                ),
+                              ),
+                              const SizedBox(width: 5.0,),
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  textEditingController: _accountCitizenIdentityCardNumber,
+                                  borderColor: mainBgColor,
+                                  inputNumberOnly: true,
+                                  citizenIdentity: true,
+                                  text: _accountCitizenIdentityCardNumber.text.isEmpty ? '' : _accountCitizenIdentityCardNumber.text,
+                                  title: 'CMND hoặc CCCD',
+                                  readonly: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
 
-                              final data = await _updateAnAccount();
-                              if(data != null){
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Cập nhật tài khoản thành công')),
-                                );
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  textEditingController: _accountAddress,
+                                  borderColor: mainBgColor,
+                                  text: _accountAddress.text.isEmpty ? '' : _accountAddress.text,
+                                  title: 'Địa chỉ',
+                                  readonly: false,
+                                  isLimit: true,
+                                  limitNumbChar: 250,
+                                  inputNumberOnly: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
 
-                                Provider.of<AccountProvider>(context, listen: false).setAccount(data);
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  textEditingController: _accountNationality,
+                                  borderColor: mainBgColor,
+                                  text: _accountNationality.text.isEmpty ? '' : _accountNationality.text,
+                                  title: 'Quốc tịch',
+                                  readonly: false,
+                                  isLimit: true,
+                                  limitNumbChar: 60,
+                                  inputNumberOnly: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
 
-                                Navigator.pop(context);
-                                Future.delayed(const Duration(seconds: 1), (){
-                                  if(data.roleId == 0){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                      builder: (context) => const HomeAdmin(),
-                                    ));
-                                  }else if(data.roleId == 1){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                      builder: (context) => const HomeHRManager(),
-                                    ));
-                                  }else if(data.roleId == 2){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                      builder: (context) => const HomeHRManager(),
-                                    ));
-                                  }else if(data.roleId == 3){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                      builder: (context) => const HomeSaleManager(),
-                                    ));
-                                  }else if(data.roleId == 4){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                      builder: (context) => const HomeSaleLeader(),
-                                    ));
-                                  }else if(data.roleId == 5){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                      builder: (context) => const HomeSaleEmployee(),
-                                    ));
-                                  }else if(data.roleId == 6){
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                      builder: (context) => const HomeSaleManager(),
-                                    ));
-                                  }
-                                });
-                              }else{
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Cập nhật tài thất bại')),
-                                );
-                                Navigator.pop(context);
-                              }
-                            },
-                        ),
-                        const SizedBox(height: 40.0,),
-                      ],
-                    )
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  textEditingController: _accountBankName,
+                                  borderColor: mainBgColor,
+                                  text: _accountBankName.text.isEmpty ? '' : _accountBankName.text,
+                                  title: 'Tên ngân hàng',
+                                  readonly: false,
+                                  isLimit: true,
+                                  limitNumbChar: 70,
+                                  inputNumberOnly: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  textEditingController: _accountBankAccountOwnerName,
+                                  borderColor: mainBgColor,
+                                  text: _accountBankAccountOwnerName.text.isEmpty ? '' : _accountBankAccountOwnerName.text,
+                                  title: 'Tên chủ tài khoản ngân hàng',
+                                  readonly: false,
+                                  isLimit: true,
+                                  inputNumberOnly: false,
+                                  limitNumbChar: 50,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  textEditingController: _accountBankAccountNumber,
+                                  borderColor: mainBgColor,
+                                  isBankAccountNumber: true,
+                                  text: _accountBankAccountNumber.text.isEmpty ? '' : _accountBankAccountNumber.text,
+                                  title: 'Số tài khoản ngân hàng',
+                                  readonly: false,
+                                  inputNumberOnly: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+                          const SizedBox(height: 20.0,),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomTextButton(
+                                    color: mainBgColor,
+                                    text: 'Xác nhận',
+                                    onPressed: () async {
+                                      if(!_formKey.currentState!.validate()){
+                                        return;
+                                      }
+                                      showLoaderDialog(context);
+
+                                      final data = await _updateAnAccount();
+                                      if(data != null){
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Cập nhật tài khoản thành công')),
+                                        );
+
+                                        Provider.of<AccountProvider>(context, listen: false).setAccount(data);
+
+                                        Navigator.pop(context);
+                                        Future.delayed(const Duration(seconds: 1), (){
+                                          if(data.roleId == 0){
+                                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                              builder: (context) => const HomeAdmin(),
+                                            ));
+                                          }else if(data.roleId == 1){
+                                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                              builder: (context) => const HomeHRManager(),
+                                            ));
+                                          }else if(data.roleId == 2){
+                                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                              builder: (context) => const HomeHRManager(),
+                                            ));
+                                          }else if(data.roleId == 3){
+                                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                              builder: (context) => const HomeSaleManager(),
+                                            ));
+                                          }else if(data.roleId == 4){
+                                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                              builder: (context) => const HomeSaleLeader(),
+                                            ));
+                                          }else if(data.roleId == 5){
+                                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                              builder: (context) => const HomeSaleEmployee(),
+                                            ));
+                                          }else if(data.roleId == 6){
+                                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                              builder: (context) => const HomeSaleManager(),
+                                            ));
+                                          }
+                                        });
+                                      }else{
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Cập nhật tài thất bại')),
+                                        );
+                                      }
+                                    },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 40.0,),
+                        ],
+                      )
+                  ),
                 ),
               )),
           Positioned(

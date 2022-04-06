@@ -9,24 +9,25 @@ class RegisterAccount {
     required this.email,
     required this.roleId,
     required this.blockId,
-    this.departmentId,
-    this.teamId,
-    this.viewAccountPermissionId,
-    this.viewAttendancePermissionId,
-    this.updateAttendancePermissionId,
-    this.hrInternManageDepartmentId,
-    this.createContactPermissionId,
-    this.viewContactPermissionId,
-    this.updateContactPermissionId,
-    this.deleteContactPermissionId,
-    this.createDealPermissionId,
-    this.viewDealPermissionId,
-    this.updateDealPermissionId,
-    this.deleteDealPermissionId,
-    this.createIssuePermissionId,
-    this.viewIssuePermissionId,
-    this.updateIssuePermissionId,
-    this.deleteIssuePermissionId,
+    required this.departmentId,
+    required this.teamId,
+    required this.manageDepartmentId,
+    required this.manageTeamId,
+    required this.viewAccountPermissionId,
+    required this.viewAttendancePermissionId,
+    required this.updateAttendancePermissionId,
+    required this.createContactPermissionId,
+    required this.viewContactPermissionId,
+    required this.updateContactPermissionId,
+    required this.deleteContactPermissionId,
+    required this.createDealPermissionId,
+    required this.viewDealPermissionId,
+    required this.updateDealPermissionId,
+    required this.deleteDealPermissionId,
+    required this.createIssuePermissionId,
+    required this.viewIssuePermissionId,
+    required this.updateIssuePermissionId,
+    required this.deleteIssuePermissionId,
   });
 
   String email;
@@ -34,10 +35,11 @@ class RegisterAccount {
   int blockId;
   int? departmentId;
   int? teamId;
+  int? manageDepartmentId;
+  int? manageTeamId;
   int? viewAccountPermissionId;
   int? viewAttendancePermissionId;
   int? updateAttendancePermissionId;
-  int? hrInternManageDepartmentId;
   int? createContactPermissionId;
   int? viewContactPermissionId;
   int? updateContactPermissionId;
@@ -57,10 +59,11 @@ class RegisterAccount {
     blockId: json["blockId"],
     departmentId: json["departmentId"],
     teamId: json["teamId"],
+    manageDepartmentId: json["manageDepartmentId"],
+    manageTeamId: json["manageTeamId"],
     viewAccountPermissionId: json["viewAccountPermissionId"],
     viewAttendancePermissionId: json["viewAttendancePermissionId"],
     updateAttendancePermissionId: json["updateAttendancePermissionId"],
-    hrInternManageDepartmentId: json["hrInternManageDepartmentId"],
     createContactPermissionId: json["createContactPermissionId"],
     viewContactPermissionId: json["viewContactPermissionId"],
     updateContactPermissionId: json["updateContactPermissionId"],
@@ -81,10 +84,11 @@ class RegisterAccount {
     "blockId": blockId,
     "departmentId": departmentId,
     "teamId": teamId,
+    "manageDepartmentId": manageDepartmentId,
+    "manageTeamId": manageTeamId,
     "viewAccountPermissionId": viewAccountPermissionId,
     "viewAttendancePermissionId": viewAttendancePermissionId,
     "updateAttendancePermissionId": updateAttendancePermissionId,
-    "hrInternManageDepartmentId": hrInternManageDepartmentId,
     "createContactPermissionId": createContactPermissionId,
     "viewContactPermissionId": viewContactPermissionId,
     "updateContactPermissionId": updateContactPermissionId,

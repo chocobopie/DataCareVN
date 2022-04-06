@@ -7,7 +7,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class CustomEditableTextFormField extends StatelessWidget {
    const CustomEditableTextFormField({
-    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity, this.isEmailCheck, this.isPhoneNumber, this.isBankAccountNumber
+    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity, this.isEmailCheck, this.isPhoneNumber, this.isBankAccountNumber, this.isLimit, this.limitNumbChar
   }) : super(key: key);
 
   final String title;
@@ -25,6 +25,8 @@ class CustomEditableTextFormField extends StatelessWidget {
   final bool? isEmailCheck;
   final bool? isPhoneNumber;
   final bool? isBankAccountNumber;
+  final bool? isLimit;
+  final int? limitNumbChar;
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +66,16 @@ class CustomEditableTextFormField extends StatelessWidget {
         ] : (inputNumberOnly == true && isPhoneNumber == true && citizenIdentity == null && isBankAccountNumber == null) ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(11),
-        ] :(inputNumberOnly == true && isPhoneNumber == null && citizenIdentity == null && isBankAccountNumber == true) ? <TextInputFormatter>[
+        ] : (inputNumberOnly == true && isPhoneNumber == null && citizenIdentity == null && isBankAccountNumber == true) ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(20),
+        ] :(inputNumberOnly == false && isLimit == true && limitNumbChar != null ) ? <TextInputFormatter>[
+          LengthLimitingTextInputFormatter(limitNumbChar),
+        ] :( inputNumberOnly == true && isLimit == true && limitNumbChar != null ) ? <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(limitNumbChar),
         ] :<TextInputFormatter>[
-          LengthLimitingTextInputFormatter(50),
+          LengthLimitingTextInputFormatter(250),
         ],
         keyboardType: inputNumberOnly == true ? TextInputType.number : inputEmailOnly == true ? TextInputType.emailAddress : TextInputType.text,
         onChanged: (val) {

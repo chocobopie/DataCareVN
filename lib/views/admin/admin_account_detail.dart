@@ -65,6 +65,19 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   final TextEditingController _accountTeamId = TextEditingController();
   final TextEditingController _accountRoleId = TextEditingController();
 
+  final TextEditingController _empName = TextEditingController();
+  final TextEditingController _empPhoneNumber = TextEditingController();
+  final TextEditingController _empCitizenIdentityCardNumber = TextEditingController();
+  final TextEditingController _empAddress = TextEditingController();
+  final TextEditingController _empNationality = TextEditingController();
+  final TextEditingController _empBankName = TextEditingController();
+  final TextEditingController _empBankAccountOwnerName = TextEditingController();
+  final TextEditingController _empBankAccountNumber = TextEditingController();
+  int? genderId;
+  DateTime? _empDob;
+  String _dob = '';
+
+
   int? _contactCreateId, _contactViewId, _contactUpdateId, _contactDeleteId, _dealCreateId, _dealViewId, _dealUpdateId, _dealDeleteId, _issueCreateId, _issueViewId, _issueUpdateId, _issueDeleteId;
   int? _accountViewId, _attendanceViewId, _attendanceUpdateId;
   int? _filterViewId;
@@ -76,6 +89,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getOverallInfo();
     _filterRole = getRole(roleId: _currentEmpAccount.roleId!);
+    if(_currentEmpAccount.dateOfBirth != null) _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_currentEmpAccount.dateOfBirth!)}';
   }
 
   @override
@@ -133,100 +147,14 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             children: [
                               Expanded(
                                 child: CustomEditableTextFormField(
-                                    text: _currentEmpAccount.fullname == null ? 'Chưa cập nhật' : _currentEmpAccount.fullname!,
+                                    isLimit: true,
+                                    limitNumbChar: 50,
+                                    inputNumberOnly: false,
+                                    borderColor: _readOnly == true ? null : mainBgColor,
+                                    text: _empName.text.isEmpty ? _currentEmpAccount.fullname == null ? '' : _currentEmpAccount.fullname! : _empName.text,
                                     title: 'Họ và tên',
-                                    readonly: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20.0,),
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomEditableTextFormField(
-                                    text: _currentEmpAccount.phoneNumber == null ? 'Chưa cập nhật' : _currentEmpAccount.phoneNumber!,
-                                    title: 'Số điện thoại',
-                                    readonly: true,
-                                ),
-                              ),
-                              const SizedBox(width: 5.0,),
-                              Expanded(
-                                child: CustomEditableTextFormField(
-                                  text: _currentEmpAccount.citizenIdentityCardNumber == null ? 'Chưa cập nhật' : _currentEmpAccount.citizenIdentityCardNumber!,
-                                  title: 'CMND hoặc CCCD',
-                                  readonly: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20.0,),
-
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomEditableTextFormField(
-                                    text: _currentEmpAccount.address == null ? 'Chưa cập nhật' : _currentEmpAccount.address!,
-                                    title: 'Địa chỉ',
-                                    readonly: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20.0,),
-
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomEditableTextFormField(
-                                    text: _currentEmpAccount.nationality == null ? 'Chưa cập nhật' : _currentEmpAccount.nationality!,
-                                    title: 'Quốc tịch',
-                                    readonly: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20.0,),
-
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomEditableTextFormField(
-                                    text: _currentEmpAccount.bankName == null ? 'Chưa cập nhật' : _currentEmpAccount.bankName!,
-                                    title: 'Tên ngân hàng',
-                                    readonly: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20.0,),
-
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomEditableTextFormField(
-                                    text: _currentEmpAccount.bankAccountName == null ? 'Chưa cập nhật' : _currentEmpAccount.bankAccountName!,
-                                    title: 'Tên chủ tài khoản',
-                                    readonly: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20.0,),
-
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CustomEditableTextFormField(
-                                    text: _currentEmpAccount.bankAccountNumber == null ? 'Chưa cập nhật' : _currentEmpAccount.bankAccountNumber!,
-                                    title: 'Số tài khoản',
-                                    readonly: true,
+                                    readonly: _readOnly,
+                                    textEditingController: _empName,
                                 ),
                               ),
                             ],
@@ -237,38 +165,165 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             children: [
                               Expanded(
                                 child: CustomDropdownFormField2(
-                                  value: _currentEmpAccount.genderId != null ? gendersUtilities[_currentEmpAccount.genderId!] : 'Chưa cập nhật',
-                                  label: 'Giới tính',
-                                  hintText: _currentEmpAccount.genderId != null ? Text(gendersUtilities[_currentEmpAccount.genderId!]) : const Text('Chưa cập nhật'),
-                                  items: gendersUtilities,
-                                  onChanged: null
+                                    borderColor: _readOnly == true ? null : mainBgColor,
+                                    value: _currentEmpAccount.genderId != null ? gendersUtilities[_currentEmpAccount.genderId!] : null,
+                                    label: 'Giới tính',
+                                    hintText: _currentEmpAccount.genderId != null ? Text(gendersUtilities[_currentEmpAccount.genderId!]) : const Text('Chưa cập nhật'),
+                                    items: gendersUtilities,
+                                    onChanged: _readOnly != true ? (value){
+                                      for(int i = 0; i < genders.length; i++){
+                                        if(value.toString() == genders[i].name){
+                                          setState(() {
+                                            _currentEmpAccount.genderId = genders[i].genderId;
+                                          });
+                                        }
+                                      }
+                                    } : null
                                 ),
                               ),
                               const SizedBox(width: 5.0,),
                               Expanded(
-                                child: TextField(
-                                  readOnly: true,
-                                  decoration: InputDecoration(
-                                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    contentPadding: const EdgeInsets.only(left: 20.0),
-                                    labelText: 'Ngày sinh',
-                                    hintText: _currentEmpAccount.dateOfBirth == null ? 'Chưa cập nhật' : 'Ngày ${DateFormat('dd-MM-yyyy').format(_currentEmpAccount.dateOfBirth!)}',
-                                    labelStyle: const TextStyle(
-                                      color: Color.fromARGB(255, 107, 106, 144),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.grey.shade300, width: 2),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      const BorderSide(color: Colors.blue, width: 2),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
+                                child: CustomEditableTextFormField(
+                                  borderColor: _readOnly == true ? null : mainBgColor,
+                                  text: _dob,
+                                  title: 'Ngày sinh',
+                                  readonly: true,
+                                  onTap: _readOnly != true ? () async {
+                                    FocusScope.of(context).requestFocus(FocusNode());
+                                    final date = await DatePicker.showDatePicker(context,
+                                      locale : LocaleType.vi,
+                                      minTime: DateTime.now().subtract(const Duration(days: 36500)),
+                                      currentTime: DateTime.now(),
+                                      maxTime: DateTime.now(),
+                                    );
+                                    if(date != null){
+                                      _empDob = date;
+                                      _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_empDob!)}';
+                                    }
+                                  } : null,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                    borderColor: _readOnly == true ? null : mainBgColor,
+                                    text: _empPhoneNumber.text.isEmpty ? _currentEmpAccount.phoneNumber == null ? '' : _currentEmpAccount.phoneNumber!  : _empPhoneNumber.text,
+                                    title: 'Số điện thoại',
+                                    readonly: _readOnly,
+                                    textEditingController: _empPhoneNumber,
+                                    inputNumberOnly: true,
+                                    isPhoneNumber: true,
+                                ),
+                              ),
+                              const SizedBox(width: 5.0,),
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  borderColor: _readOnly == true ? null : mainBgColor,
+                                  text: _empCitizenIdentityCardNumber.text.isEmpty ? _currentEmpAccount.citizenIdentityCardNumber == null ? '' : _currentEmpAccount.citizenIdentityCardNumber! : _empCitizenIdentityCardNumber.text,
+                                  title: 'CMND hoặc CCCD',
+                                  readonly: _readOnly,
+                                  textEditingController: _empCitizenIdentityCardNumber,
+                                  citizenIdentity: true,
+                                  inputNumberOnly: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  borderColor: _readOnly == true ? null : mainBgColor,
+                                    text: _empAddress.text.isEmpty ? _currentEmpAccount.address == null ? '' : _currentEmpAccount.address! : _empAddress.text,
+                                    title: 'Địa chỉ',
+                                    readonly: _readOnly,
+                                    textEditingController: _empAddress,
+                                    isLimit: true,
+                                    limitNumbChar: 250,
+                                    inputNumberOnly: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  borderColor: _readOnly == true ? null : mainBgColor,
+                                    text: _empNationality.text.isEmpty ? _currentEmpAccount.nationality == null ? '' : _currentEmpAccount.nationality! : _empNationality.text,
+                                    title: 'Quốc tịch',
+                                    readonly: _readOnly,
+                                    textEditingController: _empNationality,
+                                    isLimit: true,
+                                    limitNumbChar: 60,
+                                    inputNumberOnly: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  borderColor: _readOnly == true ? null : mainBgColor,
+                                    text: _empBankName.text.isEmpty ? _currentEmpAccount.bankName == null ? '' : _currentEmpAccount.bankName! : _empBankName.text,
+                                    title: 'Tên ngân hàng',
+                                    readonly: _readOnly,
+                                    textEditingController: _empBankName,
+                                    isLimit: true,
+                                    limitNumbChar: 70,
+                                    inputNumberOnly: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                  borderColor: _readOnly == true ? null : mainBgColor,
+                                    text: _empBankAccountOwnerName.text.isEmpty ? _currentEmpAccount.bankAccountName == null ? '' : _currentEmpAccount.bankAccountName! : _empBankAccountOwnerName.text,
+                                    title: 'Tên chủ tài khoản ngân hàng',
+                                    readonly: _readOnly,
+                                    textEditingController: _empBankAccountOwnerName,
+                                    isLimit: true,
+                                    inputNumberOnly: false,
+                                    limitNumbChar: 50,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20.0,),
+
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                    borderColor: _readOnly == true ? null : mainBgColor,
+                                    text: _empBankAccountNumber.text.isEmpty ? _currentEmpAccount.bankAccountNumber == null ? '' : _currentEmpAccount.bankAccountNumber! : _empBankAccountNumber.text,
+                                    title: 'Số tài khoản ngân hàng',
+                                    readonly: _readOnly,
+                                    textEditingController: _empBankAccountNumber,
+                                    inputNumberOnly: true,
+                                    isBankAccountNumber: true,
                                 ),
                               ),
                             ],
@@ -799,6 +854,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             ),
                           ),
 
+
                           if(_currentEmpAccount.roleId == 6 && _filterViewId == 3)
                             if(_permission!.departmentId != null || _filterDepartmentPerm != null)
                               if( getTeamListInDepartment(department: _filterDepartmentPerm == null ? getDepartment(departmentId: _permission!.departmentId!) : _filterDepartmentPerm!).isNotEmpty )
@@ -876,25 +932,26 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
                                         showLoaderDialog(context);
 
-                                        bool? check, check2, check3, check4, check5, check6;
+                                        bool? check, check2, check3, check4, check5, check6, check7;
 
                                         if(_currentEmpAccount.roleId == 2){
                                           check = await _updateHrInternPermission();
                                           check2 = await _updatePermission();
+                                          check3 = await _updateAnAccount();
                                         }
 
                                         if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5){
-                                          check3 = await _updateSaleTechnicalEmpPermission();
-                                          check4 = await _updateSaleTechnicalEmpAccount();
-                                          check5 = await _updatePermission();
+                                          check4 = await _updateSaleTechnicalEmpPermission();
+                                          check5 = await _updateAnAccount();
+                                          check6 = await _updatePermission();
                                         }
 
                                         if(_currentEmpAccount.roleId == 6){
-                                          check6 = await _updateSaleTechnicalEmpAccount();
+                                          check7 = await _updateAnAccount();
                                         }
 
 
-                                        if( (check == true && check2 == true) || (check6 == true) || (check3 == true && check4 == true && check5 == true)){
+                                        if( (check == true && check2 == true && check3 == true) || (check4 == true && check5 == true && check6 == true) || check7 == true){
                                           Navigator.pop(context);
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(content: Text('Cập nhật tài khoản thành công')),
@@ -983,26 +1040,26 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     }
 
   }
-  Future<bool> _updateSaleTechnicalEmpAccount() async {
+  Future<bool> _updateAnAccount() async {
     Account account = Account(
       accountId: _currentEmpAccount.accountId,
       email: _currentEmpAccount.email,
-      fullname: _currentEmpAccount.fullname,
-      phoneNumber: _currentEmpAccount.phoneNumber,
-      address: _currentEmpAccount.address,
-      citizenIdentityCardNumber: _currentEmpAccount.citizenIdentityCardNumber,
-      nationality: _currentEmpAccount.nationality,
-      bankName: _currentEmpAccount.bankName,
-      bankAccountName: _currentEmpAccount.bankAccountName,
-      bankAccountNumber: _currentEmpAccount.bankAccountNumber,
+      fullname: _empName.text.isEmpty ? _currentEmpAccount.fullname : _empName.text,
+      phoneNumber: _empPhoneNumber.text.isEmpty ? _currentEmpAccount.phoneNumber : _empPhoneNumber.text,
+      address: _empAddress.text.isEmpty ? _currentEmpAccount.address : _empAddress.text,
+      citizenIdentityCardNumber: _empCitizenIdentityCardNumber.text.isEmpty ? _currentEmpAccount.citizenIdentityCardNumber : _empCitizenIdentityCardNumber.text,
+      nationality: _empNationality.text.isEmpty ? _currentEmpAccount.nationality : _empNationality.text,
+      bankName: _empBankName.text.isEmpty ? _currentEmpAccount.bankName : _empBankName.text,
+      bankAccountName: _empBankAccountOwnerName.text.isEmpty ? _currentEmpAccount.bankAccountName : _empBankAccountOwnerName.text,
+      bankAccountNumber: _empBankAccountNumber.text.isEmpty ? _currentEmpAccount.bankAccountNumber : _empBankAccountNumber.text,
       roleId: _filterRole != null ? _filterRole!.roleId : _currentEmpAccount.roleId,
       blockId: _currentEmpAccount.blockId,
       departmentId: _filterDepartment != null ? _filterDepartment!.departmentId : _currentEmpAccount.departmentId,
       teamId: _filterRole!.roleId != 3 ? _currentEmpAccount.roleId != 6 ? _filterTeam != null ? _filterTeam!.teamId : _currentEmpAccount.teamId : null : null,
       permissionId: _currentEmpAccount.permissionId,
-      statusId: _currentEmpAccount.statusId,
-      genderId: _currentEmpAccount.genderId,
-      dateOfBirth: _currentEmpAccount.dateOfBirth,
+      statusId: 1,
+      genderId: genderId ?? _currentEmpAccount.genderId,
+      dateOfBirth: _empDob ?? _currentEmpAccount.dateOfBirth,
     );
 
     final data = await AccountViewModel().updateAnAccount(account);
