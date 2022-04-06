@@ -38,7 +38,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
   late Account _currentAccount;
   late int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
-  String _blockNameString = 'Tên khối', _departmentNameString = 'Tên phòng' , _teamNameString = 'Tên nhóm', _roleNameString = 'Chức vụ';
+  String _blockNameString = 'Tên khối', _departmentNameString = 'Tên phòng' , _teamNameString = 'Tên nhóm', _roleNameString = 'Chức vụ', _searchString = '';
 
   Block? _blockFilter;
   Team? _teamFilter;
@@ -142,8 +142,12 @@ class _AdminAccountListState extends State<AdminAccountList> {
                    _currentPage = index;
                    _accounts.clear();
                  });
-                 // _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                 _getFilter(isRefresh: false);
+                 if(_isSearching == true && _searchString.isNotEmpty){
+                   _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!, search: _searchString);
+                 }else{
+                   _getFilter(isRefresh: false);
+                 }
+
                },
              ) : null,
            ),
@@ -359,8 +363,12 @@ class _AdminAccountListState extends State<AdminAccountList> {
                       setState(() {
                         _accounts.clear();
                       });
-                      // _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                      _getFilter(isRefresh: false);
+                      if(_isSearching == true && _searchString.isNotEmpty){
+                        _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!, search: _searchString);
+                      }else{
+                        _getFilter(isRefresh: false);
+                      }
+
 
                       if(_accounts.isNotEmpty){
                         _refreshController.refreshCompleted();
@@ -377,7 +385,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                               onTap: (){
                                 Navigator.push(context, MaterialPageRoute(
                                     builder: (context) => AdminAccountDetail(account: account)
-                                ));
+                                )).then((value) => _onGoBack());
                               },
                               child: Card(
                                   elevation: 10.0,
@@ -468,22 +476,23 @@ class _AdminAccountListState extends State<AdminAccountList> {
                   color: Colors.blueGrey,
                 ),
               )
-                  : const TextField(
-                style: TextStyle(
-                  color: Colors.blueGrey,
-                ),
+                  : TextField(
+                style: const TextStyle(color: Colors.blueGrey,),
                 showCursor: true,
                 cursorColor: Colors.white,
-                decoration: InputDecoration(
-                  icon: Icon(
-                    Icons.search,
-                    color: Colors.blueGrey,
-                  ),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.search, color: Colors.blueGrey,),
                   hintText: "Tìm theo tên của nhân viên",
-                  hintStyle: TextStyle(
-                    color: Colors.blueGrey,
-                  ),
+                  hintStyle: TextStyle(color: Colors.blueGrey,),
                 ),
+                onSubmitted: (value){
+                  setState(() {
+                    _accounts.clear();
+                  });
+                  _currentPage = 0;
+                  _searchString = value.toString();
+                  _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!, search: _searchString);
+                },
               ),
               actions: <Widget>[
                 _isSearching
@@ -492,7 +501,20 @@ class _AdminAccountListState extends State<AdminAccountList> {
                     Icons.cancel,
                   ),
                   onPressed: () {
-                    setState(() {_isSearching = false;});
+                    setState(() {
+                      _isSearching = false;
+                      _accounts.clear();
+                      _blockNameString = 'Tên khối';
+                      _departmentNameString = 'Tên phòng';
+                      _teamNameString = 'Tên nhóm';
+                      _roleNameString = 'Chức vụ';
+                      _blockFilter = null;
+                      _departmentFilter = null;
+                      _teamFilter = null;
+                      _roleFilter = null;
+                      _searchString = '';
+                    });
+                    _getFilter(isRefresh: true);
                   },
                 )
                     : IconButton(
@@ -500,6 +522,16 @@ class _AdminAccountListState extends State<AdminAccountList> {
                   onPressed: () {
                     setState(() {
                       _isSearching = true;
+                      _accounts.clear();
+                      _blockNameString = 'Tên khối';
+                      _departmentNameString = 'Tên phòng';
+                      _teamNameString = 'Tên nhóm';
+                      _roleNameString = 'Chức vụ';
+                      _blockFilter = null;
+                      _departmentFilter = null;
+                      _teamFilter = null;
+                      _roleFilter = null;
+                      _searchString = '';
                     });
                   },
                 )
@@ -514,8 +546,12 @@ class _AdminAccountListState extends State<AdminAccountList> {
   void _onGoBack(){
     setState(() {
       _accounts.clear();
-      _getFilter(isRefresh: false);
     });
+    if(_isSearching == true && _searchString.isNotEmpty){
+      _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!, search: _searchString);
+    }else{
+      _getFilter(isRefresh: false);
+    }
   }
 
   void _getFilter({required bool isRefresh}){
@@ -527,9 +563,9 @@ class _AdminAccountListState extends State<AdminAccountList> {
     );
   }
 
-  void _getAllAccount({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId}) async {
+  void _getAllAccount({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, String? search}) async {
     List<Account> accountList = await AccountListViewModel()
-        .getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId
+        .getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId, search: search
     );
 
     if(accountList.isNotEmpty){
@@ -552,7 +588,6 @@ class SortItems {
 
   static const asc = SortItem(text: 'Theo tên nhân viên từ A-z', icon: Icons.sort_by_alpha_rounded);
   static const des = SortItem(text: 'Theo tên nhân viên từ Z-a', icon: Icons.sort_by_alpha_rounded);
-
 
   static Widget buildItem(SortItem item) {
     return Row(

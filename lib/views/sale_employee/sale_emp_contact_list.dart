@@ -119,7 +119,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
               ),
             ),
             margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 90.0),
-            child: _currentAccount.roleId! == 3 || _currentAccount.roleId == 4 ? Column(
+            child: Column(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, top: 10.0),
@@ -132,6 +132,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                           children: <Widget>[
                             const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                             const SizedBox(width: 10,),
+                            if(_currentAccount.roleId != 5)
                             CustomOutlinedButton(
                               color: mainBgColor,
                               title: _fullname,
@@ -229,11 +230,11 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                   ) : null
                 ),
               ],
-            ) : null,
+            ),
           ),
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top: _currentAccount.roleId! == 3 || _currentAccount.roleId == 4 ? MediaQuery.of(context).size.height * 0.20 : 90),
+            padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.20),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

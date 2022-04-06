@@ -324,7 +324,6 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
     }else{
       _refreshController.loadNoData();
     }
-
   }
 
 
