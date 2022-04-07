@@ -48,7 +48,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
   @override
   void initState() {
     super.initState();
-    _getAllIssue();
+    // _getAllIssue();
     _getAllEmployee();
   }
 
@@ -333,15 +333,15 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
     });
   }
 
-  void _getAllIssue() async {
-    List<Issue>? issueList = await IssueListViewModel().getAllIssue();
-
-    if(issueList != null){
-      setState(() {
-        issues.addAll(issueList);
-      });
-    }
-  }
+  // void _getAllIssue() async {
+  //   List<Issue>? issueList = await IssueListViewModel().getAllIssue();
+  //
+  //   if(issueList != null){
+  //     setState(() {
+  //       issues.addAll(issueList);
+  //     });
+  //   }
+  // }
 }
 
 //==============================================================================Sort icon===============

@@ -54,9 +54,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getOverallInfo(_currentPage, _currentAccount);
-    // setState(() {
-    //   _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
-    // });
     _getAllSaleEmployee(isRefresh: true);
     _getAllContactByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: _currentPage, limit: 1000000);
   }
@@ -106,22 +103,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
           ),
         ],
       ),
-
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: Card(
-      //   elevation: 10.0,
-      //   child: _maxPages > 0 ? NumberPaginator(
-      //       numberPages: _maxPages,
-      //       buttonSelectedBackgroundColor: mainBgColor,
-      //       onPageChange: (int index) {
-      //         setState(() {
-      //           _currentPage = index;
-      //           _deals.clear();
-      //         });
-      //         _getFilter(isRefresh: false);
-      //       },
-      //   ) : null,
-      // ),
 
       body: Stack(
         children: <Widget>[
@@ -557,15 +538,15 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     }
   }
 
-  String _getDepartmentName(int blockId, departmentId){
-    String name = '';
-    for(int i = 0; i < departments.length; i++){
-      if(blockId == departments[i].blockId && departmentId == departments[i].departmentId){
-        name = departments[i].name;
-      }
-    }
-    return name;
-  }
+  // String _getDepartmentName(int blockId, departmentId){
+  //   String name = '';
+  //   for(int i = 0; i < departments.length; i++){
+  //     if(blockId == departments[i].blockId && departmentId == departments[i].departmentId){
+  //       name = departments[i].name;
+  //     }
+  //   }
+  //   return name;
+  // }
 
   void _getOverallInfo(int currentPage, Account account){
     if(_currentAccount.roleId == 5){
@@ -645,7 +626,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
-    List<Account>? accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
+    List<Account>? accountList = await AccountListViewModel().getAllSalesForContact(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
 
     if(accountList != null ){
       setState(() {

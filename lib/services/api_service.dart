@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:login_sample/models/change_password.dart';
 import 'package:login_sample/models/register_account.dart';
@@ -491,7 +490,7 @@ class ApiService {
     }
   }
 
-  Future<List<Account>?> getAllAccountByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+  Future<List<Account>?> getAllSalesForContact({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
@@ -501,10 +500,48 @@ class ApiService {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      print('Got all accounts by BlockId, DepartmentId or TeamId | 200');
+      print('Got all sales for contact | 200');
       return jsonResponse.map((data) => Account.fromJson(data)).toList();
     } else {
-      print("Failed to get all accounts by BlockId, DepartmentId or TeamId");
+      print("Failed to get all sales for contact | 400");
+      List<Account>? accountList;
+      return accountList;
+    }
+  }
+
+  Future<List<Account>?> getAllSalesForIssue({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'accounts/sales-for-issue?block-id=$blockId&department-id=$departmentId&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print('Got all sales for deal | 200');
+      return jsonResponse.map((data) => Account.fromJson(data)).toList();
+    } else {
+      print("Failed to get all sales for deals | 400");
+      List<Account>? accountList;
+      return accountList;
+    }
+  }
+
+  Future<List<Account>?> getAllSalesForDeal({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'accounts/sales-for-issue?block-id=$blockId&department-id=$departmentId&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print('Got all sales for deal | 200');
+      return jsonResponse.map((data) => Account.fromJson(data)).toList();
+    } else {
+      print("Failed to get all sales for deals | 400");
       List<Account>? accountList;
       return accountList;
     }
@@ -1284,16 +1321,20 @@ class ApiService {
   }
 
   //issue
-  Future<List<Issue>?> getAllIssue() async {
-    String url = stockUrl + 'issues';
+  Future<List<Issue>?> getAllIssue({required bool isRefresh, required currentPage ,int? issueId, int? dealId, required int ownerId, int? taggedAccountId, DateTime? fromCreateDate, DateTime? toCreateDate, DateTime? fromDeadlineDate, DateTime? toDeadlineDate, int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'issues?deal-id=${dealId ?? ''}&owner-id=$ownerId&tagged-account-id=${taggedAccountId ?? ''}&from-created-date=${fromCreateDate ?? ''}&to-created-date=${toCreateDate ?? ''}&from-deadline-date=${fromDeadlineDate ?? ''}&to-deadline-date=${toDeadlineDate ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      print('Got all issue | 200');
+      print('Got all issues | 200');
       return jsonResponse.map((data) => Issue.fromJson(data)).toList();
     } else {
-      print('Failed to get all issue | 400');
+      print('Failed to get all issues | 400');
       List<Issue>? issueList;
       return issueList;
     }

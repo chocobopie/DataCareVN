@@ -10,6 +10,7 @@ import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/issue_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/models/temp/deal_temp.dart';
@@ -19,6 +20,7 @@ import 'package:login_sample/views/employee/employee_issue_add_new.dart';
 import 'package:login_sample/views/employee/employee_issue_detail.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class EmployeeSentIssueList extends StatefulWidget {
   const EmployeeSentIssueList({Key? key}) : super(key: key);
@@ -30,29 +32,47 @@ class EmployeeSentIssueList extends StatefulWidget {
 class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
   late final List<Account> _employeeList = [];
-  List<Issue> issues = [];
-  bool isSearching = false;
-  late String _fromDatetoDateString = 'Hạn chót';
-  DateTime? fromDate, toDate;
-  late Account _currentAccount;
+  late final List<Issue> _issues = [];
+  bool _isSearching = false;
+  DateTime? _deadlineFromDate, _deadlineToDate, _createFromDate, _createToDate;
+  late Account _currentAccount, _filterAccount = Account();
+  int _currentPage = 0, _maxPage = 0;
+
+  late String _fromDatetoDateDeadlineString = 'Hạn chót', _fromDateToDateCreateDateString = 'Ngày tạo vấn đề', _tagAccount = 'Tên nhân viên được giao';
+
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    _getAllIssue();
+    _getAllIssue(isRefresh: true);
     _getAllEmployee();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _refreshController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: const Card(
+      floatingActionButton: _maxPage > 0 ? Card(
         child: NumberPaginator(
-            numberPages: 10
+            buttonSelectedBackgroundColor: mainBgColor,
+            numberPages: _maxPage,
+            onPageChange: (int index){
+              setState(() {
+                _issues.clear();
+                _currentPage = index;
+              });
+              _getAllIssue(isRefresh: false);
+            },
         ),
-      ),
+      ) : null,
       body: Stack(
         children: <Widget>[
           Container(
@@ -86,19 +106,26 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
                         CustomOutlinedButton(
-                          title: 'Tên nhân viên được giao',
+                          title: _tagAccount,
                           radius: 10,
                           color: mainBgColor,
                           onPressed: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpFilter(),
+                            ));
+                            if(data != null){
+                              _currentPage = 0;
+                              _filterAccount = data;
+                              setState(() {
+                                _tagAccount = 'Nhân viên được giao: ${_filterAccount.fullname!}' ;
+                                _issues.clear();
+                              });
+                              _getAllIssue(isRefresh: true);
+                            }
                           },
                         ),
-                        const CustomOutlinedButton(
-                            title: 'Ngày tạo vấn đề',
-                            radius: 10,
-                            color: mainBgColor
-                        ),
                         CustomOutlinedButton(
-                            title: _fromDatetoDateString,
+                            title: _fromDateToDateCreateDateString,
                             radius: 10,
                             color: mainBgColor,
                             onPressed: () async {
@@ -107,44 +134,41 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                               ));
                               if(data != null){
                                 FromDateToDate fromDateToDate = data;
+                                _createFromDate = fromDateToDate.fromDate;
+                                _createToDate = fromDateToDate.toDate;
                                 setState(() {
-                                  fromDate = fromDateToDate.fromDate;
-                                  toDate = fromDateToDate.toDate;
-                                  _fromDatetoDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                  _issues.clear();
+                                  _fromDateToDateCreateDateString = 'Ngày tạo: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                 });
+                                _getAllIssue(isRefresh: true);
                               }
                             },
                         ),
-                        DropdownButton2(
-                          customButton: const Icon(
-                            Icons.sort,
-                            size: 40,
+                        CustomOutlinedButton(
+                            title: _fromDatetoDateDeadlineString,
+                            radius: 10,
                             color: mainBgColor,
-                          ),
-                          items: [
-                            ...SortItems.firstItems.map(
-                                  (item) =>
-                                  DropdownMenuItem<SortItem>(
-                                    value: item,
-                                    child: SortItems.buildItem(item),
-                                  ),
-                            ),
-                          ],
-                          onChanged: (value) {
-                          },
-                          itemHeight: 40,
-                          itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                          dropdownWidth: 240,
-                          dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: mainBgColor,
-                          ),
-                          dropdownElevation: 8,
-                          offset: const Offset(0, 8),
+                            onPressed: () async {
+                              final data = await Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const SaleEmpDateFilter(),
+                              ));
+                              if(data != null){
+                                FromDateToDate fromDateToDate2 = data;
+                                _deadlineFromDate = fromDateToDate2.fromDate;
+                                print(_deadlineFromDate);
+                                _deadlineToDate = fromDateToDate2.toDate;
+                                print(_deadlineToDate);
+                                setState(() {
+                                  _issues.clear();
+                                  _fromDatetoDateDeadlineString = 'Hạn chót: ${fromDateToDate2.fromDateString} → ${fromDateToDate2.toDateString}';
+                                });
+                                _getAllIssue(isRefresh: true);
+                              }
+                            },
                         ),
                         IconButton(
                             onPressed: (){
+
                             },
                             icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                         ),
@@ -184,83 +208,87 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                   ),
                 ),
                 margin: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.01),
-                child: issues.isNotEmpty ? ListView.builder(
-                    itemBuilder: (context, index) {
-                      final issue = issues[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeIssueDetail()
-                            ));
-                          },
-                          child: Card(
-                            elevation: 10,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Tiêu đề:'),
-                                        const Spacer(),
-                                        Text(issue.description),
-                                      ],
+                child: _issues.isNotEmpty ? SmartRefresher(
+                  controller: _refreshController,
+                  enablePullUp: true,
+                  child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        final issue = _issues[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeIssueDetail()
+                              ));
+                            },
+                            child: Card(
+                              elevation: 10,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Tiêu đề:'),
+                                          const Spacer(),
+                                          Text(issue.title),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Nhân viên tạo vấn đề:'),
-                                        const Spacer(),
-                                        Text(_getEmployeeNamee(issue.ownerId)),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Nhân viên tạo vấn đề:'),
+                                          const Spacer(),
+                                          Text(_getEmployeeNamee(issue.ownerId)),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Nhân viên được giao:'),
-                                        const Spacer(),
-                                        Text(_getEmployeeNamee(issue.taggedAccountId)),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Nhân viên được giao:'),
+                                          const Spacer(),
+                                          Text(_getEmployeeNamee(issue.taggedAccountId)),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Ngày tạo vấn đề:'),
-                                        const Spacer(),
-                                        Text(DateFormat('dd-MM-yyyy').format(issue.createdDate)),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Ngày tạo vấn đề:'),
+                                          const Spacer(),
+                                          Text(DateFormat('dd-MM-yyyy').format(issue.createdDate)),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Hạn chót:'),
-                                        const Spacer(),
-                                        Text(DateFormat('dd-MM-yyyy').format(issue.dealineDate)),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          const Text('Hạn chót:'),
+                                          const Spacer(),
+                                          Text(DateFormat('dd-MM-yyyy').format(issue.dealineDate)),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    itemCount: issues.length,
+                        );
+                      },
+                      itemCount: _issues.length,
+                  ),
                 ) : const Center(child: CircularProgressIndicator()),
               ),
             ),
@@ -273,7 +301,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
               iconTheme: const IconThemeData(color: Colors.blueGrey),// Add AppBar here only
               backgroundColor: Colors.transparent,
               elevation: 0.0,
-              title: !isSearching
+              title: !_isSearching
                   ? const Text("Danh sách vấn đề đã gửi",style: TextStyle(color: Colors.blueGrey),)
                   : const TextField(
                 style: TextStyle(color: Colors.blueGrey,),
@@ -290,13 +318,13 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                 ),
               ),
               actions: <Widget>[
-                isSearching ? IconButton(
+                _isSearching ? IconButton(
                   icon: const Icon(
                     Icons.cancel,
                   ),
                   onPressed: (){
                     setState(() {
-                      isSearching = false;
+                      _isSearching = false;
                     });
                   },
                 ) : IconButton(
@@ -305,7 +333,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                   ),
                   onPressed: (){
                     setState(() {
-                      isSearching = true;
+                      _isSearching = true;
                     });
                   },
                 )
@@ -333,15 +361,23 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
     setState(() {
       _employeeList.addAll(accountList);
+      _maxPage = _employeeList[0].maxPage!;
     });
+
   }
 
-  void _getAllIssue() async {
-    List<Issue>? issueList = await IssueListViewModel().getAllIssue();
+  void _getAllIssue({required bool isRefresh}) async {
+    List<Issue>? issueList = await IssueListViewModel().
+    getAllIssue(
+        isRefresh: isRefresh, currentPage: _currentPage,
+        ownerId: _currentAccount.accountId!, taggedAccountId: _filterAccount.accountId,
+        fromCreateDate: _createFromDate, toCreateDate: _createToDate,
+        fromDeadlineDate: _deadlineFromDate, toDeadlineDate: _deadlineToDate,
+    );
 
     if(issueList != null){
       setState(() {
-        issues.addAll(issueList);
+        _issues.addAll(issueList);
       });
     }
   }

@@ -9,7 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SaleEmpFilter extends StatefulWidget {
-  const SaleEmpFilter({Key? key}) : super(key: key);
+  const SaleEmpFilter({Key? key, this.salesForContact, this.salesForDeal, this.saleForIssue}) : super(key: key);
+
+  final bool? salesForContact;
+  final bool? salesForDeal;
+  final bool? saleForIssue;
 
   @override
   State<SaleEmpFilter> createState() => _SaleEmpFilterState();
@@ -294,14 +298,14 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
 
   void _filterSaleEmployee({required bool isRefresh}){
     if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId);
+      _getAllSalesForContact(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId);
     }else{
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!);
+      _getAllSalesForContact(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!);
     }
   }
 
-  void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId}) async {
-    List<Account>? accountList = await AccountListViewModel().getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId);
+  void _getAllSalesForContact({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId}) async {
+    List<Account>? accountList = await AccountListViewModel().getAllSalesForContact(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId);
 
     if(accountList != null){
       setState(() {
