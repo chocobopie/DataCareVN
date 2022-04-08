@@ -246,7 +246,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                                     children: <Widget>[
                                       const Text('Hạn chót:'),
                                       const Spacer(),
-                                      Text(DateFormat('dd-MM-yyyy').format(issue.dealineDate)),
+                                      Text(DateFormat('dd-MM-yyyy').format(issue.deadlineDate)),
                                     ],
                                   ),
                                 ),

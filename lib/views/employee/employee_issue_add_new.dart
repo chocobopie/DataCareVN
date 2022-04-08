@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_deal_list.dart';
+import 'package:login_sample/widgets/CustomEditableTextField.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
 
 class EmployeeIssueAddNew extends StatefulWidget {
   const EmployeeIssueAddNew({Key? key}) : super(key: key);
@@ -9,6 +13,21 @@ class EmployeeIssueAddNew extends StatefulWidget {
 }
 
 class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
+  
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  Deal? _filterDeal;
+  String _filterDealIdString = '';
+
+  final TextEditingController _issueTitle = TextEditingController();
+  final TextEditingController _issueDescription = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _issueTitle.dispose();
+    _issueDescription.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,178 +43,116 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
           Card(
               elevation: 20.0,
               shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(25))
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
-              child: ListView(
-                padding: const EdgeInsets.only(
-                    top: 10.0, left: 10.0, right: 18.0, bottom: 5.0),
-                children: <Widget>[
-                  //ID hợp đồng
-                  const SizedBox(height: 30.0,),
-                  SizedBox(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'ID hợp đồng',
-                        hintText: 'ID',
-                        labelStyle: const TextStyle(
-                          color: defaultFontColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Tiêu đề
-                  const SizedBox(height: 30.0,),
-                  SizedBox(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'Tiêu đề',
-                        hintText: 'Nội dung tiêu đề',
-                        labelStyle: const TextStyle(
-                          color: defaultFontColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Tên người được thêm vào vấn đề
-                  const SizedBox(height: 30.0,),
-                  SizedBox(
-                    child: TextField(
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'Tên',
-                        hintText: 'Tên người được thêm vào vấn đề',
-                        labelStyle: const TextStyle(
-                          color: defaultFontColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Nội dung vấn đề
-                  const SizedBox(height: 30.0,),
-                  SizedBox(
-                    child: TextField(
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'Nội dung',
-                        hintText: 'Nội dung vấn đề',
-                        labelStyle: const TextStyle(
-                          color: defaultFontColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  const SizedBox(height: 40.0,),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Row(
-                      children: [
-                        //Nút xoá
-                        Container(
-                          decoration: const BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              )
-                          ),
-                          child: TextButton(onPressed: (){},
-                            child: const Text('Tạo lại', style: TextStyle(color: Colors.white),),
-                          ),
-                          width: MediaQuery.of(context).size.width * 0.4,
-                        ),
-                        const SizedBox(width: 40.0,),
-                        //Bút lưu
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.blueAccent,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
+              margin: const EdgeInsets.only(top: 100.0),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15.0),
+                    child: Column(
+                      children: <Widget>[
+                        //ID hợp đồng
+                        const SizedBox(height: 40.0,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  text: _filterDealIdString,
+                                  title: 'Mã số hợp đồng',
+                                  readonly: true,
+                                  onTap: () async {
+                                    final data = await Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) => const SaleEmpDealList(issueView: true,)
+                                    ));
+                                    if(data != null){
+                                      _filterDeal = data;
+                                      setState(() {
+                                        _filterDealIdString = '${_filterDeal!.dealId}';
+                                      });
+                                    }
+                                  },
+                              ),
                             ),
-                          ),
-                          child: TextButton(onPressed: (){},
-                            child: const Text('Thêm mới', style: TextStyle(color: Colors.white),),
-                          ),
-                          width: MediaQuery.of(context).size.width * 0.4,
+                          ],
                         ),
+
+                        //Tiêu đề
+                        const SizedBox(height: 20.0,),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  text: _issueTitle.text.isEmpty ? '' : _issueTitle.text,
+                                  title: 'Tiêu đề',
+                                  readonly: false,
+                                  textEditingController: _issueTitle,
+                                  isLimit: true,
+                                  limitNumbChar: 60,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        //Tên người được thêm vào vấn đề
+                        const SizedBox(height: 20.0,),
+
+                        Row(
+                          children: const [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  text: '',
+                                  title: 'Tên người được giao',
+                                  readonly: true
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        //Nội dung vấn đề
+                        const SizedBox(height: 20.0,),
+
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  text: _issueDescription.text.isEmpty ? '' : _issueDescription.text,
+                                  title: 'Nội dung vấn đề',
+                                  readonly: false,
+                                  textEditingController: _issueDescription,
+                                  limitNumbChar: 250,
+                                  isLimit: true,
+                                  inputNumberOnly: false,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 30.0,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextButton(
+                                  color: mainBgColor,
+                                  text: 'Tạo vấn đề',
+                                  onPressed: (){
+                                    if(!_formKey.currentState!.validate()){
+                                      return;
+                                    }
+                                  },
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 40.0,),
                       ],
                     ),
                   ),
-                ],
+                ),
               )),
           Positioned(
             top: 0.0,

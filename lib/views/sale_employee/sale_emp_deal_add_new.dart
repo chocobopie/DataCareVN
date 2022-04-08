@@ -25,6 +25,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+
   late String _closeDate = '';
 
   late final TextEditingController _dealTitle = TextEditingController();
@@ -39,15 +40,17 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
   late final TextEditingController _dealContactId = TextEditingController();
 
   String _contactFullname = '', _contactCompanyName = '', _accountFullname = '';
-  late Account currentAccount;
-  late Account filterAccount = Account();
-  late Contact filterContact;
+  late Account _currentAccount;
+  late Account _filterAccount = Account();
+  late Contact _filterContact;
 
 
   @override
   void initState() {
     super.initState();
-    currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _accountFullname = _currentAccount.fullname!;
+    _filterAccount = _currentAccount;
   }
 
   @override
@@ -116,10 +119,10 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                             ));
                             if(data != null){
                               setState(() {
-                                filterContact = data;
-                                _contactFullname = filterContact.fullname;
-                                _contactCompanyName = filterContact.companyName;
-                                _dealContactId.text = '${filterContact.contactId}';
+                                _filterContact = data;
+                                _contactFullname = _filterContact.fullname;
+                                _contactCompanyName = _filterContact.companyName;
+                                _dealContactId.text = '${_filterContact.contactId}';
                               });
                               print('Contact Id: ${_dealContactId.text}');
                             }
@@ -320,33 +323,33 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                       //Người quản lý hợp đồng
                       CustomEditableTextFormField(
-                          borderColor: mainBgColor,
+                          borderColor: _currentAccount.roleId != 5 ? mainBgColor : null,
                           text: _accountFullname,
                           title: 'Người quản lý hợp đồng',
                           readonly: true,
                           textEditingController: _dealOwnerId,
-                          onTap: () async {
+                          onTap: _currentAccount.roleId != 5 ? () async {
                             final data = await Navigator.push(context, MaterialPageRoute(
                               builder: (context) => const SaleEmpFilter(),
                             ));
                             if(data != null){
                               setState(() {
-                                filterAccount = data;
-                                _dealOwnerId.text = '${filterAccount.accountId!}';
-                                _accountFullname = filterAccount.fullname!;
+                                _filterAccount = data;
+                                _dealOwnerId.text = '${_filterAccount.accountId!}';
+                                _accountFullname = _filterAccount.fullname!;
                               });
                             }
-                          },
+                          } : null,
                       ),
                       const SizedBox(height: 20.0,),
 
                       //Phòng ban
-                      if(filterAccount.departmentId != null) CustomReadOnlyTextField(text: getDepartmentName(filterAccount.departmentId!), title: 'Phòng'),
-                      if(filterAccount.departmentId != null) const SizedBox(height: 20.0,),
+                      if(_filterAccount.departmentId != null) CustomReadOnlyTextField(text: getDepartmentName(_filterAccount.departmentId!), title: 'Phòng'),
+                      if(_filterAccount.departmentId != null) const SizedBox(height: 20.0,),
 
                       //Nhóm
-                      if(filterAccount.teamId != null) CustomReadOnlyTextField(text: getTeamName(filterAccount.teamId!), title: 'Nhóm'),
-                      if(filterAccount.teamId != null) const SizedBox(height: 20.0,),
+                      if(_filterAccount.teamId != null) CustomReadOnlyTextField(text: getTeamName(_filterAccount.teamId!), title: 'Nhóm'),
+                      if(_filterAccount.teamId != null) const SizedBox(height: 20.0,),
 
                       //Nút thêm mới
                       const SizedBox(height: 20.0,),
@@ -377,7 +380,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                                   dealStageId: int.parse(_dealStageId.text),
                                   amount: _dealAmount.text.isEmpty ? 0 : int.parse(_dealAmount.text),
                                   closedDate: _dealClosedDate.text.isEmpty ? DateTime.now() : DateTime.parse(_dealClosedDate.text),
-                                  dealOwnerId: int.parse(_dealOwnerId.text),
+                                  dealOwnerId: _currentAccount.roleId != 5 ? int.parse(_dealOwnerId.text) : _currentAccount.accountId!,
                                   linkTrello: _linkTrello.text.isEmpty ? '' : _linkTrello.text,
                                   vatId: int.parse(_dealVatId.text),
                                   serviceId: int.parse(_dealServiceId.text),

@@ -13,7 +13,7 @@ class Issue {
     required this.taggedAccountId,
     required this.description,
     required this.createdDate,
-    required this.dealineDate,
+    required this.deadlineDate,
     this.maxPage,
   });
 
@@ -24,7 +24,7 @@ class Issue {
   int taggedAccountId;
   String description;
   DateTime createdDate;
-  DateTime dealineDate;
+  DateTime deadlineDate;
   int? maxPage;
 
   factory Issue.fromJson(Map<String, dynamic> json) => Issue(
@@ -35,7 +35,7 @@ class Issue {
     taggedAccountId: json["taggedAccountId"],
     description: json["description"],
     createdDate: DateTime.parse(json["createdDate"]),
-    dealineDate: DateTime.parse(json["dealineDate"]),
+    deadlineDate: DateTime.parse(json["deadlineDate"]),
     maxPage: json["maxPage"],
   );
 
@@ -47,7 +47,7 @@ class Issue {
     "taggedAccountId": taggedAccountId,
     "description": description,
     "createdDate": createdDate.toIso8601String(),
-    "dealineDate": dealineDate.toIso8601String(),
+    "deadlineDate": deadlineDate.toIso8601String(),
     "maxPage": maxPage,
   };
 }

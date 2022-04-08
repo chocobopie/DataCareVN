@@ -3,11 +3,8 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_payroll_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
-import 'package:login_sample/views/sale_manager/sale_manager_payroll_management.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
-import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:provider/provider.dart';
 
 class EmployeePayroll extends StatefulWidget {
@@ -104,6 +101,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                   ),
                   const SizedBox(height: 20.0,),
                   //Lương
+                  if(_selectedMonth.month != DateTime.now().month)
                   PayrollExpansionTile(
                     selectedDate: _selectedMonth,
                     payrollTitleStatus: _payrollTitleStatus,

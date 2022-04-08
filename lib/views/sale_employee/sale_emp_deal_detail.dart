@@ -22,9 +22,10 @@ import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:provider/provider.dart';
 
 class SaleEmpDealDetail extends StatefulWidget {
-  const SaleEmpDealDetail({Key? key, required this.deal}) : super(key: key);
+  const SaleEmpDealDetail({Key? key, required this.deal, this.readOnly}) : super(key: key);
 
   final Deal deal;
+  final bool? readOnly;
 
   @override
   _SaleEmpDealDetailState createState() => _SaleEmpDealDetailState();
@@ -50,12 +51,12 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
   Contact? contact;
   Account? account;
-  late Account currentAccount, filterAccount = Account();
+  late Account _currentAccount, filterAccount = Account();
 
   @override
   void initState() {
     super.initState();
-    currentAccount =
+    _currentAccount =
         Provider.of<AccountProvider>(context, listen: false).account;
     _getContactByContactId(widget.deal.contactId);
     _getAccountByAccountId(
@@ -385,12 +386,12 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                               //Người quản lý họp đồng
                               CustomEditableTextFormField(
-                                borderColor: _readOnly != true ? mainBgColor : null,
+                                borderColor: _currentAccount.roleId != 5 ? _readOnly != true ? mainBgColor : null : null,
                                 text: account!.fullname!,
                                 title: 'Người quản lý hợp đồng',
                                 readonly: true,
                                 textEditingController: _dealOwnerId,
-                                onTap: _readOnly != true
+                                onTap: _currentAccount.roleId != 5 ? _readOnly != true
                                     ? () async {
                                         final data = await Navigator.push(
                                             context,
@@ -406,7 +407,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                           });
                                         }
                                       }
-                                    : null,
+                                    : null : null,
                               ),
                               const SizedBox(height: 20.0,),
 
@@ -422,6 +423,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                               //Button
                               const SizedBox(height: 20.0,),
+                              if(widget.readOnly == null)
                               Padding(
                                 padding:
                                     const EdgeInsets.only(left: 5.0, right: 5.0),

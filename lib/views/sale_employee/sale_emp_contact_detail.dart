@@ -37,6 +37,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
   final TextEditingController _contactGender = TextEditingController();
   final TextEditingController _contactLeadSourceId = TextEditingController();
   
+  late Account _currentAccount = Account();
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
     if(_contactOwnerId.text.isEmpty){
       _getAccountFullnameById(accountId: widget.contact.contactOwnerId);
     }
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     print(widget.contact.createdDate);
   }
 
@@ -215,12 +217,12 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                       //     child: Text('Khách hàng của: $fullname')
                       // ),
                       if(_fullname.isNotEmpty) CustomEditableTextFormField(
-                        borderColor: _readOnly != true ? mainBgColor : null,
+                        borderColor: _currentAccount.roleId != 5 ? _readOnly != true ? mainBgColor : null : null,
                         text: _fullname,
                         title: 'Nhân viên tạo',
                         readonly: true,
                         textEditingController: _contactOwnerId,
-                        onTap: _readOnly != true ? () async {
+                        onTap: _currentAccount.roleId != 5 ? _readOnly != true ? () async {
                           final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleEmpFilter(),));
                           late Account filterAccount;
                           if (data != null) {
@@ -230,7 +232,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                               _fullname = filterAccount.fullname!;
                             });
                           }
-                        } : null,
+                        } : null : null,
                       ),
                       const SizedBox(height: 20.0,),
 

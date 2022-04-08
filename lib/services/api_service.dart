@@ -490,12 +490,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>?> getAllSalesForContact({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+  Future<List<Account>?> getAllSalesForContact({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'accounts/sales-for-contact?block-id=$blockId&department-id=$departmentId&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+    String url = stockUrl + 'accounts/sales-for-contact?account-id=$accountId&fullname=${fullname ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -509,12 +509,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>?> getAllSalesForIssue({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+  Future<List<Account>?> getAllSalesForIssue({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'accounts/sales-for-issue?block-id=$blockId&department-id=$departmentId&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+    String url = stockUrl + 'accounts/sales-for-issue?account-id=$accountId&fullname=${fullname ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -528,12 +528,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>?> getAllSalesForDeal({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
+  Future<List<Account>?> getAllSalesForDeal({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'accounts/sales-for-issue?block-id=$blockId&department-id=$departmentId&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+    String url = stockUrl + 'accounts/sales-for-deal?account-id=$accountId&fullname=${fullname ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -560,6 +560,25 @@ class ApiService {
     }
   }
 
+  Future<List<Account>?> getAllSalesTaggedByAnother({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async{
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'accounts/sales-for-issue-tagged-by-another?account-id=$accountId&fullname=${fullname ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print('Got all sales tagged by another | 200');
+      return jsonResponse.map((data) => Account.fromJson(data)).toList();
+    } else {
+      print("Failed to get all sales tagged by another | 400");
+      List<Account>? accountList;
+      return accountList;
+    }
+  }
+
   Future<List<Account>?> getAccountByFullname({required bool isRefresh, required int currentPage, required int accountId, required String fullname}) async{
     if(isRefresh == true){
       currentPage = 0;
@@ -578,7 +597,6 @@ class ApiService {
       return accountList;
     }
   }
-
 
 
 

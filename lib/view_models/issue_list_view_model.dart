@@ -24,4 +24,5 @@ class IssueListViewModel with ChangeNotifier{
 
     return issueList;
   }
+
 }

@@ -46,7 +46,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                       decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'ID hợp đồng',
+                        labelText: 'Mã số hợp đồng',
                         hintText: 'ID',
                         labelStyle: const TextStyle(
                           color: defaultFontColor,

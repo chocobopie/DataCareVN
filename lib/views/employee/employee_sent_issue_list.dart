@@ -60,19 +60,40 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: _maxPage > 0 ? Card(
-        child: NumberPaginator(
-            buttonSelectedBackgroundColor: mainBgColor,
-            numberPages: _maxPage,
-            onPageChange: (int index){
-              setState(() {
-                _issues.clear();
-                _currentPage = index;
-              });
-              _getAllIssue(isRefresh: false);
-            },
-        ),
-      ) : null,
+      floatingActionButton:  Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => const EmployeeIssueAddNew(),
+                  ));
+                },
+                backgroundColor: mainBgColor,
+                child: const Icon(Icons.plus_one),
+              ),
+            ),
+          ),
+
+          Card(
+            child: _maxPage > 0 ? NumberPaginator(
+                buttonSelectedBackgroundColor: mainBgColor,
+                numberPages: _maxPage,
+                onPageChange: (int index){
+                  setState(() {
+                    _issues.clear();
+                    _currentPage = index;
+                  });
+                  _getAllIssue(isRefresh: false);
+                },
+            ) : null,
+          ),
+        ],
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -111,7 +132,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                           color: mainBgColor,
                           onPressed: () async {
                             final data = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const SaleEmpFilter(),
+                              builder: (context) => const SaleEmpFilter(saleForIssue: true),
                             ));
                             if(data != null){
                               _currentPage = 0;
@@ -168,7 +189,18 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                         ),
                         IconButton(
                             onPressed: (){
-
+                              setState(() {
+                                _issues.clear();
+                                _fromDatetoDateDeadlineString = 'Hạn chót';
+                                _fromDateToDateCreateDateString = 'Ngày tạo vấn đề';
+                                _tagAccount = 'Tên nhân viên được giao';
+                              });
+                              _filterAccount = Account();
+                              _deadlineFromDate = null;
+                              _deadlineToDate = null;
+                              _createFromDate = null;
+                              _createToDate = null;
+                              _getAllIssue(isRefresh: true);
                             },
                             icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                         ),
@@ -246,7 +278,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                         children: <Widget>[
                                           const Text('Nhân viên tạo vấn đề:'),
                                           const Spacer(),
-                                          Text(_getEmployeeNamee(issue.ownerId)),
+                                          Text(_getEmployeeName(issue.ownerId)),
                                         ],
                                       ),
                                     ),
@@ -256,7 +288,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                         children: <Widget>[
                                           const Text('Nhân viên được giao:'),
                                           const Spacer(),
-                                          Text(_getEmployeeNamee(issue.taggedAccountId)),
+                                          Text(_getEmployeeName(issue.taggedAccountId)),
                                         ],
                                       ),
                                     ),
@@ -276,7 +308,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                         children: <Widget>[
                                           const Text('Hạn chót:'),
                                           const Spacer(),
-                                          Text(DateFormat('dd-MM-yyyy').format(issue.dealineDate)),
+                                          Text(DateFormat('dd-MM-yyyy').format(issue.deadlineDate)),
                                         ],
                                       ),
                                     ),
@@ -345,7 +377,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
     );
   }
 
-  String _getEmployeeNamee(int accountId){
+  String _getEmployeeName(int accountId){
     String name = '';
     for(int i = 0; i < _employeeList.length; i++){
       if(accountId == _employeeList[i].accountId){
@@ -361,7 +393,6 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
     setState(() {
       _employeeList.addAll(accountList);
-      _maxPage = _employeeList[0].maxPage!;
     });
 
   }
@@ -377,7 +408,9 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
     if(issueList != null){
       setState(() {
+        _issues.clear();
         _issues.addAll(issueList);
+        _maxPage = _issues[0].maxPage!;
       });
     }
   }

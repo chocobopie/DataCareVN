@@ -255,7 +255,7 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
                                             children: <Widget>[
                                               const Text('Người tạo:'),
                                               const Spacer(),
-                                              Text(_getContactOwnerName(contact.contactOwnerId)),
+                                              Text(_currentAccount.roleId != 5 ? _getContactOwnerName(contact.contactOwnerId) : _currentAccount.fullname!),
                                             ],
                                           ),
                                         ),
@@ -325,14 +325,14 @@ class _SaleEmpContactFilterState extends State<SaleEmpContactFilter> {
 
   void _getAllSaleEmployee({required bool isRefresh}){
     if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId, limit: 1000000);
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, limit: 1000000);
     }else if(_currentAccount.roleId == 3){
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, limit: 1000000);
+      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, limit: 1000000);
     }
   }
 
-  void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
-    List<Account>? accountList = await AccountListViewModel().getAllSalesForContact(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
+  void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async {
+    List<Account>? accountList = await AccountListViewModel().getAllSalesForContact(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit, accountId: accountId, fullname: fullname);
 
     if(accountList != null){
       setState(() {

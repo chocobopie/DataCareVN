@@ -3,6 +3,7 @@ import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/main.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
@@ -74,7 +75,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                     builder: (context) => SaleEmpContactAddNew(account: _currentAccount,),
                   )).then(_onGoBack);
                 },
-                backgroundColor: Colors.green,
+                backgroundColor: mainBgColor,
                 child: const Icon(Icons.person_add),
               ),
             ),
@@ -139,7 +140,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                               radius: 10,
                               onPressed: () async {
                                 final data = await Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => const SaleEmpFilter(),
+                                  builder: (context) => const SaleEmpFilter(salesForContact: true),
                                 ));
                                 if(data != null){
                                   _currentPage = 0;
@@ -394,7 +395,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                         children: <Widget>[
                                           const Text('Nhân viên tạo: ', style: TextStyle(fontSize: 14),),
                                           const Spacer(),
-                                          Text(_getContactOwnerName(contact.contactOwnerId)),
+                                          Text(_currentAccount.roleId != 5 ? _getContactOwnerName(contact.contactOwnerId) : _currentAccount.fullname!),
                                         ],
                                       ),
                                     )
@@ -564,14 +565,14 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
   void _getAllSaleEmployee({required bool isRefresh}){
     if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId, limit: 1000000);
+      _getAllSalesForContact(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, limit: 1000000);
     }else if(_currentAccount.roleId == 3){
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, limit: 1000000);
+      _getAllSalesForContact(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, limit: 1000000);
     }
   }
 
-  void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
-    List<Account>? accountList = await AccountListViewModel().getAllSalesForContact(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
+  void _getAllSalesForContact({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async {
+    List<Account>? accountList = await AccountListViewModel().getAllSalesForContact(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit, accountId: accountId, fullname: fullname);
 
     if(accountList != null){
       setState(() {

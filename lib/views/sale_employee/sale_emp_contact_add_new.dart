@@ -24,7 +24,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String fullname = '', _gender = '', _leadSource = '';
+  String _fullname = '', _gender = '', _leadSource = '';
 
   final TextEditingController _contactName = TextEditingController();
   final TextEditingController _contactEmail = TextEditingController();
@@ -52,10 +52,8 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
   @override
   void initState() {
     super.initState();
-    if(_contactOwnerId.text.isEmpty){
-      _getAccountFullnameById(accountId: widget.account.accountId!);
-    }
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _fullname = _currentAccount.fullname!;
   }
 
 
@@ -85,7 +83,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                 key: _formKey,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
-                  child: fullname.isNotEmpty ? ListView(
+                  child: _fullname.isNotEmpty ? ListView(
                     children: <Widget>[
                       //Tên khách hàng
                       CustomEditableTextFormField(
@@ -150,13 +148,13 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                       ),
                       const SizedBox(height: 20.0,),
 
-                      if(fullname.isNotEmpty) CustomEditableTextFormField(
-                          borderColor: mainBgColor,
-                          text: fullname,
+                      if(_fullname.isNotEmpty) CustomEditableTextFormField(
+                          borderColor: _currentAccount.roleId != 5 ? mainBgColor : null,
+                          text: _fullname,
                           title: 'Nhân viên tạo',
                           readonly: true,
                           textEditingController: _contactOwnerId,
-                          onTap: () async {
+                          onTap: _currentAccount.roleId != 5 ? () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const SaleEmpFilter(),
                           ));
@@ -165,10 +163,10 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                             setState(() {
                               filterAccount = data;
                               _contactOwnerId.text = filterAccount.accountId!.toString();
-                              fullname = filterAccount.fullname!;
+                              _fullname = filterAccount.fullname!;
                             });
                           }
-                        },
+                        } : null,
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -268,12 +266,5 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
         ],
       ),
     );
-  }
-
-  void _getAccountFullnameById({required accountId}) async {
-    Account account = await AccountViewModel().getAccountFullnameById(accountId: accountId);
-    setState(() {
-      fullname = account.fullname!;
-    });
   }
 }

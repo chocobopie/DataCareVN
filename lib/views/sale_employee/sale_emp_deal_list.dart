@@ -19,7 +19,6 @@ import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/widgets/CustomDropdownButtonSortAscDes.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:number_paginator/number_paginator.dart';
@@ -27,7 +26,9 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SaleEmpDealList extends StatefulWidget {
-  const SaleEmpDealList({Key? key}) : super(key: key);
+  const SaleEmpDealList({Key? key, this.issueView}) : super(key: key);
+
+  final bool? issueView;
 
   @override
   _SaleEmpDealListState createState() => _SaleEmpDealListState();
@@ -71,6 +72,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          if(widget.issueView == null)
           Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: Align(
@@ -81,7 +83,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                     builder: (context) => const SaleEmpDealAddNew(),
                   )).then(_onGoBack);
                 },
-                backgroundColor: Colors.green,
+                backgroundColor: mainBgColor,
                 child: const Icon(Icons.plus_one),
               ),
             ),
@@ -140,7 +142,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                             title: _fullname,
                             onPressed: () async {
                               final data = await Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const SaleEmpFilter(),
+                                builder: (context) => const SaleEmpFilter(salesForDeal: true),
                               ));
                               if(data != null){
                                 _currentPage = 0;
@@ -338,7 +340,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => SaleEmpDealDetail(deal: deal)
+                                    builder: (context) => SaleEmpDealDetail(deal: deal, readOnly: widget.issueView,)
                                 )).then(_onGoBack);
                               },
                               child: Padding(
@@ -403,7 +405,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                         children: <Widget>[
                                           const Text('Người quản lý hợp đồng:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
-                                          Text(_getDealOwnerName(deal.dealOwnerId), style: const TextStyle(fontSize: 14.0)),
+                                          Text(_currentAccount.roleId != 5 ? _getDealOwnerName(deal.dealOwnerId) : _currentAccount.fullname!, style: const TextStyle(fontSize: 14.0)),
                                         ],
                                       ),
                                     ),
@@ -417,6 +419,21 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                           Text(DateFormat('dd-MM-yyyy').format(deal.closedDate), style: const TextStyle(fontSize: 14.0),)
                                         ],
                                       ),
+                                    ),
+
+                                    if(widget.issueView == true)
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextButton(
+                                              color: mainBgColor,
+                                              text: 'Chọn',
+                                              onPressed: (){
+                                                Navigator.pop(context, deal);
+                                              },
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -619,14 +636,14 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   void _getAllSaleEmployee({required bool isRefresh}){
     if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, teamId: _currentAccount.teamId, limit: 1000000);
+      _getAllSalesForDeal(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, limit: 1000000);
     }else if(_currentAccount.roleId == 3){
-      _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId(isRefresh: isRefresh, currentPage: _currentPage, blockId: _currentAccount.blockId!, departmentId:  _currentAccount.departmentId!, limit: 1000000);
+      _getAllSalesForDeal(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, limit: 1000000);
     }
   }
 
-  void _getAllSalesEmployeesByBlockIdDepartmentIdOrTeamId({required bool isRefresh, required int currentPage, required int blockId, required int departmentId, int? teamId, int? limit}) async {
-    List<Account>? accountList = await AccountListViewModel().getAllSalesForContact(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit);
+  void _getAllSalesForDeal({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async {
+    List<Account>? accountList = await AccountListViewModel().getAllSalesForDeal(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit, accountId: accountId, fullname: fullname);
 
     if(accountList != null ){
       setState(() {
