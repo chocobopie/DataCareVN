@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/issue.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/account_view_model.dart';
+import 'package:login_sample/view_models/issue_view_model.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
+import 'package:login_sample/widgets/CustomEditableTextField.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeIssueDetail extends StatefulWidget {
-  const EmployeeIssueDetail({Key? key}) : super(key: key);
+  const EmployeeIssueDetail({Key? key, required this.issue}) : super(key: key);
+
+  final Issue issue;
 
   @override
   _EmployeeIssueDetailState createState() => _EmployeeIssueDetailState();
@@ -10,7 +24,28 @@ class EmployeeIssueDetail extends StatefulWidget {
 
 class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
 
+  GlobalKey<FormState> _formKey = GlobalKey();
 
+  bool _readOnly = true;
+  Account? _filterAccount, _currentAccount;
+  DateTime? _filterDeadline;
+  String _deadlineString = '', _taggedAccountFullname = '';
+  final TextEditingController _issueTitle = TextEditingController();
+  final TextEditingController _issueDescription = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getAccountFullnameByAccountId(widget.issue.taggedAccountId);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _issueTitle.dispose();
+    _issueDescription.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,182 +63,205 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
           Card(
               elevation: 20.0,
               shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25),
-                  topRight: Radius.circular(25),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(25))
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
-              child: ListView(
-                padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
-                children: <Widget>[
-
-                  //ID hợp đồng
-                  const SizedBox(height: 30.0,),
-                  SizedBox(
-                    child: TextField(
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'Mã số hợp đồng',
-                        hintText: 'ID',
-                        labelStyle: const TextStyle(
-                          color: defaultFontColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Tiêu đề
-                  const SizedBox(height: 30.0,),
-                  SizedBox(
-                    child: TextField(
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'Tiêu đề',
-                        hintText: 'Nội dung tiêu đề',
-                        labelStyle: const TextStyle(
-                          color: defaultFontColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Tên người được thêm vào vấn đề
-                  const SizedBox(height: 30.0,),
-                  SizedBox(
-                    child: TextField(
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'Tên',
-                        hintText: 'Tên người được thêm vào vấn đề',
-                        labelStyle: const TextStyle(
-                          color: defaultFontColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Nội dung vấn đề
-                  const SizedBox(height: 30.0,),
-                  SizedBox(
-                    child: TextField(
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0, right: 10.0),
-                        labelText: 'Nội dung',
-                        hintText: 'Nội dung vấn đề',
-                        labelStyle: const TextStyle(
-                          color: defaultFontColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    width: 150.0,
-                  ),
-
-                  //Nút xoá & lưu
-                  const SizedBox(height: 40.0,),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Row(
-                      children: [
-                        //Nút xoá
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            )
-                          ),
-                          child: TextButton(onPressed: (){},
-                            child: const Text('Xoá', style: TextStyle(color: Colors.white),),
-                          ),
-                          width: MediaQuery.of(context).size.width * 0.4,
-                        ),
-                        const SizedBox(width: 40.0,),
-                        //Bút lưu
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.blueAccent,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
+              margin: const EdgeInsets.only(top: 100.0),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    child: Column(
+                      children: <Widget>[
+                        //ID hợp đồng
+                        const SizedBox(height: 20.0,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  text: '${widget.issue.dealId}',
+                                  title: 'Mã số hợp đồng',
+                                  readonly: _readOnly
+                              ),
                             ),
-                          ),
-                          child: TextButton(onPressed: (){},
-                            child: const Text('Chỉnh sửa', style: TextStyle(color: Colors.white),),
-                          ),
-                          width: MediaQuery.of(context).size.width * 0.4,
+                          ],
                         ),
+
+                        //Tiêu đề
+                        const SizedBox(height: 20.0,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  borderColor: _readOnly != true ? mainBgColor : null,
+                                  text: _issueTitle.text.isEmpty ? widget.issue.title : _issueTitle.text,
+                                  title: 'Tiêu đề',
+                                  readonly: _readOnly,
+                                  textEditingController: _issueTitle,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        //Tên người được giao
+                        const SizedBox(height: 20.0,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  borderColor: _readOnly != true ? mainBgColor : null,
+                                  text: _filterAccount == null ? _taggedAccountFullname : _filterAccount!.fullname!,
+                                  title: 'Người được giao',
+                                  readonly: true,
+                                  onTap: () async {
+                                    final data = await Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) => const SaleEmpFilter(saleForIssue: true),
+                                    ));
+                                    if(data != null){
+                                      setState(() {
+                                        _filterAccount = data;
+                                      });
+                                    }
+                                  },
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        //Nội dung vấn đề
+                        const SizedBox(height: 20.0,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  borderColor: _readOnly != true ? mainBgColor : null,
+                                  text: _issueDescription.text.isEmpty ? widget.issue.description : _issueDescription.text,
+                                  title: 'Nội dung vấn đề',
+                                  readonly: _readOnly,
+                                  textEditingController: _issueDescription,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        //Deadline
+                        const SizedBox(height: 20.0,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  borderColor: _readOnly != true ? mainBgColor : null,
+                                  text: _deadlineString.isEmpty ? 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.issue.deadlineDate)}' : _deadlineString,
+                                  title: 'Deadline',
+                                  readonly: true,
+                                  onTap: () async {
+                                    final data = await DatePicker.showDatePicker(
+                                      context,
+                                      locale : LocaleType.vi,
+                                      minTime: DateTime.now(),
+                                      currentTime: DateTime.now(),
+                                      maxTime: DateTime.now().add(const Duration(days: 36500)),
+                                    );
+                                    if(data != null){
+                                      _filterDeadline = data;
+                                      setState(() {
+                                        _deadlineString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_filterDeadline!)}';
+                                      });
+                                    }
+                                  },
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        //Nút xoá & lưu
+                        const SizedBox(height: 30.0,),
+                        Row(
+                          children: <Widget>[
+                            //Nút xoá
+                            Expanded(
+                              child: CustomTextButton(
+                                  color: _readOnly == true ? Colors.red : mainBgColor,
+                                  text: _readOnly == true ? 'Xóa vấn đề' : 'Hủy',
+                                  onPressed: () async {
+                                    if(_readOnly == true){
+
+                                      showLoaderDialog(context);
+
+                                      bool data = await _deleteIssue(widget.issue.issueId!);
+                                      if(data == true){
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Xóa vấn đề thành công')),
+                                        );
+                                        Future.delayed(const Duration(seconds: 1), (){
+                                          Navigator.pop(context);
+                                        });
+                                      }else{
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Xóa vấn đề thất bại')),
+                                        );
+                                      }
+                                    }
+
+                                    if(_readOnly == false){
+                                      setState(() {
+                                        _readOnly = true;
+                                      });
+                                    }
+                                  },
+                              ),
+                            ),
+                            const SizedBox(width: 10.0,),
+                            //Nút lưu
+                            Expanded(
+                              child: CustomTextButton(
+                                  color: mainBgColor,
+                                  text: _readOnly == true ? 'Chỉnh sửa' : 'Lưu',
+                                  onPressed: () async {
+
+                                    if(_readOnly == false){
+                                      if(!_formKey.currentState!.validate()){
+                                        return;
+                                      }
+
+                                      showLoaderDialog(context);
+
+                                      bool data = await _updateAIssue();
+                                      if(data == true){
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Cập nhật vấn đề thành công')),
+                                        );
+                                        Future.delayed(const Duration(seconds: 1), (){
+                                          Navigator.pop(context);
+                                        });
+                                      }else{
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Cập nhật vấn đề thất bại')),
+                                        );
+                                      }
+                                    }
+
+
+                                    if(_readOnly == true){
+                                      setState(() {
+                                        _readOnly = false;
+                                      });
+                                    }
+
+                                  },
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 40.0,),
                       ],
                     ),
                   ),
-
-                ],
+                ),
               )
           ),
           Positioned(
@@ -228,5 +286,42 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
         ],
       ),
     );
+  }
+
+  void _getAccountFullnameByAccountId(int accountId) async {
+
+    Account account = await AccountViewModel().getAccountByAccountId(accountId: accountId);
+
+    setState(() {
+      _taggedAccountFullname = account.fullname!;
+    });
+  }
+
+  Future<bool> _updateAIssue() async {
+
+    Issue issue = Issue(
+      ownerId: widget.issue.ownerId,
+      taggedAccountId: _filterAccount == null ? widget.issue.taggedAccountId : _filterAccount!.accountId!,
+      dealId: widget.issue.dealId,
+      title: _issueTitle.text.isEmpty ? widget.issue.title : _issueTitle.text,
+      issueId: widget.issue.issueId,
+      description: _issueDescription.text.isEmpty ? widget.issue.description : _issueDescription.text,
+      createdDate: widget.issue.createdDate,
+      deadlineDate: _filterDeadline == null ? widget.issue.deadlineDate : _filterDeadline!
+    );
+
+    Issue? result = await IssueViewModel().updateAIssue(issue);
+
+    if(result != null){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  Future<bool> _deleteIssue(int issueId) async {
+    bool result = await IssueViewModel().deleteIssue(issueId);
+
+    return result;
   }
 }

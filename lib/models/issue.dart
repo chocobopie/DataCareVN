@@ -6,24 +6,24 @@ String issueToJson(Issue data) => json.encode(data.toJson());
 
 class Issue {
   Issue({
-    required this.issueId,
+    this.issueId,
     required this.ownerId,
     required this.dealId,
     required this.title,
     required this.taggedAccountId,
     required this.description,
-    required this.createdDate,
+    this.createdDate,
     required this.deadlineDate,
     this.maxPage,
   });
 
-  int issueId;
+  int? issueId;
   int ownerId;
   int dealId;
   String title;
   int taggedAccountId;
   String description;
-  DateTime createdDate;
+  DateTime? createdDate;
   DateTime deadlineDate;
   int? maxPage;
 
@@ -46,7 +46,7 @@ class Issue {
     "title": title,
     "taggedAccountId": taggedAccountId,
     "description": description,
-    "createdDate": createdDate.toIso8601String(),
+    "createdDate": createdDate?.toIso8601String(),
     "deadlineDate": deadlineDate.toIso8601String(),
     "maxPage": maxPage,
   };

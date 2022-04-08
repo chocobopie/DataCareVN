@@ -243,6 +243,18 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                 child: _issues.isNotEmpty ? SmartRefresher(
                   controller: _refreshController,
                   enablePullUp: true,
+                  onRefresh: () {
+                    setState(() {
+                      _issues.clear();
+                    });
+                    _getAllIssue(isRefresh: false);
+
+                    if(_issues.isNotEmpty){
+                      _refreshController.loadComplete();
+                    }else{
+                      _refreshController.loadFailed();
+                    }
+                  },
                   child: ListView.builder(
                       itemBuilder: (context, index) {
                         final issue = _issues[index];
@@ -250,7 +262,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: InkWell(
                             onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeIssueDetail()
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeIssueDetail(issue: issue,)
                               ));
                             },
                             child: Card(
@@ -298,7 +310,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                         children: <Widget>[
                                           const Text('Ngày tạo vấn đề:'),
                                           const Spacer(),
-                                          Text(DateFormat('dd-MM-yyyy').format(issue.createdDate)),
+                                          Text(DateFormat('dd-MM-yyyy').format(issue.createdDate!)),
                                         ],
                                       ),
                                     ),

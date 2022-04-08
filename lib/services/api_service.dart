@@ -1357,5 +1357,84 @@ class ApiService {
       return issueList;
     }
   }
+
+  Future<Issue?> createNewIssue(Issue issue) async {
+    String url = stockUrl + 'issues';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "ownerId": issue.ownerId,
+        "dealId": issue.dealId,
+        "title": issue.title,
+        "taggedAccountId": issue.taggedAccountId,
+        "description": issue.description,
+        "deadlineDate": issue.deadlineDate.toIso8601String()
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Create new issue successfully | 200');
+      return Issue.fromJson(jsonDecode(response.body));
+    }else{
+      print('Create new issue failed | 400');
+
+      Issue? issue;
+
+      return issue;
+    }
+  }
+
+  Future<Issue?> updateAIssue(Issue issue) async {
+    String url = stockUrl + 'issues/${issue.issueId}';
+
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "issueId": issue.issueId,
+        "ownerId": issue.ownerId,
+        "dealId": issue.dealId,
+        "title": issue.title,
+        "taggedAccountId": issue.taggedAccountId,
+        "description": issue.description,
+        "createdDate": issue.createdDate?.toIso8601String(),
+        "deadlineDate": issue.deadlineDate.toIso8601String()
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update a issue successfully | 200');
+      return Issue.fromJson(jsonDecode(response.body));
+    }else{
+      print('Update a issue failed | 400');
+
+      Issue? issue;
+
+      return issue;
+    }
+  }
+
+  Future<bool> deleteIssue(int issueId) async {
+    String url = stockUrl + 'issues/$issueId';
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if(response.statusCode == 200){
+      print('Delete issue successfully | 200');
+      return true;
+    }else{
+      print('Delete issue failed | 200');
+      return false;
+    }
+  }
+
 }
 

@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/deal.dart';
+import 'package:login_sample/models/issue.dart';
+import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_list.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeIssueAddNew extends StatefulWidget {
   const EmployeeIssueAddNew({Key? key}) : super(key: key);
@@ -16,10 +24,18 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
   
   final GlobalKey<FormState> _formKey = GlobalKey();
   Deal? _filterDeal;
-  String _filterDealIdString = '';
+  Account? _filterAccount, _currentAccount;
+  DateTime? _filterDeadline;
+  String _filterDealIdString = '', _filterAccountFullnameString = '', _deadlineString = '';
 
   final TextEditingController _issueTitle = TextEditingController();
   final TextEditingController _issueDescription = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+  }
 
   @override
   void dispose() {
@@ -100,12 +116,23 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                         const SizedBox(height: 20.0,),
 
                         Row(
-                          children: const [
+                          children: [
                             Expanded(
                               child: CustomEditableTextFormField(
-                                  text: '',
+                                  text: _filterAccountFullnameString,
                                   title: 'Tên người được giao',
-                                  readonly: true
+                                  readonly: true,
+                                  onTap: () async {
+                                    final data = await Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) => const SaleEmpFilter(saleForIssue: true),
+                                    ));
+                                    if(data != null){
+                                      _filterAccount = data;
+                                      setState(() {
+                                        _filterAccountFullnameString = _filterAccount!.fullname!;
+                                      });
+                                    }
+                                  },
                               ),
                             ),
                           ],
@@ -113,8 +140,6 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
 
                         //Nội dung vấn đề
                         const SizedBox(height: 20.0,),
-
-
                         Row(
                           children: [
                             Expanded(
@@ -131,6 +156,35 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                           ],
                         ),
 
+                        //Deadline
+                        const SizedBox(height: 20.0,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  text: _deadlineString,
+                                  title: 'Deadline',
+                                  readonly: true,
+                                  onTap: () async {
+                                    final data = await DatePicker.showDatePicker(
+                                      context,
+                                      locale : LocaleType.vi,
+                                      minTime: DateTime.now(),
+                                      currentTime: DateTime.now(),
+                                      maxTime: DateTime.now().add(const Duration(days: 36500)),
+                                    );
+                                    if(data != null){
+                                      _filterDeadline = data;
+                                      setState(() {
+                                        _deadlineString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_filterDeadline!)}';
+                                      });
+                                    }
+                                  },
+                              ),
+                            ),
+                          ],
+                        ),
+
                         const SizedBox(height: 30.0,),
                         Row(
                           children: [
@@ -138,9 +192,25 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                               child: CustomTextButton(
                                   color: mainBgColor,
                                   text: 'Tạo vấn đề',
-                                  onPressed: (){
+                                  onPressed: () async {
                                     if(!_formKey.currentState!.validate()){
                                       return;
+                                    }
+                                    showLoaderDialog(context);
+                                    bool data = await _createNewIssue();
+                                    if(data == true){
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Tạo vấn đề thành công')),
+                                      );
+                                      Future.delayed(const Duration(seconds: 2), (){
+                                        Navigator.pop(context);
+                                      });
+                                    }else{
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Tạo vấn đề thất bại')),
+                                      );
                                     }
                                   },
                               ),
@@ -178,4 +248,24 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
       ),
     );
   }
+
+  Future<bool> _createNewIssue() async {
+
+    Issue issue = Issue(
+        ownerId: _currentAccount!.accountId!,
+        dealId: _filterDeal!.dealId,
+        title: _issueTitle.text,
+        taggedAccountId: _filterAccount!.accountId!,
+        description: _issueDescription.text,
+        deadlineDate: _filterDeadline!
+    );
+
+    Issue? result = await ApiService().createNewIssue(issue);
+    if(result != null){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
 }

@@ -198,7 +198,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeeIssueDetail()
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeIssueDetail(issue: issue,)
                           ));
                         },
                         child: Card(
@@ -236,7 +236,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                                     children: <Widget>[
                                       const Text('Ngày nhận vấn đề:'),
                                       const Spacer(),
-                                      Text(DateFormat('dd-MM-yyyy').format(issue.createdDate)),
+                                      Text(DateFormat('dd-MM-yyyy').format(issue.createdDate!)),
                                     ],
                                   ),
                                 ),
