@@ -254,6 +254,16 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                                     padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                     child: Row(
                                       children: <Widget>[
+                                        const Expanded(child: Text('Mã số hợp đồng :')),
+                                        const Spacer(),
+                                        Text('${issue.dealId}'),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
                                         const Expanded(child: Text('Tiêu đề:')),
                                         const Spacer(),
                                         Text(issue.title),

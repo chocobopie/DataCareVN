@@ -262,7 +262,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: InkWell(
                             onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeIssueDetail(issue: issue,)
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeIssueDetail(issue: issue, viewOnly: false,)
                               ));
                             },
                             child: Card(
@@ -284,16 +284,16 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                         ],
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          const Text('Nhân viên tạo vấn đề:'),
-                                          const Spacer(),
-                                          Text(_getEmployeeName(issue.ownerId)),
-                                        ],
-                                      ),
-                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    //   child: Row(
+                                    //     children: <Widget>[
+                                    //       const Text('Nhân viên tạo vấn đề:'),
+                                    //       const Spacer(),
+                                    //       Text(_getEmployeeName(issue.ownerId)),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(

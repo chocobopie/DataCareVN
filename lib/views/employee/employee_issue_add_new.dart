@@ -75,6 +75,7 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                           children: [
                             Expanded(
                               child: CustomEditableTextFormField(
+                                  borderColor: mainBgColor,
                                   text: _filterDealIdString,
                                   title: 'Mã số hợp đồng',
                                   readonly: true,
@@ -101,6 +102,7 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                           children: [
                             Expanded(
                               child: CustomEditableTextFormField(
+                                  borderColor: mainBgColor,
                                   text: _issueTitle.text.isEmpty ? '' : _issueTitle.text,
                                   title: 'Tiêu đề',
                                   readonly: false,
@@ -119,6 +121,7 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                           children: [
                             Expanded(
                               child: CustomEditableTextFormField(
+                                borderColor: mainBgColor,
                                   text: _filterAccountFullnameString,
                                   title: 'Tên người được giao',
                                   readonly: true,
@@ -144,6 +147,7 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                           children: [
                             Expanded(
                               child: CustomEditableTextFormField(
+                                borderColor: mainBgColor,
                                   text: _issueDescription.text.isEmpty ? '' : _issueDescription.text,
                                   title: 'Nội dung vấn đề',
                                   readonly: false,
@@ -162,6 +166,7 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                           children: [
                             Expanded(
                               child: CustomEditableTextFormField(
+                                borderColor: mainBgColor,
                                   text: _deadlineString,
                                   title: 'Deadline',
                                   readonly: true,

@@ -609,7 +609,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getADealByDealId({required int accountId, required int dealId}) async {
-    Deal? deal = await DealViewModel().getADealbyDealId(accountId: accountId, dealId: dealId);
+    Deal? deal = await DealViewModel().getADealByAccountIdDealId(accountId: accountId, dealId: dealId);
 
       setState(() {
         _deals.add(deal);

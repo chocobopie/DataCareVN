@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/issue.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_view_model.dart';
+import 'package:login_sample/view_models/deal_view_model.dart';
 import 'package:login_sample/view_models/issue_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
@@ -32,12 +35,14 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
   String _deadlineString = '', _taggedAccountFullname = '';
   final TextEditingController _issueTitle = TextEditingController();
   final TextEditingController _issueDescription = TextEditingController();
+  Deal? _deal;
 
   @override
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getAccountFullnameByAccountId(widget.issue.taggedAccountId);
+    _getDealByDealId(widget.issue.dealId);
   }
 
   @override
@@ -66,7 +71,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                 borderRadius: BorderRadius.all(Radius.circular(25))
               ),
               margin: const EdgeInsets.only(top: 100.0),
-              child: SingleChildScrollView(
+              child: (_deal != null && _taggedAccountFullname.isNotEmpty ) ? SingleChildScrollView(
                 child: Form(
                   key: _formKey,
                   child: Padding(
@@ -81,7 +86,25 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                               child: CustomEditableTextFormField(
                                   text: '${widget.issue.dealId}',
                                   title: 'Mã số hợp đồng',
-                                  readonly: _readOnly
+                                  readonly: true
+                              ),
+                            ),
+                            const SizedBox(width: 5.0,),
+                            if(_deal != null)
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: mainBgColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                              ),
+                              child: TextButton.icon(
+                                  onPressed: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => SaleEmpDealDetail(readOnly: true, deal: _deal!)
+                                    ));
+                                  },
+                                  icon: const Icon(Icons.description_outlined, color: Colors.white,),
+                                  label: const Text('Xem hợp đồng', style: TextStyle(color: Colors.white),),
                               ),
                             ),
                           ],
@@ -98,6 +121,9 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                                   title: 'Tiêu đề',
                                   readonly: _readOnly,
                                   textEditingController: _issueTitle,
+                                  isLimit: true,
+                                  limitNumbChar: 60,
+                                  inputNumberOnly: false,
                               ),
                             ),
                           ],
@@ -113,7 +139,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                                   text: _filterAccount == null ? _taggedAccountFullname : _filterAccount!.fullname!,
                                   title: 'Người được giao',
                                   readonly: true,
-                                  onTap: () async {
+                                  onTap: _readOnly != true ? () async {
                                     final data = await Navigator.push(context, MaterialPageRoute(
                                       builder: (context) => const SaleEmpFilter(saleForIssue: true),
                                     ));
@@ -122,7 +148,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                                         _filterAccount = data;
                                       });
                                     }
-                                  },
+                                  } : null,
                               ),
                             ),
                           ],
@@ -139,6 +165,9 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                                   title: 'Nội dung vấn đề',
                                   readonly: _readOnly,
                                   textEditingController: _issueDescription,
+                                  inputNumberOnly: false,
+                                  isLimit: true,
+                                  limitNumbChar: 250,
                               ),
                             ),
                           ],
@@ -154,7 +183,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                                   text: _deadlineString.isEmpty ? 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.issue.deadlineDate)}' : _deadlineString,
                                   title: 'Deadline',
                                   readonly: true,
-                                  onTap: () async {
+                                  onTap: _readOnly != true ? () async {
                                     final data = await DatePicker.showDatePicker(
                                       context,
                                       locale : LocaleType.vi,
@@ -168,7 +197,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                                         _deadlineString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_filterDeadline!)}';
                                       });
                                     }
-                                  },
+                                  } : null,
                               ),
                             ),
                           ],
@@ -265,7 +294,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                     ),
                   ),
                 ),
-              )
+              ) : const Center(child: CircularProgressIndicator())
           ),
           Positioned(
             top: 0.0,
@@ -326,5 +355,13 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
     bool result = await IssueViewModel().deleteIssue(issueId);
 
     return result;
+  }
+
+  void _getDealByDealId(int dealId) async {
+    Deal? result = await DealViewModel().getADealByDealId(dealId: dealId);
+
+    setState(() {
+      _deal = result;
+    });
   }
 }
