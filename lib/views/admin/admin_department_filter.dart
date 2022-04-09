@@ -121,61 +121,73 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                     ),
                   ),
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
-                  child: SmartRefresher(
-                      controller: _refreshController,
-                      enablePullUp: true,
-                      enablePullDown: false,
-                      onLoading: () async {
-                        _refreshController.loadNoData();
-                      },
-                      child: _departments.isNotEmpty ? ListView.builder(
-                          itemBuilder: (context, index) {
-                            final department = _departments[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
-                              child: InkWell(
-                                onTap: (){
-                                  Navigator.pop(context, department);
-                                },
-                                child: Card(
-                                  elevation: 10.0,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              const Text('Tên phòng ban:'),
-                                              const Spacer(),
-                                              Text(department.name),
-                                            ],
-                                          ),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30.0, right: 40.0),
+                        child: Row(
+                          children: const <Widget>[
+                            Text('Thuộc khối', style: TextStyle(color: defaultFontColor),),
+                            Spacer(),
+                            Text('Tên phòng ban', style: TextStyle(color: defaultFontColor),),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: SmartRefresher(
+                            controller: _refreshController,
+                            enablePullUp: true,
+                            enablePullDown: false,
+                            onLoading: () async {
+                              _refreshController.loadNoData();
+                            },
+                            child: _departments.isNotEmpty ? ListView.builder(
+                                itemBuilder: (context, index) {
+                                  final department = _departments[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                                    child: InkWell(
+                                      onTap: (){
+                                        Navigator.pop(context, department);
+                                      },
+                                      child: Card(
+                                        elevation: 10.0,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(10)),
                                         ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: Text(blockNameUtilities[department.blockId]),
+                                                      flex: 1,
+                                                    ),
+                                                    const Spacer(),
+                                                    Expanded(
+                                                      child: Text(department.name),
+                                                      flex: 2,
+                                                    ),
 
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              const Text('Thuộc khối:'),
-                                              const Spacer(),
-                                              Text(blockNameUtilities[department.blockId]),
+                                                  ],
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          itemCount: _departments.length
-                      ) : const Center(child: CircularProgressIndicator())
+                                  );
+                                },
+                                itemCount: _departments.length
+                            ) : const Center(child: CircularProgressIndicator())
+                        ),
+                      ),
+                    ],
                   )
               ),
             ),

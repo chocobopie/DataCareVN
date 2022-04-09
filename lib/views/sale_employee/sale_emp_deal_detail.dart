@@ -98,13 +98,12 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                   topRight: Radius.circular(50),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
+              margin: const EdgeInsets.only(top: 100.0),
               child: Form(
                 key: _formKey,
                 child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: contact != null && account != null
-                        ? ListView(
+                    padding: const EdgeInsets.all(15.0),
+                    child: contact != null && account != null ? ListView(
                             children: <Widget>[
                               Row(
                                 children: [
@@ -114,7 +113,11 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         title: 'Mã số hợp đồng'),
                                     flex: 2,
                                   ),
-                                  const SizedBox(width: 5.0,),
+                                ],
+                              ),
+                              const SizedBox(height: 20.0,),
+                              Row(
+                                children: [
                                   Expanded(
                                     flex: 3,
                                     child: CustomEditableTextFormField(
@@ -129,8 +132,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                 ],
                               ),
                               const SizedBox(height: 20.0,),
-
-
                               //Tên khách hàng
                               CustomReadOnlyTextField(
                                   text: contact!.fullname,

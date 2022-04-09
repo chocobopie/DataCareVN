@@ -263,7 +263,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                           child: InkWell(
                             onTap: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeIssueDetail(issue: issue, viewOnly: false,)
-                              ));
+                              )).then((value) => _onGoBack());
                             },
                             child: Card(
                               elevation: 10,
@@ -398,8 +398,14 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
     }
     return name;
   }
-
-
+  
+  void _onGoBack(){
+    setState(() {
+      _issues.clear();
+    });
+    _getAllIssue(isRefresh: false);
+  }
+  
   void _getAllEmployee() async {
     List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: true, currentPage: 0, accountId: 0, limit: 100000);
 

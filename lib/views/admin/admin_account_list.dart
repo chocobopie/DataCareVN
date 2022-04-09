@@ -199,8 +199,10 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     setState(() {
                                       _departmentFilter = null;
                                       _teamFilter = null;
+                                      _roleFilter = null;
                                       _departmentNameString = 'Tên phòng';
                                       _teamNameString = 'Tên nhóm';
+                                      _roleNameString = 'Chức vụ';
                                       _accounts.clear();
                                       _blockNameString = _blockFilter!.name;
                                     });
@@ -406,7 +408,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                           children: <Widget>[
                                             const Expanded(child: Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),)),
                                             const Spacer(),
-                                            Text(account.fullname!, style: const TextStyle(fontSize: 20.0),),
+                                            Text(account.fullname!),
                                           ],
                                         ),
                                       ),

@@ -133,7 +133,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                           children: <Widget>[
                             const Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                             const SizedBox(width: 10,),
-                            if(_currentAccount.roleId != 5)
                             CustomOutlinedButton(
                               color: mainBgColor,
                               title: _fullname,
@@ -395,7 +394,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                         children: <Widget>[
                                           const Text('Nhân viên tạo: ', style: TextStyle(fontSize: 14),),
                                           const Spacer(),
-                                          Text(_currentAccount.roleId != 5 ? _getContactOwnerName(contact.contactOwnerId) : _currentAccount.fullname!),
+                                          Text(_getContactOwnerName(contact.contactOwnerId)),
                                         ],
                                       ),
                                     )

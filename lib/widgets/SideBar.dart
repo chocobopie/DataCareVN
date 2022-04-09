@@ -123,7 +123,7 @@ class SideBar extends StatelessWidget {
                   color: Colors.blueGrey,
                 ),
                 title: const Text(
-                    'Đắng xuất',
+                    'Đăng xuất',
                   style: TextStyle(
                     color: Colors.blueGrey,
                   ),

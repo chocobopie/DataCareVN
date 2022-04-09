@@ -137,7 +137,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
                         //Lọc theo nhân viên
-                        if(_currentAccount.roleId! == 3 || _currentAccount.roleId! == 4) CustomOutlinedButton(
+                        CustomOutlinedButton(
                             color: mainBgColor,
                             title: _fullname,
                             onPressed: () async {
@@ -405,7 +405,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                         children: <Widget>[
                                           const Text('Người quản lý hợp đồng:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
-                                          Text(_currentAccount.roleId != 5 ? _getDealOwnerName(deal.dealOwnerId) : _currentAccount.fullname!, style: const TextStyle(fontSize: 14.0)),
+                                          Text(_getDealOwnerName(deal.dealOwnerId), style: const TextStyle(fontSize: 14.0)),
                                         ],
                                       ),
                                     ),
