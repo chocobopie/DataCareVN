@@ -10,13 +10,13 @@ import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class EmployeeIssueDetail extends StatefulWidget {
-  const EmployeeIssueDetail({Key? key, required this.issue}) : super(key: key);
+  const EmployeeIssueDetail({Key? key, required this.issue, this.viewOnly}) : super(key: key);
 
   final Issue issue;
+  final bool? viewOnly;
 
   @override
   _EmployeeIssueDetailState createState() => _EmployeeIssueDetailState();
@@ -24,7 +24,7 @@ class EmployeeIssueDetail extends StatefulWidget {
 
 class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
 
-  GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
   bool _readOnly = true;
   Account? _filterAccount, _currentAccount;
@@ -174,8 +174,11 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                           ],
                         ),
 
+
                         //Nút xoá & lưu
                         const SizedBox(height: 30.0,),
+                        if(widget.viewOnly != null)
+                          if(widget.viewOnly == false)
                         Row(
                           children: <Widget>[
                             //Nút xoá

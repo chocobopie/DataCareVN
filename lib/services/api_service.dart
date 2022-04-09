@@ -1339,12 +1339,12 @@ class ApiService {
   }
 
   //issue
-  Future<List<Issue>?> getAllIssue({required bool isRefresh, required currentPage ,int? issueId, int? dealId, required int ownerId, int? taggedAccountId, DateTime? fromCreateDate, DateTime? toCreateDate, DateTime? fromDeadlineDate, DateTime? toDeadlineDate, int? limit}) async {
+  Future<List<Issue>?> getAllIssue({required bool isRefresh, required currentPage ,int? issueId, int? dealId, int? ownerId, int? taggedAccountId, DateTime? fromCreateDate, DateTime? toCreateDate, DateTime? fromDeadlineDate, DateTime? toDeadlineDate, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'issues?deal-id=${dealId ?? ''}&owner-id=$ownerId&tagged-account-id=${taggedAccountId ?? ''}&from-created-date=${fromCreateDate ?? ''}&to-created-date=${toCreateDate ?? ''}&from-deadline-date=${fromDeadlineDate ?? ''}&to-deadline-date=${toDeadlineDate ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+    String url = stockUrl + 'issues?deal-id=${dealId ?? ''}&owner-id=${ownerId ?? ''}&tagged-account-id=${taggedAccountId ?? ''}&from-created-date=${fromCreateDate ?? ''}&to-created-date=${toCreateDate ?? ''}&from-deadline-date=${fromDeadlineDate ?? ''}&to-deadline-date=${toDeadlineDate ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {

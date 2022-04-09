@@ -5,12 +5,11 @@ import 'package:login_sample/services/api_service.dart';
 class IssueListViewModel with ChangeNotifier{
   Future<List<Issue>?> getAllIssue(
       {required bool isRefresh, required currentPage ,int? issueId, int? dealId,
-        required int ownerId, int? taggedAccountId,
+        int? ownerId, int? taggedAccountId,
         DateTime? fromCreateDate, DateTime? toCreateDate,
         DateTime? fromDeadlineDate, DateTime? toDeadlineDate,
         int? limit}
       ) async {
-
 
     List<Issue>? issueList = await ApiService().getAllIssue(
         isRefresh: isRefresh, currentPage: currentPage,
