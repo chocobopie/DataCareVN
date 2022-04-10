@@ -10,6 +10,7 @@ import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_home.dart';
 import 'package:login_sample/views/sale_leader/sale_leader_home.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_home.dart';
+import 'package:login_sample/views/technical_employee/technical_employee_home.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
@@ -339,7 +340,7 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
                                             ));
                                           }else if(data.roleId == 6){
                                             Navigator.pushReplacement(context, MaterialPageRoute(
-                                              builder: (context) => const HomeSaleManager(),
+                                              builder: (context) => const TechnicalEmployeeHome(),
                                             ));
                                           }
                                         });

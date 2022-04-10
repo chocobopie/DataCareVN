@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/view_models/account_view_model.dart';
+import 'package:login_sample/view_models/contact_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';
@@ -9,6 +10,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:provider/provider.dart';
 
 class SaleEmpContactAddNew extends StatefulWidget {
@@ -192,53 +194,55 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                           }
                       ),
                       const SizedBox(height: 20.0,),
-                      
 
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10.0),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              blurRadius: 1,
-                              offset: const Offset(0, 3), // changes position of shadow
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: mainBgColor,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    blurRadius: 1,
+                                    offset: const Offset(0, 3), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: TextButton(
+                                onPressed: () async {
+                                  if(!_formKey.currentState!.validate()){
+                                    return;
+                                  }
+                                  showLoaderDialog(context);
+                                  bool data = await _createNewContact();
+                                  if(data == true){
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Tạo khách hàng thành công')),
+                                    );
+                                    Future.delayed(const Duration(seconds: 2), (){
+                                      Navigator.pop(context);
+                                    });
+                                  }else{
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Tạo khách hàng thất bại')),
+                                    );
+                                  }
+
+                                },
+                                child: const Text(
+                                  'Thêm khách hàng',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                             ),
-                          ],
-                        ),
-                        child: TextButton(
-                          onPressed: (){
-                            if(!_formKey.currentState!.validate()){
-                              return;
-                            }
-                            if(_contactName.text.isNotEmpty && _contactCompanyName.text.isNotEmpty && _contactPhoneNumber.text.isNotEmpty
-                               && _contactEmail.text.isNotEmpty && _contactGender.text.isNotEmpty && _contactLeadSourceId.text.isNotEmpty){
-                              Contact contact = Contact(
-                                contactId: 0,
-                                fullname: _contactName.text,
-                                companyName: _contactCompanyName.text,
-                                contactOwnerId: _contactOwnerId.text.isEmpty ? _currentAccount.accountId! : int.parse(_contactOwnerId.text),
-                                phoneNumber: _contactPhoneNumber.text,
-                                email: _contactEmail.text,
-                                genderId: int.parse(_contactGender.text),
-                                leadSourceId: int.parse(_contactLeadSourceId.text),
-                                createdDate: DateTime.now()
-                              );
-
-                              ApiService().createNewContact(contact);
-                              Future.delayed(const Duration(seconds: 2), (){
-                                Navigator.pop(context);
-                              });
-                            }
-                          },
-                          child: const Text(
-                            'Thêm mới',
-                            style: TextStyle(color: Colors.white),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ) : const Center(child: CircularProgressIndicator())
@@ -266,5 +270,24 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
         ],
       ),
     );
+  }
+
+  Future<bool> _createNewContact() async {
+
+    Contact contact = Contact(
+        contactId: 0,
+        fullname: _contactName.text,
+        companyName: _contactCompanyName.text,
+        contactOwnerId: _contactOwnerId.text.isEmpty ? _currentAccount.accountId! : int.parse(_contactOwnerId.text),
+        phoneNumber: _contactPhoneNumber.text,
+        email: _contactEmail.text,
+        genderId: int.parse(_contactGender.text),
+        leadSourceId: int.parse(_contactLeadSourceId.text),
+        createdDate: DateTime.now()
+    );
+
+    bool result = await ContactViewModel().createNewContact(contact);
+
+    return result;
   }
 }

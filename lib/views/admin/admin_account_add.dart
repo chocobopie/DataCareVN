@@ -67,7 +67,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Tạo tài khoản mới thành công')),
               );
-              Future.delayed(const Duration(seconds: 3), (){
+              Future.delayed(const Duration(seconds: 1), (){
                 Navigator.pop(context);
               });
             }else{

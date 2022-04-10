@@ -10,6 +10,7 @@ import 'package:login_sample/views/sale_employee/sale_emp_home.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_home.dart';
 import 'package:login_sample/views/providers/authenticate.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/technical_employee/technical_employee_home.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -181,7 +182,7 @@ class _LoginState extends State<Login> {
                             ));
                           }else if(account!.roleId == 6){
                             Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => const HomeSaleManager(),
+                              builder: (context) => const TechnicalEmployeeHome(),
                             ));
                           }
 

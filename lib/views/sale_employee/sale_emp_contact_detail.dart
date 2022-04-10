@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/view_models/account_view_model.dart';
+import 'package:login_sample/view_models/contact_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/services/api_service.dart';
@@ -223,7 +224,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                         readonly: true,
                         textEditingController: _contactOwnerId,
                         onTap: _currentAccount.roleId != 5 ? _readOnly != true ? () async {
-                          final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleEmpFilter(),));
+                          final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleEmpFilter(salesForContact: true),));
                           late Account filterAccount;
                           if (data != null) {
                             setState(() {
@@ -275,7 +276,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                             Container(
                                 width: MediaQuery.of(context).size.width * 0.4,
                                 decoration: BoxDecoration(
-                                  color: Colors.blueAccent,
+                                  color: mainBgColor,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(10.0),
                                   ),
@@ -297,29 +298,26 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                                   },
                                   child: const Text('Chỉnh sửa', style: TextStyle(color: Colors.white),),
                                 ) : TextButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if(!_formKey.currentState!.validate()){
                                       return;
                                     }
-                                    setState(() {
-                                        Contact contact = Contact(
-                                            contactId: widget.contact.contactId,
-                                            fullname: _contactName.text.isEmpty ? widget.contact.fullname : _contactName.text,
-                                            email: _contactEmail.text.isEmpty ? widget.contact.email : _contactEmail.text,
-                                            phoneNumber: _contactPhoneNumber.text.isEmpty ? widget.contact.phoneNumber : _contactPhoneNumber.text,
-                                            companyName: _contactCompanyName.text.isEmpty ? widget.contact.companyName : _contactCompanyName.text,
-                                            contactOwnerId: _contactOwnerId.text.isEmpty ? widget.contact.contactOwnerId : int.parse(_contactOwnerId.text),
-                                            genderId: _contactGender.text.isEmpty ? widget.contact.genderId : int.parse(_contactGender.text),
-                                            leadSourceId: _contactLeadSourceId.text.isEmpty ? widget.contact.leadSourceId : int.parse(_contactLeadSourceId.text),
-                                            createdDate: widget.contact.createdDate,
-                                        );
-                                        ApiService().updateAContact(contact);
-                                        _readOnly = true;
-                                        Future.delayed(const Duration(seconds: 2), (){
-                                          Navigator.pop(context);
-                                        });
-                                      print('Lưu');
-                                    });
+                                    showLoaderDialog(context);
+                                    bool data = await _updateAContact();
+                                    if(data == true){
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Chỉnh sửa thông tin khách hàng thành công')),
+                                      );
+                                      Future.delayed(const Duration(seconds: 1), (){
+                                        Navigator.pop(context);
+                                      });
+                                    }else{
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Chỉnh sửa thông tin khách hàng thất bại')),
+                                      );
+                                    }
                                   },
                                   child: const Text('Lưu', style: TextStyle(color: Colors.white),),
                                 )
@@ -360,5 +358,24 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
     setState(() {
       _fullname = account.fullname!;
     });
+  }
+
+  Future<bool> _updateAContact() async {
+
+    Contact contact = Contact(
+      contactId: widget.contact.contactId,
+      fullname: _contactName.text.isEmpty ? widget.contact.fullname : _contactName.text,
+      email: _contactEmail.text.isEmpty ? widget.contact.email : _contactEmail.text,
+      phoneNumber: _contactPhoneNumber.text.isEmpty ? widget.contact.phoneNumber : _contactPhoneNumber.text,
+      companyName: _contactCompanyName.text.isEmpty ? widget.contact.companyName : _contactCompanyName.text,
+      contactOwnerId: _contactOwnerId.text.isEmpty ? widget.contact.contactOwnerId : int.parse(_contactOwnerId.text),
+      genderId: _contactGender.text.isEmpty ? widget.contact.genderId : int.parse(_contactGender.text),
+      leadSourceId: _contactLeadSourceId.text.isEmpty ? widget.contact.leadSourceId : int.parse(_contactLeadSourceId.text),
+      createdDate: widget.contact.createdDate,
+    );
+
+    bool result = await ContactViewModel().updateAContact(contact);
+
+    return result;
   }
 }

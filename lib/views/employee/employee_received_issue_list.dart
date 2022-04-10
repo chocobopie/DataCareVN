@@ -373,12 +373,24 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
   }
 
 
-  void _getAllEmployee() async {
-    List<Account>? accountList = await AccountListViewModel().getAllSalesForIssue(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount!.accountId!, limit: 100000);
+  // void _getAllEmployee() async {
+  //   List<Account>? accountList = await AccountListViewModel().getAllSalesForIssue(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount!.accountId!, limit: 100000);
+  //
+  //   setState(() {
+  //     _employeeList.addAll(accountList!);
+  //   });
+  // }
 
-    setState(() {
-      _employeeList.addAll(accountList!);
-    });
+  void _getAllEmployee() async {
+    List<Account>? accountList = await AccountListViewModel().getAllSalesTaggedByAnother(isRefresh: true, currentPage: 0, accountId: _currentAccount!.accountId!);
+
+    if(accountList != null){
+      setState(() {
+        _employeeList.addAll(accountList);
+      });
+    }else{
+      _refreshController.loadNoData();
+    }
   }
 
   void _getAllIssue({required bool isRefresh}) async {
@@ -397,16 +409,6 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
       });
     }
   }
-
-  // void _getAllIssue() async {
-  //   List<Issue>? issueList = await IssueListViewModel().getAllIssue();
-  //
-  //   if(issueList != null){
-  //     setState(() {
-  //       issues.addAll(issueList);
-  //     });
-  //   }
-  // }
 }
 
 //==============================================================================Sort icon===============

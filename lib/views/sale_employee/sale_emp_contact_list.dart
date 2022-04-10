@@ -205,7 +205,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                               },
                               itemHeight: 40,
                               itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                              dropdownWidth: 200,
+                              dropdownWidth: 220,
                               dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
                               dropdownDecoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(25),
@@ -234,7 +234,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
           ),
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.20),
+            padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.18),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

@@ -43,7 +43,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  bool _readOnly = true;
+  bool _readOnly = true, _isExpand = false;
   late final Account _currentEmpAccount = widget.account;
   late Account _currentAccount;
 
@@ -470,6 +470,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20.0),
                             child: CustomExpansionTile(
+                                isExpand: _isExpand,
                                 label: 'Quyền xem thông tin khách hàng & hợp đồng & vấn đề',
                                 colors: const [Colors.red, Colors.white],
                                 children: <Widget>[
@@ -538,6 +539,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                            Padding(
                             padding: const EdgeInsets.only(bottom: 20.0),
                             child: CustomExpansionTile(
+                                isExpand: _isExpand,
                                 label: 'Quyền quản lý thông tin khách hàng',
                                 colors: const [Colors.yellow, Colors.white],
                                 children: <Widget>[
@@ -609,6 +611,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: CustomExpansionTile(
+                                  isExpand: _isExpand,
                                   label: 'Quyền quản lý hợp đồng',
                                   colors: const [Colors.greenAccent, Colors.white],
                                   children: <Widget>[
@@ -679,6 +682,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20.0),
                             child: CustomExpansionTile(
+                                  isExpand: _isExpand,
                                   label: 'Quyền quản lý vấn đề',
                                   colors: const [Colors.orange, Colors.white],
                                   children: <Widget>[
@@ -749,6 +753,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: CustomExpansionTile(
+                                  isExpand: _isExpand,
                                   label: 'Quyền quản lý tài khoản nhân viên',
                                   colors: const [Colors.blue, Colors.white],
                                   children: <Widget>[
@@ -779,6 +784,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 20.0),
                               child: CustomExpansionTile(
+                                  isExpand: _isExpand,
                                   label: 'Quyền quản lý điểm danh',
                                   colors: const [Colors.green, Colors.white],
                                   children: <Widget>[
@@ -886,25 +892,25 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                     text: 'Hủy',
                                      onPressed: (){
                                         setState(() {
-                                          _permission = null;
-                                          _accountPermission = null;
-                                          _attendancePermission = null;
-                                          _contactPermission = null;
-                                          _dealPermission = null;
-                                          _issuePermission = null;
-                                          _filterBlock = null;
-                                          _filterTeam = null;
-                                          _filterDepartmentPerm = null;
-                                          _filterDepartment = null;
-                                          _filterRole = null;
-                                          _filterTeam = null;
-                                          _contactCreateId = null; _contactViewId = null; _contactUpdateId = null; _contactDeleteId = null;
-                                          _dealCreateId = null; _dealViewId = null; _dealUpdateId = null; _dealDeleteId = null;
-                                          _issueCreateId = null; _issueViewId = null; _issueUpdateId = null; _issueDeleteId = null;
-                                          _accountViewId = null; _attendanceViewId = null; _attendanceUpdateId = null;
+                                          _isExpand = false;
+                                          // _permission = null;
+                                          // _accountPermission = null;
+                                          // _attendancePermission = null;
+                                          // _contactPermission = null;
+                                          // _dealPermission = null;
+                                          // _issuePermission = null;
+                                          // _filterBlock = null;
+                                          // _filterTeam = null;
+                                          // _filterDepartmentPerm = null;
+                                          // _filterDepartment = null;
+                                          // _filterRole = null;
+                                          // _filterTeam = null;
+                                          // _contactCreateId = null; _contactViewId = null; _contactUpdateId = null; _contactDeleteId = null;
+                                          // _dealCreateId = null; _dealViewId = null; _dealUpdateId = null; _dealDeleteId = null;
+                                          // _issueCreateId = null; _issueViewId = null; _issueUpdateId = null; _issueDeleteId = null;
+                                          // _accountViewId = null; _attendanceViewId = null; _attendanceUpdateId = null;
                                           _readOnly = true;
                                         });
-                                        _getOverallInfo();
                                       },
                                 )),
 
@@ -913,7 +919,24 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 child: CustomTextButton(
                                   color: Colors.red,
                                   text: 'Xóa tài khoản',
-                                  onPressed: (){
+                                  onPressed: () async {
+
+                                    showLoaderDialog(context);
+                                    bool data = await _deleteAnAccount(accountId: _currentEmpAccount.accountId!);
+                                    if(data == true){
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Xóa tài khoản thành công')),
+                                      );
+                                      Future.delayed(const Duration(seconds: 1), (){
+                                        Navigator.pop(context);
+                                      });
+                                    }else{
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Xóa tài khoản thất bại')),
+                                      );
+                                    }
                                   },
                                 ),
                               ),
@@ -924,6 +947,12 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                     color: Colors.blueAccent,
                                     text: _readOnly == true ? 'Chỉnh sửa' : 'Lưu',
                                     onPressed: () async {
+                                      if(_isExpand == false){
+                                        setState(() {
+                                          _isExpand = true;
+                                        });
+                                      }
+
                                       if(_readOnly == false){
 
                                         if(!_formKey.currentState!.validate()){
@@ -1006,6 +1035,13 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     _getPermByPermId(permId: _currentEmpAccount.permissionId!);
     if(_currentEmpAccount.departmentId != null) _departmentNameString = getDepartmentName(_currentEmpAccount.departmentId!, null);
     if(_currentEmpAccount.teamId != null) _teamNameString = getTeamName(_currentEmpAccount.teamId!, _currentEmpAccount.departmentId!);
+  }
+
+  Future<bool> _deleteAnAccount({required int accountId}) async {
+
+    bool result = await AccountViewModel().deleteAnAccount(accountId: accountId);
+
+    return result;
   }
 
   //============================================================================Update perm

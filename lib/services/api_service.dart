@@ -113,8 +113,8 @@ class ApiService {
     return response;
   }
 
-  Future<Contact?> createNewContact(Contact contact) async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/contacts';
+  Future<bool> createNewContact(Contact contact) async {
+    String url = stockUrl + 'contacts';
 
     final response = await http.post(Uri.parse(url),
       headers: <String, String>{
@@ -133,19 +133,21 @@ class ApiService {
 
     if(response.statusCode == 200){
       print('Create new contact successfully');
-      return Contact.fromJson(jsonDecode(response.body));
+      // return Contact.fromJson(jsonDecode(response.body));
+      return true;
     }else{
       print('Create new contact failed');
 
-      Contact? contact;
+      // Contact? contact;
 
-      return contact;
+      return false;
     }
   }
 
-  Future<http.Response> updateAContact(Contact contact){
+  Future<bool> updateAContact(Contact contact) async {
+
     String url = stockUrl + 'contacts/${contact.contactId}';
-    return http.put(Uri.parse(url),
+    final response = await http.put(Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -161,6 +163,14 @@ class ApiService {
         'genderId': contact.genderId
       }),
     );
+
+    if(response.statusCode == 200){
+      print('Update a contact successfully | 200');
+      return true;
+    }else{
+      print('Update a contact failed | 400');
+      return false;
+    }
   }
 
   Future<Contact> getContactByContactId(int contactId) async {
@@ -180,7 +190,7 @@ class ApiService {
 
   //Deals
   Future<List<Deal>> getAllDeals() async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/deals';
+    String url = stockUrl + 'deals';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -271,7 +281,7 @@ class ApiService {
   }
 
   Future<Deal> createNewDeal(Deal deal) async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/deals';
+    String url = stockUrl + 'deals';
 
     final response = await http.post(Uri.parse(url),
       headers: <String, String>{
@@ -305,7 +315,7 @@ class ApiService {
   }
 
   Future<http.Response> deleteDeal(int dealId) async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/deals/$dealId';
+    String url = stockUrl + 'deals/$dealId';
 
     final http.Response response = await http.delete(
       Uri.parse(url),
@@ -317,7 +327,7 @@ class ApiService {
   }
 
   Future<int> getDealCount() async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/deals/count';
+    String url = stockUrl + 'deals/count';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -353,7 +363,7 @@ class ApiService {
 
   //DealStages
   Future<List<DealStage>> getAllDealStages() async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/deal-stages';
+    String url = stockUrl + 'deal-stages';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -401,6 +411,24 @@ class ApiService {
       return Account.fromJson(jsonResponse);
     } else {
       throw Exception("Failed to account by accountId");
+    }
+  }
+
+  Future<bool> deleteAnAccount({required int accountId}) async {
+    String url = stockUrl + 'accounts/$accountId';
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if(response.statusCode == 200){
+      print('Delete account successfully | 200');
+      return true;
+    }else{
+      print('Delete account failed | 200');
+      return false;
     }
   }
 
@@ -651,7 +679,7 @@ class ApiService {
 
   //Department
   Future<List<Department>> getAllDepartment() async {
-    String url = 'https://trungpd2022.azurewebsites.net/api/v1/departments';
+    String url = stockUrl + 'departments';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {

@@ -267,7 +267,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.24),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
