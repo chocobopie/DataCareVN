@@ -941,6 +941,8 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                 ),
                               ),
                               const SizedBox(width: 5.0,),
+
+                              if(_currentEmpAccount.statusId != 0)
                               if(_currentAccount.roleId == 0 && _currentEmpAccount.roleId != 1)
                               Expanded(
                                 child: CustomTextButton(

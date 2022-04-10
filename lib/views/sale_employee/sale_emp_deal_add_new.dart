@@ -6,6 +6,7 @@ import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/deal_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
@@ -276,49 +277,6 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           }
                         },
                       ),
-                      // SizedBox(
-                      //   child: TextFormField(
-                      //     controller: TextEditingController(),
-                      //     onTap: () async {
-                      //       FocusScope.of(context).requestFocus(FocusNode());
-                      //       final date = await DatePicker.showDatePicker(
-                      //         context,
-                      //         locale : LocaleType.vi,
-                      //         minTime: DateTime.now(),
-                      //         currentTime: DateTime.now(),
-                      //         maxTime: DateTime.now().add(const Duration(days: 36500)),
-                      //       );
-                      //       if(date != null){
-                      //         _dealClosedDate.text = date.toString();
-                      //         _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
-                      //       }
-                      //     },
-                      //     decoration: InputDecoration(
-                      //       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      //       contentPadding: const EdgeInsets.only(left: 20.0),
-                      //       labelText: 'Ngày chốt hợp đồng',
-                      //       hintText: _closeDate,
-                      //       labelStyle: const TextStyle(
-                      //         color: Color.fromARGB(255, 107, 106, 144),
-                      //         fontSize: 18,
-                      //         fontWeight: FontWeight.w500,
-                      //       ),
-                      //       enabledBorder: OutlineInputBorder(
-                      //         borderSide: const BorderSide(
-                      //             color: mainBgColor,
-                      //             width: 2),
-                      //         borderRadius: BorderRadius.circular(10),
-                      //       ),
-                      //       focusedBorder: OutlineInputBorder(
-                      //         borderSide: const BorderSide(
-                      //             color: mainBgColor,
-                      //             width: 2),
-                      //         borderRadius: BorderRadius.circular(10),
-                      //       ),
-                      //     ),
-                      //   ),
-                      //   width: 150.0,
-                      // ),
                       const SizedBox(height: 20.0,),
 
                       //Người quản lý hợp đồng
@@ -327,15 +285,13 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           text: _accountFullname,
                           title: 'Người quản lý hợp đồng',
                           readonly: true,
-                          textEditingController: _dealOwnerId,
                           onTap: _currentAccount.roleId != 5 ? () async {
                             final data = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const SaleEmpFilter(),
+                              builder: (context) => const SaleEmpFilter(salesForDeal: true),
                             ));
                             if(data != null){
                               setState(() {
                                 _filterAccount = data;
-                                _dealOwnerId.text = '${_filterAccount.accountId!}';
                                 _accountFullname = _filterAccount.fullname!;
                               });
                             }
@@ -349,13 +305,12 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                       //Nhóm
                       if(_filterAccount.teamId != null) CustomReadOnlyTextField(text: getTeamName(_filterAccount.teamId!), title: 'Nhóm'),
-                      if(_filterAccount.teamId != null) const SizedBox(height: 20.0,),
 
                       //Nút thêm mới
                       const SizedBox(height: 20.0,),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: mainBgColor,
                           borderRadius: const BorderRadius.all(
                             Radius.circular(10.0),
                           ),
@@ -368,33 +323,29 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           ],
                         ),
                         child: TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if(!_formKey.currentState!.validate()){
                               return;
                             }
-                            if(_dealTitle.text.isNotEmpty && _dealStageId.text.isNotEmpty && _dealAmount.text.isNotEmpty &&  _dealOwnerId.text.isNotEmpty
-                            && _dealVatId.text.isNotEmpty && _dealServiceId.text.isNotEmpty && _dealTypeId.text.isNotEmpty && _dealContactId.text.isNotEmpty ){
-                              Deal deal = Deal(
-                                  dealId: 0,
-                                  title: _dealTitle.text,
-                                  dealStageId: int.parse(_dealStageId.text),
-                                  amount: _dealAmount.text.isEmpty ? 0 : int.parse(_dealAmount.text),
-                                  closedDate: _dealClosedDate.text.isEmpty ? DateTime.now() : DateTime.parse(_dealClosedDate.text),
-                                  dealOwnerId: _currentAccount.roleId != 5 ? int.parse(_dealOwnerId.text) : _currentAccount.accountId!,
-                                  linkTrello: _linkTrello.text.isEmpty ? '' : _linkTrello.text,
-                                  vatId: int.parse(_dealVatId.text),
-                                  serviceId: int.parse(_dealServiceId.text),
-                                  dealTypeId: int.parse(_dealTypeId.text),
-                                  contactId: int.parse(_dealContactId.text),
+                            showLoaderDialog(context);
+                            bool data = await _createNewDeal();
+                            if(data == true){
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Thêm hợp đồng mới thành công')),
                               );
-                              ApiService().createNewDeal(deal);
-                              Future.delayed(const Duration(seconds: 2), (){
+                              Future.delayed(const Duration(seconds: 1), (){
                                 Navigator.pop(context);
                               });
+                            }else{
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Thêm hợp đồng mới thất bại')),
+                              );
                             }
                           },
                           child: const Text(
-                            'Thêm mới',
+                            'Thêm hợp đồng mới',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -435,6 +386,26 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
       }
     }
     return name;
+  }
+
+  Future<bool> _createNewDeal() async {
+    Deal deal = Deal(
+      dealId: 0,
+      title: _dealTitle.text,
+      dealStageId: int.parse(_dealStageId.text),
+      amount: _dealAmount.text.isEmpty ? 0 : int.parse(_dealAmount.text),
+      closedDate: _dealClosedDate.text.isEmpty ? DateTime.now() : DateTime.parse(_dealClosedDate.text),
+      dealOwnerId: _currentAccount.roleId != 5 ? _filterAccount.accountId! : _currentAccount.accountId!,
+      linkTrello: _linkTrello.text.isEmpty ? '' : _linkTrello.text,
+      vatId: int.parse(_dealVatId.text),
+      serviceId: int.parse(_dealServiceId.text),
+      dealTypeId: int.parse(_dealTypeId.text),
+      contactId: _filterContact.contactId,
+    );
+
+    bool result = await DealViewModel().createNewDeal(deal);
+
+    return result;
   }
 
   String getTeamName(int teamId){

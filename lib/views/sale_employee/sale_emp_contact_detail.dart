@@ -258,11 +258,24 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                                 ],
                               ),
                               child: TextButton(
-                                onPressed: (){
-                                  ApiService().deleteContact(widget.contact.contactId);
-                                  Future.delayed(const Duration(seconds: 3), (){
+                                onPressed: () async {
+
+                                  showLoaderDialog(context);
+                                  bool data = await _deleteContact(widget.contact.contactId);
+                                  if(data == true){
                                     Navigator.pop(context);
-                                  });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Xóa thông tin khách hàng thành công')),
+                                    );
+                                    Future.delayed(const Duration(seconds: 1), (){
+                                      Navigator.pop(context);
+                                    });
+                                  }else{
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Xóa thông tin khách hàng thất bại')),
+                                    );
+                                  }
                                 },
                                 child: const Text(
                                   'Xoá khách hàng',
@@ -358,6 +371,11 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
     setState(() {
       _fullname = account.fullname!;
     });
+  }
+
+  Future<bool> _deleteContact(int contactId) async {
+    bool result = await ContactViewModel().deleteContact(contactId);
+     return result;
   }
 
   Future<bool> _updateAContact() async {

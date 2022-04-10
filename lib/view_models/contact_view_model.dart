@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/services/api_service.dart';
 
@@ -21,6 +22,14 @@ class ContactViewModel with ChangeNotifier{
 
   Future<bool> updateAContact(Contact contact) async {
     bool result = await ApiService().updateAContact(contact);
+
+    notifyListeners();
+
+    return result;
+  }
+
+  Future<bool> deleteContact(int contactId) async {
+    bool result = await ApiService().deleteContact(contactId);
 
     notifyListeners();
 

@@ -9,6 +9,7 @@ import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_view_model.dart';
 import 'package:login_sample/view_models/contact_view_model.dart';
+import 'package:login_sample/view_models/deal_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_timeline.dart';
@@ -301,52 +302,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                   textEditingController: _dealAmount),
                               const SizedBox(height: 20.0,),
 
-                              //Ngày đóng
-                              // SizedBox(
-                              //   child: TextField(readOnly: _readOnly,
-                              //     onTap: _readOnly != true ? () async {
-                              //             FocusScope.of(context).requestFocus(FocusNode());
-                              //             final date = await DatePicker.showDatePicker(context,
-                              //               locale: LocaleType.vi,
-                              //               minTime: DateTime.now(),
-                              //               currentTime: DateTime.now(),
-                              //               maxTime: DateTime.now()
-                              //                   .add(const Duration(days: 36500)),
-                              //             );
-                              //             if (date != null) {
-                              //               setState(() {
-                              //                 _dealClosedDate.text = date.toString();
-                              //                 _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
-                              //                 print(date);
-                              //               });
-                              //             }
-                              //           } : null,
-                              //     decoration: InputDecoration(
-                              //       floatingLabelBehavior:
-                              //           FloatingLabelBehavior.always,
-                              //       contentPadding:
-                              //           const EdgeInsets.only(left: 20.0),
-                              //       labelText: 'Ngày đóng',
-                              //       hintText: _closeDate.isNotEmpty ? _closeDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
-                              //       labelStyle: const TextStyle(
-                              //         color: Color.fromARGB(255, 107, 106, 144),
-                              //         fontSize: 18,
-                              //         fontWeight: FontWeight.w500,
-                              //       ),
-                              //       enabledBorder: OutlineInputBorder(
-                              //         borderSide: BorderSide(
-                              //             color: Colors.grey.shade300, width: 2),
-                              //         borderRadius: BorderRadius.circular(10),
-                              //       ),
-                              //       focusedBorder: OutlineInputBorder(
-                              //         borderSide: const BorderSide(
-                              //             color: Colors.blue, width: 2),
-                              //         borderRadius: BorderRadius.circular(10),
-                              //       ),
-                              //     ),
-                              //   ),
-                              //   width: 150.0,
-                              // ),
                               CustomDatePicker(
                                   readOnly: true,
                                   borderColor: _readOnly != true ? mainBgColor : null,
@@ -398,7 +353,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  const SaleEmpFilter(),
+                                                  const SaleEmpFilter(salesForDeal: true),
                                             ));
                                         if (data != null) {
                                           setState(() {
@@ -434,9 +389,23 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         child: CustomTextButton(
                                             color: Colors.red,
                                             text: 'Xóa hợp đồng',
-                                            onPressed: () {
-                                            ApiService().deleteDeal(widget.deal.dealId);
-                                            Future.delayed(const Duration(seconds: 2), () {Navigator.pop(context);});
+                                            onPressed: () async {
+                                              showLoaderDialog(context);
+                                              bool data = await _deleteDeal(widget.deal.dealId);
+                                              if(data == true){
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Xóa hợp đồng thành công')),
+                                                );
+                                                Future.delayed(const Duration(seconds: 1), (){
+                                                  Navigator.pop(context);
+                                                });
+                                              }else{
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Xóa hợp đồng thất bại')),
+                                                );
+                                              }
                                           },
                                         ),
                                     ),
@@ -454,29 +423,26 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                             : CustomTextButton(
                                                 color: Colors.blue,
                                                 text: 'Lưu',
-                                                onPressed: () {
+                                                onPressed: () async {
                                                   if(!_formKey.currentState!.validate()){
                                                     return;
                                                   }
-                                                  setState(() {
-                                                    Deal deal = Deal(
-                                                        dealId: widget.deal.dealId,
-                                                        title: _dealTitle.text.isEmpty ? widget.deal.title : _dealTitle.text,
-                                                        dealStageId: _dealStage.text.isEmpty ? widget.deal.dealStageId : int.parse(_dealStage.text),
-                                                        amount: _dealAmount.text.isEmpty ? widget.deal.amount : int.parse(_dealAmount.text),
-                                                        closedDate: _dealClosedDate.text.isEmpty ? widget.deal.closedDate : DateTime.parse(_dealClosedDate.text),
-                                                        dealOwnerId: _dealOwnerId.text.isEmpty ? widget.deal.dealOwnerId : int.parse(_dealOwnerId.text),
-                                                        linkTrello: _dealLinkTrello.text.isEmpty ? widget.deal.linkTrello : _dealLinkTrello.text.isEmpty ? '' : _dealLinkTrello.text,
-                                                        vatId: _dealVatId.text.isEmpty ? widget.deal.vatId : int.parse(_dealVatId.text),
-                                                        serviceId: _dealService.text.isEmpty ? widget.deal.serviceId : int.parse(_dealService.text),
-                                                        dealTypeId: _dealType.text.isEmpty ? widget.deal.dealTypeId : int.parse(_dealType.text),
-                                                        contactId: widget.deal.contactId
+                                                  showLoaderDialog(context);
+                                                  bool data = await _updateDeal();
+                                                  if(data == true){
+                                                    Navigator.pop(context);
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(content: Text('Cập nhật hợp đồng thành công')),
                                                     );
-                                                    ApiService().updateADeal(deal);
-                                                    _readOnly = true;
-                                                    Future.delayed(const Duration(seconds: 2), () {Navigator.pop(context);});
-                                                    print('Lưu');
-                                                  });
+                                                    Future.delayed(const Duration(seconds: 1), (){
+                                                      Navigator.pop(context);
+                                                    });
+                                                  }else{
+                                                    Navigator.pop(context);
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(content: Text('Cập nhật hợp đồng thất bại')),
+                                                    );
+                                                  }
                                                 },
                                               )),
                                     const SizedBox(width: 10.0,),
@@ -518,6 +484,31 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
         ],
       ),
     );
+  }
+
+  Future<bool> _deleteDeal(int dealId) async {
+    bool result = await DealViewModel().deleteDeal(dealId);
+    return result;
+  }
+
+  Future<bool> _updateDeal() async {
+    Deal deal = Deal(
+        dealId: widget.deal.dealId,
+        title: _dealTitle.text.isEmpty ? widget.deal.title : _dealTitle.text,
+        dealStageId: _dealStage.text.isEmpty ? widget.deal.dealStageId : int.parse(_dealStage.text),
+        amount: _dealAmount.text.isEmpty ? widget.deal.amount : int.parse(_dealAmount.text),
+        closedDate: _dealClosedDate.text.isEmpty ? widget.deal.closedDate : DateTime.parse(_dealClosedDate.text),
+        dealOwnerId: _dealOwnerId.text.isEmpty ? widget.deal.dealOwnerId : int.parse(_dealOwnerId.text),
+        linkTrello: _dealLinkTrello.text.isEmpty ? widget.deal.linkTrello : _dealLinkTrello.text.isEmpty ? '' : _dealLinkTrello.text,
+        vatId: _dealVatId.text.isEmpty ? widget.deal.vatId : int.parse(_dealVatId.text),
+        serviceId: _dealService.text.isEmpty ? widget.deal.serviceId : int.parse(_dealService.text),
+        dealTypeId: _dealType.text.isEmpty ? widget.deal.dealTypeId : int.parse(_dealType.text),
+        contactId: widget.deal.contactId
+    );
+
+    bool result = await DealViewModel().updateADeal(deal);
+
+    return result;
   }
 
   void _getContactByContactId(int contactId) async {

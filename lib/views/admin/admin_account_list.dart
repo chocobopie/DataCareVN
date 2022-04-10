@@ -87,7 +87,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                          onTap: () {
                            Navigator.push(context, MaterialPageRoute(
                              builder: (context) => const AdminAccountAdd(),
-                           ));
+                           )).then((value) => _onGoBack());
                          },
                        ),
                        SpeedDialChild(
@@ -95,7 +95,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                          backgroundColor: mainBgColor,
                          labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
                          labelBackgroundColor: mainBgColor,
-                         label: 'Tạo thêm Nhóm',
+                         label: 'Tạo thêm nhóm',
                          onTap: () {
                            Navigator.push(context, MaterialPageRoute(
                              builder: (context) => const AdminTeamAddNew(),

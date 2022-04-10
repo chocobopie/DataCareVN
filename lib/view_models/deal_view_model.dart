@@ -19,4 +19,28 @@ class DealViewModel with ChangeNotifier{
 
     return deal;
   }
+
+  Future<bool> createNewDeal(Deal deal) async {
+    bool result = await ApiService().createNewDeal(deal);
+
+    notifyListeners();
+
+    return result;
+  }
+
+  Future<bool> updateADeal(Deal deal) async {
+    bool result = await ApiService().updateADeal(deal);
+
+    notifyListeners();
+
+    return result;
+  }
+
+  Future<bool> deleteDeal(int dealId) async {
+    bool result = await ApiService().deleteDeal(dealId);
+
+    notifyListeners();
+
+    return result;
+  }
 }

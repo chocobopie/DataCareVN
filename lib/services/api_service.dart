@@ -101,16 +101,22 @@ class ApiService {
     }
   }
 
-  Future<http.Response> deleteContact(int? contactId) async {
+  Future<bool> deleteContact(int contactId) async {
     String url = stockUrl + 'contacts/$contactId';
 
-    final http.Response response = await http.delete(
+    final response = await http.delete(
       Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    return response;
+    if(response.statusCode == 200){
+      print('Delete contact successfully | 200');
+      return true;
+    }else{
+      print('Delete contact failed | 400');
+      return false;
+    }
   }
 
   Future<bool> createNewContact(Contact contact) async {
@@ -280,7 +286,7 @@ class ApiService {
     }
   }
 
-  Future<Deal> createNewDeal(Deal deal) async {
+  Future<bool> createNewDeal(Deal deal) async {
     String url = stockUrl + 'deals';
 
     final response = await http.post(Uri.parse(url),
@@ -303,27 +309,29 @@ class ApiService {
 
     if(response.statusCode == 200){
       print('Create new deal successfully | 200');
-
-      return Deal.fromJson(jsonDecode(response.body));
+      // return Deal.fromJson(jsonDecode(response.body));
+      return true;
     }else{
       print('Failed to create new deal | 400');
-
-      Deal? deal;
-
-      return deal!;
+      return false;
     }
   }
 
-  Future<http.Response> deleteDeal(int dealId) async {
+  Future<bool> deleteDeal(int dealId) async {
     String url = stockUrl + 'deals/$dealId';
 
-    final http.Response response = await http.delete(
+    final response = await http.delete(
       Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    return response;
+    if(response.statusCode == 200){
+      print('Delete deal successfully | 200');
+      return true;
+    }else{
+      return false;
+    }
   }
 
   Future<int> getDealCount() async {
@@ -338,9 +346,10 @@ class ApiService {
     }
   }
 
-  Future<http.Response> updateADeal(Deal deal){
+  Future<bool> updateADeal(Deal deal) async {
     String url = stockUrl + 'deals/${deal.dealId}';
-    return http.put(
+
+    final response = await http.put(
       Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -359,6 +368,14 @@ class ApiService {
         'contactId': deal.contactId
       }),
     );
+
+    if(response.statusCode == 200){
+      print('Update deal successfully | 200');
+      return true;
+    }else{
+      print('Update deal failed | 400');
+      return false;
+    }
   }
 
   //DealStages
