@@ -374,7 +374,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                         children: <Widget>[
                                           const Text('Tiền trình hợp đồng:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
-                                          Text(dealStagesNameUtilities[deal.dealStageId], style: const TextStyle(fontSize: 14.0),),
+                                          Text(dealStagesNames[deal.dealStageId], style: const TextStyle(fontSize: 14.0),),
                                         ],
                                       ),
                                     ),

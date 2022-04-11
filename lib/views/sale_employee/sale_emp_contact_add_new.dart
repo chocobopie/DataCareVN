@@ -102,16 +102,16 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                           borderColor: mainBgColor,
                           label: 'Giới tính',
                           hintText: const Text(''),
-                          items: gendersUtilities,
+                          items: gendersNames,
                           onChanged: (value){
                             setState(() {
                               _gender = value.toString();
                             });
-                            if(value.toString() == gendersUtilities[0]){
+                            if(value.toString() == gendersNames[0]){
                               _contactGender.text = '0';
-                            }else if(value.toString() == gendersUtilities[1]){
+                            }else if(value.toString() == gendersNames[1]){
                               _contactGender.text = '1';
-                            }else if(value.toString() == gendersUtilities[2]){
+                            }else if(value.toString() == gendersNames[2]){
                               _contactGender.text = '2';
                             }
                           }
@@ -178,16 +178,16 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                           borderColor: mainBgColor,
                           label: 'Nguồn',
                           hintText: const Text(''),
-                          items: leadSourceNameUtilities,
+                          items: leadSourceNames,
                           onChanged: (value){
                             setState(() {
                               _leadSource = value.toString();
                             });
-                            if(value.toString() == leadSourceNameUtilities[0]){
+                            if(value.toString() == leadSourceNames[0]){
                               _contactLeadSourceId.text = '0';
-                            }else if(value.toString() == leadSourceNameUtilities[1]){
+                            }else if(value.toString() == leadSourceNames[1]){
                               _contactLeadSourceId.text = '1';
-                            }else if(value.toString() == leadSourceNameUtilities[2]){
+                            }else if(value.toString() == leadSourceNames[2]){
                               _contactLeadSourceId.text = '2';
                             }
                             print(_contactLeadSourceId.text);

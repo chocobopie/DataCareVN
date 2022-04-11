@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:login_sample/models/application_type.dart';
+import 'package:login_sample/models/attendance_status.dart';
 import 'package:login_sample/models/change_password.dart';
+import 'package:login_sample/models/period_of_day.dart';
 import 'package:login_sample/models/register_account.dart';
 import 'package:login_sample/models/WorldTimeAPI.dart';
 import 'package:login_sample/models/account.dart';
@@ -15,8 +19,8 @@ import 'package:login_sample/models/deal_permission.dart';
 import 'package:login_sample/models/deal_stage.dart';
 import 'package:login_sample/models/deal_type.dart';
 import 'package:login_sample/models/department.dart';
-import 'package:login_sample/models/excuse_late.dart';
-import 'package:login_sample/models/excuse_late_status.dart';
+import 'package:login_sample/models/application.dart';
+import 'package:login_sample/models/application_status.dart';
 import 'package:login_sample/models/gender.dart';
 import 'package:login_sample/models/issue.dart';
 import 'package:login_sample/models/issue_permission.dart';
@@ -826,38 +830,6 @@ class ApiService {
     }
   }
 
-  //ExcuseLate
-  Future<http.Response> createNewExcuseLate(ExcuseLate excuseLate) {
-
-      String url = stockUrl + 'excuse-lates';
-
-      return http.post(Uri.parse(url), headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'attendanceId': excuseLate.attendanceId,
-          'dateRequest': excuseLate.dateRequest,
-          'description': excuseLate.description,
-          'expectedWorkingTime': excuseLate.expectedWorkingTime,
-          'excuseLateStatusId': 0
-        }),
-      );
-  }
-
-
-  //ExcuseLateStatus
-  Future<List<ExcuseLateStatus>> getAllExcuseLateStatus() async{
-    String url = stockUrl + 'excuse-late-statuses';
-
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      print('Got all excuse late statuses | 200');
-      return jsonResponse.map((data) => ExcuseLateStatus.fromJson(data)).toList();
-    } else {
-      throw Exception("Failed to get excuse late statuses");
-    }
-  }
 
   //Gender
   Future<List<Gender>> getAllGender() async{
@@ -949,28 +921,44 @@ class ApiService {
     }
   }
 
-  Future<List<Attendance>> getAttendanceListByAccountIdAndStatusId({required int accountId, required int statusId, required bool isRefresh, required DateTime selectedDate, required currentPage}) async {
-    if(isRefresh == true){
-      currentPage = 0;
-    }
+  //AttendanceStatus
+  Future<List<AttendanceStatus>> getAttendanceStatus() async {
+    String url = stockUrl + 'attendance-statuses';
 
-    String url = stockUrl + 'attendances/other?account-id=$accountId&date=$selectedDate&attendance-status-id=$statusId&page=$currentPage&limit=10';
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
       List jsonResponse = json.decode(response.body);
-      print('Got all attendace list by account id and status id | 200');
-      return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
-    }else{
-      throw Exception('Failed to get attendance list by account id and status id | 400');
+      print('Got all attendance statuses | 200');
+      return jsonResponse.map((data) => AttendanceStatus.fromJson(data)).toList();
+    } else {
+      throw Exception("Failed to get all attendance statuses | 400");
     }
   }
 
-  Future<List<Attendance>> getSelfAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
+  Future<List<Attendance>?> getOtherAttendanceList({required int accountId, required bool isRefresh, DateTime? selectedDate, required currentPage, int? attendanceStatusId , int? periodOfDay, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'attendances/self?account-id=$accountId&from-date=${fromDate ?? ''}&to-date=${toDate ?? ''}&page=$currentPage&limit=10';
+    String url = stockUrl + 'attendances/other?account-id=$accountId&date=${selectedDate ?? ''}&attendance-status-id=${attendanceStatusId ?? ''}&period-of-day-id=${periodOfDay ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Got all other attendance list | 200');
+      return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
+    }else{
+      print('Failed to get other attendance list | 400');
+      List<Attendance>? otherAttendanceList;
+      return otherAttendanceList;
+    }
+  }
+
+  Future<List<Attendance>?> getSelfAttendanceList({required bool isRefresh, required int accountId, required int currentPage, DateTime? fromDate, DateTime? toDate, int? attendanceStatusId, int? periodOfDayId, int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'attendances/self?account-id=$accountId&from-date=${fromDate ?? ''}&to-date=${toDate ?? ''}&attendance-status-id=${attendanceStatusId ?? ''}&period-of-day-id=${periodOfDayId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
@@ -978,24 +966,7 @@ class ApiService {
       print('Got self attendance list by accountId | 200');
       return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get self attendance list");
-    }
-  }
-
-  Future<List<Attendance>?> getOtherAttendanceListByAccountId({required bool isRefresh, int? accountId, required int currentPage, DateTime? date, int? attendanceStatusId}) async {
-    if(isRefresh == true){
-      currentPage = 0;
-    }
-
-    String url = stockUrl + 'attendances/other?account-id=${accountId ?? ''}&date=${date ?? ''}&attendance-status-id=${attendanceStatusId ?? ''}&page=$currentPage&limit=10';
-
-    final response = await http.get(Uri.parse(url));
-    if(response.statusCode == 200){
-      List jsonResponse = json.decode(response.body);
-      print('Got other attendance list by accountId | 200');
-      return jsonResponse.map((data) => Attendance.fromJson(data)).toList();
-    } else {
-      print('Failed to other attendance list by accountId | 400');
+      print("Failed to get self attendance list");
       List<Attendance>? attendanceList;
       return attendanceList;
     }
@@ -1493,6 +1464,48 @@ class ApiService {
     }else{
       print('Delete issue failed | 200');
       return false;
+    }
+  }
+
+  //ApplicationType
+  Future<List<ApplicationType>> getApplicationType() async {
+    String url = stockUrl + 'application-types';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get application types successfully | 200');
+      return jsonResponse.map((data) => ApplicationType.fromJson(data)).toList();
+    }else{
+      throw Exception("Failed to get application types | 400");
+    }
+  }
+
+  //ApplicationStatus
+  Future<List<ApplicationStatus>> getApplicationsStatus() async {
+    String url = stockUrl + 'application-statuses';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get application statuses successfully | 200');
+      return jsonResponse.map((data) => ApplicationStatus.fromJson(data)).toList();
+    }else{
+      throw Exception("Failed to get application statuses | 400");
+    }
+  }
+
+  //PeriodOfDay
+  Future<List<PeriodOfDay>> getPeriodOfDay() async {
+    String url = stockUrl + 'period-of-day';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get period of day successfully | 200');
+      return jsonResponse.map((data) => PeriodOfDay.fromJson(data)).toList();
+    }else{
+      throw Exception("Failed to get period of day | 400");
     }
   }
 

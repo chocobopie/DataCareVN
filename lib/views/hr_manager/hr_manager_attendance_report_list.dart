@@ -82,7 +82,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    _getOtherAttendanceListByAccountId(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
+    // _getOtherAttendanceList(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
     _getAllEmployee();
   }
 
@@ -137,7 +137,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                   _currentPage = index;
                   _attendances.clear();
                 });
-                _getOtherAttendanceListByAccountId(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
+                // _getOtherAttendanceList(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
               },
             ) : null,
           ),
@@ -257,7 +257,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                 setState(() {
                   _attendances.clear();
                 });
-                _getOtherAttendanceListByAccountId(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
+                // _getOtherAttendanceList(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
               },
               child: ListView.builder(
                   itemBuilder: (context, index) {
@@ -360,22 +360,22 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
     });
   }
 
-  void _getOtherAttendanceListByAccountId({required bool isRefresh, int? accountId, required int currentPage, DateTime? date, int? attendanceStatusId}) async {
-    List<Attendance>? attendanceList = await AttendanceListViewModel().getOtherAttendanceListByAccountId(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, attendanceStatusId: attendanceStatusId, date: date);
-
-    if(attendanceList != null){
-      setState(() {
-        _attendances.clear();
-        _attendances.addAll(attendanceList);
-        _maxPages = _attendances[0].maxPage!;
-      });
-    }else{
-      setState(() {
-        _attendanceIsEmpty = true;
-      });
-    }
-
-  }
+  // void _getOtherAttendanceList({required bool isRefresh, int? accountId, required int currentPage, DateTime? date, int? attendanceStatusId}) async {
+  //   List<Attendance>? attendanceList = await AttendanceListViewModel().getOtherAttendanceList(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, attendanceStatusId: attendanceStatusId, date: date);
+  //
+  //   if(attendanceList != null){
+  //     setState(() {
+  //       _attendances.clear();
+  //       _attendances.addAll(attendanceList);
+  //       _maxPages = _attendances[0].maxPage!;
+  //     });
+  //   }else{
+  //     setState(() {
+  //       _attendanceIsEmpty = true;
+  //     });
+  //   }
+  //
+  // }
 
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(

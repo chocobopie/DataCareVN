@@ -99,13 +99,21 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                                 ),
                               ],
                             ),
-                            child: (_isTook == false && _timeHms < 17) ? TextButton(
+                            child: (_isTook == false && _timeHms < 17.30 && _timeHms >= 8.30) ? TextButton(
                               onPressed: () async {
-                                _takeAttendance(account: _currentAccount);
-                                if(_attendances.isNotEmpty){
-                                  setState(() {
-                                    _takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
-                                  });
+                                final data = await _takeAttendance(account: _currentAccount);
+                                if(data != null){
+                                  if(data.attendanceStatusId != 4 && data.periodOfDayId == 0){
+                                    setState(() {
+                                      _isTook = true;
+                                      _takeAttendanceString = 'Bạn đã điểm danh ca sáng';
+                                    });
+                                  }else if(data.attendanceStatusId != 4 && data.periodOfDayId == 1){
+                                    setState(() {
+                                      _isTook = true;
+                                      _takeAttendanceString = 'Bạn đã điểm danh ca chiều';
+                                    });
+                                  }
                                 }
                               },
                               child: const Text(
@@ -207,22 +215,30 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
     );
   }
 
-  void _getAttendanceListByAccountId({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate, int? attendanceStatusId}) async {
-    List<Attendance> listAttendance = await AttendanceListViewModel().getSelfAttendanceListByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
+  void _getSelfAttendanceList({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate}) async {
+    List<Attendance>? listAttendance = await AttendanceListViewModel().getSelfAttendanceList(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
 
-    if(listAttendance.isNotEmpty){
+    if(listAttendance != null){
       setState(() {
         _attendances.addAll(listAttendance);
-        if(_timeHms < 17){
-          if(_attendances[0].attendanceStatusId == 3){
+        if(_timeHms >= 8.30 && _timeHms < 12){
+          if(_attendances[0].attendanceStatusId == 4){
             _isTook = false;
-            _takeAttendanceString = 'Bạn chưa điểm danh cho hôm nay';
+            _takeAttendanceString = 'Bạn chưa điểm danh ca sáng';
           }else{
             _isTook = true;
-            _takeAttendanceString = 'Bạn đã điểm danh cho hôm nay';
+            _takeAttendanceString = 'Bạn đã điểm danh ca sáng';
           }
-        }else{
+        }else if(_timeHms >= 12 && _timeHms < 17.30){
+          if(_attendances[0].attendanceStatusId == 4){
+            _isTook = false;
+            _takeAttendanceString = 'Bạn chưa điểm danh ca chiều';
+          }else{
+            _isTook = true;
+            _takeAttendanceString = 'Bạn đã điểm danh ca chiều';
+          }
+        } else{
           _isTook = true;
           _takeAttendanceString = 'Bạn không thể điểm danh vì đã quá giờ điểm danh';
         }
@@ -241,17 +257,12 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
       _timeHms = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
       print(_timeHms);
       _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
-      _getAttendanceListByAccountId(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: 0, fromDate: _today, toDate: _today);
+      _getSelfAttendanceList(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: 0, fromDate: _today, toDate: _today);
   }
 
-  void _takeAttendance({required Account account}) async {
+  Future<Attendance?> _takeAttendance({required Account account}) async {
     Attendance? attendance = await AttendanceViewModel().takeAttendance(account: account);
 
-    if(attendance != null){
-      setState(() {
-        _isTook = true;
-        _attendances.add(attendance);
-      });
-    }
+    return attendance;
   }
 }

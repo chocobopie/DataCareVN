@@ -150,42 +150,42 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                 children: [
                                   Expanded(
                                     child: CustomDropdownFormField2(
-                                        value: _dealStage.text.isEmpty ? dealStagesNameUtilities[ widget.deal.dealStageId] : dealStagesNameUtilities[int.parse(_dealStage.text)],
+                                        value: _dealStage.text.isEmpty ? dealStagesNames[ widget.deal.dealStageId] : dealStagesNames[int.parse(_dealStage.text)],
                                         borderColor: _readOnly != true ? mainBgColor : null,
                                         label: 'Tiến trình hợp đồng',
                                         hintText: Text(
-                                          dealStagesNameUtilities[
+                                          dealStagesNames[
                                                   widget.deal.dealStageId]
                                               .toString(),
                                           style: const TextStyle(fontSize: 14),
                                         ),
-                                        items: dealStagesNameUtilities,
+                                        items: dealStagesNames,
                                         onChanged: widget.deal.dealStageId != 5 &&
                                                 _readOnly != true ? (value) {
-                                                if (value.toString() == dealStagesNameUtilities[0].toString()) {
+                                                if (value.toString() == dealStagesNames[0].toString()) {
                                                   _dealStage.text = '0';
                                                 } else if (value.toString() ==
-                                                    dealStagesNameUtilities[1]
+                                                    dealStagesNames[1]
                                                         .toString()) {
                                                   _dealStage.text = '1';
                                                 } else if (value.toString() ==
-                                                    dealStagesNameUtilities[2]
+                                                    dealStagesNames[2]
                                                         .toString()) {
                                                   _dealStage.text = '2';
                                                 } else if (value.toString() ==
-                                                    dealStagesNameUtilities[3]
+                                                    dealStagesNames[3]
                                                         .toString()) {
                                                   _dealStage.text = '3';
                                                 } else if (value.toString() ==
-                                                    dealStagesNameUtilities[4]
+                                                    dealStagesNames[4]
                                                         .toString()) {
                                                   _dealStage.text = '4';
                                                 } else if (value.toString() ==
-                                                    dealStagesNameUtilities[5]
+                                                    dealStagesNames[5]
                                                         .toString()) {
                                                   _dealStage.text = '5';
                                                 } else if (value.toString() ==
-                                                    dealStagesNameUtilities[6]
+                                                    dealStagesNames[6]
                                                         .toString()) {
                                                   _dealStage.text = '6';
                                                 }
@@ -196,15 +196,15 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                   const SizedBox(width: 5.0,),
                                   Expanded(
                                     child: CustomDropdownFormField2(
-                                        value: _dealType.text.isEmpty ? dealTypesNameUtilities[widget.deal.dealTypeId] : dealTypesNameUtilities[int.parse(_dealType.text)],
+                                        value: _dealType.text.isEmpty ? dealTypesNames[widget.deal.dealTypeId] : dealTypesNames[int.parse(_dealType.text)],
                                         borderColor: _readOnly != true ? mainBgColor : null,
                                         label: 'Loại hợp đồng',
-                                        hintText: Text(dealTypesNameUtilities[widget.deal.dealTypeId].toString(),
+                                        hintText: Text(dealTypesNames[widget.deal.dealTypeId].toString(),
                                           style: const TextStyle(fontSize: 14),
                                         ),
-                                        items: dealTypesNameUtilities,
+                                        items: dealTypesNames,
                                         onChanged: _readOnly != true ? (value) {
-                                          if (value.toString() == dealTypesNameUtilities[0].toString()) {
+                                          if (value.toString() == dealTypesNames[0].toString()) {
                                             _dealType.text = '0';
                                           } else {
                                             _dealType.text = '1';
@@ -222,17 +222,17 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                 children: <Widget>[
                                   Expanded(
                                     child: CustomDropdownFormField2(
-                                      value: _dealVatId.text.isEmpty ? dealVatsNameUtilities[widget.deal.vatId] : dealVatsNameUtilities[int.parse(_dealVatId.text)],
+                                      value: _dealVatId.text.isEmpty ? dealVatsNames[widget.deal.vatId] : dealVatsNames[int.parse(_dealVatId.text)],
                                       borderColor: _readOnly != true ? mainBgColor : null,
                                       label: 'VAT',
                                       hintText: Text(
-                                        dealVatsNameUtilities[widget.deal.vatId],
+                                        dealVatsNames[widget.deal.vatId],
                                         style: const TextStyle(fontSize: 14),
                                       ),
-                                      items: dealVatsNameUtilities,
+                                      items: dealVatsNames,
                                       onChanged: _readOnly != true
                                           ? (value) {
-                                              if (value.toString() == dealVatsNameUtilities[0].toString()) {
+                                              if (value.toString() == dealVatsNames[0].toString()) {
                                                 _dealVatId.text = '0';
                                               } else {
                                                 _dealVatId.text = '1';
@@ -244,42 +244,42 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                   const SizedBox(width: 5.0,),
                                   Expanded(
                                     child: CustomDropdownFormField2(
-                                        value: _dealService.text.isEmpty ? dealServicesNameUtilities[widget.deal.serviceId] : dealServicesNameUtilities[int.parse(_dealService.text)],
+                                        value: _dealService.text.isEmpty ? dealServicesNames[widget.deal.serviceId] : dealServicesNames[int.parse(_dealService.text)],
                                         borderColor: _readOnly != true ? mainBgColor : null,
                                         label: 'Loại dịch vụ',
                                         hintText: Text(
-                                          dealServicesNameUtilities[widget.deal.serviceId].toString(),
+                                          dealServicesNames[widget.deal.serviceId].toString(),
                                           style: const TextStyle(fontSize: 14),
                                         ),
-                                        items: dealServicesNameUtilities,
+                                        items: dealServicesNames,
                                         onChanged: _readOnly != true
                                             ? (value) {
                                           if (value.toString() ==
-                                              dealServicesNameUtilities[0]
+                                              dealServicesNames[0]
                                                   .toString()) {
                                             _dealService.text = '0';
                                           } else if (value.toString() ==
-                                              dealServicesNameUtilities[1]
+                                              dealServicesNames[1]
                                                   .toString()) {
                                             _dealService.text = '1';
                                           } else if (value.toString() ==
-                                              dealServicesNameUtilities[2]
+                                              dealServicesNames[2]
                                                   .toString()) {
                                             _dealService.text = '2';
                                           } else if (value.toString() ==
-                                              dealServicesNameUtilities[3]
+                                              dealServicesNames[3]
                                                   .toString()) {
                                             _dealService.text = '3';
                                           } else if (value.toString() ==
-                                              dealServicesNameUtilities[4]
+                                              dealServicesNames[4]
                                                   .toString()) {
                                             _dealService.text = '4';
                                           } else if (value.toString() ==
-                                              dealServicesNameUtilities[5]
+                                              dealServicesNames[5]
                                                   .toString()) {
                                             _dealService.text = '5';
                                           } else if (value.toString() ==
-                                              dealServicesNameUtilities[6]
+                                              dealServicesNames[6]
                                                   .toString()) {
                                             _dealService.text = '6';
                                           }

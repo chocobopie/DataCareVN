@@ -145,25 +145,25 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                         children: [
                           Expanded(
                             child: CustomDropdownFormField2(
-                                value: _dealStageId.text.isEmpty ? null : dealStagesNameUtilities[int.parse(_dealStageId.text)],
+                                value: _dealStageId.text.isEmpty ? null : dealStagesNames[int.parse(_dealStageId.text)],
                                 borderColor: mainBgColor,
                                 label: 'Tiến trình hợp đồng',
                                 hintText: const Text(''),
-                                items: dealStagesNameUtilities,
+                                items: dealStagesNames,
                                 onChanged: (value){
-                                if(value.toString() == dealStagesNameUtilities[0].toString()){
+                                if(value.toString() == dealStagesNames[0].toString()){
                                   _dealStageId.text = '0';
-                                }else if(value.toString() == dealStagesNameUtilities[1].toString()){
+                                }else if(value.toString() == dealStagesNames[1].toString()){
                                   _dealStageId.text = '1';
-                                }else if(value.toString() == dealStagesNameUtilities[2].toString()){
+                                }else if(value.toString() == dealStagesNames[2].toString()){
                                   _dealStageId.text = '2';
-                                }else if(value.toString() == dealStagesNameUtilities[3].toString()){
+                                }else if(value.toString() == dealStagesNames[3].toString()){
                                   _dealStageId.text = '3';
-                                }else if(value.toString() == dealStagesNameUtilities[4].toString()){
+                                }else if(value.toString() == dealStagesNames[4].toString()){
                                   _dealStageId.text = '4';
-                                }else if(value.toString() == dealStagesNameUtilities[5].toString()){
+                                }else if(value.toString() == dealStagesNames[5].toString()){
                                   _dealStageId.text = '5';
-                                }else if(value.toString() == dealStagesNameUtilities[6].toString()){
+                                }else if(value.toString() == dealStagesNames[6].toString()){
                                   _dealStageId.text = '6';
                                 }
                                 print(_dealStageId.text);
@@ -173,13 +173,13 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           const SizedBox(width: 5.0,),
                           Expanded(
                             child: CustomDropdownFormField2(
-                              value: _dealTypeId.text.isEmpty ? null : dealTypesNameUtilities[int.parse(_dealTypeId.text)],
+                              value: _dealTypeId.text.isEmpty ? null : dealTypesNames[int.parse(_dealTypeId.text)],
                               borderColor: mainBgColor,
                               label: 'Loại hợp đồng',
                               hintText: const Text(''),
-                              items: dealTypesNameUtilities,
+                              items: dealTypesNames,
                               onChanged: (value){
-                                if(value.toString() == dealTypesNameUtilities[0].toString()){
+                                if(value.toString() == dealTypesNames[0].toString()){
                                   _dealTypeId.text = '0';
                                 }else{
                                   _dealTypeId.text = '1';
@@ -209,25 +209,25 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                         children: [
                           Expanded(
                             child: CustomDropdownFormField2(
-                              value: _dealServiceId.text.isEmpty ? null : dealServicesNameUtilities[int.parse(_dealServiceId.text)],
+                              value: _dealServiceId.text.isEmpty ? null : dealServicesNames[int.parse(_dealServiceId.text)],
                               borderColor: mainBgColor,
                               label: 'Loại dịch vụ',
                               hintText: const Text(''),
-                              items: dealServicesNameUtilities,
+                              items: dealServicesNames,
                               onChanged: (value){
-                                if(value.toString() == dealServicesNameUtilities[0].toString()){
+                                if(value.toString() == dealServicesNames[0].toString()){
                                   _dealServiceId.text = '0';
-                                }else if(value.toString() == dealServicesNameUtilities[1].toString()){
+                                }else if(value.toString() == dealServicesNames[1].toString()){
                                   _dealServiceId.text = '1';
-                                }else if(value.toString() == dealServicesNameUtilities[2].toString()){
+                                }else if(value.toString() == dealServicesNames[2].toString()){
                                   _dealServiceId.text = '2';
-                                }else if(value.toString() == dealServicesNameUtilities[3].toString()){
+                                }else if(value.toString() == dealServicesNames[3].toString()){
                                   _dealServiceId.text = '3';
-                                }else if(value.toString() == dealServicesNameUtilities[4].toString()){
+                                }else if(value.toString() == dealServicesNames[4].toString()){
                                   _dealServiceId.text = '4';
-                                }else if(value.toString() == dealServicesNameUtilities[5].toString()){
+                                }else if(value.toString() == dealServicesNames[5].toString()){
                                   _dealServiceId.text = '5';
-                                }else if(value.toString() == dealServicesNameUtilities[6].toString()){
+                                }else if(value.toString() == dealServicesNames[6].toString()){
                                   _dealServiceId.text = '6';
                                 }
                                 print(_dealServiceId.text);
@@ -237,15 +237,15 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           const SizedBox(width: 5.0,),
                           Expanded(
                             child: CustomDropdownFormField2(
-                              value: _dealVatId.text.isEmpty ? null : dealVatsNameUtilities[int.parse(_dealVatId.text)],
+                              value: _dealVatId.text.isEmpty ? null : dealVatsNames[int.parse(_dealVatId.text)],
                               borderColor: mainBgColor,
                               label: 'VAT',
                               hintText: const Text(''),
-                              items: dealVatsNameUtilities,
+                              items: dealVatsNames,
                               onChanged: (value){
-                                if(value.toString() == dealVatsNameUtilities[0].toString()){
+                                if(value.toString() == dealVatsNames[0].toString()){
                                   _dealVatId.text = '0';
-                                }else if(value.toString() == dealVatsNameUtilities[1].toString()){
+                                }else if(value.toString() == dealVatsNames[1].toString()){
                                   _dealVatId.text = '1';
                                 }
                                 print(_dealVatId.text);

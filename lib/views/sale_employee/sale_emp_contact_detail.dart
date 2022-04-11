@@ -119,17 +119,17 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                         children: <Widget>[
                           Expanded(
                             child: CustomDropdownFormField2(
-                                value: _contactGender.text.isEmpty ? gendersUtilities[widget.contact.genderId] : gendersUtilities[int.parse(_contactGender.text)],
+                                value: _contactGender.text.isEmpty ? gendersNames[widget.contact.genderId] : gendersNames[int.parse(_contactGender.text)],
                                 borderColor: _readOnly != true ? mainBgColor : null,
                                 label: 'Giới tính',
-                                hintText: Text(gendersUtilities[int.parse('${widget.contact.genderId}')]),
-                                items: gendersUtilities,
+                                hintText: Text(gendersNames[int.parse('${widget.contact.genderId}')]),
+                                items: gendersNames,
                                 onChanged: _readOnly != true ? (value){
-                                  if(value.toString() == gendersUtilities[0]){
+                                  if(value.toString() == gendersNames[0]){
                                     _contactGender.text = '0';
-                                  }else if(value.toString() == gendersUtilities[1]){
+                                  }else if(value.toString() == gendersNames[1]){
                                     _contactGender.text = '1';
-                                  }else if(value.toString() == gendersUtilities[2]){
+                                  }else if(value.toString() == gendersNames[2]){
                                     _contactGender.text = '2';
                                   }
                                   print(_contactGender.text);
@@ -163,17 +163,17 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                           const SizedBox(width: 5.0,),
                           Expanded(
                             child: CustomDropdownFormField2(
-                                value: _contactLeadSourceId.text.isEmpty ? leadSourceNameUtilities[widget.contact.leadSourceId] : leadSourceNameUtilities[int.parse(_contactLeadSourceId.text)],
+                                value: _contactLeadSourceId.text.isEmpty ? leadSourceNames[widget.contact.leadSourceId] : leadSourceNames[int.parse(_contactLeadSourceId.text)],
                                 borderColor: _readOnly != true ? mainBgColor : null,
                                 label: 'Nguồn',
-                                hintText: Text(leadSourceNameUtilities[int.parse('${widget.contact.leadSourceId}')]),
-                                items: leadSourceNameUtilities,
+                                hintText: Text(leadSourceNames[int.parse('${widget.contact.leadSourceId}')]),
+                                items: leadSourceNames,
                                 onChanged: _readOnly != true ? (value){
-                                  if(value.toString() == leadSourceNameUtilities[0]){
+                                  if(value.toString() == leadSourceNames[0]){
                                     _contactLeadSourceId.text = '0';
-                                  }else if(value.toString() == leadSourceNameUtilities[1]){
+                                  }else if(value.toString() == leadSourceNames[1]){
                                     _contactLeadSourceId.text = '1';
-                                  }else if(value.toString() == leadSourceNameUtilities[2]){
+                                  }else if(value.toString() == leadSourceNames[2]){
                                     _contactLeadSourceId.text = '2';
                                   }
                                   print(_contactLeadSourceId.text);

@@ -126,11 +126,11 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
                                 child: CustomDropdownFormField2(
                                     borderColor: mainBgColor,
                                     label: 'Giới tính',
-                                    value: _genderId != null ? gendersUtilities[_genderId!] : null,
+                                    value: _genderId != null ? gendersNames[_genderId!] : null,
                                     hintText: const Text(''),
-                                    items: gendersUtilities,
+                                    items: gendersNames,
                                     onChanged: (value){
-                                      for(int i = 0; i < gendersUtilities.length; i++){
+                                      for(int i = 0; i < gendersNames.length; i++){
                                         if(value.toString() == genders[i].name){
                                           setState(() {
                                             _genderId = genders[i].genderId;

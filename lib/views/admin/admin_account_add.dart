@@ -268,9 +268,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 5.0, left: 15.0, right: 15.0, bottom: 15.0),
                                 child: CustomDropdownFormField2(
-                                    value: _filterViewId != null ? permissionStatusesNameUtilities[_filterViewId!] : null,
+                                    value: _filterViewId != null ? permissionStatusesNames[_filterViewId!] : null,
                                     label: 'Xem',
-                                    hintText: Text(_filterViewId == null ? '' : permissionStatusesNameUtilities[_filterViewId!]),
+                                    hintText: Text(_filterViewId == null ? '' : permissionStatusesNames[_filterViewId!]),
                                     items: saleEmpViewPermNames,
                                     onChanged: (_filterRole!.roleId != 3 && _filterRole!.roleId != 6) ? (value){
                                       for(int i = 0; i < permissionStatuses.length; i++){
@@ -326,9 +326,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                                 child: CustomDropdownFormField2(
-                                    value: _contactCreateId != null ? permissionStatusesNameUtilities[_contactCreateId!] : null,
+                                    value: _contactCreateId != null ? permissionStatusesNames[_contactCreateId!] : null,
                                     label: 'Tạo mới',
-                                    hintText: _contactCreateId != null ? Text(permissionStatusesNameUtilities[_contactCreateId!]) : const Text(''),
+                                    hintText: _contactCreateId != null ? Text(permissionStatusesNames[_contactCreateId!]) : const Text(''),
                                     items: saleEmpCreatePermNames,
                                     onChanged: _filterRole!.roleId != 3 ? (value){
                                       for(int i = 0; i < permissionStatuses.length; i++){
@@ -345,9 +345,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                                 child: CustomDropdownFormField2(
-                                  value: _contactUpdateId != null ? permissionStatusesNameUtilities[_contactUpdateId!] : null,
+                                  value: _contactUpdateId != null ? permissionStatusesNames[_contactUpdateId!] : null,
                                   label: 'Chỉnh sửa',
-                                  hintText: _contactUpdateId != null ? Text(permissionStatusesNameUtilities[_contactUpdateId!]) : const Text(''),
+                                  hintText: _contactUpdateId != null ? Text(permissionStatusesNames[_contactUpdateId!]) : const Text(''),
                                   items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
                                       : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
                                       : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
@@ -366,9 +366,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                                 child: CustomDropdownFormField2(
-                                  value: _contactDeleteId != null ? permissionStatusesNameUtilities[_contactDeleteId!] : null,
+                                  value: _contactDeleteId != null ? permissionStatusesNames[_contactDeleteId!] : null,
                                   label: 'Xóa',
-                                  hintText: _contactDeleteId != null ? Text(permissionStatusesNameUtilities[_contactDeleteId!]) : const Text(''),
+                                  hintText: _contactDeleteId != null ? Text(permissionStatusesNames[_contactDeleteId!]) : const Text(''),
                                   items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
                                       : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
                                       : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
@@ -398,9 +398,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value:  _dealCreateId != null ? permissionStatusesNameUtilities[_dealCreateId!] : null,
+                                value:  _dealCreateId != null ? permissionStatusesNames[_dealCreateId!] : null,
                                 label: 'Tạo mới',
-                                hintText: _dealCreateId != null ? Text(permissionStatusesNameUtilities[_dealCreateId!]) : const Text(''),
+                                hintText: _dealCreateId != null ? Text(permissionStatusesNames[_dealCreateId!]) : const Text(''),
                                 items: saleEmpCreatePermNames,
                                 onChanged:_filterRole!.roleId != 3 ? (value){
                                   for(int i = 0; i < permissionStatuses.length; i++){
@@ -417,9 +417,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value: _dealUpdateId != null ? permissionStatusesNameUtilities[_dealUpdateId!] : null,
+                                value: _dealUpdateId != null ? permissionStatusesNames[_dealUpdateId!] : null,
                                 label: 'Chỉnh sửa',
-                                hintText: _dealUpdateId != null ? Text(permissionStatusesNameUtilities[_dealUpdateId!]) : const Text(''),
+                                hintText: _dealUpdateId != null ? Text(permissionStatusesNames[_dealUpdateId!]) : const Text(''),
                                 items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
                                     : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
                                     : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
@@ -438,9 +438,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value: _dealDeleteId != null ? permissionStatusesNameUtilities[_dealDeleteId!] : null,
+                                value: _dealDeleteId != null ? permissionStatusesNames[_dealDeleteId!] : null,
                                 label: 'Xóa',
-                                hintText: _dealDeleteId != null ? Text(permissionStatusesNameUtilities[_dealDeleteId!]) : const Text(''),
+                                hintText: _dealDeleteId != null ? Text(permissionStatusesNames[_dealDeleteId!]) : const Text(''),
                                 items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
                                     : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
                                     : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
@@ -470,9 +470,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value: _issueCreateId != null ? permissionStatusesNameUtilities[_issueCreateId!] : null,
+                                value: _issueCreateId != null ? permissionStatusesNames[_issueCreateId!] : null,
                                 label: 'Tạo mới',
-                                hintText: _issueCreateId != null ? Text(permissionStatusesNameUtilities[_issueCreateId!]) : const Text(''),
+                                hintText: _issueCreateId != null ? Text(permissionStatusesNames[_issueCreateId!]) : const Text(''),
                                 items: saleEmpCreatePermNames,
                                 onChanged:_filterRole!.roleId != 3 ? (value){
                                   for(int i = 0; i < permissionStatuses.length; i++){
@@ -489,9 +489,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value: _issueUpdateId != null ? permissionStatusesNameUtilities[_issueUpdateId!] : null,
+                                value: _issueUpdateId != null ? permissionStatusesNames[_issueUpdateId!] : null,
                                 label: 'Chỉnh sửa',
-                                hintText: _issueUpdateId != null ? Text(permissionStatusesNameUtilities[_issueUpdateId!]) : const Text(''),
+                                hintText: _issueUpdateId != null ? Text(permissionStatusesNames[_issueUpdateId!]) : const Text(''),
                                 items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
                                     : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
                                     : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
@@ -510,9 +510,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value: _issueDeleteId != null ? permissionStatusesNameUtilities[_issueDeleteId!] : null,
+                                value: _issueDeleteId != null ? permissionStatusesNames[_issueDeleteId!] : null,
                                 label: 'Xóa',
-                                hintText: _issueDeleteId != null ? Text(permissionStatusesNameUtilities[_issueDeleteId!]) : const Text(''),
+                                hintText: _issueDeleteId != null ? Text(permissionStatusesNames[_issueDeleteId!]) : const Text(''),
                                 items: _filterViewId != null ? (_filterViewId == 4 && _filterViewId != 2) ? saleEmpUpdateDeletePermNames
                                     : (_filterViewId == 3 && _filterViewId != 4) ? saleEmpUpdateDeletePermTeamOnlyNames
                                     : saleEmpUpdateDeletePermSelfOnlyNames : saleEmpUpdateDeletePermNames,
@@ -544,9 +544,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value:  _accountViewId != null ? permissionStatusesNameUtilities[_accountViewId!] : null,
+                                value:  _accountViewId != null ? permissionStatusesNames[_accountViewId!] : null,
                                 label: 'Xem',
-                                hintText: _accountViewId != null ? Text(permissionStatusesNameUtilities[_accountViewId!]) : const Text(''),
+                                hintText: _accountViewId != null ? Text(permissionStatusesNames[_accountViewId!]) : const Text(''),
                                 items: hrInternViewPermNames,
                                 onChanged: (value){
                                   for(int i = 0; i < permissionStatuses.length; i++){
@@ -574,9 +574,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value: _attendanceViewId != null ? permissionStatusesNameUtilities[_attendanceViewId!] : null,
+                                value: _attendanceViewId != null ? permissionStatusesNames[_attendanceViewId!] : null,
                                 label: 'Xem',
-                                hintText: _attendanceViewId != null ? Text(permissionStatusesNameUtilities[_attendanceViewId!]) : const Text(''),
+                                hintText: _attendanceViewId != null ? Text(permissionStatusesNames[_attendanceViewId!]) : const Text(''),
                                 items: hrInternViewPermNames,
                                 onChanged: (value){
                                   for(int i = 0; i < permissionStatuses.length; i++){
@@ -593,9 +593,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                             Padding(
                               padding: const EdgeInsets.only(top: 5, left: 15, right: 15, bottom: 15),
                               child: CustomDropdownFormField2(
-                                value: _attendanceUpdateId != null ? permissionStatusesNameUtilities[_attendanceUpdateId!] : null,
+                                value: _attendanceUpdateId != null ? permissionStatusesNames[_attendanceUpdateId!] : null,
                                 label: 'Chỉnh sửa',
-                                hintText: _attendanceUpdateId != null ? Text(permissionStatusesNameUtilities[_attendanceUpdateId!]) : const Text(''),
+                                hintText: _attendanceUpdateId != null ? Text(permissionStatusesNames[_attendanceUpdateId!]) : const Text(''),
                                 items: hrInternViewPermNames,
                                 onChanged: (value){
                                   for(int i = 0; i < permissionStatuses.length; i++){

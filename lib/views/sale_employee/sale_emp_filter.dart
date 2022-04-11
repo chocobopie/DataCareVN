@@ -228,7 +228,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
                                           children: <Widget>[
                                             const Text('Chức vụ:'),
                                             const Spacer(),
-                                            Text(rolesNameUtilities[account.roleId!]),
+                                            Text(rolesNames[account.roleId!]),
                                           ],
                                         ),
                                       ),

@@ -58,7 +58,7 @@ class _AdminDepartmentAddNewState extends State<AdminDepartmentAddNew> {
                             value: _filterBlockId != null ? blocks[_filterBlockId!].name : null,
                             label: 'Khối',
                             hintText: const Text(''),
-                            items: blockNameUtilities,
+                            items: blockNames,
                             onChanged: (value){
                               for(int i = 0 ;i < blocks.length; i++){
                                 if(value.toString() == blocks[i].name){

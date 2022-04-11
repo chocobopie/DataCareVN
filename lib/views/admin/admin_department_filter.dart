@@ -164,7 +164,7 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                                                 child: Row(
                                                   children: <Widget>[
                                                     Expanded(
-                                                      child: Text(blockNameUtilities[department.blockId]),
+                                                      child: Text(blockNames[department.blockId]),
                                                       flex: 1,
                                                     ),
                                                     const Spacer(),

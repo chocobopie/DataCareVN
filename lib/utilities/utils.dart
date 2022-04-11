@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/application_type.dart';
+import 'package:login_sample/models/attendance_status.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/deal_stage.dart';
 import 'package:login_sample/models/deal_type.dart';
 import 'package:login_sample/models/department.dart';
-import 'package:login_sample/models/excuse_late_status.dart';
+import 'package:login_sample/models/application_status.dart';
 import 'package:login_sample/models/gender.dart';
 import 'package:login_sample/models/lead_source.dart';
+import 'package:login_sample/models/period_of_day.dart';
 import 'package:login_sample/models/permission_status.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/service.dart';
@@ -44,22 +47,29 @@ List<DealType> dealTypes = [];
 List<PermissionStatus> permissionStatuses = [];
 List<Role> roles = [];
 List<LeadSource> leadSources = [];
-List<ExcuseLateStatus> excuseLateStatuses = [];
 List<Gender> genders = [];
 List<Team> teams = [];
 List<Department> departments = [];
 List<Block> blocks = [];
+List<ApplicationStatus> applicationStatuses = [];
+List<ApplicationType> applicationTypes = [];
+List<PeriodOfDay> periodOfDay = [];
+List<AttendanceStatus> attendanceStatuses = [];
 //------------------------------------------------------------------List String---------------------------------------------
-List<String> dealServicesNameUtilities = [];
-List<String> dealVatsNameUtilities = [];
-List<String> dealStagesNameUtilities = [];
-List<String> dealTypesNameUtilities = [];
-List<String> permissionStatusesNameUtilities = [];
-List<String> rolesNameUtilities = [];
-List<String> leadSourceNameUtilities = [];
-List<String> excuseLateStatusesNameUtilities = [];
-List<String> gendersUtilities = [];
-List<String> blockNameUtilities = [];
+List<String> dealServicesNames = [];
+List<String> dealVatsNames = [];
+List<String> dealStagesNames = [];
+List<String> dealTypesNames = [];
+List<String> permissionStatusesNames = [];
+List<String> rolesNames = [];
+List<String> leadSourceNames = [];
+List<String> excuseLateStatusesNames = [];
+List<String> gendersNames = [];
+List<String> blockNames = [];
+List<String> applicationStatusesNames = [];
+List<String> applicationTypesNames = [];
+List<String> periodOfDayNames = [];
+List<String> attendanceStatusNames = [];
 
 List<String> statusUtilities = [
   'Mới',

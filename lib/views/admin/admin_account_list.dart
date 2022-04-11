@@ -418,7 +418,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                           children: <Widget>[
                                             const Text('Khối', style: TextStyle(fontSize: 12.0),),
                                             const Spacer(),
-                                            Text(blockNameUtilities[account.blockId!]),
+                                            Text(blockNames[account.blockId!]),
                                           ],
                                         ),
                                       ),
@@ -448,7 +448,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                           children: <Widget>[
                                             const Text('Chức vụ:', style: TextStyle(fontSize: 12.0),),
                                             const Spacer(),
-                                            Text(rolesNameUtilities[account.roleId!]),
+                                            Text(rolesNames[account.roleId!]),
                                           ],
                                         ),
                                       ),

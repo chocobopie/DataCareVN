@@ -155,10 +155,10 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
 
                       CustomDropdownFormField2(
                           label: 'Giới tính',
-                          hintText: _currentAccount.genderId != null ? Text(gendersUtilities[_currentAccount.genderId!]) : const Text('Chưa cập nhật'),
-                          items: gendersUtilities,
+                          hintText: _currentAccount.genderId != null ? Text(gendersNames[_currentAccount.genderId!]) : const Text('Chưa cập nhật'),
+                          items: gendersNames,
                           onChanged: _readOnly != true ? (value) {
-                            if(value.toString() == gendersUtilities[0]){
+                            if(value.toString() == gendersNames[0]){
                               _gender.text = '0';
                             } else {
                               _gender.text = '1';

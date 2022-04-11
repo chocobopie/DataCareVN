@@ -36,7 +36,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
       drawer: SideBar(
         context,
         name: 'Họ và tên',
-        role: rolesNameUtilities[_currentAccount.roleId!],
+        role: rolesNames[_currentAccount.roleId!],
         imageUrl: 'assets/images/logo.png',
       ),
       body: Stack(

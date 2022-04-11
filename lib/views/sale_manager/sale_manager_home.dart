@@ -27,7 +27,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
     return Scaffold(
       drawer: SideBar(context,
         name: _account.fullname!,
-        role: rolesNameUtilities[_account.roleId!],
+        role: rolesNames[_account.roleId!],
         imageUrl: 'assets/images/logo.png',
       ),
       body: Stack(

@@ -29,7 +29,7 @@ class _TechnicalEmployeeHomeState extends State<TechnicalEmployeeHome> {
     return Scaffold(
       drawer: SideBar(context,
         name: _currentAccount!.fullname!,
-        role: rolesNameUtilities[_currentAccount!.roleId!],
+        role: rolesNames[_currentAccount!.roleId!],
         imageUrl: 'assets/images/logo.png',
       ),
       body: Stack(

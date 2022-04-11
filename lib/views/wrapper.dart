@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/view_models/application_status_list_view_model.dart';
+import 'package:login_sample/view_models/application_type_list_view_model.dart';
+import 'package:login_sample/view_models/attendance_status_list_view_model.dart';
+import 'package:login_sample/view_models/period_of_day_list_view_model.dart';
 import 'package:login_sample/views/providers/login.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -29,7 +33,6 @@ class _WrapperState extends State<Wrapper> {
     getAllDealStageName();
     getAllDealTypeName();
     getAllDealVatName();
-    getAllExcuseLateStatusesName();
     getAllLeadSourcesName();
     getAllPermissionStatusName();
     getAllRoleName();
@@ -37,184 +40,220 @@ class _WrapperState extends State<Wrapper> {
     getAllTeams();
     geAllDepartment();
     getAllBlocksName();
+    getAllApplicationStatuses();
+    getAllApplicationTypes();
+    getAllPeriodOfDay();
+    getAttendanceStatuses();
   }
 
   //Convert Future<List<Model> to List<Model> to List<String>
   void getAllBlocksName(){
+
+    blocks.clear();
+    blockNames.clear();
+
     ApiService().getAllBlocks().then((value) {
-      if(blocks.isNotEmpty){
-        blocks.clear();
-      }
       blocks.addAll(value);
-      if(blockNameUtilities.isNotEmpty){
-        blockNameUtilities.clear();
-      }
       for(int i = 0; i < blocks.length; i++){
-        blockNameUtilities.add(blocks[i].name);
+        blockNames.add(blocks[i].name);
       }
     });
   }
 
   void getAllDealServicesName(){
+
+    dealServices.clear();
+    dealServicesNames.clear();
+
     ApiService().getAllService().then((value) {
-        if(dealServices.isNotEmpty){
-          dealServices.clear();
-        }
         dealServices.addAll(value);
 
-        if(dealServicesNameUtilities.isNotEmpty){
-          dealServicesNameUtilities.clear();
+        if(dealServicesNames.isNotEmpty){
+          dealServicesNames.clear();
         }
         for(int i = 0; i < dealServices.length; i++){
-          dealServicesNameUtilities.add(dealServices[i].name);
+          dealServicesNames.add(dealServices[i].name);
         }
     });
   }
 
   void geAllDepartment(){
     ApiService().getAllDepartment().then((value) {
-      if(departments.isNotEmpty){
-        departments.clear();
-      }
+      departments.clear();
       departments.addAll(value);
     });
   }
 
   void getAllDealVatName(){
+
+    dealVats.clear();
+    dealVatsNames.clear();
+
     ApiService().getAllVat().then((value) {
-        if(dealVats.isNotEmpty){
-          dealVats.clear();
-        }
         dealVats.addAll(value);
 
-        if(dealVatsNameUtilities.isNotEmpty){
-          dealVatsNameUtilities.clear();
+        if(dealVatsNames.isNotEmpty){
+          dealVatsNames.clear();
         }
         for(int i = 0; i < dealVats.length; i++){
-          dealVatsNameUtilities.add(dealVats[i].name);
+          dealVatsNames.add(dealVats[i].name);
         }
     });
   }
 
   void getAllDealStageName(){
+
+    dealStages.clear();
+    dealStagesNames.clear();
+
     ApiService().getAllDealStages().then((value) {
-        if(dealStages.isNotEmpty){
-          dealStages.clear();
-        }
         dealStages.addAll(value);
 
-        if(dealStagesNameUtilities.isNotEmpty){
-          dealStagesNameUtilities.clear();
+        if(dealStagesNames.isNotEmpty){
+          dealStagesNames.clear();
         }
         for(int i = 0; i < dealStages.length; i++){
-          dealStagesNameUtilities.add(dealStages[i].name);
+          dealStagesNames.add(dealStages[i].name);
         }
     });
   }
 
   void getAllDealTypeName(){
+
+    dealTypes.clear();
+    dealTypesNames.clear();
+
     ApiService().getAllDealType().then((value) {
-        if(dealTypes.isNotEmpty){
-          dealTypes.clear();
-        }
         dealTypes.addAll(value);
 
-        if(dealTypesNameUtilities.isNotEmpty){
-          dealTypesNameUtilities.clear();
+        if(dealTypesNames.isNotEmpty){
+          dealTypesNames.clear();
         }
         for(int i = 0; i < dealTypes.length; i++){
-          dealTypesNameUtilities.add(dealTypes[i].name);
+          dealTypesNames.add(dealTypes[i].name);
         }
     });
   }
 
   void getAllPermissionStatusName(){
+
+    permissionStatuses.clear();
+    permissionStatusesNames.clear();
+
     ApiService().getAllPermissionStatus().then((value) {
-        if(permissionStatuses.isNotEmpty){
-          permissionStatuses.clear();
-        }
         permissionStatuses.addAll(value);
 
-        if(permissionStatusesNameUtilities.isNotEmpty){
-          permissionStatusesNameUtilities.clear();
+        if(permissionStatusesNames.isNotEmpty){
+          permissionStatusesNames.clear();
         }
         for(int i = 0; i < permissionStatuses.length; i++){
-          permissionStatusesNameUtilities.add(permissionStatuses[i].name);
+          permissionStatusesNames.add(permissionStatuses[i].name);
         }
     });
   }
 
   void getAllRoleName(){
+
+    roles.clear();
+    rolesNames.clear();
+
     ApiService().getAllRoles().then((value) {
-        if(roles.isNotEmpty){
-          roles.clear();
-        }
         roles.addAll(value);
 
-        if(rolesNameUtilities.isNotEmpty){
-          rolesNameUtilities.clear();
+        if(rolesNames.isNotEmpty){
+          rolesNames.clear();
         }
         for(int i = 0; i < roles.length; i++){
-          rolesNameUtilities.add(roles[i].name);
+          rolesNames.add(roles[i].name);
         }
     });
   }
 
   void getAllLeadSourcesName(){
+
+    leadSources.clear();
+    leadSourceNames.clear();
+
     ApiService().getAllLeadSource().then((value) {
-        if(leadSources.isNotEmpty){
-          leadSources.clear();
-        }
         leadSources.addAll(value);
 
-        if(leadSourceNameUtilities.isNotEmpty){
-          leadSourceNameUtilities.clear();
+        if(leadSourceNames.isNotEmpty){
+          leadSourceNames.clear();
         }
         for(int i = 0; i < leadSources.length; i++){
-          leadSourceNameUtilities.add(leadSources[i].name);
-        }
-    });
-  }
-
-  void getAllExcuseLateStatusesName(){
-    ApiService().getAllExcuseLateStatus().then((value) {
-        if(excuseLateStatuses.isNotEmpty){
-          excuseLateStatuses.clear();
-        }
-        excuseLateStatuses.addAll(value);
-
-        if(excuseLateStatusesNameUtilities.isNotEmpty){
-          excuseLateStatuses.clear();
-        }
-        for(int i = 0; i < excuseLateStatuses.length; i++){
-          excuseLateStatusesNameUtilities.add(excuseLateStatuses[i].name);
+          leadSourceNames.add(leadSources[i].name);
         }
     });
   }
 
   void getAllGendersName(){
+    genders.clear();
+    gendersNames.clear();
+
     ApiService().getAllGender().then((value) {
-      if(genders.isNotEmpty){
-        genders.clear();
-      }
       genders.addAll(value);
 
-      if(gendersUtilities.isNotEmpty){
-        gendersUtilities.clear();
+      if(gendersNames.isNotEmpty){
+        gendersNames.clear();
       }
       for(int i = 0; i < genders.length; i++){
-        gendersUtilities.add(genders[i].name);
+        gendersNames.add(genders[i].name);
       }
     });
   }
 
   void getAllTeams(){
     ApiService().getAllTeam().then((value) {
-      if(teams.isNotEmpty){
-        teams.clear();
-      }
+      teams.clear();
       teams.addAll(value);
     });
   }
 
+  void getAllApplicationStatuses() async {
+
+    applicationStatuses.clear();
+    applicationStatusesNames.clear();
+
+    applicationStatuses = await ApplicationStatusListViewModel().getApplicationsStatus();
+
+    for(int i = 0; i < applicationStatuses.length; i++){
+      applicationStatusesNames.add(applicationStatuses[i].name);
+    }
+  }
+
+  void getAllApplicationTypes() async {
+
+    applicationTypes.clear();
+    applicationTypesNames.clear();
+
+    applicationTypes = await ApplicationTypeListViewModel().getApplicationType();
+
+    for(int i = 0; i < applicationTypes.length; i++){
+      applicationTypesNames.add(applicationTypes[i].name);
+    }
+  }
+
+  void getAllPeriodOfDay() async {
+
+    periodOfDay.clear();
+    periodOfDayNames.clear();
+
+    periodOfDay = await PeriodOfDayListViewModel().getPeriodOfDay();
+
+    for(int i = 0; i < periodOfDay.length; i++){
+      periodOfDayNames.add(periodOfDay[i].name);
+    }
+  }
+
+  void getAttendanceStatuses() async {
+
+    attendanceStatuses.clear();
+    attendanceStatusNames.clear();
+
+    attendanceStatuses = await AttendanceStatusListViewModel().getAttendanceStatus();
+
+    for(int i = 0; i < attendanceStatuses.length; i++){
+      attendanceStatusNames.add(attendanceStatuses[i].name);
+    }
+  }
 }
