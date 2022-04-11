@@ -597,40 +597,40 @@ class _AdminAccountListState extends State<AdminAccountList> {
 
 }
 
-class SortItems {
-  static const List<SortItem> firstItems = [asc, des];
-
-  static const asc = SortItem(text: 'Theo tên nhân viên từ A-z', icon: Icons.sort_by_alpha_rounded);
-  static const des = SortItem(text: 'Theo tên nhân viên từ Z-a', icon: Icons.sort_by_alpha_rounded);
-
-  static Widget buildItem(SortItem item) {
-    return Row(
-      children: [
-        Icon(
-            item.icon,
-            color: Colors.white,
-            size: 22
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        Text(
-          item.text,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-
-  static onChanged(BuildContext context, SortItem item) {
-    switch (item) {
-      case SortItems.asc:
-        return true;
-      case SortItems.des:
-      //Do something
-        return false;
-    }
-  }
-}
+// class SortItems {
+//   static const List<SortItem> firstItems = [asc, des];
+//
+//   static const asc = SortItem(text: 'Theo tên nhân viên từ A-z', icon: Icons.sort_by_alpha_rounded);
+//   static const des = SortItem(text: 'Theo tên nhân viên từ Z-a', icon: Icons.sort_by_alpha_rounded);
+//
+//   static Widget buildItem(SortItem item) {
+//     return Row(
+//       children: [
+//         Icon(
+//             item.icon,
+//             color: Colors.white,
+//             size: 22
+//         ),
+//         const SizedBox(
+//           width: 10,
+//         ),
+//         Text(
+//           item.text,
+//           style: const TextStyle(
+//             color: Colors.white,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   static onChanged(BuildContext context, SortItem item) {
+//     switch (item) {
+//       case SortItems.asc:
+//         return true;
+//       case SortItems.des:
+//       //Do something
+//         return false;
+//     }
+//   }
+// }

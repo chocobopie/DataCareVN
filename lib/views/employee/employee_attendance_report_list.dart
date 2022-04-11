@@ -10,6 +10,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
+import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
@@ -35,6 +36,13 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
   late DateTime _currentTime;
   late double _timeHmsNow;
   late final DateTime _today;
+
+  final List<String> genderItems = [
+    'Male',
+    'Female',
+  ];
+
+  String? selectedValue;
 
   final RefreshController _refreshController = RefreshController();
 
@@ -65,11 +73,17 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
         elevation: 10.0,
         child: _maxPages > 0 ? NumberPaginator(
           numberPages: _maxPages,
+          initialPage: 0,
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
             setState(() {
-              _currentPage = index;
               _attendances.clear();
+              if(index >= _maxPages){
+                index = 0;
+                _currentPage = index;
+              }else{
+                _currentPage = index;
+              }
             });
             _getSelfAttendanceList(isRefresh: false);
           },
@@ -107,18 +121,28 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                             child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                           ),
                           const SizedBox(width: 10.0,),
-                          // CustomDropdownFormField2(
-                          //     label: 'Trạng thái',
-                          //     hintText: const Text(''),
-                          //     items: attendanceStatusNames,
-                          //     onChanged: null
-                          // ),
-                          CustomOutlinedButton(
-                              title: 'Trạng thái',
-                              radius: 10,
-                              color: mainBgColor,
-                              onPressed: (){},
+                          SizedBox(
+                            width: 110.0,
+                            child: CustomDropdownFormField2Filter(
+                                value: _periodOfDayId == null ? null : periodOfDayNamesFilter[_periodOfDayId!],
+                                borderColor: mainBgColor,
+                                items: periodOfDayNamesFilter,
+                                label: 'Ca làm việc',
+                                onChanged: (value){
+                                  for(int i = 0; i < periodOfDay.length; i++){
+                                    if(value.toString() == periodOfDay[i].name){
+                                      _periodOfDayId = periodOfDay[i].periodOfDayId;
+                                      setState(() {
+                                        _maxPages = 0;
+                                        _attendances.clear();
+                                      });
+                                    }
+                                  }
+                                  _getSelfAttendanceList(isRefresh: true);
+                                },
+                            ),
                           ),
+                          const SizedBox(width: 5.0,),
                           CustomOutlinedButton(
                             title: _fromDateToDateString,
                             radius: 10,
@@ -132,12 +156,53 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                 setState(() {
                                   _fromDate = fromDateToDate.fromDate;
                                   _toDate = fromDateToDate.toDate;
-                                  _fromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                  _fromDateToDateString = 'Ngày ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                   _attendances.clear();
+                                  _maxPages = 0;
                                 });
                                 _refreshController.resetNoData();
+                                _getSelfAttendanceList(isRefresh: true);
                               }
                             },
+                          ),
+                          const SizedBox(width: 10.0,),
+                          DropdownButton2(
+                            underline: const SizedBox(),
+                            buttonElevation: 0,
+                            customButton: Icon(
+                              Icons.timelapse,
+                              size: 40,
+                              color: _attendanceStatusId != null ? _attendanceStatusId != 4 ? _attendanceStatusId != 3 ? _attendanceStatusId != 2 ? _attendanceStatusId != 1
+                                  ? Colors.green : Colors.blue : Colors.purple : Colors.brown : Colors.red
+                                  : mainBgColor,
+                            ),
+                            items: [
+                              ...SortItems.firstItems.map(
+                                    (item) =>
+                                    DropdownMenuItem<SortItem>(
+                                      value: item,
+                                      child: SortItems.buildItem(item),
+                                    ),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              _attendanceStatusId = SortItems.onChanged(context, value as SortItem);
+                              setState(() {
+                                _maxPages = 0;
+                                _attendances.clear();
+                              });
+                              _getSelfAttendanceList(isRefresh: true);
+                            },
+                            itemHeight: 40,
+                            itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                            dropdownWidth: 150,
+                            dropdownPadding: const EdgeInsets.symmetric(vertical: 10),
+                            dropdownDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white,
+                            ),
+                            dropdownElevation: 8,
+                            offset: const Offset(0, 8),
                           ),
                           IconButton(
                               onPressed: (){
@@ -145,9 +210,13 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                   _attendances.clear();
                                   _fromDate = null;
                                   _toDate = null;
+                                  _attendanceStatusId = null;
                                   _fromDateToDateString = 'Ngày';
+                                  _periodOfDayId = null;
+                                  _maxPages = 0;
                                 });
                                 _refreshController.resetNoData();
+                                _getSelfAttendanceList(isRefresh: true);
                               },
                               icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                           ),
@@ -160,7 +229,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
           ),
 
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.19),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.18),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -238,7 +307,16 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                         if(_attendance.attendanceStatusId == 4 && ( _periodOfDayNowLocal == _attendance.periodOfDayId ) && _attendance.date == _today)
                                           const Expanded(child: Text('Chưa điểm danh', style: TextStyle(color: Colors.grey),),),
                                         if(_periodOfDayNowLocal != _attendance.periodOfDayId || _attendance.date != _today)
-                                          Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId]),),
+                                          Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                            style: TextStyle(color: _attendance.attendanceStatusId != 4
+                                                ? _attendance.attendanceStatusId != 3
+                                                ? _attendance.attendanceStatusId != 2
+                                                ? _attendance.attendanceStatusId != 1 ? Colors.green
+                                                : Colors.blue : Colors.purple : Colors.brown : Colors.red,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16.0
+                                            ),
+                                          ),),
                                       ],
                                     ),
                                   )
@@ -303,5 +381,49 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
     _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
     if(_timeHmsNow <= 10.30) _periodOfDayNowLocal = 0;
     if(_timeHmsNow > 12 && _timeHmsNow < 17.30) _periodOfDayNowLocal = 1;
+  }
+}
+
+class SortItems {
+  static const List<SortItem> firstItems = [onTime, lateAccepted, dayOffAccepted, late, absent];
+
+  static const onTime = SortItem(text: 'Đúng giờ', icon: Icon(Icons.access_time_filled, color: Colors.green));
+  static const lateAccepted = SortItem(text: 'Cho phép trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
+  static const dayOffAccepted = SortItem(text: 'Cho phép nghỉ', icon: Icon(Icons.access_time_filled, color: Colors.purple));
+  static const late = SortItem(text: 'Trễ', icon: Icon(Icons.access_time_filled, color: Colors.brown));
+  static const absent = SortItem(text: 'Vắng', icon: Icon(Icons.access_time_filled, color: Colors.red));
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        item.icon,
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: defaultFontColor,
+            fontSize: 16.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.onTime:
+        return 0;
+      case SortItems.lateAccepted:
+        return 1;
+      case SortItems.dayOffAccepted:
+        return 2;
+      case SortItems.late:
+        return 3;
+      case SortItems.absent:
+        return 4;
+    }
   }
 }

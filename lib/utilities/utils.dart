@@ -71,6 +71,12 @@ List<String> applicationTypesNames = [];
 List<String> periodOfDayNames = [];
 List<String> attendanceStatusNames = [];
 
+
+List<String> periodOfDayNamesFilter = [
+  'Buổi sáng',
+  'Buổi chiều'
+];
+
 List<String> statusUtilities = [
   'Mới',
   'Kích hoạt',

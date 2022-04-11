@@ -413,41 +413,41 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
 
 //==============================================================================Sort icon===============
 
-class SortItems {
-  static const List<SortItem> firstItems = [asc, des];
-
-  static const asc = SortItem(text: 'Ngày hạn chót tăng dần', icon: Icons.arrow_drop_up);
-  static const des = SortItem(text: 'Ngày hạn chót giảm dần', icon: Icons.arrow_drop_down);
-
-
-  static Widget buildItem(SortItem item) {
-    return Row(
-      children: [
-        Icon(
-            item.icon,
-            color: Colors.white,
-            size: 22
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        Text(
-          item.text,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-
-  static onChanged(BuildContext context, SortItem item) {
-    switch (item) {
-      case SortItems.asc:
-        return true;
-      case SortItems.des:
-      //Do something
-        return false;
-    }
-  }
-}
+// class SortItems {
+//   static const List<SortItem> firstItems = [asc, des];
+//
+//   static const asc = SortItem(text: 'Ngày hạn chót tăng dần', icon: Icons.arrow_drop_up);
+//   static const des = SortItem(text: 'Ngày hạn chót giảm dần', icon: Icons.arrow_drop_down);
+//
+//
+//   static Widget buildItem(SortItem item) {
+//     return Row(
+//       children: [
+//         Icon(
+//             item.icon,
+//             color: Colors.white,
+//             size: 22
+//         ),
+//         const SizedBox(
+//           width: 10,
+//         ),
+//         Text(
+//           item.text,
+//           style: const TextStyle(
+//             color: Colors.white,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   static onChanged(BuildContext context, SortItem item) {
+//     switch (item) {
+//       case SortItems.asc:
+//         return true;
+//       case SortItems.des:
+//       //Do something
+//         return false;
+//     }
+//   }
+// }

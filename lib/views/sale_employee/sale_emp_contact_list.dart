@@ -178,42 +178,42 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                 }
                               },
                             ),
-                            DropdownButton2(
-                              customButton: const Icon(
-                                Icons.sort,
-                                size: 40,
-                                color: mainBgColor,
-                              ),
-                                items: [
-                                  ...SortItems.firstItems.map(
-                                        (item) =>
-                                        DropdownMenuItem<SortItem>(
-                                          value: item,
-                                          child: SortItems.buildItem(item),
-                                        ),
-                                  ),
-                                ],
-                              onChanged: (value) {
-                                _isAsc = SortItems.onChanged(context, value as SortItem);
-                                setState(() {
-                                  if(_isAsc == true ){
-                                    _contacts.sort( (a,b) => a.createdDate.compareTo(b.createdDate) );
-                                  }else{
-                                    _contacts.sort( (a,b) => b.createdDate.compareTo(a.createdDate) );
-                                  }
-                                });
-                              },
-                              itemHeight: 40,
-                              itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                              dropdownWidth: 220,
-                              dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                              dropdownDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: mainBgColor,
-                              ),
-                              dropdownElevation: 8,
-                              offset: const Offset(0, 8),
-                            ),
+                            // DropdownButton2(
+                            //   customButton: const Icon(
+                            //     Icons.sort,
+                            //     size: 40,
+                            //     color: mainBgColor,
+                            //   ),
+                            //     items: [
+                            //       ...SortItems.firstItems.map(
+                            //             (item) =>
+                            //             DropdownMenuItem<SortItem>(
+                            //               value: item,
+                            //               child: SortItems.buildItem(item),
+                            //             ),
+                            //       ),
+                            //     ],
+                            //   onChanged: (value) {
+                            //     _isAsc = SortItems.onChanged(context, value as SortItem);
+                            //     setState(() {
+                            //       if(_isAsc == true ){
+                            //         _contacts.sort( (a,b) => a.createdDate.compareTo(b.createdDate) );
+                            //       }else{
+                            //         _contacts.sort( (a,b) => b.createdDate.compareTo(a.createdDate) );
+                            //       }
+                            //     });
+                            //   },
+                            //   itemHeight: 40,
+                            //   itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                            //   dropdownWidth: 220,
+                            //   dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                            //   dropdownDecoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.circular(25),
+                            //     color: mainBgColor,
+                            //   ),
+                            //   dropdownElevation: 8,
+                            //   offset: const Offset(0, 8),
+                            // ),
                             IconButton(
                                 onPressed: (){
                                   setState(() {
@@ -592,41 +592,41 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 }
 
-class SortItems {
-  static const List<SortItem> firstItems = [asc, des];
-
-  static const asc = SortItem(text: 'Ngày tạo tăng dần', icon: Icons.arrow_drop_up);
-  static const des = SortItem(text: 'Ngày tạo giảm dần', icon: Icons.arrow_drop_down);
-
-
-  static Widget buildItem(SortItem item) {
-    return Row(
-      children: [
-        Icon(
-            item.icon,
-            color: Colors.white,
-            size: 22
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        Text(
-          item.text,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-
-  static onChanged(BuildContext context, SortItem item) {
-    switch (item) {
-      case SortItems.asc:
-        return true;
-      case SortItems.des:
-      //Do something
-        return false;
-    }
-  }
-}
+// class SortItems {
+//   static const List<SortItem> firstItems = [asc, des];
+//
+//   static const asc = SortItem(text: 'Ngày tạo tăng dần', icon: Icons.arrow_drop_up);
+//   static const des = SortItem(text: 'Ngày tạo giảm dần', icon: Icons.arrow_drop_down);
+//
+//
+//   static Widget buildItem(SortItem item) {
+//     return Row(
+//       children: [
+//         Icon(
+//             item.icon,
+//             color: Colors.white,
+//             size: 22
+//         ),
+//         const SizedBox(
+//           width: 10,
+//         ),
+//         Text(
+//           item.text,
+//           style: const TextStyle(
+//             color: Colors.white,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   static onChanged(BuildContext context, SortItem item) {
+//     switch (item) {
+//       case SortItems.asc:
+//         return true;
+//       case SortItems.des:
+//       //Do something
+//         return false;
+//     }
+//   }
+// }
