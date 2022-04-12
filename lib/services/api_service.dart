@@ -931,17 +931,17 @@ class ApiService {
       body: jsonEncode(<String, dynamic>{
         "attendanceId": attendance.attendanceId,
         "accountId": attendance.accountId,
-        "date": attendance.date,
+        "date": attendance.date.toIso8601String(),
         "attendanceStatusId": attendance.attendanceStatusId,
         "periodOfDayId": attendance.periodOfDayId
       }),
     );
 
     if(response.statusCode == 200){
-      print('Update Permission successfully | 200');
+      print('Update an attendance successfully | 200');
       return true;
     }else{
-      print('Update Permission failed | 400');
+      print('Update an attendance failed | 400');
       return false;
     }
   }
