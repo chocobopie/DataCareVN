@@ -83,6 +83,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getOtherAttendanceList(isRefresh: true);
     _getAllEmployee();
   }
 
@@ -131,6 +132,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
             elevation: 10.0,
             child: _maxPages > 0 ? NumberPaginator(
               numberPages: _maxPages,
+              initialPage: 0,
               buttonSelectedBackgroundColor: mainBgColor,
               onPageChange: (int index) {
                 setState(() {
@@ -196,9 +198,11 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                 setState(() {
                                   _selectedDay = date;
                                   _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay!)}';
+                                  _maxPages = 0;
+                                  _attendances.clear();
                                   print(_selectedDay);
                                 });
-                                _attendances.clear();
+
                                 _getOtherAttendanceList(isRefresh: true);
                               }
                             },
@@ -300,6 +304,13 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                 setState(() {
                   _attendances.clear();
                 });
+                _getOtherAttendanceList(isRefresh: false);
+
+                if(_attendances.isNotEmpty){
+                  _refreshController.refreshCompleted();
+                }else{
+                  _refreshController.refreshFailed();
+                }
               },
               child: ListView.builder(
                   itemBuilder: (context, index) {
@@ -321,7 +332,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                 padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                 child: Row(
                                   children: <Widget>[
-                                    const Text('Tên nhân viên:'),
+                                    const Expanded(child: Text('Tên nhân viên:')),
                                     const Spacer(),
                                     Text(_getEmployeeNamee(attendance.accountId)),
                                   ],
@@ -341,13 +352,24 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                 padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                 child: Row(
                                   children: <Widget>[
+                                    const Text('Ca làm việc:'),
+                                    const Spacer(),
+                                    Text(periodOfDayNames[attendance.periodOfDayId]),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                child: Row(
+                                  children: <Widget>[
                                     const Text('Trạng thái:'),
                                     const Spacer(),
                                     _customDropdownButton(attendance.attendanceStatusId, _attendances.indexOf(attendance)),
                                     if(attendance.attendanceStatusId == 0) const Text('Đúng giờ', style: TextStyle(fontSize: 16.0, color: Colors.green),),
                                     if(attendance.attendanceStatusId == 1) const Text('Cho phép trễ', style: TextStyle(fontSize: 16.0, color: Colors.blue),),
-                                    if(attendance.attendanceStatusId == 2) const Text('Trễ', style: TextStyle(fontSize: 16.0, color: Colors.yellow),),
-                                    if(attendance.attendanceStatusId == 3) const Text('Vắng', style: TextStyle(fontSize: 16.0, color: Colors.red,),),
+                                    if(attendance.attendanceStatusId == 2) const Text('Cho pheps nghỉ', style: TextStyle(fontSize: 16.0, color: Colors.purple),),
+                                    if(attendance.attendanceStatusId == 3) const Text('Trễ', style: TextStyle(fontSize: 16.0, color: Colors.brown,),),
+                                    if(attendance.attendanceStatusId == 4) const Text('Vắng', style: TextStyle(fontSize: 16.0, color: Colors.red,),),
                                   ],
                                 ),
                               ),
@@ -407,55 +429,29 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
         accountId: _currentAccount.accountId!, isRefresh: isRefresh, currentPage: _currentPage,
       attendanceStatusId: _attendanceStatusId, periodOfDay: _periodOfDayId, selectedDate: _selectedDay
     );
-  }
 
-  Widget _buildTableCalendarWithBuilders() {
-    return TableCalendar(
-      focusedDay: _focusedDay,
-      firstDay: DateTime.now().subtract(const Duration(days: 31)),
-      lastDay: DateTime.now(),
-      locale: 'vi_VI',
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarFormat: CalendarFormat.month,
-      availableGestures: AvailableGestures.all,
-      availableCalendarFormats: const {
-        CalendarFormat.month: '',
-        CalendarFormat.week: '',
-      },
-      selectedDayPredicate: (DateTime date) {
-        return isSameDay(_selectedDay, date);
-      },
-      onDaySelected: (DateTime selectDay, DateTime focusDay) {
-        setState(() {
-          _selectedDay = selectDay;
-          _focusedDay = focusDay;
-        });
-      },
-      calendarStyle: CalendarStyle(
-        isTodayHighlighted: true,
-        outsideDaysVisible: false,
-        weekendTextStyle:
-        const TextStyle().copyWith(color: Colors.blue[800]),
-        holidayTextStyle:
-        const TextStyle().copyWith(color: Colors.blue[800]),
-      ),
-      daysOfWeekStyle: DaysOfWeekStyle(
-        weekendStyle: const TextStyle().copyWith(color: Colors.blue[600]),
-      ),
-      headerStyle: const HeaderStyle(
-        titleCentered: true,
-        formatButtonVisible: false,
-      ),
-    );
+    _attendances.clear();
+    if(listAttendance != null){
+      setState(() {
+        _attendances.addAll(listAttendance);
+        _maxPages = _attendances[0].maxPage!;
+      });
+    }else{
+      setState(() {
+        _refreshController.loadNoData();
+      });
+    }
   }
 
   Widget _customDropdownButton(int attendanceStatusId, int index){
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
-        customButton: attendanceStatusId == 0 ? const Icon(Icons.access_time_filled, size: 30, color: Colors.green,)
-            : attendanceStatusId == 2 ? const Icon(Icons.access_time_filled, size: 30, color: Colors.yellow,)
-            : attendanceStatusId == 3 ? const Icon(Icons.access_time_filled, size: 30, color: Colors.red,)
-            : const Icon(Icons.access_time_filled, size: 30, color: Colors.blue,),
+        customButton: attendanceStatusId != 4 ? attendanceStatusId != 3 ? attendanceStatusId != 2 ? attendanceStatusId != 1 ?
+        const Icon(Icons.access_time_filled, size: 30, color: Colors.green,)
+            : const Icon(Icons.access_time_filled, size: 30, color: Colors.blue,)
+            : const Icon(Icons.access_time_filled, size: 30, color: Colors.purple,)
+            : const Icon(Icons.access_time_filled, size: 30, color: Colors.brown,)
+            : const Icon(Icons.access_time_filled, size: 30, color: Colors.red,),
         customItemsIndexes: const [4],
         customItemsHeight: 8,
         items: [
