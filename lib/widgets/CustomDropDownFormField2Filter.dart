@@ -2,7 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
 class CustomDropdownFormField2Filter extends StatelessWidget {
-  const CustomDropdownFormField2Filter({Key? key, required this.items, this.onChanged, this.borderColor, this.value, required this.label, this.borderRadius}) : super(key: key);
+  const CustomDropdownFormField2Filter({Key? key, required this.items, this.onChanged, this.borderColor, this.value, required this.label, this.borderRadius, this.dropdownWidth}) : super(key: key);
 
   final String label;
   final List<dynamic> items;
@@ -10,6 +10,7 @@ class CustomDropdownFormField2Filter extends StatelessWidget {
   final Color? borderColor;
   final String? value;
   final double? borderRadius;
+  final double? dropdownWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +42,14 @@ class CustomDropdownFormField2Filter extends StatelessWidget {
       isExpanded: true,
       hint: Text(
         label,
-        style: const TextStyle(fontSize: 12, color: defaultFontColor),
+        style: const TextStyle(fontSize: 12, color: defaultFontColor, fontWeight: FontWeight.w600),
       ),
       buttonHeight: 50,
       buttonPadding: const EdgeInsets.only(left: 10, right: 10),
       dropdownDecoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
       ),
+      dropdownWidth: dropdownWidth,
       items: items
           .map((item) =>
           DropdownMenuItem<String>(

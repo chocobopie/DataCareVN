@@ -71,7 +71,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) => const EmployeeIssueAddNew(),
-                  ));
+                  )).then((value) => _onGoBack());
                 },
                 backgroundColor: mainBgColor,
                 child: const Icon(Icons.plus_one),

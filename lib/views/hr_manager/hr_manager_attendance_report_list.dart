@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -9,6 +10,7 @@ import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -28,23 +30,22 @@ class HrManagerAttendanceReportList extends StatefulWidget {
 
 class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceReportList> {
 
+  late Account _currentAccount;
   late DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay = DateTime.now();
+  DateTime? _selectedDay;
+
   final RefreshController _refreshController = RefreshController();
   TextEditingController attendanceController = TextEditingController();
+
   late final List<Account> _employeeList = [];
-
-  bool isSearching = false;
-  bool isUpdatedAttendance = false;
-  int currentIndex = 0;
   List<int> listUpdateAttendId = [];
-
-  late Account _currentAccount;
   late final List<Attendance> _attendances = [];
-  String _filterDayString = 'Ngày';
-  bool _attendanceIsEmpty = false;
 
-  int _currentPage = 0, _maxPages = 0;
+  int? _periodOfDayId, _attendanceStatusId;
+  int _currentPage = 0, _maxPages = 0, _currentIndex = 0;
+  bool isSearching = false, isUpdatedAttendance = false;
+  String _filterDayString = 'Ngày';
+
 
   List<UserAttendance> userAttendances = [
     UserAttendance(id: '1', name: 'Thân Quang Nhân', team: 'Nhóm Thúy Anh', department: 'Đào tạo', attendance: 'Đúng giờ'),
@@ -82,7 +83,6 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    // _getOtherAttendanceList(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
     _getAllEmployee();
   }
 
@@ -137,7 +137,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                   _currentPage = index;
                   _attendances.clear();
                 });
-                // _getOtherAttendanceList(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
+                _getOtherAttendanceList(isRefresh: false);
               },
             ) : null,
           ),
@@ -158,82 +158,125 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               elevation: 0.0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25),
-                  topRight: Radius.circular(25),
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
                 ),
               ),
               margin: const EdgeInsets.only(top: 90.0),
               child: Padding(
-                padding: const EdgeInsets.only(top: 10, left: 10.0),
+                padding: const EdgeInsets.only(top: 10, left: 5.0),
                 child: Column(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                        const SizedBox(width: 5.0,),
-                        const CustomOutlinedButton(
-                            title: 'Trạng thái',
+                    SizedBox(
+                      height: 40.0,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.only(top: 15.0),
+                            child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                          ),
+                          const SizedBox(width: 5.0,),
+                          CustomOutlinedButton(
+                            title: _filterDayString,
                             radius: 10,
-                            color: mainBgColor
-                        ),
-                        CustomOutlinedButton(
-                          title: _filterDayString,
-                          radius: 10,
-                          color: mainBgColor,
-                          onPressed: () async {
-                            // _onPressed(context: context);
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            final date = await DatePicker.showDatePicker(
-                              context,
-                              locale : LocaleType.vi,
-                              minTime: DateTime.now().subtract(const Duration(days: 36500)),
-                              currentTime: DateTime.now(),
-                              maxTime: DateTime.now(),
-                            );
+                            color: mainBgColor,
+                            onPressed: () async {
+                              // _onPressed(context: context);
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              final date = await DatePicker.showDatePicker(
+                                context,
+                                locale : LocaleType.vi,
+                                minTime: DateTime.now().subtract(const Duration(days: 36500)),
+                                currentTime: DateTime.now(),
+                                maxTime: DateTime.now(),
+                              );
 
-                            if (date != null) {
-                              setState(() {
-                                _selectedDay = date;
-                                _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay)}';
-                                print(_selectedDay);
-                              });
-                            }
-                          },
-                        ),
-                        // DropdownButton2(
-                        //   customButton: const Icon(
-                        //     Icons.sort,
-                        //     size: 40,
-                        //     color: mainBgColor,
-                        //   ),
-                        //   items: [
-                        //     ...SortItems.firstItems.map(
-                        //           (item) =>
-                        //           DropdownMenuItem<SortItem>(
-                        //             value: item,
-                        //             child: SortItems.buildItem(item),
-                        //           ),
-                        //     ),
-                        //   ],
-                        //   onChanged: (value) {
-                        //   },
-                        //   itemHeight: 40,
-                        //   itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                        //   dropdownWidth: 160,
-                        //   dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                        //   dropdownDecoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(25),
-                        //     color: mainBgColor,
-                        //   ),
-                        //   dropdownElevation: 8,
-                        //   offset: const Offset(0, 8),
-                        // ),
-                        IconButton(
-                            onPressed: (){
+                              if (date != null) {
+                                setState(() {
+                                  _selectedDay = date;
+                                  _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay!)}';
+                                  print(_selectedDay);
+                                });
+                                _attendances.clear();
+                                _getOtherAttendanceList(isRefresh: true);
+                              }
                             },
-                            icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
-                        ),
-                      ],
+                          ),
+                          SizedBox(
+                            width: 110.0,
+                            child: CustomDropdownFormField2Filter(
+                              value: _periodOfDayId == null ? null : periodOfDayNamesFilter[_periodOfDayId!],
+                              borderColor: mainBgColor,
+                              items: periodOfDayNamesFilter,
+                              label: 'Ca làm việc',
+                              onChanged: (value){
+                                for(int i = 0; i < periodOfDay.length; i++){
+                                  if(value.toString() == periodOfDay[i].name){
+                                    _periodOfDayId = periodOfDay[i].periodOfDayId;
+                                    setState(() {
+                                      _maxPages = 0;
+                                      _attendances.clear();
+                                    });
+                                  }
+                                }
+                                _getOtherAttendanceList(isRefresh: true);
+                              },
+                            ),
+                          ),
+                          DropdownButton2(
+                            underline: const SizedBox(),
+                            buttonElevation: 0,
+                            customButton: Icon(
+                              Icons.timelapse,
+                              size: 40,
+                              color: _attendanceStatusId != null ? _attendanceStatusId != 4 ? _attendanceStatusId != 3 ? _attendanceStatusId != 2 ? _attendanceStatusId != 1
+                                  ? Colors.green : Colors.blue : Colors.purple : Colors.brown : Colors.red
+                                  : mainBgColor,
+                            ),
+                            items: [
+                              ...SortItems.firstItems.map(
+                                    (item) =>
+                                    DropdownMenuItem<SortItem>(
+                                      value: item,
+                                      child: SortItems.buildItem(item),
+                                    ),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              _attendanceStatusId = SortItems.onChanged(context, value as SortItem);
+                              setState(() {
+                                _maxPages = 0;
+                                _attendances.clear();
+                              });
+                              _getOtherAttendanceList(isRefresh: true);
+                            },
+                            itemHeight: 40,
+                            itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                            dropdownWidth: 150,
+                            dropdownPadding: const EdgeInsets.symmetric(vertical: 10),
+                            dropdownDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white,
+                            ),
+                            dropdownElevation: 8,
+                            offset: const Offset(0, 8),
+                          ),
+                          IconButton(
+                              onPressed: (){
+                                setState(() {
+                                  _periodOfDayId = null;
+                                  _attendanceStatusId = null;
+                                  _selectedDay = null;
+                                  _filterDayString = 'Ngày';
+                                });
+                                _attendances.clear();
+                                _getOtherAttendanceList(isRefresh: true);
+                              },
+                              icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -257,7 +300,6 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                 setState(() {
                   _attendances.clear();
                 });
-                // _getOtherAttendanceList(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId != 0 ? _currentAccount.roleId : null);
               },
               child: ListView.builder(
                   itemBuilder: (context, index) {
@@ -360,22 +402,12 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
     });
   }
 
-  // void _getOtherAttendanceList({required bool isRefresh, int? accountId, required int currentPage, DateTime? date, int? attendanceStatusId}) async {
-  //   List<Attendance>? attendanceList = await AttendanceListViewModel().getOtherAttendanceList(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, attendanceStatusId: attendanceStatusId, date: date);
-  //
-  //   if(attendanceList != null){
-  //     setState(() {
-  //       _attendances.clear();
-  //       _attendances.addAll(attendanceList);
-  //       _maxPages = _attendances[0].maxPage!;
-  //     });
-  //   }else{
-  //     setState(() {
-  //       _attendanceIsEmpty = true;
-  //     });
-  //   }
-  //
-  // }
+  void _getOtherAttendanceList({required bool isRefresh}) async {
+    List<Attendance>? listAttendance = await AttendanceListViewModel().getOtherAttendanceList(
+        accountId: _currentAccount.accountId!, isRefresh: isRefresh, currentPage: _currentPage,
+      attendanceStatusId: _attendanceStatusId, periodOfDay: _periodOfDayId, selectedDate: _selectedDay
+    );
+  }
 
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
@@ -440,38 +472,38 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
           if(_attendanceType.isNotEmpty){
             if(_attendanceType == 'Đúng giờ'){
               setState(() {
-                currentIndex = index;
+                _currentIndex = index;
                 attendanceController.text = _attendanceType;
-                listUpdateAttendId.add(currentIndex);
+                listUpdateAttendId.add(_currentIndex);
                 _updateAttendances(attendanceStatusId);
-                print(currentIndex);
+                print(_currentIndex);
                 print(attendanceController.text);
               });
             }else if(_attendanceType == 'Vắng'){
               setState(() {
-                currentIndex = index;
+                _currentIndex = index;
                 attendanceController.text = _attendanceType;
-                listUpdateAttendId.add(currentIndex);
+                listUpdateAttendId.add(_currentIndex);
                 _updateAttendances(attendanceStatusId);
-                print(currentIndex);
+                print(_currentIndex);
                 print(attendanceController.text);
               });
             }else if(_attendanceType == 'Cho phép trễ'){
               setState(() {
-                currentIndex = index;
+                _currentIndex = index;
                 attendanceController.text = _attendanceType;
-                listUpdateAttendId.add(currentIndex);
+                listUpdateAttendId.add(_currentIndex);
                 _updateAttendances(attendanceStatusId);
-                print(currentIndex);
+                print(_currentIndex);
                 print(attendanceController.text);
               });
             }else{
               setState(() {
-                currentIndex = index;
+                _currentIndex = index;
                 attendanceController.text = _attendanceType;
-                listUpdateAttendId.add(currentIndex);
+                listUpdateAttendId.add(_currentIndex);
                 _updateAttendances(attendanceStatusId);
-                print(currentIndex);
+                print(_currentIndex);
                 print(attendanceController.text);
               });
             }
@@ -511,7 +543,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               child: const Text("Lưu"),
               onPressed: () {
                 setState(() {
-                  userAttendances[currentIndex].attendance = attendanceController.text;
+                  userAttendances[_currentIndex].attendance = attendanceController.text;
                   Navigator.pop(context);
                 });
               },
@@ -602,38 +634,46 @@ class UserAttendance{
 
 }
 
-// class SortItems {
-//   static const List<SortItem> firstItems = [asc, des];
-//
-//   static const asc = SortItem(text: 'Ngày tăng dần', icon: Icons.arrow_drop_up);
-//   static const des = SortItem(text: 'Ngày giảm dần', icon: Icons.arrow_drop_down);
-//
-//
-//   static Widget buildItem(SortItem item) {
-//     return Row(
-//       children: [
-//         item.icon,
-//         const SizedBox(
-//           width: 10,
-//         ),
-//         Text(
-//           item.text,
-//           style: const TextStyle(
-//             color: defaultFontColor,
-//             fontSize: 16.0,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   static onChanged(BuildContext context, SortItem item) {
-//     switch (item) {
-//       case SortItems.asc:
-//         return true;
-//       case SortItems.des:
-//       //Do something
-//         return false;
-//     }
-//   }
-// }
+class SortItems {
+  static const List<SortItem> firstItems = [onTime, lateAccepted, dayOffAccepted, late, absent];
+
+  static const onTime = SortItem(text: 'Đúng giờ', icon: Icon(Icons.access_time_filled, color: Colors.green));
+  static const lateAccepted = SortItem(text: 'Cho phép trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
+  static const dayOffAccepted = SortItem(text: 'Cho phép nghỉ', icon: Icon(Icons.access_time_filled, color: Colors.purple));
+  static const late = SortItem(text: 'Trễ', icon: Icon(Icons.access_time_filled, color: Colors.brown));
+  static const absent = SortItem(text: 'Vắng', icon: Icon(Icons.access_time_filled, color: Colors.red));
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        item.icon,
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: defaultFontColor,
+            fontSize: 16.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.onTime:
+        return 0;
+      case SortItems.lateAccepted:
+        return 1;
+      case SortItems.dayOffAccepted:
+        return 2;
+      case SortItems.late:
+        return 3;
+      case SortItems.absent:
+        return 4;
+    }
+  }
+}

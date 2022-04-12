@@ -37,13 +37,6 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
   late double _timeHmsNow;
   late final DateTime _today;
 
-  final List<String> genderItems = [
-    'Male',
-    'Female',
-  ];
-
-  String? selectedValue;
-
   final RefreshController _refreshController = RefreshController();
 
   @override
@@ -108,7 +101,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
               ),
               margin: const EdgeInsets.only(top: 80.0),
               child: Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 10, right: 10.0),
+                padding: const EdgeInsets.only(left: 5.0, top: 10,),
                 child: Column(
                   children: <Widget>[
                     SizedBox(
@@ -294,7 +287,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                 child: Card(
                                   elevation: 5,
                                   shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderRadius: BorderRadius.all(Radius.circular(15)),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 20.0, top: 15.0, bottom: 15.0, right: 5.0),
@@ -304,9 +297,20 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                         const Spacer(),
                                         Expanded(child: Text(periodOfDayNames[_attendance.periodOfDayId])),
                                         const Spacer(),
-                                        if(_attendance.attendanceStatusId == 4 && ( _periodOfDayNowLocal == _attendance.periodOfDayId ) && _attendance.date == _today)
+                                        if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0) || (_timeHmsNow <= 2.30 && _timeHmsNow > 0) ) && _attendance.date == _today)
                                           const Expanded(child: Text('Chưa điểm danh', style: TextStyle(color: Colors.grey),),),
-                                        if(_periodOfDayNowLocal != _attendance.periodOfDayId || _attendance.date != _today)
+                                        if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0) || (_timeHmsNow <= 2.30 && _timeHmsNow > 0) ) && _attendance.date == _today)
+                                          Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                            style: TextStyle(color: _attendance.attendanceStatusId != 4
+                                                ? _attendance.attendanceStatusId != 3
+                                                ? _attendance.attendanceStatusId != 2
+                                                ? _attendance.attendanceStatusId != 1 ? Colors.green
+                                                : Colors.blue : Colors.purple : Colors.brown : Colors.red,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16.0
+                                            ),
+                                          ),),
+                                        if(_attendance.date != _today)
                                           Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
                                             style: TextStyle(color: _attendance.attendanceStatusId != 4
                                                 ? _attendance.attendanceStatusId != 3

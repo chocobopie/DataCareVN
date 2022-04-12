@@ -72,7 +72,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
               ),
               margin: const EdgeInsets.only(top: 100.0),
               child: _takeAttendanceString.isNotEmpty ? ListView(
-                padding: const EdgeInsets.only(top: 10.0, left: 1.0, right: 10.0, bottom: 5.0),
+                padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 5.0),
                 children: <Widget>[
                   Column(
                     children: <Widget>[
@@ -82,7 +82,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                       //Nút điểm danh
                       Column(
                         children: <Widget>[
-                          Text(_takeAttendanceString, style: const TextStyle(color: defaultFontColor),),
+                          Center(child: Text(_takeAttendanceString, style: const TextStyle(color: defaultFontColor),)),
                           const SizedBox(height: 20.0,),
                           Container(
                             decoration: BoxDecoration(
@@ -101,15 +101,20 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                             ),
                             child: (_isTook == false && _timeHms < 17.30 && _timeHms >= 8.30) ? TextButton(
                               onPressed: () async {
+                                showLoaderDialog(context);
                                 final data = await _takeAttendance(account: _currentAccount);
                                 if(data != null){
                                   if(data.attendanceStatusId != 4 && data.periodOfDayId == 0){
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Điểm danh thành công')));
                                     setState(() {
                                       _isTook = true;
                                       _takeAttendanceString = 'Bạn đã điểm danh ca sáng';
                                     });
                                   }else if(data.attendanceStatusId != 4 && data.periodOfDayId == 1){
                                     setState(() {
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Điểm danh thất bại')));
                                       _isTook = true;
                                       _takeAttendanceString = 'Bạn đã điểm danh ca chiều';
                                     });
@@ -222,7 +227,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
     if(listAttendance != null){
       setState(() {
         _attendances.addAll(listAttendance);
-        if(_timeHms >= 8.30 && _timeHms < 12){
+        if(_timeHms >= 8.30 && _timeHms < 10.30){
           if(_attendances[0].attendanceStatusId == 4){
             _isTook = false;
             _takeAttendanceString = 'Bạn chưa điểm danh ca sáng';
@@ -230,7 +235,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
             _isTook = true;
             _takeAttendanceString = 'Bạn đã điểm danh ca sáng';
           }
-        }else if(_timeHms >= 12 && _timeHms < 17.30){
+        }else if(_timeHms >= 12 && _timeHms < 14.30){
           if(_attendances[0].attendanceStatusId == 4){
             _isTook = false;
             _takeAttendanceString = 'Bạn chưa điểm danh ca chiều';
@@ -240,7 +245,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
           }
         } else{
           _isTook = true;
-          _takeAttendanceString = 'Bạn không thể điểm danh vì đã quá giờ điểm danh';
+          _takeAttendanceString = 'Bạn không thể điểm danh vì đã quá giờ hoặc chưa đến giờ điểm danh';
         }
 
       });
