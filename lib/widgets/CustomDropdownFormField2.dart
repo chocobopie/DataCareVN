@@ -26,7 +26,7 @@ class CustomDropdownFormField2 extends StatelessWidget {
           borderSide: const BorderSide(color: Colors.red, width: 2),
           borderRadius: BorderRadius.circular(10),
         ),
-        contentPadding: const EdgeInsets.only(left: 10.0, top: 5.0, bottom: 5.0, right: 5.0),
+        contentPadding: const EdgeInsets.only(left: 20.0, top: 2.0, bottom: 2.0, right: 5.0),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
               color: borderColor == null ? Colors.grey.shade300 : borderColor!,

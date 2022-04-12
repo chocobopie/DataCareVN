@@ -35,7 +35,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
     return Scaffold(
       drawer: SideBar(
         context,
-        name: 'Họ và tên',
+        name: _currentAccount.fullname!,
         role: rolesNames[_currentAccount.roleId!],
         imageUrl: 'assets/images/logo.png',
       ),

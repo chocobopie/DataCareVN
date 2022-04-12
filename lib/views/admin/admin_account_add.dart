@@ -262,6 +262,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
+                            isExpand: true,
                             label: 'Quyền xem thông tin khách hàng & hợp đồng & vấn đề',
                             colors: const [Colors.red, Colors.white],
                             children: <Widget>[
@@ -320,6 +321,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
+                            isExpand: true,
                             label: 'Quyền quản lý thông tin khách hàng',
                             colors: const [Colors.yellow, Colors.white],
                             children: <Widget>[
@@ -392,6 +394,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
+                          isExpand: true,
                           label: 'Quyền quản lý hợp đồng',
                           colors: const [Colors.green, Colors.white],
                           children: <Widget>[
@@ -464,6 +467,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
+                          isExpand: true,
                           label: 'Quyền quản lý vấn đề',
                           colors: const [Colors.orange, Colors.white],
                           children: <Widget>[
@@ -538,6 +542,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
+                          isExpand: true,
                           label: 'Quyền quản lý tài khoản nhân viên',
                           colors: const [Colors.blue, Colors.white],
                           children: <Widget>[
@@ -568,6 +573,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: CustomExpansionTile(
+                          isExpand: true,
                           label: 'Quyền quản lý điểm danh',
                           colors: const [Colors.yellow, Colors.white],
                           children: <Widget>[

@@ -92,7 +92,7 @@ class CustomEditableTextFormField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           floatingLabelBehavior: FloatingLabelBehavior.always,
-          contentPadding: const EdgeInsets.only(left: 10.0, top: 15.0, bottom: 15.0, right: 10.0),
+          contentPadding: const EdgeInsets.only(left: 20.0, top: 15.0, bottom: 15.0, right: 10.0),
           labelText: title,
           hintText: text,
           labelStyle: const TextStyle(
