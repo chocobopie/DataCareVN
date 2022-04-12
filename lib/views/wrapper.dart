@@ -78,8 +78,9 @@ class _WrapperState extends State<Wrapper> {
   }
 
   void geAllDepartment(){
+    departments.clear();
+
     ApiService().getAllDepartment().then((value) {
-      departments.clear();
       departments.addAll(value);
     });
   }
@@ -203,8 +204,8 @@ class _WrapperState extends State<Wrapper> {
   }
 
   void getAllTeams(){
+    teams.clear();
     ApiService().getAllTeam().then((value) {
-      teams.clear();
       teams.addAll(value);
     });
   }

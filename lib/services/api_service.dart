@@ -921,6 +921,31 @@ class ApiService {
     }
   }
 
+  Future<bool> updateAnAttendance({required Attendance attendance}) async {
+    String url = stockUrl + 'attendances/${attendance.attendanceId}';
+
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "attendanceId": attendance.attendanceId,
+        "accountId": attendance.accountId,
+        "date": attendance.date,
+        "attendanceStatusId": attendance.attendanceStatusId,
+        "periodOfDayId": attendance.periodOfDayId
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update Permission successfully | 200');
+      return true;
+    }else{
+      print('Update Permission failed | 400');
+      return false;
+    }
+  }
+
   //AttendanceStatus
   Future<List<AttendanceStatus>> getAttendanceStatus() async {
     String url = stockUrl + 'attendance-statuses';

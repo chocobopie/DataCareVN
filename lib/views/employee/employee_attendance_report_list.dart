@@ -113,28 +113,6 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                             padding: EdgeInsets.only(top: 15.0),
                             child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
                           ),
-                          const SizedBox(width: 10.0,),
-                          SizedBox(
-                            width: 110.0,
-                            child: CustomDropdownFormField2Filter(
-                                value: _periodOfDayId == null ? null : periodOfDayNamesFilter[_periodOfDayId!],
-                                borderColor: mainBgColor,
-                                items: periodOfDayNamesFilter,
-                                label: 'Ca làm việc',
-                                onChanged: (value){
-                                  for(int i = 0; i < periodOfDay.length; i++){
-                                    if(value.toString() == periodOfDay[i].name){
-                                      _periodOfDayId = periodOfDay[i].periodOfDayId;
-                                      setState(() {
-                                        _maxPages = 0;
-                                        _attendances.clear();
-                                      });
-                                    }
-                                  }
-                                  _getSelfAttendanceList(isRefresh: true);
-                                },
-                            ),
-                          ),
                           const SizedBox(width: 5.0,),
                           CustomOutlinedButton(
                             title: _fromDateToDateString,
@@ -158,7 +136,29 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                               }
                             },
                           ),
-                          const SizedBox(width: 10.0,),
+                          const SizedBox(width: 5.0,),
+                          SizedBox(
+                            width: 110.0,
+                            child: CustomDropdownFormField2Filter(
+                              value: _periodOfDayId == null ? null : periodOfDayNamesFilter[_periodOfDayId!],
+                              borderColor: mainBgColor,
+                              items: periodOfDayNamesFilter,
+                              label: 'Ca làm việc',
+                              onChanged: (value){
+                                for(int i = 0; i < periodOfDay.length; i++){
+                                  if(value.toString() == periodOfDay[i].name){
+                                    _periodOfDayId = periodOfDay[i].periodOfDayId;
+                                    setState(() {
+                                      _maxPages = 0;
+                                      _attendances.clear();
+                                    });
+                                  }
+                                }
+                                _getSelfAttendanceList(isRefresh: true);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 5.0,),
                           DropdownButton2(
                             underline: const SizedBox(),
                             buttonElevation: 0,
@@ -297,9 +297,20 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                         const Spacer(),
                                         Expanded(child: Text(periodOfDayNames[_attendance.periodOfDayId])),
                                         const Spacer(),
-                                        if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0) || (_timeHmsNow <= 2.30 && _timeHmsNow > 0) ) && _attendance.date == _today)
+                                        if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 12 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
                                           const Expanded(child: Text('Chưa điểm danh', style: TextStyle(color: Colors.grey),),),
-                                        if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0) || (_timeHmsNow <= 2.30 && _timeHmsNow > 0) ) && _attendance.date == _today)
+                                        if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 12 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                          Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                            style: TextStyle(color: _attendance.attendanceStatusId != 4
+                                                ? _attendance.attendanceStatusId != 3
+                                                ? _attendance.attendanceStatusId != 2
+                                                ? _attendance.attendanceStatusId != 1 ? Colors.green
+                                                : Colors.blue : Colors.purple : Colors.brown : Colors.red,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16.0
+                                            ),
+                                          ),),
+                                        if( ( (_timeHmsNow > 10.30 && _attendance.periodOfDayId == 0 ) || (_timeHmsNow > 14.30 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
                                           Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
                                             style: TextStyle(color: _attendance.attendanceStatusId != 4
                                                 ? _attendance.attendanceStatusId != 3
@@ -385,6 +396,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
     _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
     if(_timeHmsNow <= 10.30) _periodOfDayNowLocal = 0;
     if(_timeHmsNow > 12 && _timeHmsNow < 17.30) _periodOfDayNowLocal = 1;
+    print(_today);
   }
 }
 

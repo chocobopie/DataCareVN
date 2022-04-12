@@ -9,6 +9,7 @@ import 'package:login_sample/models/attendance.dart';
 import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
+import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -31,8 +32,7 @@ class HrManagerAttendanceReportList extends StatefulWidget {
 class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceReportList> {
 
   late Account _currentAccount;
-  late DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime? _selectedDay = DateTime.parse( DateFormat('yyyy-MM-dd').format(DateTime.now()));
 
   final RefreshController _refreshController = RefreshController();
   TextEditingController attendanceController = TextEditingController();
@@ -44,7 +44,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   int? _periodOfDayId, _attendanceStatusId;
   int _currentPage = 0, _maxPages = 0, _currentIndex = 0;
   bool isSearching = false, isUpdatedAttendance = false;
-  String _filterDayString = 'Ngày';
+  String _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
 
 
   List<UserAttendance> userAttendances = [
@@ -184,7 +184,6 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                             radius: 10,
                             color: mainBgColor,
                             onPressed: () async {
-                              // _onPressed(context: context);
                               FocusScope.of(context).requestFocus(FocusNode());
                               final date = await DatePicker.showDatePicker(
                                 context,
@@ -196,7 +195,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
 
                               if (date != null) {
                                 setState(() {
-                                  _selectedDay = date;
+                                  _selectedDay = DateTime.parse( DateFormat('yyyy-MM-dd').format(date) );
                                   _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay!)}';
                                   _maxPages = 0;
                                   _attendances.clear();
@@ -207,6 +206,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                               }
                             },
                           ),
+                          const SizedBox(width: 5.0,),
                           SizedBox(
                             width: 110.0,
                             child: CustomDropdownFormField2Filter(
@@ -228,6 +228,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                               },
                             ),
                           ),
+                          const SizedBox(width: 5.0,),
                           DropdownButton2(
                             underline: const SizedBox(),
                             buttonElevation: 0,
@@ -271,10 +272,11 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                 setState(() {
                                   _periodOfDayId = null;
                                   _attendanceStatusId = null;
-                                  _selectedDay = null;
-                                  _filterDayString = 'Ngày';
+                                  _selectedDay = DateTime.parse( DateFormat('yyyy-MM-dd').format(DateTime.now()));
+                                  _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
                                 });
                                 _attendances.clear();
+                                _getAllEmployee();
                                 _getOtherAttendanceList(isRefresh: true);
                               },
                               icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
@@ -297,90 +299,87 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               ),
             ),
             margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
-            child: _attendances.isNotEmpty ? SmartRefresher(
-              controller: _refreshController,
-              enablePullUp: true,
-              onRefresh: () async {
-                setState(() {
-                  _attendances.clear();
-                });
-                _getOtherAttendanceList(isRefresh: false);
+            child: _attendances.isNotEmpty ? Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 40.0, right: 30.0),
+                  child: Row(
+                    children: const <Widget>[
+                      Expanded(child: Text('Tên', style: TextStyle(color: defaultFontColor),), flex: 1,),
+                      Spacer(),
+                      Expanded(child: Text('Ca làm việc', style: TextStyle(color: defaultFontColor),), flex: 0,),
+                      Spacer(),
+                      Expanded(child: Text('Trạng thái', style: TextStyle(color: defaultFontColor),), flex: 0,)
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: SmartRefresher(
+                    controller: _refreshController,
+                    enablePullUp: true,
+                    onRefresh: () async {
+                      setState(() {
+                        _attendances.clear();
+                      });
+                      _getOtherAttendanceList(isRefresh: false);
+                      _getAllEmployee();
 
-                if(_attendances.isNotEmpty){
-                  _refreshController.refreshCompleted();
-                }else{
-                  _refreshController.refreshFailed();
-                }
-              },
-              child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    final attendance = _attendances[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
-                      child: Card(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15.0)
-                          )
-                        ),
-                        elevation: 10.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
+                      if(_attendances.isNotEmpty){
+                        _refreshController.refreshCompleted();
+                      }else{
+                        _refreshController.refreshFailed();
+                      }
+                    },
+                    child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          final attendance = _attendances[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
+                            child: Card(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15.0)
+                                )
+                              ),
+                              elevation: 10.0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
                                   children: <Widget>[
-                                    const Expanded(child: Text('Tên nhân viên:')),
-                                    const Spacer(),
-                                    Text(_getEmployeeNamee(attendance.accountId)),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
+                                        children: <Widget>[
+
+                                          Expanded(child: Text(_getEmployeeName(attendance.accountId)), flex: 2,),
+                                          const Spacer(),
+                                          
+                                          Expanded(child: Text(periodOfDayNames[attendance.periodOfDayId]), flex: 1,),
+                                          const Spacer(),
+                                          _customDropdownButton(attendance, _attendances.indexOf(attendance)),
+                                          if(attendance.attendanceStatusId == 0) const Expanded(child: Text('Đúng giờ', style: TextStyle(fontSize: 16.0, color: Colors.green),)),
+
+                                          if(attendance.attendanceStatusId == 1) const Expanded(child: Text('Cho phép trễ', style: TextStyle(fontSize: 16.0, color: Colors.blue),)),
+
+                                          if(attendance.attendanceStatusId == 2) const Expanded(child: Text('Cho pheps nghỉ', style: TextStyle(fontSize: 16.0, color: Colors.purple),)),
+
+                                          if(attendance.attendanceStatusId == 3) const Expanded(child: Text('Trễ', style: TextStyle(fontSize: 16.0, color: Colors.brown,),)),
+
+                                          if(attendance.attendanceStatusId == 4) const Expanded(child: Text('Vắng', style: TextStyle(fontSize: 16.0, color: Colors.red,),)),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    const Text('Ngày:'),
-                                    const Spacer(),
-                                    Text(DateFormat('dd-MM-yyyy').format(attendance.date)),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    const Text('Ca làm việc:'),
-                                    const Spacer(),
-                                    Text(periodOfDayNames[attendance.periodOfDayId]),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    const Text('Trạng thái:'),
-                                    const Spacer(),
-                                    _customDropdownButton(attendance.attendanceStatusId, _attendances.indexOf(attendance)),
-                                    if(attendance.attendanceStatusId == 0) const Text('Đúng giờ', style: TextStyle(fontSize: 16.0, color: Colors.green),),
-                                    if(attendance.attendanceStatusId == 1) const Text('Cho phép trễ', style: TextStyle(fontSize: 16.0, color: Colors.blue),),
-                                    if(attendance.attendanceStatusId == 2) const Text('Cho pheps nghỉ', style: TextStyle(fontSize: 16.0, color: Colors.purple),),
-                                    if(attendance.attendanceStatusId == 3) const Text('Trễ', style: TextStyle(fontSize: 16.0, color: Colors.brown,),),
-                                    if(attendance.attendanceStatusId == 4) const Text('Vắng', style: TextStyle(fontSize: 16.0, color: Colors.red,),),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: _attendances.length,
-              ),
+                            ),
+                          );
+                        },
+                        itemCount: _attendances.length,
+                    ),
+                  ),
+                ),
+              ],
             ) : const Center(child: CircularProgressIndicator()),
           ),
           Positioned(
@@ -406,7 +405,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
     );
   }
 
-  String _getEmployeeNamee(int accountId){
+  String _getEmployeeName(int accountId){
     String name = '';
     for(int i = 0; i < _employeeList.length; i++){
       if(accountId == _employeeList[i].accountId){
@@ -416,8 +415,14 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
     return name;
   }
 
+  Future<bool> _updateAnAttendance(Attendance attendance) async {
+    bool result = await AttendanceViewModel().updateAnAttendance(attendance: attendance);
+    return result;
+  }
+
   void _getAllEmployee() async {
-    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: true, currentPage: 0, accountId: 0, limit: 100000);
+    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: true, currentPage: 0, accountId: _currentAccount.accountId!, limit: 100000);
+    _employeeList.clear();
 
     setState(() {
       _employeeList.addAll(accountList);
@@ -443,10 +448,10 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
     }
   }
 
-  Widget _customDropdownButton(int attendanceStatusId, int index){
+  Widget _customDropdownButton(Attendance attendance, int index){
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
-        customButton: attendanceStatusId != 4 ? attendanceStatusId != 3 ? attendanceStatusId != 2 ? attendanceStatusId != 1 ?
+        customButton: attendance.attendanceStatusId != 4 ? attendance.attendanceStatusId != 3 ? attendance.attendanceStatusId != 2 ? attendance.attendanceStatusId != 1 ?
         const Icon(Icons.access_time_filled, size: 30, color: Colors.green,)
             : const Icon(Icons.access_time_filled, size: 30, color: Colors.blue,)
             : const Icon(Icons.access_time_filled, size: 30, color: Colors.purple,)
@@ -464,46 +469,8 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
           ),
         ],
         onChanged: (value) {
-          String _attendanceType = MenuItems.onChanged(context, value as MenuItem);
-          if(_attendanceType.isNotEmpty){
-            if(_attendanceType == 'Đúng giờ'){
-              setState(() {
-                _currentIndex = index;
-                attendanceController.text = _attendanceType;
-                listUpdateAttendId.add(_currentIndex);
-                _updateAttendances(attendanceStatusId);
-                print(_currentIndex);
-                print(attendanceController.text);
-              });
-            }else if(_attendanceType == 'Vắng'){
-              setState(() {
-                _currentIndex = index;
-                attendanceController.text = _attendanceType;
-                listUpdateAttendId.add(_currentIndex);
-                _updateAttendances(attendanceStatusId);
-                print(_currentIndex);
-                print(attendanceController.text);
-              });
-            }else if(_attendanceType == 'Cho phép trễ'){
-              setState(() {
-                _currentIndex = index;
-                attendanceController.text = _attendanceType;
-                listUpdateAttendId.add(_currentIndex);
-                _updateAttendances(attendanceStatusId);
-                print(_currentIndex);
-                print(attendanceController.text);
-              });
-            }else{
-              setState(() {
-                _currentIndex = index;
-                attendanceController.text = _attendanceType;
-                listUpdateAttendId.add(_currentIndex);
-                _updateAttendances(attendanceStatusId);
-                print(_currentIndex);
-                print(attendanceController.text);
-              });
-            }
-          }
+          int replaceAttendanceStatusId = MenuItems.onChanged(context, value as MenuItem);
+          _updateAttendances(attendance, replaceAttendanceStatusId);
         },
         itemHeight: 48,
         itemPadding: const EdgeInsets.only(left: 10),
@@ -518,28 +485,60 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
     );
   }
 
-  void _updateAttendances(int attendanceStatusId){
-    if(attendanceStatusUtilities[attendanceStatusId] != attendanceController.text) {
+  void _updateAttendances(Attendance attendance, int replaceAttendanceStatusId){
+    if(attendance.attendanceStatusId != replaceAttendanceStatusId) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
+          contentPadding: const EdgeInsets.all(5.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
           ),
-          title: Text(
-            'Thay đổi trạng thái từ ${attendanceStatusUtilities[attendanceStatusId]} thành ${attendanceController.text}',
-            style: const TextStyle(fontSize: 18.0, color: defaultFontColor),
+          title: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Thay đổi trạng thái của ${_getEmployeeName(attendance.accountId)} ngày ${DateFormat('dd-MM-yyyy').format(attendance.date)} ca ${periodOfDayNames[attendance.periodOfDayId]}',
+                        style: const TextStyle(fontSize: 18.0, color: defaultFontColor),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Spacer(),
+                    Text(
+                      attendanceStatusNames[attendance.attendanceStatusId],
+                      style: TextStyle(fontSize: 18.0, color: attendance.attendanceStatusId != 4 ? attendance.attendanceStatusId != 3 ? attendance.attendanceStatusId != 0 ? null : Colors.green : Colors.brown : Colors.red),
+                    ),
+                    const Spacer(),
+                    const Icon(Icons.arrow_forward_outlined, color: defaultFontColor,),
+                    const Spacer(),
+                    Text(
+                      attendanceStatusNames[replaceAttendanceStatusId],
+                      style: TextStyle(fontSize: 18.0, color: replaceAttendanceStatusId != 4 ? replaceAttendanceStatusId != 3 ? replaceAttendanceStatusId != 0 ? null : Colors.green : Colors.brown : Colors.red),
+                    ),
+                    const Spacer(),
+                  ],
+                )
+              ],
+            ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text("Huỷ"),
+              child: const Text("Huỷ", style: TextStyle(fontSize: 16.0),),
               onPressed: () => Navigator.pop(context),
             ),
             TextButton(
-              child: const Text("Lưu"),
+              child: const Text("Lưu", style: TextStyle(fontSize: 16.0)),
               onPressed: () {
                 setState(() {
-                  userAttendances[_currentIndex].attendance = attendanceController.text;
+
                   Navigator.pop(context);
                 });
               },
@@ -562,12 +561,12 @@ class MenuItem {
 }
 
 class MenuItems {
-  static const List<MenuItem> firstItems = [attend, late, absent, lateAccepted];
+  static const List<MenuItem> firstItems = [onTime, late, absent];
 
-  static const attend = MenuItem(text: 'Có mặt', icon: Icon(Icons.access_time_filled, color: Colors.green));
+  static const onTime = MenuItem(text: 'Đúng giờ', icon: Icon(Icons.access_time_filled, color: Colors.green));
+  static const late = MenuItem(text: 'Trễ', icon: Icon(Icons.access_time_filled, color: Colors.brown));
   static const absent = MenuItem(text: 'Vắng', icon: Icon(Icons.access_time_filled, color: Colors.red));
-  static const late = MenuItem(text: 'Trễ', icon: Icon(Icons.access_time_filled, color: Colors.yellow));
-  static const lateAccepted = MenuItem(text: 'Được đi trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
+  // static const lateAccepted = MenuItem(text: 'Được đi trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
 
   static Widget buildItem(MenuItem item) {
     return Row(
@@ -589,14 +588,12 @@ class MenuItems {
 
   static onChanged(BuildContext context, MenuItem item) {
     switch (item) {
-      case MenuItems.attend:
-        return 'Đúng giờ';
+      case MenuItems.onTime:
+        return 0;
       case MenuItems.late:
-        return 'Trễ';
+        return 3;
       case MenuItems.absent:
-        return 'Vắng';
-      case MenuItems.lateAccepted:
-        return 'Cho phép trễ';
+        return 4;
     }
   }
 }

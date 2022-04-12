@@ -12,4 +12,12 @@ class AttendanceViewModel with ChangeNotifier{
 
     return takeAttend;
   }
+
+  Future<bool> updateAnAttendance({required Attendance attendance}) async {
+    bool result = await ApiService().updateAnAttendance(attendance: attendance);
+
+    notifyListeners();
+
+    return result;
+  }
 }
