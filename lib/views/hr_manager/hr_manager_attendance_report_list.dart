@@ -537,11 +537,9 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
             TextButton(
               child: const Text("Lưu", style: TextStyle(fontSize: 16.0)),
               onPressed: () async {
-                Navigator.pop(context);
                 showLoaderDialog(context);
-
                   Attendance updateAttendance = Attendance(
-                      attendanceId: attendance.accountId, 
+                      attendanceId: attendance.attendanceId,
                       accountId: attendance.accountId, 
                       date: attendance.date, 
                       attendanceStatusId: replaceAttendanceStatusId, 
@@ -552,11 +550,12 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                   if(data == true){
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cập nhật trạng thái cho ${_getEmployeeName(attendance.accountId)} thành công')));
+                    _getOtherAttendanceList(isRefresh: false);
+                    Navigator.pop(context);
                   }else{
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cập nhật trạng thái cho ${_getEmployeeName(attendance.accountId)} thất bại')));
                   }
-                  _getOtherAttendanceList(isRefresh: false);
 
               },
             ),
