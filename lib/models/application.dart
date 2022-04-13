@@ -6,27 +6,27 @@ String applicationToJson(Application data) => json.encode(data.toJson());
 
 class Application {
   Application({
-    required this.applicationId,
+    this.applicationId,
     required this.accountId,
-    required this.createdDate,
+    this.createdDate,
     required this.assignedDate,
     required this.description,
-    required this.expectedWorkingTime,
-    required this.applicationStatusId,
+    this.expectedWorkingTime,
+    this.applicationStatusId,
     required this.applicationTypeId,
-    required this.periodOfDayId,
+    this.periodOfDayId,
     this.maxPage,
   });
 
-  int applicationId;
+  int? applicationId;
   int accountId;
-  DateTime createdDate;
+  DateTime? createdDate;
   DateTime assignedDate;
   String description;
-  DateTime expectedWorkingTime;
-  int applicationStatusId;
+  DateTime? expectedWorkingTime;
+  int? applicationStatusId;
   int applicationTypeId;
-  int periodOfDayId;
+  int? periodOfDayId;
   int? maxPage;
 
   factory Application.fromJson(Map<String, dynamic> json) => Application(
@@ -45,10 +45,10 @@ class Application {
   Map<String, dynamic> toJson() => {
     "applicationId": applicationId,
     "accountId": accountId,
-    "createdDate": createdDate.toIso8601String(),
+    "createdDate": createdDate?.toIso8601String(),
     "assignedDate": assignedDate.toIso8601String(),
     "description": description,
-    "expectedWorkingTime": expectedWorkingTime.toIso8601String(),
+    "expectedWorkingTime": expectedWorkingTime?.toIso8601String(),
     "applicationStatusId": applicationStatusId,
     "applicationTypeId": applicationTypeId,
     "periodOfDayId": periodOfDayId,

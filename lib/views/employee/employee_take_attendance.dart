@@ -155,7 +155,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                         padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                         child: IconTextButtonSmall2(
                             imageUrl: 'assets/images/late-person.png',
-                            text: 'Xin đi trễ',
+                            text: 'Xin đi trễ / Xin nghỉ phép',
                             colorsButton: const [Colors.red, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
@@ -230,12 +230,9 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
     if(listAttendance != null){
       setState(() {
         _attendances.addAll(listAttendance);
-        Attendance? _attendance;
-        for(int i = 0; i < _attendances.length; i++){
-          _attendance = _attendances[i];
 
           if(_timeHms >= 8.30 && _timeHms < 10.30){
-            if(_attendance.attendanceStatusId == 4 && _attendance.periodOfDayId == 0){
+            if(_attendances[0].attendanceStatusId == 4 && _attendances[0].periodOfDayId == 0){
               _isTook = false;
               _takeAttendanceString = 'Bạn chưa điểm danh ca sáng';
             }else{
@@ -243,7 +240,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
               _takeAttendanceString = 'Bạn đã điểm danh ca sáng';
             }
           }else if(_timeHms >= 12 && _timeHms < 14.30){
-            if(_attendance.attendanceStatusId == 4 && _attendance.periodOfDayId == 1){
+            if(_attendances[1].attendanceStatusId == 4 && _attendances[1].periodOfDayId == 1){
               _isTook = false;
               _takeAttendanceString = 'Bạn chưa điểm danh ca chiều';
             }else{
@@ -255,7 +252,6 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
             _takeAttendanceString = 'Bạn không thể điểm danh vì đã quá giờ hoặc chưa đến giờ điểm danh';
           }
 
-        }
 
       });
     }else{

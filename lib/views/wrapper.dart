@@ -229,6 +229,8 @@ class _WrapperState extends State<Wrapper> {
 
     applicationTypes = await ApplicationTypeListViewModel().getApplicationType();
 
+    applicationTypesNames.clear();
+
     for(int i = 0; i < applicationTypes.length; i++){
       applicationTypesNames.add(applicationTypes[i].name);
     }

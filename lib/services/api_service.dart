@@ -1491,6 +1491,37 @@ class ApiService {
       return false;
     }
   }
+  //Application
+  Future<bool> sendApplication(Application application) async {
+    String url = stockUrl + 'application';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "accountId": application.accountId,
+        "assignedDate": application.assignedDate.toIso8601String(),
+        "description": application.description,
+        "expectedWorkingTime": application.expectedWorkingTime?.toIso8601String(),
+        "applicationTypeId": application.applicationTypeId,
+        "periodOfDayId": application.periodOfDayId,
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Send application successfully | 200');
+      // return Contact.fromJson(jsonDecode(response.body));
+      return true;
+    }else{
+      print('Send application failed | 400');
+
+      // Contact? contact;
+
+      return false;
+    }
+  }
+
 
   //ApplicationType
   Future<List<ApplicationType>> getApplicationType() async {

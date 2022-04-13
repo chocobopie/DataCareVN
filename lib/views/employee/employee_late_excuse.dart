@@ -2,14 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/application.dart';
+import 'package:login_sample/view_models/application_view_model.dart';
 import 'package:login_sample/views/employee/employee_late_excuse_list.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeLateExcuse extends StatefulWidget {
   const EmployeeLateExcuse({Key? key}) : super(key: key);
@@ -21,17 +24,29 @@ class EmployeeLateExcuse extends StatefulWidget {
 class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
 
   final GlobalKey<FormState> _formKey = GlobalKey();
-
-  String _lateExcuseDate = '', _lateExcuseTime = '', _lateExcuseError = '';
-  DateTime? expectedLateDate;
-  int? _periodOfDayId;
-  final TextEditingController _lateReason = TextEditingController();
+  Account? _currentAccount;
+  double? _currentTimeCalculated;
+  String _lateExcuseDateString = '', _expectedWorkingTimeString = '', _expectedWorkingTimeError = '', _periodOfDayError = '';
+  DateTime? _assignedDate, _expectedWorkingTime, _currentDate, _currentTime;
+  int? _periodOfDayId, _applicationTypeId;
+  final TextEditingController _description = TextEditingController();
   bool _isAllowTime = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _currentDate = DateTime.tryParse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
+    _currentTime = _currentDate!.add(Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
+    _currentTimeCalculated = _currentTime!.hour + _currentTime!.minute/100;
+    print(_currentDate );
+    print(_currentTime);
+  }
 
   @override
   void dispose() {
     super.dispose();
-    _lateReason.dispose();
+    _description.dispose();
   }
 
   @override
@@ -61,105 +76,194 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                 child: ListView(
                   padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
                   children: <Widget>[
-                    //Xin đi trễ ngày
-                    const SizedBox(height: 20.0,),
-                    CustomEditableTextFormField(
-                      text: _lateExcuseDate,
-                      title: 'Xin đi trễ ngày',
-                      readonly: true,
-                      onTap: () async {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        final excuseDate = await DatePicker.showDatePicker(
-                          context,
-                          locale : LocaleType.vi,
-                          minTime: DateTime.now(),
-                          currentTime: DateTime.now(),
-                          maxTime: DateTime.now().add(const Duration(days: 36500)),
-                        );
-                        if(excuseDate != null){
-                          setState(() {
-                            expectedLateDate =  DateTime.tryParse(DateFormat('yyyy-MM-dd').format(excuseDate));
-                            _lateExcuseDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(expectedLateDate!)}';
-                          });
-                          print('Ngày xin đi trễ $expectedLateDate');
-                        }
-                      },
-                    ),
-                    //Xin đi muộn ca làm việc
-                    const SizedBox(height: 20,),
-                    CustomDropdownFormField2(
-                        value: _periodOfDayId != null ? periodOfDayNames[_periodOfDayId!] : null,
-                        label: 'Xin đi muộn ca',
-                        hintText: const Text(''),
-                        items: periodOfDayNamesFilter,
-                        onChanged: (value){
-                          for(int i = 0; i < periodOfDay.length; i++){
-                            if(value.toString() == periodOfDay[i].name){
+
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: CustomDropdownFormField2(
+                          value: _applicationTypeId != null ? applicationTypesNames[_applicationTypeId!] : null,
+                          label: 'Loại đơn',
+                          hintText: const Text(''),
+                          items: applicationTypesNames,
+                          onChanged: (value){
+                            for(int i = 0; i < applicationTypes.length; i++){
+                              if(value.toString() == applicationTypes[i].name){
+                                setState(() {
+                                  _applicationTypeId = applicationTypes[i].applicationTypeId;
+                                });
+                              }
+                            }
+                            if(_applicationTypeId == 0){
+                              _isAllowTime = true;
+                              _expectedWorkingTime = null;
+                              _expectedWorkingTimeString = '';
+                              _periodOfDayId = null;
+                              _periodOfDayError = '';
+                            }else if(_applicationTypeId == 1){
                               setState(() {
-                                _periodOfDayId = periodOfDay[i].periodOfDayId;
+                                _isAllowTime = true;
+                                _expectedWorkingTime = null;
+                                _expectedWorkingTimeString = '';
+                                _periodOfDayId = null;
+                                _periodOfDayError = '';
                               });
                             }
                           }
-                        }
+                      ),
                     ),
-                    //Thời gian dự kiến đến công ty
-                    const SizedBox(height: 20.0,),
-                    if(_periodOfDayId != null)
-                    CustomEditableTextFormField(
-                        text: _lateExcuseTime,
-                        title: 'Thời gian dự kiến đến công ty',
-                        readonly: true,
-                        onTap: () async {
-                          DatePicker.showTimePicker(context,
-                              showSecondsColumn: false,
-                              showTitleActions: true,
-                              onConfirm: (date){
-                                _lateExcuseTime = DateFormat.Hm().format(date);
-                                print(date.hour);
 
-                                if(_periodOfDayId == 0){
-                                  if(  ( (date.hour + date.minute/100) >= 9.30 ) && ( (date.hour + date.minute/100) <= 10.30 ) ){
-                                    setState(() {
-                                      _isAllowTime = false;
-                                      _lateExcuseError = 'Bạn chỉ được xin phép đi trễ từ 9 giờ 30 - 10 giờ 30';
-                                    });
-                                  }else{
-                                    setState(() {
-                                      _isAllowTime = true;
-                                      _lateExcuseError = '';
-                                    });
-                                  }
-                                }else if(_periodOfDayId == 1){
-                                  if(  ( (date.hour + date.minute/100) < 9.30 ) ){
-                                    setState(() {
-                                      _isAllowTime = false;
-                                      _lateExcuseError = 'Bạn chỉ được xin phép đi trễ từ 9 giờ 30 - 10 giờ 30';
-                                    });
-                                  }else{
-                                    setState(() {
-                                      _isAllowTime = true;
-                                      _lateExcuseError = '';
-                                    });
-                                  }
+
+                    if(_applicationTypeId != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: CustomEditableTextFormField(
+                            text: _lateExcuseDateString,
+                            title: _applicationTypeId == 1 ? 'Xin đi trễ ngày' : 'Xin nghỉ phép ngày',
+                            readonly: true,
+                            onTap: () async {
+                              final excuseDate = await DatePicker.showDatePicker(
+                                context,
+                                locale : LocaleType.vi,
+                                minTime: DateTime.now(),
+                                currentTime: DateTime.now(),
+                                maxTime: DateTime.now().add(const Duration(days: 36500)),
+                              );
+                              if(excuseDate != null){
+                                setState(() {
+                                  _assignedDate =  DateTime.tryParse(DateFormat('yyyy-MM-dd').format(excuseDate));
+                                  _lateExcuseDateString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_assignedDate!)}';
+                                  _isAllowTime = true;
+                                  _expectedWorkingTime = null;
+                                  _expectedWorkingTimeString = '';
+                                  _periodOfDayId = null;
+                                  _periodOfDayError = '';
+                                });
+
+                              }
+                            },
+                          ),
+                      ),
+
+                    if(_applicationTypeId != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: CustomDropdownFormField2(
+                            value: _periodOfDayId != null ? periodOfDayNames[_periodOfDayId!] : null,
+                            label: _applicationTypeId == 1 ? 'Xin đi trễ buổi' : 'Xin nghỉ phép buổi',
+                            hintText: const Text(''),
+                            items: _applicationTypeId == 1 ? periodOfDayNamesFilter : periodOfDayNames,
+                            onChanged: (value){
+                              for(int i = 0; i < periodOfDay.length; i++){
+                                if(value.toString() == periodOfDay[i].name){
+                                  setState(() {
+                                    _periodOfDayId = periodOfDay[i].periodOfDayId;
+                                  });
                                 }
+                              }
+                              if( (_applicationTypeId != null) && (_periodOfDayId == 0 || _periodOfDayId == 2) && _assignedDate == _currentDate && _currentTimeCalculated! >= 8.30 ){
+                                setState(() {
+                                  _isAllowTime = false;
+                                  _periodOfDayError = 'Bạn không thể gửi ${applicationTypesNames[_applicationTypeId!]} cho ${periodOfDayNames[_periodOfDayId!]} vì đã quá 8 giờ 30';
+                                  _periodOfDayId = null;
+                                });
+                              }else if( (_applicationTypeId != null) && _periodOfDayId == 1 && _assignedDate == _currentDate && _currentTimeCalculated! >= 12.30 ){
+                                setState(() {
+                                  _isAllowTime = false;
+                                  _periodOfDayError = 'Bạn không thể gửi ${applicationTypesNames[_applicationTypeId!]} cho ${periodOfDayNames[_periodOfDayId!]} vì đã quá 12 giờ 30';
+                                  _periodOfDayId = null;
+                                });
+                              }else{
+                                setState(() {
+                                  _isAllowTime = true;
+                                  _periodOfDayError = '';
+                                });
+                              }
+                              print(_periodOfDayId);
+                              setState(() {
+                                _expectedWorkingTime = null;
+                                _expectedWorkingTimeString = '';
+                              });
 
-                              },
-                              locale: LocaleType.vi
-                          );
-                        },
+                            }
+                        ),
+                      ),
+
+                    if(_isAllowTime == false && _periodOfDayError.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text( _periodOfDayError, style: const TextStyle(color: Colors.red),),
+                      ),
+
+                    //Thời gian dự kiến đến công ty
+                    if(_periodOfDayId != null && _assignedDate != null && _applicationTypeId == 1)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: CustomEditableTextFormField(
+                          text: _expectedWorkingTimeString,
+                          title: 'Thời gian dự kiến đến công ty',
+                          readonly: true,
+                          onTap: () async {
+                            DatePicker.showTimePicker(context,
+                                showSecondsColumn: false,
+                                showTitleActions: true,
+                                onConfirm: (date){
+                                  _expectedWorkingTime = DateTime.tryParse(DateFormat('yyyy-MM-dd').format(_assignedDate!));
+                                  _expectedWorkingTime = _assignedDate?.add(Duration(hours: date.hour, minutes: date.minute));
+                                  _expectedWorkingTimeString = DateFormat.Hm().format(date);
+                                  print(_assignedDate);
+                                  print(_expectedWorkingTime);
+                                  print(date);
+
+                                  if(_periodOfDayId == 0){
+                                    if(  ( (date.hour + date.minute/100) < 9.30 ) || ( (date.hour + date.minute/100) > 10.30 ) ){
+                                      setState(() {
+                                        _isAllowTime = false;
+                                        _expectedWorkingTimeError = 'Bạn chỉ được xin phép đi trễ từ 9 giờ 30 - 10 giờ 30';
+                                        _expectedWorkingTime = null;
+                                        _expectedWorkingTimeString = '';
+                                      });
+                                    }else{
+                                      setState(() {
+                                        _isAllowTime = true;
+                                        _expectedWorkingTimeError = '';
+                                      });
+                                    }
+                                  }else if(_periodOfDayId == 1){
+                                    if(  ( (date.hour + date.minute/100) < 13.30 ) || (date.hour + date.minute/100) > 14.30 ){
+                                      setState(() {
+                                        _isAllowTime = false;
+                                        _expectedWorkingTimeError = 'Bạn chỉ được xin phép đi trễ từ 13 giờ 30 - 14 giờ 30';
+                                        _expectedWorkingTime = null;
+                                        _expectedWorkingTimeString = '';
+                                      });
+                                    }else{
+                                      setState(() {
+                                        _isAllowTime = true;
+                                        _expectedWorkingTimeError = '';
+                                      });
+                                    }
+                                  }
+
+                                },
+                                locale: LocaleType.vi
+                            );
+                          },
+                      ),
                     ),
-                    if(_isAllowTime == false)Center(child: Text(_lateExcuseError, style: const TextStyle(color: Colors.red),)),
+                    if(_isAllowTime == false && _expectedWorkingTimeError.isNotEmpty)Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Center(child: Text(_expectedWorkingTimeError, style: const TextStyle(color: Colors.red),)),
+                    ),
 
                     //Lý do
                     const SizedBox(height: 20.0,),
                     CustomEditableTextFormField(
-                        text: _lateReason.text.isEmpty ? '' : _lateReason.text,
+                        text: _description.text.isEmpty ? '' : _description.text,
                         title: 'Lý do',
                         readonly: false,
-                        textEditingController: _lateReason,
+                        textEditingController: _description,
                         inputNumberOnly: false,
                         isLimit: true,
-                        limitNumbChar: 250,
+                        limitNumbChar: 100,
                     ),
 
                     //Nút gửi đơn xin phép đi trễ
@@ -167,9 +271,18 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                     CustomTextButton(
                         color: mainBgColor,
                         text: 'Gửi đơn',
-                        onPressed: (){
-                          if(!_formKey.currentState!.validate()){
+                        onPressed: () async {
+                          if(!_formKey.currentState!.validate() || _isAllowTime == false){
                             return;
+                          }
+                          showLoaderDialog(context);
+                          bool data = await _sendApplication();
+                          if(data == true){
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gửi ${applicationTypesNames[_applicationTypeId!]} thành công') ));
+                          }else{
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gửi ${applicationTypesNames[_applicationTypeId!]} thất bại') ));
                           }
                         },
                     ),
@@ -198,7 +311,7 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Xin đi trễ",
+                "Xin đi trễ / Xin nghỉ phép",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,
@@ -210,6 +323,21 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
         ],
       ),
     );
+  }
+
+  Future<bool> _sendApplication() async {
+    Application application = Application(
+        accountId: _currentAccount!.accountId!,
+        assignedDate: _assignedDate!,
+        description: _description.text,
+        expectedWorkingTime: _applicationTypeId == 0 ? null : _expectedWorkingTime!,
+        applicationTypeId: _applicationTypeId!,
+        periodOfDayId: _periodOfDayId!,
+    );
+
+    bool result = await ApplicationViewModel().sendApplication(application);
+
+    return result;
   }
 }
 
