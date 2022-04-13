@@ -35,7 +35,7 @@ class Application {
     createdDate: DateTime.parse(json["createdDate"]),
     assignedDate: DateTime.parse(json["assignedDate"]),
     description: json["description"],
-    expectedWorkingTime: DateTime.parse(json["expectedWorkingTime"]),
+    expectedWorkingTime: DateTime?.tryParse(json["expectedWorkingTime"].toString()),
     applicationStatusId: json["applicationStatusId"],
     applicationTypeId: json["applicationTypeId"],
     periodOfDayId: json["periodOfDayId"],

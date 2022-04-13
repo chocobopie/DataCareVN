@@ -1522,6 +1522,25 @@ class ApiService {
     }
   }
 
+  Future<List<Application>?> getSelfApplicationList({required bool isRefresh, required int currentPage, required int accountId, DateTime? fromCreatedDate, DateTime? toCreatedDate, DateTime? fromAssignedDate, DateTime? toAssignedDate, int? applicationStatusId, int? periodOfDayId, int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'application/self?account-id=$accountId&from-created-date=${fromCreatedDate ?? ''}&to-created-date=${toCreatedDate ?? ''}&from-assigned-date=${fromAssignedDate ?? ''}&to-assigned-date=${toAssignedDate ?? ''}&application-status-id=${applicationStatusId ?? ''}&period-of-day-id=${periodOfDayId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get application list successfully | 200');
+      return jsonResponse.map((data) => Application.fromJson(data)).toList();
+    }else{
+      print('Get application list failed | 400');
+      List<Application>? applicationList;
+      return applicationList;
+    }
+  }
+
 
   //ApplicationType
   Future<List<ApplicationType>> getApplicationType() async {

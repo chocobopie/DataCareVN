@@ -11,7 +11,7 @@ import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.
 import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_attendance_report_list.dart';
-import 'package:login_sample/views/employee/employee_late_excuse.dart';
+import 'package:login_sample/views/employee/employee_application.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:provider/provider.dart';

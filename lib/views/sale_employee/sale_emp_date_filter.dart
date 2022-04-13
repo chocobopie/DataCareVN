@@ -63,10 +63,10 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                             );
                             if(date != null){
                               setState(() {
-                                fromDateString = DateFormat('dd-MM-yyyy').format(date);
-                                fromDate = date;
+                                fromDate = DateTime.tryParse(DateFormat('yyyy-MM-dd').format(date))!;
+                                fromDateString = DateFormat('dd-MM-yyyy').format(fromDate);
                               });
-                              print('Từ ngày $date');
+                              print('Từ ngày $fromDate');
                             }
                           },
                           decoration: InputDecoration(
@@ -114,10 +114,10 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                             );
                             if(date != null){
                               setState(() {
-                                toDateString = DateFormat('dd-MM-yyyy').format(date);
-                                toDate = date;
+                                toDate = DateTime.tryParse(DateFormat('yyyy-MM-dd').format(date))!;
+                                toDateString = DateFormat('dd-MM-yyyy').format(toDate);
                               });
-                              print('Đến ngày $date');
+                              print('Đến ngày $toDate');
                             }
                           },
                           decoration: InputDecoration(

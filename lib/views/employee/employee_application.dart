@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/application.dart';
 import 'package:login_sample/view_models/application_view_model.dart';
-import 'package:login_sample/views/employee/employee_late_excuse_list.dart';
+import 'package:login_sample/views/employee/employee_application_list.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
@@ -242,7 +242,6 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                                       });
                                     }
                                   }
-
                                 },
                                 locale: LocaleType.vi
                             );
@@ -289,11 +288,11 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                     const SizedBox(height: 20.0),
                     IconTextButtonSmall2(
                         imageUrl: 'assets/images/attendance-report.png',
-                        text: 'Danh sách đơn xin đi trễ',
+                        text: 'Xem danh sách đơn xin đi trễ / xin nghỉ phép',
                         colorsButton: const [Colors.green, Colors.white],
                         onPressed: (){
                           Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const EmployeeLateExcuseList()
+                            builder: (context) => const EmployeeApplicationList()
                           ));
                         }
                     ),
