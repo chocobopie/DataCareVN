@@ -30,11 +30,11 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
   String _fromCreatedDateToDateString = 'Ngày gửi đơn', _fromAssignedDateToDateString = 'Ngày phép';
   int? _applicationStatusId, _periodOfDayId;
   DateTime? _fromCreatedDate, _toCreatedDate, _fromAssignedDate, _toAssignedDate;
-  int _currentPage = 0, _maxPage = 0;
+  int _currentPage = 0, _maxPages = 0;
 
   final RefreshController _refreshController = RefreshController();
 
-  List<Application> _applications = [];
+  final List<Application> _applications = [];
 
   @override
   void initState() {
@@ -55,14 +55,19 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Card(
         elevation: 10.0,
-        child: _maxPage > 0 ? NumberPaginator(
-          numberPages: _maxPage,
+        child: _maxPages > 0 ? NumberPaginator(
+          numberPages: _maxPages,
           initialPage: 0,
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
             setState(() {
-              _currentPage = index;
               _applications.clear();
+              if(index >= _maxPages){
+                index = 0;
+                _currentPage = index;
+              }else{
+                _currentPage = index;
+              }
             });
             _getSelfApplicationList(isRefresh: false);
           },
@@ -116,7 +121,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                 _toCreatedDate = fromDateToDate.toDate;
                                 _fromCreatedDateToDateString = 'Ngày gửi đơn: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                 _applications.clear();
-                                _maxPage = 0;
+                                _maxPages = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             }
@@ -137,32 +142,11 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                 _toAssignedDate = fromDateToDate.toDate;
                                 _fromAssignedDateToDateString = 'Ngày phép: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                 _applications.clear();
-                                _maxPage = 0;
+                                _maxPages = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             }
                           },
-                        ),
-                        SizedBox(
-                          width: 100.0,
-                          child: CustomDropdownFormField2Filter(
-                              borderColor: mainBgColor,
-                              value: _applicationStatusId == null ? null : applicationStatusesNames[_applicationStatusId!],
-                              label: 'Trạng thái',
-                              items: applicationStatusesNames,
-                              onChanged: (value){
-                                for(int i = 0; i < applicationStatuses.length; i++){
-                                  if(value.toString() == applicationStatuses[i].name){
-                                    _applicationStatusId = applicationStatuses[i].applicationStatusId;
-                                  }
-                                }
-                                setState(() {
-                                  _applications.clear();
-                                  _maxPage = 0;
-                                });
-                                _getSelfApplicationList(isRefresh: true);
-                              },
-                          ),
                         ),
                         SizedBox(
                           width: 120.0,
@@ -179,7 +163,29 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                               }
                               setState(() {
                                 _applications.clear();
-                                _maxPage = 0;
+                                _maxPages = 0;
+                              });
+                              _getSelfApplicationList(isRefresh: true);
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100.0,
+                          child: CustomDropdownFormField2Filter(
+                            borderColor: mainBgColor,
+                            value: _applicationStatusId == null ? null : applicationStatusesNames[_applicationStatusId!],
+                            label: 'Trạng thái',
+                            items: applicationStatusesNames,
+                            onChanged: (value){
+                              for(int i = 0; i < applicationStatuses.length; i++){
+                                if(value.toString() == applicationStatuses[i].name){
+                                  _applicationStatusId = applicationStatuses[i].applicationStatusId;
+                                }
+                              }
+                              print(_applicationStatusId);
+                              setState(() {
+                                _applications.clear();
+                                _maxPages = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             },
@@ -197,7 +203,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                 _applicationStatusId = null;
                                 _periodOfDayId = null;
                                 _applications.clear();
-                                _maxPage = 0;
+                                _maxPages = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             },
@@ -304,11 +310,11 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                       children: <Widget>[
                                         const Text('Trạng thái:'),
                                         const Spacer(),
-                                        Text(applicationStatusesNames[_application.applicationTypeId],
+                                        Text(applicationStatusesNames[_application.applicationStatusId!],
                                           style: TextStyle(
                                               fontSize: 16.0,
                                               fontWeight: FontWeight.w600,
-                                              color: _application.applicationTypeId != 2 ? _application.applicationTypeId != 1 ? Colors.green : Colors.blue : Colors.red,
+                                              color: _application.applicationStatusId != 2 ? _application.applicationStatusId != 1 ? Colors.green : Colors.blue : Colors.red,
                                           ),
                                         ),
                                       ],
@@ -358,9 +364,11 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
     _applications.clear();
     if(result != null){
       setState(() {
-        _applications = result;
-        _maxPage = _applications[0].maxPage!;
+        _applications.addAll(result);
+        _maxPages = _applications[0].maxPage!;
       });
+      print(_maxPages);
+      print(_currentPage);
     }else{
        _refreshController.loadNoData();
     }
