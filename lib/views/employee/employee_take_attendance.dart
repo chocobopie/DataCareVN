@@ -29,7 +29,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
   late Account _currentAccount;
   late DateTime _currentTime;
   late double _timeHms;
-  late final DateTime _today;
+  late DateTime _today;
   bool _isTook = false;
   String _takeAttendanceString = '';
 
@@ -146,7 +146,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) => const EmployeeAttendanceReportList(),
-                              ));
+                              )).then((value) => _getOverallInfo());
                             }
                         ),
                         //Xin đi trễ
@@ -155,12 +155,12 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                         padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                         child: IconTextButtonSmall2(
                             imageUrl: 'assets/images/late-person.png',
-                            text: 'Xin đi trễ / Xin nghỉ phép',
+                            text: 'Gửi đơn xin phép',
                             colorsButton: const [Colors.red, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) => const EmployeeLateExcuse(),
-                              ));
+                              )).then((value) => _getOverallInfo());
                             }
                         ),
                       ),
@@ -174,7 +174,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) => const HrManagerAttendanceReportList(),
-                              ));
+                              )).then((value) => _getOverallInfo());
                             }
                         ),
                       ),
@@ -183,7 +183,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                           padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                           child: IconTextButtonSmall2(
                               imageUrl: 'assets/images/late-excuse.png',
-                              text: 'Duyệt đơn xin phép đi trễ',
+                              text: 'Duyệt đơn xin phép',
                               colorsButton: const [Colors.grey, Colors.white],
                               onPressed: (){
                                 Navigator.push(context, MaterialPageRoute(
@@ -191,7 +191,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                                     attendanceType: 'Xin phép đi trễ',
                                     userLateExcuses: userLateExcuses,
                                   ),
-                                ));
+                                )).then((value) => _getOverallInfo());
                               }
                           ),
                         ),
@@ -231,7 +231,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
       setState(() {
         _attendances.addAll(listAttendance);
 
-          if(_timeHms >= 8.30 && _timeHms < 10.30){
+          if(_timeHms >= 8.30 && _timeHms <= 10.30){
             if(_attendances[0].attendanceStatusId == 4 && _attendances[0].periodOfDayId == 0){
               _isTook = false;
               _takeAttendanceString = 'Bạn chưa điểm danh ca sáng';
@@ -239,7 +239,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
               _isTook = true;
               _takeAttendanceString = 'Bạn đã điểm danh ca sáng';
             }
-          }else if(_timeHms >= 12 && _timeHms < 14.30){
+          }else if(_timeHms >= 12.30 && _timeHms <= 14.30){
             if(_attendances[1].attendanceStatusId == 4 && _attendances[1].periodOfDayId == 1){
               _isTook = false;
               _takeAttendanceString = 'Bạn chưa điểm danh ca chiều';

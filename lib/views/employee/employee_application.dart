@@ -288,7 +288,7 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                     const SizedBox(height: 20.0),
                     IconTextButtonSmall2(
                         imageUrl: 'assets/images/attendance-report.png',
-                        text: 'Xem danh sách đơn xin đi trễ / xin nghỉ phép',
+                        text: 'Xem danh sách đơn xin phép',
                         colorsButton: const [Colors.green, Colors.white],
                         onPressed: (){
                           Navigator.push(context, MaterialPageRoute(
@@ -310,7 +310,7 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Xin đi trễ / Xin nghỉ phép",
+                "Gửi đơn xin phép",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

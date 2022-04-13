@@ -282,14 +282,6 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                       child: Column(
                                         children: <Widget>[
                                           Padding(
-                                            padding: const EdgeInsets.only(top: 8.0, bottom: 4.0, left: 5.0),
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(applicationTypesNames[_application.applicationTypeId], style: const TextStyle(fontSize: 16.0, color: defaultFontColor),),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
                                             padding: const EdgeInsets.only(top: 10.0, bottom: 4.0),
                                             child: Row(
                                               children: [
@@ -309,6 +301,14 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                   ],
                                   title: Column(
                                     children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(applicationTypesNames[_application.applicationTypeId], style: const TextStyle(fontSize: 18.0, color: defaultFontColor),),
+                                          ],
+                                        ),
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                         child: Row(
@@ -378,7 +378,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Danh sách đơn xin đi trễ",
+                "Danh sách đơn xin phép",
                 style: TextStyle(
                     letterSpacing: 0.0,
                     fontSize: 20.0,

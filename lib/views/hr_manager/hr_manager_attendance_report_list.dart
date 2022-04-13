@@ -164,7 +164,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                               final date = await DatePicker.showDatePicker(
                                 context,
                                 locale : LocaleType.vi,
-                                minTime: DateTime.now().subtract(const Duration(days: 36500)),
+                                minTime: DateTime.now().subtract(const Duration(days: 31)),
                                 currentTime: DateTime.now(),
                                 maxTime: DateTime.now(),
                               );

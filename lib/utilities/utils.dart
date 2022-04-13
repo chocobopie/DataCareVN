@@ -29,7 +29,7 @@ showLoaderDialog(BuildContext context){
     content: Row(
       children: [
         const CircularProgressIndicator(),
-        Container(margin: const EdgeInsets.only(left: 7),child:const Text("Loading..." )),
+        Container(margin: const EdgeInsets.only(left: 7),child:const Text("Vui lòng đợi..." )),
       ],),
   );
   showDialog(barrierDismissible: false,

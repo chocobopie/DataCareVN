@@ -381,10 +381,10 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                               const SizedBox(height: 20.0,),
                               if(widget.readOnly == null)
                               Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 5.0, right: 5.0),
+                                padding: const EdgeInsets.only(left: 5.0, right: 5.0),
                                 child: Row(
                                   children: <Widget>[
+                                    if( widget.deal.dealStageId != 5 || (widget.deal.dealStageId == 5 && _currentAccount.roleId == 3))
                                     Expanded(
                                         child: CustomTextButton(
                                             color: Colors.red,
