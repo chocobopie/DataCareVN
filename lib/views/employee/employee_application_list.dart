@@ -12,6 +12,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
+import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
@@ -272,55 +273,91 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Ngày gửi đơn:'),
-                                        const Spacer(),
-                                        Text(DateFormat('dd-MM-yyyy').format(_application.createdDate!), style: const TextStyle(fontSize: 16.0),),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(_application.applicationTypeId == 1 ? 'Ngày xin đi trễ:' : 'Ngày xin nghỉ phép:'),
-                                        const Spacer(),
-                                        Text(DateFormat('dd-MM-yyyy').format(_application.assignedDate), style: const TextStyle(fontSize: 16.0),),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(_application.applicationTypeId == 1 ? 'Xin đi trễ buổi:' : 'Xin nghỉ phép buổi:'),
-                                        const Spacer(),
-                                        Text(periodOfDayNames[_application.periodOfDayId!], style: const TextStyle(fontSize: 16.0),),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Text('Trạng thái:'),
-                                        const Spacer(),
-                                        Text(applicationStatusesNames[_application.applicationStatusId!],
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w600,
-                                              color: _application.applicationStatusId != 2 ? _application.applicationStatusId != 1 ? Colors.green : Colors.blue : Colors.red,
+                              child: Theme(
+                                data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 8.0, bottom: 4.0, left: 5.0),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(applicationTypesNames[_application.applicationTypeId], style: const TextStyle(fontSize: 16.0, color: defaultFontColor),),
+                                              ],
+                                            ),
                                           ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 10.0, bottom: 4.0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: CustomEditableTextFormField(
+                                                      text: _application.description,
+                                                      title: 'Lý do',
+                                                      readonly: true
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                  title: Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Ngày gửi đơn:'),
+                                            const Spacer(),
+                                            Text(DateFormat('dd-MM-yyyy').format(_application.createdDate!), style: const TextStyle(fontSize: 16.0),),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(_application.applicationTypeId == 1 ? 'Ngày xin đi trễ:' : 'Ngày xin nghỉ phép:'),
+                                            const Spacer(),
+                                            Text(DateFormat('dd-MM-yyyy').format(_application.assignedDate), style: const TextStyle(fontSize: 16.0),),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(_application.applicationTypeId == 1 ? 'Xin đi trễ buổi:' : 'Xin nghỉ phép buổi:'),
+                                            const Spacer(),
+                                            Text(periodOfDayNames[_application.periodOfDayId!], style: const TextStyle(fontSize: 16.0),),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const Text('Trạng thái:'),
+                                            const Spacer(),
+                                            Text(applicationStatusesNames[_application.applicationStatusId!],
+                                              style: TextStyle(
+                                                  fontSize: 16.0,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: _application.applicationStatusId != 2 ? _application.applicationStatusId != 1 ? Colors.green : Colors.blue : Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ),

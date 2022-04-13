@@ -16,7 +16,7 @@ import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_list.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_application_list.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -94,7 +94,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                   label: 'Duyệt đơn xin đi trễ',
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => HrManagerLateExcuseList(
+                      builder: (context) => HrManagerApplicationList(
                         attendanceType: 'Duyệt đơn xin phép đi trễ',
                         userLateExcuses: userLateExcuses,
                       ),

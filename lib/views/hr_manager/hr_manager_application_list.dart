@@ -10,18 +10,18 @@ import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
 
-class HrManagerLateExcuseList extends StatefulWidget {
-  const HrManagerLateExcuseList({Key? key, required this.attendanceType, required this.userLateExcuses}) : super(key: key);
+class HrManagerApplicationList extends StatefulWidget {
+  const HrManagerApplicationList({Key? key, required this.attendanceType, required this.userLateExcuses}) : super(key: key);
 
   final String attendanceType;
   final List<UserAttendance> userLateExcuses;
   final bool _isAsc = true;
 
   @override
-  _HrManagerLateExcuseListState createState() => _HrManagerLateExcuseListState();
+  _HrManagerApplicationListState createState() => _HrManagerApplicationListState();
 }
 
-class _HrManagerLateExcuseListState extends State<HrManagerLateExcuseList> {
+class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
 
   String _lateExcuseFromDateToDateString = 'Ngày gửi đơn';
   String _lateFromDateToDateString = 'Ngày xin đi trễ';

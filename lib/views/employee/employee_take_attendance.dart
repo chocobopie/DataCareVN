@@ -8,7 +8,7 @@ import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/view_models/world_time_api_view_model.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_late_excuse_list.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_application_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_attendance_report_list.dart';
 import 'package:login_sample/views/employee/employee_application.dart';
@@ -187,7 +187,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                               colorsButton: const [Colors.grey, Colors.white],
                               onPressed: (){
                                 Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => HrManagerLateExcuseList(
+                                  builder: (context) => HrManagerApplicationList(
                                     attendanceType: 'Xin phép đi trễ',
                                     userLateExcuses: userLateExcuses,
                                   ),
