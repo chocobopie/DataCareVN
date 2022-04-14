@@ -189,7 +189,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                   title: 'Ngày sinh',
                                   readonly: true,
                                   onTap: _readOnly != true ? () async {
-                                    FocusScope.of(context).requestFocus(FocusNode());
                                     final date = await DatePicker.showDatePicker(context,
                                       locale : LocaleType.vi,
                                       minTime: DateTime.now().subtract(const Duration(days: 36500)),

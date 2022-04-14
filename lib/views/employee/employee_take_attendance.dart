@@ -11,7 +11,7 @@ import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.
 import 'package:login_sample/views/hr_manager/hr_manager_application_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_attendance_report_list.dart';
-import 'package:login_sample/views/employee/employee_application.dart';
+import 'package:login_sample/views/employee/employee_send_application.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:provider/provider.dart';
@@ -187,10 +187,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                               colorsButton: const [Colors.grey, Colors.white],
                               onPressed: (){
                                 Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => HrManagerApplicationList(
-                                    attendanceType: 'Xin phép đi trễ',
-                                    userLateExcuses: userLateExcuses,
-                                  ),
+                                  builder: (context) => const HrManagerApplicationList(),
                                 )).then((value) => _getOverallInfo());
                               }
                           ),

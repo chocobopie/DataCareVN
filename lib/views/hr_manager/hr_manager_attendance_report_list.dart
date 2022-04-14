@@ -42,18 +42,9 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   late final List<Attendance> _attendances = [];
 
   int? _periodOfDayId, _attendanceStatusId;
-  int _currentPage = 0, _maxPages = 0, _currentIndex = 0;
+  int _currentPage = 0, _maxPages = 0;
   bool isSearching = false, isUpdatedAttendance = false;
   String _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
-
-  List<UserAttendance> userLateExcuses = [
-    UserAttendance(id: '1', name: 'Hồ Phượng Vy', team: 'Nhóm Kiều Trinh', department: 'Đào tạo', attendance: 'Mới', lateExcuseDate: '2-04-2022', lateReason: 'Sáng nay em bị tắc đường còn gặp rất nhiều sương mù nữa', lateTime: '9:00 AM'),
-    UserAttendance(id: '2', name: 'Vĩnh Phương Thảo', team: 'Nhóm Minh Nhân', department: 'Đào tạo', attendance: 'Mới', lateExcuseDate: '2-04-2022', lateReason: 'Em phải đưa con mèo đến phòng khám thú y', lateTime: '8:40 AM'),
-    UserAttendance(id: '3', name: 'Đỗ Xuân Phượng', team: 'Nhóm Phan Minh', department: 'Đào tạo', attendance: 'Mới', lateExcuseDate: '2-04-2022', lateReason: 'Em bị cảnh sát giao thông chặn lại', lateTime: '8:30 AM'),
-    UserAttendance(id: '4', name: 'Ngư Thanh Hà', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới', lateExcuseDate: '2-04-2022', lateReason: 'Đi nhầm đường do công ty mới đổi văn phòng', lateTime: '9:00 AM'),
-    UserAttendance(id: '5', name: 'Ngô Thu Nhiên', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới', lateExcuseDate: '2-04-2022', lateReason: 'Em không nhớ hôm nay phải đi làm', lateTime: '9:00 AM'),
-    UserAttendance(id: '6', name: 'Vũ Hiền Mai', team: 'Nhóm Trần An', department: 'Đào tạo', attendance: 'Mới', lateExcuseDate: '2-04-2022', lateReason: 'Sáng nay chó nhà em đẻ, em phải ở nhà đỡ đẻ cho chó', lateTime: '9:00 AM'),
-  ];
 
   @override
   void initState() {
@@ -94,10 +85,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                   label: 'Duyệt đơn xin đi trễ',
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => HrManagerApplicationList(
-                        attendanceType: 'Duyệt đơn xin phép đi trễ',
-                        userLateExcuses: userLateExcuses,
-                      ),
+                      builder: (context) => const HrManagerApplicationList(),
                     ));
                   },
                 ),
@@ -367,7 +355,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Báo cáo điểm danh của các nhân viên",
+                "Báo cáo điểm danh các nhân viên",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 16.0,

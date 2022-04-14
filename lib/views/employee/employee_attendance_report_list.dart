@@ -11,7 +11,6 @@ import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
-import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
@@ -297,9 +296,9 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                         const Spacer(),
                                         Expanded(child: Text(periodOfDayNames[_attendance.periodOfDayId])),
                                         const Spacer(),
-                                        if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 12 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                        if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
                                           const Expanded(child: Text('Chưa điểm danh', style: TextStyle(color: Colors.grey),),),
-                                        if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 12 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                        if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
                                           Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
                                             style: TextStyle(color: _attendance.attendanceStatusId != 4
                                                 ? _attendance.attendanceStatusId != 3

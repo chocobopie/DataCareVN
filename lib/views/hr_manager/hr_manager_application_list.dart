@@ -2,20 +2,25 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/application.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/account_list_view_model.dart';
+import 'package:login_sample/view_models/application_list_view_model.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
+import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
+import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
+import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HrManagerApplicationList extends StatefulWidget {
-  const HrManagerApplicationList({Key? key, required this.attendanceType, required this.userLateExcuses}) : super(key: key);
-
-  final String attendanceType;
-  final List<UserAttendance> userLateExcuses;
-  final bool _isAsc = true;
+  const HrManagerApplicationList({Key? key}) : super(key: key);
 
   @override
   _HrManagerApplicationListState createState() => _HrManagerApplicationListState();
@@ -23,27 +28,28 @@ class HrManagerApplicationList extends StatefulWidget {
 
 class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
 
-  String _lateExcuseFromDateToDateString = 'Ngày gửi đơn';
-  String _lateFromDateToDateString = 'Ngày xin đi trễ';
-  bool isSearching = false;
-  bool isUpdatedAttendance = false;
-  int currentIndex = 0;
-  bool _isAsc = true;
-  DateTime? _fromDate, _toDate;
+  Account? _currentAccount;
+  String _fromCreatedDateToDateString = 'Ngày gửi đơn', _fromAssignedDateToDateString = 'Ngày phép';
+  int? _applicationStatusId, _periodOfDayId;
+  DateTime? _fromCreatedDate, _toCreatedDate, _fromAssignedDate, _toAssignedDate;
+  int _currentPage = 0, _maxPages = 0;
 
-  TextEditingController lateExcuseController = TextEditingController();
-  List<UserAttendance> userLateExcuses = [];
+  final RefreshController _refreshController = RefreshController();
+  final List<Application> _applications = [];
+  late final List<Account> _employeeList = [];
 
   @override
   void initState() {
-    userLateExcuses = widget.userLateExcuses;
     super.initState();
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getOtherApplicationList(isRefresh: true);
+    _getAllEmployee();
   }
 
   @override
   void dispose() {
-    lateExcuseController.dispose();
     super.dispose();
+    _refreshController.dispose();
   }
 
   @override
@@ -52,12 +58,18 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Card(
         elevation: 10.0,
-        child: NumberPaginator(
-          numberPages: 10,
+        child: _maxPages > 0 ? NumberPaginator(
+          numberPages: _maxPages,
+          initialPage: 0,
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
+            setState(() {
+              _applications.clear();
+              _currentPage = index;
+            });
+            _getOtherApplicationList(isRefresh: false);
           },
-        ) ,
+        ) : null,
       ),
       body: Stack(
         children: <Widget>[
@@ -80,38 +92,20 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
             margin: const EdgeInsets.only(top: 100.0),
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 2.0),
-                  child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, top: 2.0),
+                  padding: const EdgeInsets.only(left: 5.0, top: 10.0),
                   child: SizedBox(
                     height: 40.0,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
-                        const SizedBox(width: 10.0,),
-                        // CustomOutlinedButton(
-                        //   title: _lateExcuseFromDateToDateString,
-                        //   radius: 10.0,
-                        //   color: mainBgColor,
-                        //   onPressed: () async {
-                        //     final data = await Navigator.push(context, MaterialPageRoute(
-                        //       builder: (context) => const SaleEmpDateFilter(),
-                        //     ));
-                        //     if(data != null){
-                        //       FromDateToDate fromDateToDate = data;
-                        //       setState(() {
-                        //         _fromDate = fromDateToDate.fromDate;
-                        //         _toDate = fromDateToDate.toDate;
-                        //         _lateExcuseFromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
-                        //       });
-                        //     }
-                        //   },
-                        // ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 15.0),
+                          child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
+                        ),
+                        const SizedBox(width: 5.0,),
                         CustomOutlinedButton(
-                          title: _lateFromDateToDateString,
+                          title: _fromCreatedDateToDateString,
                           radius: 10.0,
                           color: mainBgColor,
                           onPressed: () async {
@@ -121,57 +115,95 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                             if(data != null){
                               FromDateToDate fromDateToDate = data;
                               setState(() {
-                                _fromDate = fromDateToDate.fromDate;
-                                _toDate = fromDateToDate.toDate;
-                                _lateFromDateToDateString = '${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                _fromCreatedDate = fromDateToDate.fromDate;
+                                _toCreatedDate = fromDateToDate.toDate;
+                                _fromCreatedDateToDateString = 'Ngày gửi đơn: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                _applications.clear();
+                                _maxPages = 0;
                               });
+                              _getOtherApplicationList(isRefresh: true);
                             }
                           },
                         ),
                         CustomOutlinedButton(
-                          title: 'Trạng thái',
-                          radius: 10,
+                          title: _fromAssignedDateToDateString,
+                          radius: 10.0,
                           color: mainBgColor,
-                          onPressed: (){},
+                          onPressed: () async {
+                            final data = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const SaleEmpDateFilter(),
+                            ));
+                            if(data != null){
+                              FromDateToDate fromDateToDate = data;
+                              setState(() {
+                                _fromAssignedDate = fromDateToDate.fromDate;
+                                _toAssignedDate = fromDateToDate.toDate;
+                                _fromAssignedDateToDateString = 'Ngày phép: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
+                                _applications.clear();
+                                _maxPages = 0;
+                              });
+                              _getOtherApplicationList(isRefresh: true);
+                            }
+                          },
                         ),
-                        // DropdownButton2(
-                        //   customButton: const Icon(
-                        //     Icons.sort,
-                        //     size: 40,
-                        //     color: mainBgColor,
-                        //   ),
-                        //   items: [
-                        //     ...SortItems.firstItems.map(
-                        //           (item) =>
-                        //           DropdownMenuItem<SortItem>(
-                        //             value: item,
-                        //             child: SortItems.buildItem(item),
-                        //           ),
-                        //     ),
-                        //   ],
-                        //   onChanged: (value) {
-                        //     _isAsc = SortItems.onChanged(context, value as SortItem);
-                        //     setState(() {
-                        //     });
-                        //   },
-                        //   itemHeight: 40,
-                        //   itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                        //   dropdownWidth: 220,
-                        //   dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                        //   dropdownDecoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(25),
-                        //     color: mainBgColor,
-                        //   ),
-                        //   dropdownElevation: 8,
-                        //   offset: const Offset(0, 8),
-                        // ),
+                        SizedBox(
+                          width: 120.0,
+                          child: CustomDropdownFormField2Filter(
+                            borderColor: mainBgColor,
+                            value: _periodOfDayId == null ? null : periodOfDayNames[_periodOfDayId!],
+                            label: 'Buổi xin phép',
+                            items: periodOfDayNames,
+                            onChanged: (value){
+                              for(int i = 0; i < periodOfDay.length; i++){
+                                if(value.toString() == periodOfDay[i].name){
+                                  _periodOfDayId = periodOfDay[i].periodOfDayId;
+                                }
+                              }
+                              setState(() {
+                                _applications.clear();
+                                _maxPages = 0;
+                              });
+                              _getOtherApplicationList(isRefresh: true);
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100.0,
+                          child: CustomDropdownFormField2Filter(
+                            borderColor: mainBgColor,
+                            value: _applicationStatusId == null ? null : applicationStatusesNames[_applicationStatusId!],
+                            label: 'Trạng thái',
+                            items: applicationStatusesNames,
+                            onChanged: (value){
+                              for(int i = 0; i < applicationStatuses.length; i++){
+                                if(value.toString() == applicationStatuses[i].name){
+                                  _applicationStatusId = applicationStatuses[i].applicationStatusId;
+                                }
+                              }
+                              print(_applicationStatusId);
+                              setState(() {
+                                _applications.clear();
+                                _maxPages = 0;
+                              });
+                              _getOtherApplicationList(isRefresh: true);
+                            },
+                          ),
+                        ),
                         IconButton(
                             onPressed: (){
                               setState(() {
-                                _fromDate = null;
-                                _toDate = null;
-                                _lateExcuseFromDateToDateString = 'Ngày gửi đơn';
+                                _fromCreatedDate = null;
+                                _toCreatedDate = null;
+                                _fromAssignedDate = null;
+                                _toAssignedDate = null;
+                                _fromCreatedDateToDateString = 'Ngày gửi đơn';
+                                _fromAssignedDateToDateString = 'Ngày phép';
+                                _applicationStatusId = null;
+                                _periodOfDayId = null;
+                                _applications.clear();
+                                _maxPages = 0;
                               });
+                              _getOtherApplicationList(isRefresh: true);
                             },
                             icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,)
                         ),
@@ -183,7 +215,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.22),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.20),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -209,88 +241,139 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                     ),
                   ),
                   margin: const EdgeInsets.only(top: 5.0),
-                  child: ListView.builder(
-                    itemCount: userLateExcuses.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 15.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(15.0),
-                            ),
-                            border: Border.all(color: Colors.grey.shade400),
-                          ),
-                          child: Theme(
-                            data: ThemeData().copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              title: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                                    child: Row(
-                                      children: [
-                                        const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
-                                        const Spacer(),
-                                        Text(userLateExcuses[index].name, style: const TextStyle(fontSize: 14.0),),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                                    child: Row(
-                                      children: [
-                                        const Text('Ngày xin đi trễ:', style: TextStyle(fontSize: 12.0),),
-                                        const Spacer(),
-                                        Text(userLateExcuses[index].lateExcuseDate!, style: const TextStyle(fontSize: 14.0),),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                                    child: Row(
-                                      children: [
-                                        const Text('Giờ dự kiến có mặt:', style: TextStyle(fontSize: 12.0),),
-                                        const Spacer(),
-                                        Text(userLateExcuses[index].lateTime!, style: const TextStyle(fontSize: 14.0),),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                  child: (_applications.isNotEmpty && _employeeList.isNotEmpty) ? SmartRefresher(
+                    enablePullUp: true,
+                    controller: _refreshController,
+                    onRefresh: (){
+                      setState(() {
+                        _applications.clear();
+                      });
+
+                      _getOtherApplicationList(isRefresh: false);
+
+                      if(_applications.isNotEmpty){
+                        _refreshController.refreshCompleted();
+                      }else{
+                        _refreshController.refreshFailed();
+                      }
+                    },
+                    child: ListView.builder(
+                      itemCount: _applications.length,
+                      itemBuilder: (context, index) {
+                        final _application = _applications[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 15.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15.0),
                               ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: Column(
+                              border: Border.all(color: Colors.grey.shade400),
+                            ),
+                            child: Theme(
+                              data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                              child: ExpansionTile(
+                                title: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                      child: Row(
                                         children: <Widget>[
-                                          if(userLateExcuses[index].attendance == 'Mới')  const Text('Mới', style: TextStyle(fontSize: 12.0, color: Colors.green),),
-                                          if(userLateExcuses[index].attendance == 'Duyệt') const Text('Duyệt', style: TextStyle(fontSize: 12.0, color: Colors.blue),),
-                                          if(userLateExcuses[index].attendance == 'Từ chối') const Text('Từ chối', style: TextStyle(fontSize: 12.0, color: Colors.red),),
-                                          _customDropdownButton(userLateExcuses[index].attendance, userLateExcuses.indexOf(userLateExcuses[index])),
+                                          const Spacer(),
+                                          Text(applicationTypesNames[_application.applicationTypeId], style: const TextStyle(fontSize: 18.0, color: defaultFontColor),),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                      child: Row(
+                                        children: [
+                                          const Expanded(child: Text('Tên nhân viên:', style: TextStyle(fontSize: 14.0),)),
+                                          const Spacer(),
+                                          Text(_getEmployeeName(_application.accountId), style: const TextStyle(fontSize: 14.0),),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                      child: Row(
+                                        children: [
+                                          const Text('Ngày gửi đơn:', style: TextStyle(fontSize: 14.0),),
+                                          const Spacer(),
+                                          Text(DateFormat('dd-MM-yyyy').format(_application.createdDate!), style: const TextStyle(fontSize: 14.0),),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                      child: Row(
+                                        children: [
+                                          Text(_application.applicationTypeId == 1 ? 'Ngày xin đi trễ:' : 'Ngày xin nghỉ phép:', style: const TextStyle(fontSize: 14.0),),
+                                          const Spacer(),
+                                          Text(DateFormat('dd-MM-yyyy').format(_application.assignedDate), style: const TextStyle(fontSize: 14.0),),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                      child: Row(
+                                        children: [
+                                          Text(_application.applicationTypeId == 1 ? 'Xin đi trễ buổi:' : 'Xin nghỉ phép buổi:', style: const TextStyle(fontSize: 14.0),),
+                                          const Spacer(),
+                                          Text(periodOfDayNames[_application.periodOfDayId!], style: const TextStyle(fontSize: 14.0),),
+                                        ],
+                                      ),
+                                    ),
+                                    if(_application.applicationTypeId == 1)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                      child: Row(
+                                        children: [
+                                          const Text('Giờ dự kiến có mặt:', style: TextStyle(fontSize: 14.0),),
+                                          const Spacer(),
+                                          Text( '${_application.expectedWorkingTime!.hour}:${_application.expectedWorkingTime!.minute}', style: const TextStyle(fontSize: 14.0),),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Column(
+                                        children: <Widget>[
+                                          if(_application.applicationStatusId == 0)  const Text('Mới', style: TextStyle(fontSize: 12.0, color: Colors.green),),
+                                          if(_application.applicationStatusId == 1) const Text('Duyệt', style: TextStyle(fontSize: 12.0, color: Colors.blue),),
+                                          if(_application.applicationStatusId == 2) const Text('Từ chối', style: TextStyle(fontSize: 12.0, color: Colors.red),),
+                                          _customDropdownButton(_application, _applications.indexOf(_applications[index])),
                                         ]
                                     ),
-                                  ),
+                                  ],
+                                ),
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 20.0, left: 15.0, right: 15.0, bottom: 20.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: CustomEditableTextFormField(
+                                              text: _application.description,
+                                              title: 'Lý do',
+                                              readonly: true
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20.0, left: 15.0, right: 15.0, bottom: 20.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(child: Text('Lý do: ${userLateExcuses[index].lateReason!}', style: const TextStyle(fontSize: 16.0, color: defaultFontColor),)),
-                                    ],
-                                  ),
-                                )
-                              ],
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  )
+                        );
+                      },
+                    ),
+                  ) : const Center(child: CircularProgressIndicator()),
               ),
             ),
           ),
@@ -300,46 +383,18 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
             left: 0.0,
             right: 0.0,
             child: AppBar(
-              iconTheme: const IconThemeData(color: Colors.blueGrey,),// Add AppBar here only
+              iconTheme: const IconThemeData(color: Colors.blueGrey),
+              // Add AppBar here only
               backgroundColor: Colors.transparent,
               elevation: 0.0,
-              title: !isSearching
-                  ? Text(widget.attendanceType, style: const TextStyle(color: Colors.blueGrey, fontSize: 18.0),)
-                  : const TextField(
-                style: TextStyle(color: Colors.blueGrey,),
-                showCursor: true,
-                cursorColor: Colors.white,
-                decoration: InputDecoration(
-                  icon: Icon(Icons.search,
-                    color: Colors.blueGrey,
-                  ),
-                  hintText: "Search name, email",
-                  hintStyle: TextStyle(
-                    color: Colors.blueGrey,
-                  ),
+              title: const Text(
+                'Duyệt đơn xin phép',
+                style: TextStyle(
+                  letterSpacing: 0.0,
+                  fontSize: 20.0,
+                  color: Colors.blueGrey,
                 ),
               ),
-              actions: <Widget>[
-                isSearching ? IconButton(
-                  icon: const Icon(
-                    Icons.cancel,
-                  ),
-                  onPressed: (){
-                    setState(() {
-                      isSearching = false;
-                    });
-                  },
-                ) : IconButton(
-                  icon: const Icon(
-                    Icons.search,
-                  ),
-                  onPressed: (){
-                    setState(() {
-                      isSearching = true;
-                    });
-                  },
-                )
-              ],
             ),
           ),
         ],
@@ -347,11 +402,50 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
     );
   }
 
-  Widget _customDropdownButton(String attendType, int index){
+  void _getOtherApplicationList({required bool isRefresh}) async {
+
+    List<Application>? result = await ApplicationListViewModel().getOtherApplicationList(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount!.accountId!,
+        fromCreatedDate: _fromCreatedDate, toCreatedDate: _toCreatedDate, fromAssignedDate: _fromAssignedDate, toAssignedDate: _toAssignedDate,
+        applicationStatusId: _applicationStatusId, periodOfDayId: _periodOfDayId
+    );
+
+    _applications.clear();
+    if(result != null){
+      setState(() {
+        _applications.addAll(result);
+        _maxPages = _applications[0].maxPage!;
+      });
+      print(_maxPages);
+      print(_currentPage);
+    }else{
+      _refreshController.loadNoData();
+    }
+  }
+
+  String _getEmployeeName(int accountId){
+    String name = '';
+    for(int i = 0; i < _employeeList.length; i++){
+      if(accountId == _employeeList[i].accountId){
+        name = _employeeList[i].fullname!;
+      }
+    }
+    return name;
+  }
+
+  void _getAllEmployee() async {
+    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: true, currentPage: 0, accountId: _currentAccount!.accountId!, limit: 100000);
+    _employeeList.clear();
+
+    setState(() {
+      _employeeList.addAll(accountList);
+    });
+  }
+
+  Widget _customDropdownButton(Application application, int index){
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
-        customButton: attendType == 'Mới' ? const Icon(Icons.watch_later_rounded, size: 30, color: Colors.green,)
-            : attendType == 'Duyệt' ? const Icon(Icons.check, size: 30, color: Colors.blue,)
+        customButton: application.applicationStatusId == 0 ? const Icon(Icons.watch_later_rounded, size: 30, color: Colors.green,)
+            : application.applicationStatusId == 1 ? const Icon(Icons.check, size: 30, color: Colors.blue,)
             : const Icon(Icons.close_rounded, size: 30, color: Colors.red,),
         customItemsIndexes: const [3],
         customItemsHeight: 8,
@@ -369,26 +463,18 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
           if(_attendanceType.isNotEmpty){
             if(_attendanceType == 'Duyệt'){
               setState(() {
-                currentIndex = index;
-                lateExcuseController.text = _attendanceType;
-                _updateLateExcuse(attendType);
-                print(currentIndex);
-                print(lateExcuseController.text);
+
               });
             }else{
               setState(() {
-                currentIndex = index;
-                lateExcuseController.text = _attendanceType;
-                _updateLateExcuse(attendType);
-                print(currentIndex);
-                print(lateExcuseController.text);
+
               });
             }
           }
         },
         itemHeight: 48,
         itemPadding: const EdgeInsets.only(left: 10),
-        dropdownWidth: 150,
+        dropdownWidth: 120,
         dropdownDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25.0),
           color: Colors.white,
@@ -399,34 +485,34 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
     );
   }
 
-  void _updateLateExcuse(String attendType){
-    if(attendType != lateExcuseController.text) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            'Thay đổi trạng thái từ $attendType thành ${lateExcuseController.text}',
-            style: const TextStyle(fontSize: 14.0, color: defaultFontColor),
-          ),
-          actions: [
-            TextButton(
-              child: const Text("Huỷ"),
-              onPressed: () => Navigator.pop(context),
-            ),
-            TextButton(
-              child: const Text("Lưu"),
-              onPressed: () {
-                setState(() {
-                  userLateExcuses[currentIndex].attendance = lateExcuseController.text;
-                  Navigator.pop(context);
-                });
-              },
-            ),
-          ],
-        ),
-      );
-    }
-  }
+  // void _updateLateExcuse(String attendType){
+  //   if(attendType != lateExcuseController.text) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: Text(
+  //           'Thay đổi trạng thái từ $attendType thành ${lateExcuseController.text}',
+  //           style: const TextStyle(fontSize: 14.0, color: defaultFontColor),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             child: const Text("Huỷ"),
+  //             onPressed: () => Navigator.pop(context),
+  //           ),
+  //           TextButton(
+  //             child: const Text("Lưu"),
+  //             onPressed: () {
+  //               setState(() {
+  //                 userLateExcuses[currentIndex].attendance = lateExcuseController.text;
+  //                 Navigator.pop(context);
+  //               });
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  // }
 }
 
 class MenuItem {
@@ -467,48 +553,9 @@ class MenuItems {
   static onChanged(BuildContext context, MenuItem item) {
     switch (item) {
       case MenuItems.accept:
-        return 'Duyệt';
+        return 1;
       case MenuItems.deny:
-        return 'Từ chối';
+        return 2;
     }
   }
 }
-
-// class SortItems {
-//   static const List<SortItem> firstItems = [asc, des];
-//
-//   static const asc = SortItem(text: 'Ngày xin đi trễ tăng dần', icon: Icons.arrow_drop_up);
-//   static const des = SortItem(text: 'Ngày xin đi trễ giảm dần', icon: Icons.arrow_drop_down);
-//
-//
-//   static Widget buildItem(SortItem item) {
-//     return Row(
-//       children: [
-//         Icon(
-//             item.icon,
-//             color: Colors.white,
-//             size: 22
-//         ),
-//         const SizedBox(
-//           width: 10,
-//         ),
-//         Text(
-//           item.text,
-//           style: const TextStyle(
-//             color: Colors.white,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   static onChanged(BuildContext context, SortItem item) {
-//     switch (item) {
-//       case SortItems.asc:
-//         return true;
-//       case SortItems.des:
-//       //Do something
-//         return false;
-//     }
-//   }
-// }

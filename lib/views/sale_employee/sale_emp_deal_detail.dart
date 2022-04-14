@@ -308,7 +308,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                   label: 'Ngày chốt hợp đồng',
                                   hintText: _closeDate.isNotEmpty ? _closeDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
                                   onTap: _readOnly != true ? () async {
-                                    FocusScope.of(context).requestFocus(FocusNode());
                                     final date = await DatePicker.showDatePicker(context,
                                       locale: LocaleType.vi,
                                       minTime: DateTime.now(),

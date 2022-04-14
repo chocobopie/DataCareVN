@@ -149,7 +149,6 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
                                   title: 'Ngày sinh',
                                   readonly: true,
                                   onTap: () async {
-                                    FocusScope.of(context).requestFocus(FocusNode());
                                     final date = await DatePicker.showDatePicker(
                                       context,
                                       locale : LocaleType.vi,
