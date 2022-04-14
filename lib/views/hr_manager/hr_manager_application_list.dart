@@ -9,6 +9,7 @@ import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/application_list_view_model.dart';
+import 'package:login_sample/view_models/application_view_model.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
@@ -459,18 +460,8 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
           ),
         ],
         onChanged: (value) {
-          String _attendanceType = MenuItems.onChanged(context, value as MenuItem);
-          if(_attendanceType.isNotEmpty){
-            if(_attendanceType == 'Duyệt'){
-              setState(() {
-
-              });
-            }else{
-              setState(() {
-
-              });
-            }
-          }
+          int replaceApplicationStatusId = MenuItems.onChanged(context, value as MenuItem);
+          _updateApplication(application, replaceApplicationStatusId);
         },
         itemHeight: 48,
         itemPadding: const EdgeInsets.only(left: 10),
@@ -485,34 +476,79 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
     );
   }
 
-  // void _updateLateExcuse(String attendType){
-  //   if(attendType != lateExcuseController.text) {
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) => AlertDialog(
-  //         title: Text(
-  //           'Thay đổi trạng thái từ $attendType thành ${lateExcuseController.text}',
-  //           style: const TextStyle(fontSize: 14.0, color: defaultFontColor),
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //             child: const Text("Huỷ"),
-  //             onPressed: () => Navigator.pop(context),
-  //           ),
-  //           TextButton(
-  //             child: const Text("Lưu"),
-  //             onPressed: () {
-  //               setState(() {
-  //                 userLateExcuses[currentIndex].attendance = lateExcuseController.text;
-  //                 Navigator.pop(context);
-  //               });
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
+  void _updateApplication(Application application, int replaceApplicationStatusId){
+    if(application.applicationStatusId != replaceApplicationStatusId) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          contentPadding: const EdgeInsets.all(5.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          title: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${applicationStatusesNames[replaceApplicationStatusId]} ${applicationTypesNames[application.applicationTypeId].toLowerCase()} của ${_getEmployeeName(application.accountId)}',
+                        style: const TextStyle(fontSize: 18.0, color: defaultFontColor),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text("Huỷ"),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text("Lưu"),
+              onPressed: () async {
+                showLoaderDialog(context);
+                Application updateApplication = Application(
+                    accountId: application.accountId,
+                    assignedDate: application.assignedDate,
+                    description: application.description,
+                    applicationTypeId: application.applicationTypeId,
+                    periodOfDayId: application.periodOfDayId,
+                    applicationStatusId: replaceApplicationStatusId,
+                    createdDate: application.createdDate,
+                    applicationId: application.applicationId,
+                    expectedWorkingTime: application.expectedWorkingTime
+                );
+
+                bool result = await _updateAnApplication(application: updateApplication);
+                if(result == true){
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${applicationStatusesNames[replaceApplicationStatusId]} ${applicationTypesNames[application.applicationTypeId].toLowerCase()} cho ${_getEmployeeName(application.accountId)} thành công')));
+                  _getOtherApplicationList(isRefresh: false);
+                  Navigator.pop(context);
+                }else{
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${applicationStatusesNames[replaceApplicationStatusId]} ${applicationTypesNames[application.applicationTypeId].toLowerCase()} cho ${_getEmployeeName(application.accountId)} thất bại')));
+                }
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<bool> _updateAnApplication({required Application application}) async {
+
+    bool result = await ApplicationViewModel().updateAnApplication(application: application);
+
+    return result;
+  }
+
 }
 
 class MenuItem {

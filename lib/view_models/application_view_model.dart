@@ -10,4 +10,12 @@ class ApplicationViewModel with ChangeNotifier{
 
     return result;
   }
+
+  Future<bool> updateAnApplication({required Application application}) async {
+    bool result = await ApiService().updateAnApplication(application: application);
+
+    notifyListeners();
+
+    return result;
+  }
 }

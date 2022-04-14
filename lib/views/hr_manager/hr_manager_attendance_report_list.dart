@@ -456,7 +456,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
         builder: (context) => AlertDialog(
           contentPadding: const EdgeInsets.all(5.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(25),
           ),
           title: Padding(
             padding: const EdgeInsets.all(5.0),
@@ -467,12 +467,13 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                   children: [
                     Expanded(
                       child: Text(
-                        'Thay đổi trạng thái của ${_getEmployeeName(attendance.accountId)} ngày ${DateFormat('dd-MM-yyyy').format(attendance.date)} ca ${periodOfDayNames[attendance.periodOfDayId]}',
+                        'Thay đổi trạng thái của ${_getEmployeeName(attendance.accountId)} ngày ${DateFormat('dd-MM-yyyy').format(attendance.date)} ca ${periodOfDayNames[attendance.periodOfDayId].toLowerCase()}',
                         style: const TextStyle(fontSize: 18.0, color: defaultFontColor),
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 10.0,),
                 Row(
                   children: [
                     const Spacer(),

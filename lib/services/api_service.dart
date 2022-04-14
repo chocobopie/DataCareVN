@@ -1522,6 +1522,35 @@ class ApiService {
     }
   }
 
+  Future<bool> updateAnApplication({required Application application}) async {
+    String url = stockUrl + 'application/${application.applicationId}';
+
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "applicationId": application.applicationId,
+        "accountId": application.accountId,
+        "createdDate": application.createdDate?.toIso8601String(),
+        "assignedDate": application.createdDate?.toIso8601String(),
+        "description": application.description,
+        "expectedWorkingTime": application.expectedWorkingTime?.toIso8601String(),
+        "applicationStatusId": application.applicationStatusId,
+        "applicationTypeId": application.applicationTypeId,
+        "periodOfDayId": application.periodOfDayId
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update an application successfully | 200');
+      return true;
+    }else{
+      print('Update an application failed | 400');
+      return false;
+    }
+  }
+
   Future<List<Application>?> getSelfApplicationList({required bool isRefresh, required int currentPage, required int accountId, DateTime? fromCreatedDate, DateTime? toCreatedDate, DateTime? fromAssignedDate, DateTime? toAssignedDate, int? applicationStatusId, int? periodOfDayId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
