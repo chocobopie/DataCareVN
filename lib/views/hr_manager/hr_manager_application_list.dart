@@ -65,8 +65,8 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
             setState(() {
-              _applications.clear();
               _currentPage = index;
+              _applications.clear();
             });
             _getOtherApplicationList(isRefresh: false);
           },
@@ -263,14 +263,11 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                       itemBuilder: (context, index) {
                         final _application = _applications[index];
                         return Padding(
-                          padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 15.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15.0),
-                              ),
-                              border: Border.all(color: Colors.grey.shade400),
+                          padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                          child: Card(
+                            elevation: 20.0,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(15))
                             ),
                             child: Theme(
                               data: ThemeData().copyWith(dividerColor: Colors.transparent),
@@ -445,9 +442,9 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
   Widget _customDropdownButton(Application application, int index){
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
-        customButton: application.applicationStatusId == 0 ? const Icon(Icons.watch_later_rounded, size: 30, color: Colors.green,)
-            : application.applicationStatusId == 1 ? const Icon(Icons.check, size: 30, color: Colors.blue,)
-            : const Icon(Icons.close_rounded, size: 30, color: Colors.red,),
+        customButton: application.applicationStatusId == 0 ? const Icon(Icons.hourglass_bottom_rounded, size: 35, color: Colors.green,)
+            : application.applicationStatusId == 1 ? const Icon(Icons.check, size: 35, color: Colors.blue,)
+            : const Icon(Icons.close_rounded, size: 35, color: Colors.red,),
         customItemsIndexes: const [3],
         customItemsHeight: 8,
         items: [
