@@ -159,7 +159,9 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
                                     if(date != null){
                                       _accountDob = date;
                                       print(_accountDob);
-                                      _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_accountDob)}';
+                                      setState(() {
+                                        _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_accountDob)}';
+                                      });
                                     }
                                   },
                                 ),
@@ -346,7 +348,7 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
                                       }else{
                                         Navigator.pop(context);
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('Cập nhật tài thất bại')),
+                                          const SnackBar(content: Text('Cập nhật tài khoản thất bại')),
                                         );
                                       }
                                     },
@@ -387,7 +389,7 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
   Future<Account?> _updateAnAccount() async {
     Account account = Account(
       accountId: _currentAccount.accountId,
-      email: _currentAccount.email,
+      email: _currentAccount.email.toString(),
       fullname: _accountName.text,
       phoneNumber: _accountPhoneNumber.text,
       address: _accountAddress.text,

@@ -197,7 +197,9 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                     );
                                     if(date != null){
                                       _empDob = date;
-                                      _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_empDob!)}';
+                                      setState(() {
+                                        _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_empDob!)}';
+                                      });
                                     }
                                   } : null,
                                 ),

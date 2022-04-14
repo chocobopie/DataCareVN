@@ -45,7 +45,7 @@ class CustomEditableTextFormField extends StatelessWidget {
             }
           }else if(isPhoneNumber == true){
             if(value.length < 10){
-              return 'Số điện thoại phải hơn 9 chữ số';
+              return 'Số điện thoại sai định dạng';
             }
           }
           return null;

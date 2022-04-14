@@ -123,7 +123,7 @@ class _EmployeeChangePasswordState extends State<EmployeeChangePassword> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Đổi mật khẩu thành công')),
                                   );
-
+                                  Navigator.pop(context);
                                 }else{
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context).showSnackBar(

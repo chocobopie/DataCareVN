@@ -522,7 +522,7 @@ class ApiService {
         "permissionId": account.permissionId,
         "statusId": account.statusId,
         "genderId": account.genderId,
-        "dateOfBirth": account.dateOfBirth?.toIso8601String()
+        "dateOfBirth": account.dateOfBirth!.toIso8601String()
       }),
     );
 

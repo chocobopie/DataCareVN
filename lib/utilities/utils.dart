@@ -26,10 +26,11 @@ String get currency => NumberFormat.compactSimpleCurrency(locale: locale).curren
 //==================================================================Loading dialog
 showLoaderDialog(BuildContext context){
   AlertDialog alert=AlertDialog(
+
     content: Row(
       children: [
         const CircularProgressIndicator(),
-        Container(margin: const EdgeInsets.only(left: 7),child:const Text("Vui lòng đợi..." )),
+        Container(margin: const EdgeInsets.only(left: 20),child:const Text("Vui lòng đợi..." )),
       ],),
   );
   showDialog(barrierDismissible: false,
