@@ -26,7 +26,10 @@ String get currency => NumberFormat.compactSimpleCurrency(locale: locale).curren
 //==================================================================Loading dialog
 showLoaderDialog(BuildContext context){
   AlertDialog alert=AlertDialog(
-
+    contentPadding: const EdgeInsets.all(20.0),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),
     content: Row(
       children: [
         const CircularProgressIndicator(),

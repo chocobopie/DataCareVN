@@ -421,6 +421,24 @@ class ApiService {
     }
   }
 
+  Future<bool> resetPassword(String email) async {
+    String url = stockUrl + 'authentications/reset-password?email=$email';
+
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if(response.statusCode == 200){
+      print('Reset password successfully | 200');
+      return true;
+    }else{
+      print('Reset password failed | 400');
+      return false;
+    }
+  }
+
   //Accounts
   Future<Account> getAccountById(int accountId) async{
     String url = stockUrl + 'accounts/$accountId';

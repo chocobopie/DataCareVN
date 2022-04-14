@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/view_models/authentication_view_model.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 
@@ -11,6 +12,16 @@ class EmployeeForgetPassword extends StatefulWidget {
 }
 
 class _EmployeeForgetPasswordState extends State<EmployeeForgetPassword> {
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final TextEditingController _email = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _email.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,30 +42,59 @@ class _EmployeeForgetPasswordState extends State<EmployeeForgetPassword> {
                   topRight: Radius.circular(50),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
-
+              margin: const EdgeInsets.only(top: 100.0),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: const <Widget>[
-                        Text('Vui lòng nhập email của bạn để hệ thống gửi mật khẩu mới đến email của bạn', style: TextStyle(color: defaultFontColor),),
-                        SizedBox(height: 20.0,),
-                        CustomEditableTextFormField(
-                            text: 'Email của bạn',
-                            title: 'Email',
-                            readonly: false,
-                            width: 300.0,
-                        ),
-                        SizedBox(height: 20.0,),
-                        CustomTextButton(
-                            color: Colors.blueAccent,
-                            text: 'Xác nhận'
-                        ),
-                      ],
-                    ),
+                padding: const EdgeInsets.all(30.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      const Text('Vui lòng nhập email của bạn.', style: TextStyle(color: defaultFontColor),),
+                      const SizedBox(height: 20.0,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomEditableTextFormField(
+                                text: _email.text.isEmpty ? '' : _email.text,
+                                title: 'Email',
+                                readonly: false,
+                                textEditingController: _email,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20.0,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextButton(
+                                color: mainBgColor,
+                                text: 'Xác nhận',
+                                onPressed: () async {
+                                  if(!_formKey.currentState!.validate()) {
+                                    return;
+                                  }
+                                  showLoaderDialog(context);
+                                  bool result = await _resetPassword(_email.text.toString());
+
+                                  if(result == true){
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Mật khẩu mới đã gửi đến email của bạn')),
+                                    );
+                                    Navigator.pop(context);
+                                  }else{
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Email không tồn tại')),
+                                    );
+                                  }
+                                },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               )
@@ -81,5 +121,10 @@ class _EmployeeForgetPasswordState extends State<EmployeeForgetPassword> {
         ],
       ),
     );
+  }
+
+  Future<bool> _resetPassword(String email) async {
+    bool result = await AuthenticationViewModel().resetPassword(email);
+    return result;
   }
 }

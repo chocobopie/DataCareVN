@@ -547,7 +547,6 @@ class MenuItems {
   static const onTime = MenuItem(text: 'Đúng giờ', icon: Icon(Icons.access_time_filled, color: Colors.green));
   static const late = MenuItem(text: 'Trễ', icon: Icon(Icons.access_time_filled, color: Colors.brown));
   static const absent = MenuItem(text: 'Vắng', icon: Icon(Icons.access_time_filled, color: Colors.red));
-  // static const lateAccepted = MenuItem(text: 'Được đi trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
 
   static Widget buildItem(MenuItem item) {
     return Row(
