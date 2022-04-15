@@ -84,18 +84,19 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
             elevation: 10.0,
             child: _maxPages > 0 ? NumberPaginator(
               numberPages: _maxPages,
+              initialPage: 0,
               buttonSelectedBackgroundColor: mainBgColor,
               onPageChange: (int index) {
                 setState(() {
+                  if(index >= _maxPages){
+                    index = 0;
+                    _currentPage = index;
+                  }else{
+                    _currentPage = index;
+                  }
                   _contacts.clear();
-                  _currentPage = index;
                 });
                 _getOverallInfo(_currentPage, _currentAccount);
-                // if(_contactOwnerId == -1){
-                //   _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                // } else {
-                //   _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-                // }
               },
             ) : null,
           ),
@@ -151,6 +152,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
                                   if(_contacts.isNotEmpty){
                                     _contacts.clear();
+                                    _maxPages = 0;
                                   }
                                   _getOverallInfo(_currentPage, _currentAccount);
                                   // _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
@@ -172,48 +174,13 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                     _toDate = fromDateToDate.toDate;
                                     _fromDateToDateString = 'Ngày tạo: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                     _contacts.clear();
+                                    _maxPages = 0;
                                   });
                                   _refreshController.resetNoData();
                                   _getOverallInfo(_currentPage, _currentAccount);
                                 }
                               },
                             ),
-                            // DropdownButton2(
-                            //   customButton: const Icon(
-                            //     Icons.sort,
-                            //     size: 40,
-                            //     color: mainBgColor,
-                            //   ),
-                            //     items: [
-                            //       ...SortItems.firstItems.map(
-                            //             (item) =>
-                            //             DropdownMenuItem<SortItem>(
-                            //               value: item,
-                            //               child: SortItems.buildItem(item),
-                            //             ),
-                            //       ),
-                            //     ],
-                            //   onChanged: (value) {
-                            //     _isAsc = SortItems.onChanged(context, value as SortItem);
-                            //     setState(() {
-                            //       if(_isAsc == true ){
-                            //         _contacts.sort( (a,b) => a.createdDate.compareTo(b.createdDate) );
-                            //       }else{
-                            //         _contacts.sort( (a,b) => b.createdDate.compareTo(a.createdDate) );
-                            //       }
-                            //     });
-                            //   },
-                            //   itemHeight: 40,
-                            //   itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                            //   dropdownWidth: 220,
-                            //   dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                            //   dropdownDecoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(25),
-                            //     color: mainBgColor,
-                            //   ),
-                            //   dropdownElevation: 8,
-                            //   offset: const Offset(0, 8),
-                            // ),
                             IconButton(
                                 onPressed: (){
                                   setState(() {
@@ -277,12 +244,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       _searchNameAndEmail(currentAccount: _currentAccount, query: _searchString);
                     }
 
-                    // if(_contactOwnerId == -1){
-                    //   _getAllContactByAccountId(isRefresh: false ,currentPage: _currentPage, accountId: _currentAccount.accountId!);
-                    // } else {
-                    //   _getAllContactByOwnerId(isRefresh: false, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
-                    // }
-
                     if(_contacts.isNotEmpty){
                       _refreshController.refreshCompleted();
                     }else{
@@ -309,43 +270,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                 padding: const EdgeInsets.all(10.0),
                                 child: Column(
                                   children: <Widget>[
-                                    // Padding(
-                                    //   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    //   child: Row(
-                                    //     children: <Widget>[
-                                    //
-                                    //       Expanded(
-                                    //         flex: 5,
-                                    //         child: Column(
-                                    //           children: <Widget>[
-                                    //             Text(contact.fullname)
-                                    //           ],
-                                    //         ),
-                                    //       ),
-                                    //       const Spacer(),
-                                    //       Expanded(
-                                    //         flex: 4,
-                                    //         child: Column(
-                                    //           children: <Widget>[
-                                    //             Text(DateFormat('dd-MM-yyyy').format(contact.createdDate)),
-                                    //           ],
-                                    //         ),
-                                    //       ),
-                                    //       const Spacer(),
-                                    //       Expanded(
-                                    //         flex: 4,
-                                    //         child: Column(
-                                    //           children: <Widget>[
-                                    //             Text(_getContactOwnerName(contact.contactOwnerId)),
-                                    //           ],
-                                    //         ),
-                                    //       ),
-                                    //       // const Text('Tên khách hàng:', style: TextStyle(fontSize: 14),),
-                                    //       // const Spacer(),
-                                    //       // Text(contact.fullname, style: const TextStyle(fontSize: 14),),
-                                    //     ],
-                                    //   ),
-                                    // ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
@@ -492,6 +416,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     _fromDate = null;
     _toDate = null;
     _fromDateToDateString = 'Ngày tạo';
+    _maxPages = 0;
     _refreshController.resetNoData();
   }
 
@@ -546,10 +471,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   _onGoBack(dynamic value) {
-    setState(() {
-      _contacts.clear();
-    });
-
     if(_isSearching == false || _searchString.isEmpty){
       if(_contactOwnerId == -1){
         _getOverallInfo(_currentPage, _currentAccount);
@@ -563,19 +484,15 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   void _getAllSaleEmployee({required bool isRefresh}){
-    if(_currentAccount.roleId == 4 || _currentAccount.roleId == 5){
       _getAllSalesForContact(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, limit: 1000000);
-    }else if(_currentAccount.roleId == 3){
-      _getAllSalesForContact(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, limit: 1000000);
-    }
   }
 
   void _getAllSalesForContact({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async {
     List<Account>? accountList = await AccountListViewModel().getAllSalesForContact(isRefresh: isRefresh, currentPage: currentPage, blockId: blockId, departmentId: departmentId, teamId: teamId, limit: limit, accountId: accountId, fullname: fullname);
 
+    _saleEmployeeList.clear();
     if(accountList != null){
       setState(() {
-        _contacts.clear();
         _saleEmployeeList.addAll(accountList);
       });
     }
@@ -591,42 +508,3 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
     return name;
   }
 }
-
-// class SortItems {
-//   static const List<SortItem> firstItems = [asc, des];
-//
-//   static const asc = SortItem(text: 'Ngày tạo tăng dần', icon: Icons.arrow_drop_up);
-//   static const des = SortItem(text: 'Ngày tạo giảm dần', icon: Icons.arrow_drop_down);
-//
-//
-//   static Widget buildItem(SortItem item) {
-//     return Row(
-//       children: [
-//         Icon(
-//             item.icon,
-//             color: Colors.white,
-//             size: 22
-//         ),
-//         const SizedBox(
-//           width: 10,
-//         ),
-//         Text(
-//           item.text,
-//           style: const TextStyle(
-//             color: Colors.white,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   static onChanged(BuildContext context, SortItem item) {
-//     switch (item) {
-//       case SortItems.asc:
-//         return true;
-//       case SortItems.des:
-//       //Do something
-//         return false;
-//     }
-//   }
-// }

@@ -62,13 +62,13 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
             setState(() {
-              _applications.clear();
               if(index >= _maxPages){
                 index = 0;
                 _currentPage = index;
               }else{
                 _currentPage = index;
               }
+              _applications.clear();
             });
             _getSelfApplicationList(isRefresh: false);
           },

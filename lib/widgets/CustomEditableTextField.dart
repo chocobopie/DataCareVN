@@ -47,6 +47,14 @@ class CustomEditableTextFormField extends StatelessWidget {
             if(value.length < 10){
               return 'Số điện thoại sai định dạng';
             }
+          }else if(isBankAccountNumber == true){
+            if(value.length < 9){
+              return 'Số tài khoản ngân hàng sai định dạng';
+            }
+          }else if(citizenIdentity == true){
+            if(value.length < 9){
+              return 'Số CMND/CCCD sai định dạng';
+            }
           }
           return null;
         } : null,

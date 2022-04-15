@@ -93,10 +93,16 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
             elevation: 10.0,
             child: _maxPages > 0 ? NumberPaginator(
               numberPages: _maxPages,
+              initialPage: 0,
               buttonSelectedBackgroundColor: mainBgColor,
               onPageChange: (int index) {
                 setState(() {
-                  _currentPage = index;
+                  if(index >= _maxPages){
+                    index = 0;
+                    _currentPage = index;
+                  }else{
+                    _currentPage = index;
+                  }
                   _deals.clear();
                 });
                 _getFilter(isRefresh: false);
@@ -150,6 +156,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                   _filterAccount = data;
                                   _fullname = 'Người quản lý hợp đồng: ${_filterAccount.fullname!}';
                                   _deals.clear();
+                                  _maxPages = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getFilter(isRefresh: true);
@@ -171,6 +178,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                   _filterContact = data;
                                   _contactName = 'Tên khách hàng: ${_filterContact!.fullname}';
                                   _deals.clear();
+                                  _maxPages = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getFilter(isRefresh: true);
@@ -194,6 +202,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                   _toDate = fromDateToDate.toDate;
                                   _fromDateToDateString = 'Ngày chốt hợp đồng: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                   _deals.clear();
+                                  _maxPages = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getFilter(isRefresh: true);
@@ -250,6 +259,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 _fromDate = null;
                                 _toDate = null;
                                 _fromDateToDateString = 'Ngày chốt hợp đồng';
+                                _maxPages = 0;
                               });
                               _refreshController.resetNoData();
                               _getOverallInfo(_currentPage, _currentAccount);
@@ -619,13 +629,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _onGoBack(dynamic value){
-
-    setState(() {
-      // _currentPage = 0;
-      _deals.clear();
-    });
     _refreshController.resetNoData();
-
 
     if(_isSearching == false || _searchString.isEmpty){
       _getFilter(isRefresh: false);

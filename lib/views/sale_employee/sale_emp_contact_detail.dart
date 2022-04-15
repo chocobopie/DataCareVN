@@ -11,6 +11,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:provider/provider.dart';
 
 class SaleEmpContactDetail extends StatefulWidget {
@@ -37,7 +38,8 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
   final TextEditingController _contactOwnerId = TextEditingController();
   final TextEditingController _contactGender = TextEditingController();
   final TextEditingController _contactLeadSourceId = TextEditingController();
-  
+
+  Account? _contactOwnerAccount;
   late Account _currentAccount = Account();
 
   @override
@@ -47,7 +49,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
       _getAccountFullnameById(accountId: widget.contact.contactOwnerId);
     }
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    print(widget.contact.createdDate);
+    _getAccountByAccountId(accountId: widget.contact.contactOwnerId);
   }
 
   @override
@@ -100,7 +102,10 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                           text: widget.contact.fullname,
                           title: 'Tên khách hàng',
                           readonly: _readOnly,
-                          textEditingController: _contactName
+                          textEditingController: _contactName,
+                          inputNumberOnly: false,
+                          limitNumbChar: 50,
+                          isLimit: true,
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -111,7 +116,10 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                           text: widget.contact.email,
                           title: 'Email của khách hàng',
                           readonly: _readOnly,
-                          textEditingController: _contactEmail
+                          textEditingController: _contactEmail,
+                          isLimit: true,
+                          limitNumbChar: 40,
+                          inputNumberOnly: false,
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -153,6 +161,7 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                           Expanded(
                             child: CustomEditableTextFormField(
                                 borderColor: _readOnly != true ? mainBgColor : null,
+                                isPhoneNumber: true,
                                 inputNumberOnly: true,
                                 text: widget.contact.phoneNumber,
                                 title: 'Số điện thoại',
@@ -190,33 +199,13 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                           text: widget.contact.companyName,
                           title: 'Tên công ty',
                           readonly: _readOnly,
-                          textEditingController: _contactCompanyName
+                          textEditingController: _contactCompanyName,
+                          inputNumberOnly: false,
+                          limitNumbChar: 70,
+                          isLimit: true,
                       ),
                       const SizedBox(height: 20.0,),
 
-                      //Khách hàng của
-                      // if(fullname.isNotEmpty) OutlinedButton(
-                      //     style: OutlinedButton.styleFrom(
-                      //       primary: defaultFontColor,
-                      //       side: BorderSide(width: 2.0, color: Colors.grey.shade300),
-                      //       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      //     ),
-                      //     onPressed: _readOnly != true ? () async {
-                      //       final data = await Navigator.push(context, MaterialPageRoute(
-                      //         builder: (context) => const SaleEmpFilter(),
-                      //       ));
-                      //       late Account filterAccount;
-                      //       if(data != null){
-                      //         setState(() {
-                      //           filterAccount = data;
-                      //           _contactOwnerId.text = filterAccount.accountId!.toString();
-                      //           fullname = filterAccount.fullname!;
-                      //         });
-                      //         print('Contact owner Id: ${_contactOwnerId.text}');
-                      //       }
-                      //     } : null,
-                      //     child: Text('Khách hàng của: $fullname')
-                      // ),
                       if(_fullname.isNotEmpty) CustomEditableTextFormField(
                         borderColor: _currentAccount.roleId != 5 ? _readOnly != true ? mainBgColor : null : null,
                         text: _fullname,
@@ -231,58 +220,68 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                               filterAccount = data;
                               _contactOwnerId.text = filterAccount.accountId!.toString();
                               _fullname = filterAccount.fullname!;
+                              _contactOwnerAccount = filterAccount;
                             });
                           }
                         } : null : null,
                       ),
                       const SizedBox(height: 20.0,),
 
+                      //Phòng ban
+                      if (_contactOwnerAccount?.departmentId != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: CustomReadOnlyTextField(text: getDepartmentName(_contactOwnerAccount!.departmentId!, _contactOwnerAccount!.blockId), title: 'Thuộc quản lý của phòng ban'),
+                        ),
+
+                      //Nhóm
+                      if (_contactOwnerAccount?.teamId != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: CustomReadOnlyTextField(text: getTeamName(_contactOwnerAccount!.teamId!, _contactOwnerAccount!.departmentId), title: 'Thuộc quản lý của nhóm'),
+                        ),
+
                       Padding(
                         padding: const EdgeInsets.only(left: 5.0),
                         child: Row(
                           children: <Widget>[
-                            //Nút xoá
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10.0),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    blurRadius: 1,
-                                    offset: const Offset(0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: TextButton(
-                                onPressed: () async {
 
-                                  showLoaderDialog(context);
-                                  bool data = await _deleteContact(widget.contact.contactId);
-                                  if(data == true){
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Xóa thông tin khách hàng thành công')),
-                                    );
-                                    Future.delayed(const Duration(seconds: 1), (){
-                                      Navigator.pop(context);
-                                    });
-                                  }else{
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Xóa thông tin khách hàng thất bại')),
-                                    );
-                                  }
+                            if(_readOnly == false)
+                              Expanded(child: CustomTextButton(
+                                color: Colors.deepPurple,
+                                text: 'Hủy',
+                                onPressed: (){
+                                  setState(() {
+                                    _readOnly = true;
+                                  });
                                 },
-                                child: const Text(
-                                  'Xoá khách hàng',
-                                  style: TextStyle(color: Colors.white),
+                              )),
+                            //Nút xoá
+                            if(_readOnly == true)
+                              Expanded(
+                                child: CustomTextButton(
+                                    color: Colors.red,
+                                    text: 'Xóa khách hàng',
+                                    onPressed: () async {
+                                      showLoaderDialog(context);
+                                      bool data = await _deleteContact(widget.contact.contactId);
+                                      if(data == true){
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Xóa thông tin khách hàng thành công')),
+                                        );
+                                        Future.delayed(const Duration(seconds: 1), (){
+                                          Navigator.pop(context);
+                                        });
+                                      }else{
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Xóa thông tin khách hàng thất bại')),
+                                        );
+                                      }
+                                    },
                                 ),
                               ),
-                            ),
                             const SizedBox(width: 30.0,),
 
                             //Nút chỉnh sửa
@@ -370,6 +369,13 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
     Account account = await AccountViewModel().getAccountFullnameById(accountId: accountId);
     setState(() {
       _fullname = account.fullname!;
+    });
+  }
+
+  void _getAccountByAccountId({required accountId}) async {
+    final _account = await AccountViewModel().getAccountByAccountId(accountId: accountId);
+    setState(() {
+      _contactOwnerAccount = _account;
     });
   }
 

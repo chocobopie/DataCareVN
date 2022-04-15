@@ -57,12 +57,9 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
   @override
   void initState() {
     super.initState();
-    _currentAccount =
-        Provider.of<AccountProvider>(context, listen: false).account;
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getContactByContactId(widget.deal.contactId);
-    _getAccountByAccountId(
-      accountId: widget.deal.dealOwnerId,
-    );
+    _getAccountByAccountId(accountId: widget.deal.dealOwnerId,);
   }
 
   @override
@@ -368,13 +365,13 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                               //Phòng ban
                               if (account?.departmentId != null)
-                                CustomReadOnlyTextField(text: _getDepartmentName(account!.departmentId!), title: 'Phòng'),
+                                CustomReadOnlyTextField(text: _getDepartmentName(account!.departmentId!), title: 'Thuộc quản lý của phòng ban'),
                               if (account?.departmentId! != null)
                                 const SizedBox(height: 20.0,),
 
                               //Nhóm
                               if (account?.teamId != null)
-                                CustomReadOnlyTextField(text: _getTeamNamwe(account!.teamId!), title: 'Nhóm'),
+                                CustomReadOnlyTextField(text: _getTeamNamwe(account!.teamId!), title: 'Thuộc quản lý của nhóm'),
 
                               //Button
                               const SizedBox(height: 20.0,),
@@ -518,8 +515,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
   }
 
   void _getAccountByAccountId({required accountId}) async {
-    final _account =
-        await AccountViewModel().getAccountByAccountId(accountId: accountId);
+    final _account = await AccountViewModel().getAccountByAccountId(accountId: accountId);
     setState(() {
       account = _account;
     });

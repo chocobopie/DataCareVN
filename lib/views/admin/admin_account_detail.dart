@@ -947,7 +947,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                               if(_currentAccount.roleId == 0 && _currentEmpAccount.roleId != 1)
                               Expanded(
                                 child: CustomTextButton(
-                                    color: Colors.blueAccent,
+                                    color: mainBgColor,
                                     text: _readOnly == true ? 'Chỉnh sửa' : 'Lưu',
                                     onPressed: () async {
                                       if(_isExpand == false){
@@ -1064,7 +1064,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
         departmentId: _filterDepartment == null ? _currentEmpAccount.departmentId : _filterDepartment!.departmentId,
         teamId:  _filterRole?.roleId != 3 ? _filterTeam == null ? _currentEmpAccount.teamId : _filterTeam!.teamId : null,
     );
-    print('Đến đây');
     Permission? data;
     if(_filterRole!.roleId == 2){
       data = await PermissionViewModel().updatePermission(permission: permissionHrIntern);

@@ -94,6 +94,9 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                           title: 'Tên khách hàng',
                           readonly: false,
                           textEditingController: _contactName,
+                          isLimit: true,
+                          limitNumbChar: 50,
+                          inputNumberOnly: false,
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -134,7 +137,10 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                           text: _contactCompanyName.text,
                           title: 'Tên công ty khách hàng',
                           readonly: false,
-                          textEditingController: _contactCompanyName
+                          textEditingController: _contactCompanyName,
+                          inputNumberOnly: false,
+                          limitNumbChar: 70,
+                          isLimit: true,
                       ),
                       const SizedBox(height: 20.0,),
 
@@ -147,6 +153,9 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                           title: 'Email của khách hàng',
                           readonly: false,
                           textEditingController: _contactEmail,
+                          isLimit: true,
+                          limitNumbChar: 40,
+                          inputNumberOnly: false,
                       ),
                       const SizedBox(height: 20.0,),
 

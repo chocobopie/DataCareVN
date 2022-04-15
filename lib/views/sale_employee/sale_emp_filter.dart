@@ -55,12 +55,8 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
           onPageChange: (int index) {
             setState(() {
               _currentPage = index;
+              _salesEmployees.clear();
             });
-            // if(_searchEmployeeName.text.isNotEmpty){
-            //   _getAccountsByFullname(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!, fullname: _searchEmployeeName.text);
-            // }else{
-            //   _filterSaleEmployee(isRefresh: false);
-            // }
             _filterSaleEmployee(isRefresh: false);
           },
         ) : null,

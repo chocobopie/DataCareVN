@@ -205,6 +205,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                       _roleNameString = 'Chức vụ';
                                       _accounts.clear();
                                       _blockNameString = _blockFilter!.name;
+                                      _maxPages = 0;
                                     });
                                   }
                                   _getFilter(isRefresh: true);
@@ -228,6 +229,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                         _teamNameString = 'Tên nhóm';
                                         _accounts.clear();
                                         _departmentNameString = _departmentFilter!.name;
+                                        _maxPages = 0;
                                       });
                                     }
                                     _getFilter(isRefresh: true);
@@ -250,6 +252,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     setState(() {
                                       _accounts.clear();
                                       _teamNameString = _teamFilter!.name;
+                                      _maxPages = 0;
                                     });
                                   }
                                   _getFilter(isRefresh: true);
@@ -269,39 +272,12 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     setState(() {
                                       _accounts.clear();
                                       _roleNameString = ('Chức vụ: ${_roleFilter!.name}' ) ;
+                                      _maxPages = 0;
                                     });
                                   }
                                   _getFilter(isRefresh: true);
                                 },
                             ),
-                            // DropdownButton2(
-                            //   customButton: const Icon(
-                            //     Icons.sort,
-                            //     size: 40,
-                            //     color: mainBgColor,
-                            //   ),
-                            //   items: [
-                            //     ...SortItems.firstItems.map(
-                            //           (item) =>
-                            //           DropdownMenuItem<SortItem>(
-                            //             value: item,
-                            //             child: SortItems.buildItem(item),
-                            //           ),
-                            //     ),
-                            //   ],
-                            //   onChanged: (value) {
-                            //   },
-                            //   itemHeight: 40,
-                            //   itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                            //   dropdownWidth: 250,
-                            //   dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                            //   dropdownDecoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(25),
-                            //     color: mainBgColor,
-                            //   ),
-                            //   dropdownElevation: 8,
-                            //   offset: const Offset(0, 8),
-                            // ),
                             IconButton(
                               icon: const Icon(Icons.refresh, color: mainBgColor, size: 30,),
                               onPressed: () {
@@ -315,6 +291,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   _teamFilter = null;
                                   _roleFilter = null;
                                   _accounts.clear();
+                                  _maxPages = 0;
                                 });
                                 _refreshController.resetNoData();
                                 // _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
@@ -550,9 +527,6 @@ class _AdminAccountListState extends State<AdminAccountList> {
   }
   
   void _onGoBack(){
-    setState(() {
-      _accounts.clear();
-    });
     if(_isSearching == true && _searchString.isNotEmpty){
       _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!, search: _searchString);
     }else{
@@ -582,9 +556,9 @@ class _AdminAccountListState extends State<AdminAccountList> {
         .getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId, search: search
     );
 
+    _accounts.clear();
     if(accountList.isNotEmpty){
       setState(() {
-        _accounts.clear();
         _accounts.addAll(accountList);
       });
       _maxPages = _accounts[0].maxPage!;
@@ -596,41 +570,3 @@ class _AdminAccountListState extends State<AdminAccountList> {
   }
 
 }
-
-// class SortItems {
-//   static const List<SortItem> firstItems = [asc, des];
-//
-//   static const asc = SortItem(text: 'Theo tên nhân viên từ A-z', icon: Icons.sort_by_alpha_rounded);
-//   static const des = SortItem(text: 'Theo tên nhân viên từ Z-a', icon: Icons.sort_by_alpha_rounded);
-//
-//   static Widget buildItem(SortItem item) {
-//     return Row(
-//       children: [
-//         Icon(
-//             item.icon,
-//             color: Colors.white,
-//             size: 22
-//         ),
-//         const SizedBox(
-//           width: 10,
-//         ),
-//         Text(
-//           item.text,
-//           style: const TextStyle(
-//             color: Colors.white,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   static onChanged(BuildContext context, SortItem item) {
-//     switch (item) {
-//       case SortItems.asc:
-//         return true;
-//       case SortItems.des:
-//       //Do something
-//         return false;
-//     }
-//   }
-// }
