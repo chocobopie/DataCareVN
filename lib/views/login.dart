@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_home.dart';
@@ -155,35 +156,43 @@ class _LoginState extends State<Login> {
 
                         Provider.of<AccountProvider>(context, listen: false).setAccount(account!);
 
+
                         if(account!.statusId == 1){
                           if(account!.roleId == 0){
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => const HomeAdmin(),
-                            ));
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                              builder: (context) => const HomeAdmin()),
+                                    (Route<dynamic> route) => false
+                            );
                           }else if(account!.roleId == 1){
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => const HomeHRManager(),
-                            ));
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                              builder: (context) => const HomeHRManager(),),
+                                    (Route<dynamic> route) => false
+                            );
                           }else if(account!.roleId == 2){
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => const HomeHRManager(),
-                            ));
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                              builder: (context) => const HomeHRManager(),),
+                                    (Route<dynamic> route) => false
+                            );
                           }else if(account!.roleId == 3){
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => const HomeSaleManager(),
-                            ));
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                              builder: (context) => const HomeSaleManager(),),
+                                    (Route<dynamic> route) => false
+                            );
                           }else if(account!.roleId == 4){
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => const HomeSaleLeader(),
-                            ));
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                              builder: (context) => const HomeSaleLeader(),),
+                                    (Route<dynamic> route) => false
+                            );
                           }else if(account!.roleId == 5){
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => const HomeSaleEmployee(),
-                            ));
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                              builder: (context) => const HomeSaleEmployee(),),
+                                    (Route<dynamic> route) => false
+                            );
                           }else if(account!.roleId == 6){
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => const TechnicalEmployeeHome(),
-                            ));
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                              builder: (context) => const TechnicalEmployeeHome(),),
+                                    (Route<dynamic> route) => false
+                            );
                           }
 
                         }else if(account!.statusId == 0){

@@ -108,7 +108,7 @@ class _EmployeeIssueAddNewState extends State<EmployeeIssueAddNew> {
                                   readonly: false,
                                   textEditingController: _issueTitle,
                                   isLimit: true,
-                                  limitNumbChar: 60,
+                                  limitNumbChar: 50,
                               ),
                             ),
                           ],

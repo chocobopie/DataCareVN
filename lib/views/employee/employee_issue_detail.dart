@@ -122,7 +122,7 @@ class _EmployeeIssueDetailState extends State<EmployeeIssueDetail> {
                                   readonly: _readOnly,
                                   textEditingController: _issueTitle,
                                   isLimit: true,
-                                  limitNumbChar: 60,
+                                  limitNumbChar: 50,
                                   inputNumberOnly: false,
                               ),
                             ),

@@ -84,25 +84,12 @@ class _SaleEmpDealTimelineState extends State<SaleEmpDealTimeline> {
                       setState(() {
                         _timeLines.clear();
                       });
-                      _refreshController.resetNoData();
-
                       _getTimelineByDealId(isRefresh: false, dealId: widget.deal.dealId, currentPage: _currentPage);
 
                       if(_timeLines.isNotEmpty){
                         _refreshController.refreshCompleted();
                       }else{
                         _refreshController.refreshFailed();
-                      }
-                    },
-                    onLoading: (){
-                      if(_currentPage < _maxPages){
-                        _currentPage++;
-                      }
-
-                      _getTimelineByDealId(isRefresh: false, dealId: widget.deal.dealId, currentPage: _currentPage);
-
-                      if(_timeLines.isEmpty){
-                        _refreshController.loadFailed();
                       }
                     },
                     child: ListView.builder(

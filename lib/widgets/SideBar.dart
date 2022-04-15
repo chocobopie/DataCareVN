@@ -127,9 +127,10 @@ class SideBar extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(
-                    builder: (context) => const Login(),
-                  ));
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                    builder: (context) => const Login(),),
+                          (Route<dynamic> route) => false
+                  );
                 },
               ),
             ),

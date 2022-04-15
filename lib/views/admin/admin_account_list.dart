@@ -335,7 +335,6 @@ class _AdminAccountListState extends State<AdminAccountList> {
                         _getFilter(isRefresh: false);
                       }
 
-
                       if(_accounts.isNotEmpty){
                         _refreshController.refreshCompleted();
                       }else{
@@ -535,16 +534,15 @@ class _AdminAccountListState extends State<AdminAccountList> {
   }
 
   void _getAllAccount({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, String? search}) async {
-    List<Account> accountList = await AccountListViewModel()
-        .getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId, search: search
+    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId, search: search
     );
 
     _accounts.clear();
     if(accountList.isNotEmpty){
       setState(() {
         _accounts.addAll(accountList);
+        _maxPages = _accounts[0].maxPage!;
       });
-      _maxPages = _accounts[0].maxPage!;
     }else{
       setState(() {
         _refreshController.loadNoData();
