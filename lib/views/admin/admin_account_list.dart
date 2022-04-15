@@ -4,7 +4,6 @@ import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/role.dart';
-import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/department_list_view_model.dart';
@@ -118,21 +117,6 @@ class _AdminAccountListState extends State<AdminAccountList> {
                    )
                ),
              ),
-           // Padding(
-           //   padding: const EdgeInsets.only(left: 10.0),
-           //   child: Align(
-           //     alignment: Alignment.bottomLeft,
-           //     child: FloatingActionButton(
-           //      onPressed: () {
-           //        Navigator.push(context, MaterialPageRoute(
-           //          builder: (context) => const AdminAccountAdd(),
-           //        ));
-           //      },
-           //      backgroundColor: Colors.green,
-           //      child: const Icon(Icons.plus_one),
-           //     ),
-           //   ),
-           // ),
 
            Card(
              elevation: 10.0,
@@ -176,11 +160,11 @@ class _AdminAccountListState extends State<AdminAccountList> {
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(left: 5.0, top: 10.0),
+                  padding: const EdgeInsets.only(left: 5.0, top: 5.0),
                   child: Column(
                     children: <Widget>[
                       const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                      const SizedBox(height: 10.0,),
+                      const SizedBox(height: 5.0,),
                       SizedBox(
                         height: 40.0,
                         child: ListView(
@@ -294,7 +278,6 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   _maxPages = 0;
                                 });
                                 _refreshController.resetNoData();
-                                // _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!);
                                 _getFilter(isRefresh: false);
                                 _onGoBackGetDepartmentList();
                                 _onGoBackGetTeamList();
@@ -313,7 +296,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
             padding: EdgeInsets.only(
                 left: 0.0,
                 right: 0.0,
-                top: MediaQuery.of(context).size.height * 0.23),
+                top: MediaQuery.of(context).size.height * 0.21),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

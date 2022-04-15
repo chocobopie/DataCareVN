@@ -201,7 +201,7 @@ class _LoginState extends State<Login> {
 
                   },
                   height: 45,
-                  color: Colors.blue,
+                  color: mainBgColor,
                   child: const Text("Đăng nhập", style: TextStyle(color: Colors.white, fontSize: 16.0),),
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
                   shape: RoundedRectangleBorder(

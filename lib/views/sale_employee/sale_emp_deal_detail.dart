@@ -287,12 +287,14 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                               //Số tiền
                               CustomEditableTextFormField(
+                                  inputMoney: true,
                                   borderColor: _readOnly != true ? mainBgColor : null,
                                   inputNumberOnly: true,
-                                  text: '${widget.deal.amount}',
+                                  text: _dealAmount.text.isEmpty ? widget.deal.amount > 0 ? formatNumber(widget.deal.amount.toString().replaceAll('.', '')) : 'Chưa chốt giá' : formatNumber(_dealAmount.text.replaceAll('.', '')),
                                   title: 'Số tiền (VNĐ)',
                                   readonly: _readOnly,
-                                  textEditingController: _dealAmount),
+                                  textEditingController: _dealAmount
+                              ),
                               const SizedBox(height: 20.0,),
 
                               CustomDatePicker(
@@ -373,9 +375,10 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                               const SizedBox(height: 20.0,),
                               if(widget.readOnly == null)
                               Padding(
-                                padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                                padding: const EdgeInsets.only(right: 5.0),
                                 child: Row(
                                   children: <Widget>[
+                                    if(_readOnly == true)
                                     if( widget.deal.dealStageId != 5 || (widget.deal.dealStageId == 5 && _currentAccount.roleId == 3))
                                     Expanded(
                                         child: CustomTextButton(
@@ -402,6 +405,21 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         ),
                                     ),
                                     const SizedBox(width: 10.0,),
+                                    if(_readOnly == false)
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: 10.0),
+                                        child: CustomTextButton(
+                                            color: Colors.purple,
+                                            text: 'Hủy',
+                                            onPressed: (){
+                                              setState(() {
+                                                _readOnly = true;
+                                              });
+                                            },
+                                        ),
+                                      ),
+                                    ),
                                     Expanded(
                                         child: _readOnly == true
                                             ? CustomTextButton(color: mainBgColor, text: 'Chỉnh sửa',
@@ -488,7 +506,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
         dealId: widget.deal.dealId,
         title: _dealTitle.text.isEmpty ? widget.deal.title : _dealTitle.text,
         dealStageId: _dealStage.text.isEmpty ? widget.deal.dealStageId : int.parse(_dealStage.text),
-        amount: _dealAmount.text.isEmpty ? widget.deal.amount : int.parse(_dealAmount.text),
+        amount: _dealAmount.text.isEmpty ? widget.deal.amount > 0 ? widget.deal.amount : 0 : int.parse(_dealAmount.text),
         closedDate: _dealClosedDate.text.isEmpty ? widget.deal.closedDate : DateTime.parse(_dealClosedDate.text),
         dealOwnerId: _dealOwnerId.text.isEmpty ? widget.deal.dealOwnerId : int.parse(_dealOwnerId.text),
         linkTrello: _dealLinkTrello.text.isEmpty ? widget.deal.linkTrello : _dealLinkTrello.text.isEmpty ? '' : _dealLinkTrello.text,

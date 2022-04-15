@@ -91,7 +91,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
             ),
             margin: const EdgeInsets.only(top: 90),
             child: Padding(
-              padding: const EdgeInsets.only(left: 5.0, top: 10.0),
+              padding: const EdgeInsets.only(left: 5.0, top: 5.0),
               child: Column(
                 children: <Widget>[
                   SizedBox(
@@ -215,7 +215,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.20),
+            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.18),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

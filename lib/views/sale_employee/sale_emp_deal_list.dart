@@ -128,11 +128,11 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
             ),
             margin: const EdgeInsets.only(top: 90.0),
             child: Padding(
-              padding: const EdgeInsets.only( top: 10.0),
+              padding: const EdgeInsets.only( top: 5.0),
               child: Column(
                 children: <Widget>[
                   const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                  const SizedBox(height: 10.0,),
+                  const SizedBox(height: 5.0,),
                   SizedBox(
                     height: 40.0,
                     child: ListView(
@@ -205,49 +205,12 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                               }
                             },
                         ),
-                        // DropdownButton2(
-                        //   customButton: const Icon(
-                        //     Icons.sort,
-                        //     size: 40,
-                        //     color: mainBgColor,
-                        //   ),
-                        //   items: [
-                        //     ...SortItems.firstItems.map(
-                        //           (item) =>
-                        //           DropdownMenuItem<SortItem>(
-                        //             value: item,
-                        //             child: SortItems.buildItem(item),
-                        //           ),
-                        //     ),
-                        //   ],
-                        //   onChanged: (value) {
-                        //     _isAsc = SortItems.onChanged(context, value as SortItem);
-                        //     setState(() {
-                        //       if(_isAsc == true ){
-                        //         _deals.sort( (a,b) => a.closedDate.compareTo(b.closedDate) );
-                        //       }else{
-                        //       _deals.sort( (a,b) => b.closedDate.compareTo(a.closedDate) );
-                        //       }
-                        //     });
-                        //   },
-                        //   itemHeight: 40,
-                        //   itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                        //   dropdownWidth: 220,
-                        //   dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
-                        //   dropdownDecoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(25),
-                        //     color: mainBgColor,
-                        //   ),
-                        //   dropdownElevation: 8,
-                        //   offset: const Offset(0, 8),
-                        // ),
                         IconButton(
                             onPressed: (){
                               if(_deals.isNotEmpty){
                                 _deals.clear();
                               }
                               setState(() {
-                                // _fullname = _getDepartmentName(_currentAccount.blockId!, _currentAccount.departmentId);
                                 _fullname = 'Người quản lý hợp đồng';
                                 _contactName = 'Tên khách hàng';
                                 _filterContact = null;
@@ -273,7 +236,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.22),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.21),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -317,22 +280,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       _refreshController.refreshFailed();
                     }
                   },
-                  // onLoading: () async{
-                  //   if(_currentPage < _maxPages){
-                  //     setState(() {
-                  //       _currentPage++;
-                  //     });
-                  //     _getFilter(isRefresh: false);
-                  //   }
-                  //   print('Curent page: $_currentPage');
-                  //
-                  //   if(_deals.isNotEmpty){
-                  //      _refreshController.loadComplete();
-                  //   }else if(_deals.isEmpty){
-                  //      _refreshController.loadFailed();
-                  //   }
-                  //
-                  // },
                   child: ListView.builder(
                     itemBuilder: (context, index){
                       final deal = _deals[index];
@@ -391,7 +338,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                         children: <Widget>[
                                           const Text('Số tiền:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
-                                          Text('${deal.amount} VNĐ', style: const TextStyle(fontSize: 14.0),),
+                                          Text(deal.amount > 0 ? '${formatNumber(deal.amount.toString().replaceAll('.', ''))} đ' : 'Chưa chốt giá', style: const TextStyle(fontSize: 14.0),),
                                         ],
                                       ),
                                     ),

@@ -1,4 +1,3 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
@@ -111,11 +110,11 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
             child: Column(
               children: <Widget>[
                 const Padding(
-                  padding: EdgeInsets.only(top: 10.0),
+                  padding: EdgeInsets.only(top: 5.0),
                   child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor),),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(top: 5.0),
                   child: SizedBox(
                     height: 40.0,
                     child: ListView(
@@ -209,7 +208,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
 
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.24),
+            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

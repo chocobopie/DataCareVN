@@ -92,7 +92,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 5.0, top: 10.0),
+                  padding: const EdgeInsets.only(left: 5.0, top: 5.0),
                   child: SizedBox(
                     height: 40.0,
                     child: ListView(
@@ -214,7 +214,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.20),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.19),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

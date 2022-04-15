@@ -193,10 +193,11 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                       //Tổng giá trị
                       CustomEditableTextFormField(
+                          inputMoney: true,
                           isNull: true,
                           borderColor: mainBgColor,
                           inputNumberOnly: true,
-                          text: _dealAmount.text,
+                          text: _dealAmount.text.isNotEmpty ? formatNumber(_dealAmount.text.replaceAll('.', '')) : _dealAmount.text,
                           title: 'Số tiền (VNĐ)',
                           readonly: false,
                           textEditingController: _dealAmount

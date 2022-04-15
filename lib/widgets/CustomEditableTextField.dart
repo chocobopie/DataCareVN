@@ -7,7 +7,7 @@ import 'package:login_sample/utilities/utils.dart';
 
 class CustomEditableTextFormField extends StatelessWidget {
    const CustomEditableTextFormField({
-    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity, this.isEmailCheck, this.isPhoneNumber, this.isBankAccountNumber, this.isLimit, this.limitNumbChar
+    Key? key, required this.text, required this.title, required this.readonly, this.textEditingController, this.inputNumberOnly, this.inputEmailOnly, this.onTap, this.borderColor, this.width, this.obscureText, this.isNull, this.citizenIdentity, this.isEmailCheck, this.isPhoneNumber, this.isBankAccountNumber, this.isLimit, this.limitNumbChar, this.inputMoney
   }) : super(key: key);
 
   final String title;
@@ -27,6 +27,7 @@ class CustomEditableTextFormField extends StatelessWidget {
   final bool? isBankAccountNumber;
   final bool? isLimit;
   final int? limitNumbChar;
+  final bool? inputMoney;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +91,7 @@ class CustomEditableTextFormField extends StatelessWidget {
           textEditingController?.text = val.trim();
         },
         decoration: InputDecoration(
+          suffixText: inputMoney == true ? currency : null,
           errorMaxLines: 5,
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(color: borderColor == null ? Colors.grey.shade300 : borderColor!, width: 2),

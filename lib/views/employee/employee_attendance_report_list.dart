@@ -99,7 +99,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
               ),
               margin: const EdgeInsets.only(top: 80.0),
               child: Padding(
-                padding: const EdgeInsets.only(left: 5.0, top: 10,),
+                padding: const EdgeInsets.only(left: 5.0, top: 5.0,),
                 child: Column(
                   children: <Widget>[
                     SizedBox(
@@ -220,7 +220,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
           ),
 
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.18),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.17),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

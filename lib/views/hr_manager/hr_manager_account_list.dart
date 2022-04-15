@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/models/temp/contact_temp.dart';
 import 'package:login_sample/models/temp/user_temp.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_account_detail.dart';
@@ -15,13 +14,6 @@ class _HrManagerAccountListState extends State<HrManagerAccountList> {
   bool isSearching = false;
 
   List<User> users = [];
-  //   User(employeeId: '1', email: 'sample1@gmail.com', role: 'NVKD', name: "Nguyễn Văn A", phoneNumber: '123456789', gender: 'Nam', joinDate: DateTime.now(), dob: DateTime.now(), department: 'Học viện', team: 'Nhóm A'),
-  //   User(employeeId: '2', email: 'sample2@gmail.com', role: 'NVKD', name: "Nguyễn Văn B", phoneNumber: '123456789', gender: 'Nam', joinDate: DateTime.now(), dob: DateTime.now(), department: 'Học viện', team: 'Nhóm B'),
-  //   User(employeeId: '3', email: 'sample3@gmail.com', role: 'TNKD', name: "Nguyễn Văn C", phoneNumber: '123456789', gender: 'Nam', joinDate: DateTime.now(), dob: DateTime.now(), department: 'Học viện', team: 'Nhóm C'),
-  //   User(employeeId: '4', email: 'sample4@gmail.com', role: 'TPKD', name: "Nguyễn Văn D", phoneNumber: '123456789', gender: 'Nam', joinDate: DateTime.now(), dob: DateTime.now(), department: 'Học viện', team: 'Nhóm D'),
-  //   User(employeeId: '5', email: 'sample5@gmail.com', role: 'NVKD', name: "Nguyễn Văn E", phoneNumber: '123456789', gender: 'Nam', joinDate: DateTime.now(), dob: DateTime.now(), department: 'Học viện', team: 'Nhóm E'),
-  //   User(employeeId: '6', email: 'sample6@gmail.com', role: 'NVKD', name: "Nguyễn Văn F", phoneNumber: '123456789', gender: 'Nam', joinDate: DateTime.now(), dob: DateTime.now(), department: 'Học viện', team: 'Nhóm F'),
-  //   User(employeeId: '7', email: 'sample7@gmail.com', role: 'NVKD', name: "Nguyễn Văn G", phoneNumber: '123456789', gender: 'Nam', joinDate: DateTime.now(), dob: DateTime.now(), department: 'Học viện', team: 'Nhóm G'),
 
   bool loading = false, allLoaded = false;
 

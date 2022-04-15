@@ -121,7 +121,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               height: MediaQuery.of(context).size.height * 0.2
           ),
           Card(
-              elevation: 0.0,
+              elevation: 20.0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15),
@@ -130,7 +130,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               ),
               margin: const EdgeInsets.only(top: 90.0),
               child: Padding(
-                padding: const EdgeInsets.only(top: 10, left: 5.0),
+                padding: const EdgeInsets.only(top: 5.0, left: 5.0),
                 child: Column(
                   children: <Widget>[
                     SizedBox(
@@ -262,7 +262,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                 topRight: Radius.circular(15),
               ),
             ),
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.18),
             child: _attendances.isNotEmpty ? Column(
               children: [
                 Padding(

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/models/issue.dart';
-import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/issue_list_view_model.dart';
@@ -91,7 +90,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
             child: Column(
               children: <Widget>[
                 const Padding(
-                  padding: EdgeInsets.only(top: 10.0),
+                  padding: EdgeInsets.only(top: 5.0),
                   child: Text('Lọc theo:', style: TextStyle(color: defaultFontColor),),
                 ),
                 Padding(
@@ -187,7 +186,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.24),
+            padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
