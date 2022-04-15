@@ -83,7 +83,7 @@ the internet.
 
 
    <application
-        android:label="login_sample"
+        android:label="Datacare.vn"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
