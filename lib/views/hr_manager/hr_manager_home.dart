@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_account_list.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_payroll_list.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/employee/employee_take_attendance.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
-import 'hr_manager_account_list.dart';
-import 'hr_manager_attendance_report_list.dart';
-import 'hr_manager_payroll_management.dart';
 
 class HomeHRManager extends StatefulWidget {
   const HomeHRManager({Key? key}) : super(key: key);

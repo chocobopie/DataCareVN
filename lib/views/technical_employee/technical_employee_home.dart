@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/employee/employee_received_issue_list.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';

@@ -16,7 +16,7 @@ import 'package:login_sample/views/admin/admin_department_filter.dart';
 import 'package:login_sample/views/admin/admin_role_filter.dart';
 import 'package:login_sample/views/admin/admin_team_add_new.dart';
 import 'package:login_sample/views/admin/admin_team_filter.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';

@@ -6,7 +6,7 @@ import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/issue.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_list.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:login_sample/models/account.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
-import 'package:login_sample/views/providers/authenticate.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
+import 'package:login_sample/models/providers/authenticate.dart';
 import 'package:login_sample/views/wrapper.dart';
 import 'package:login_sample/utilities/account_preference.dart';
 import 'package:provider/provider.dart';

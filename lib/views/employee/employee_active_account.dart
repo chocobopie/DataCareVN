@@ -6,7 +6,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_view_model.dart';
 import 'package:login_sample/views/admin/admin_home.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_home.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_home.dart';
 import 'package:login_sample/views/sale_leader/sale_leader_home.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_home.dart';

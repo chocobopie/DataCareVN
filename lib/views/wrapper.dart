@@ -3,7 +3,7 @@ import 'package:login_sample/view_models/application_status_list_view_model.dart
 import 'package:login_sample/view_models/application_type_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_status_list_view_model.dart';
 import 'package:login_sample/view_models/period_of_day_list_view_model.dart';
-import 'package:login_sample/views/providers/login.dart';
+import 'package:login_sample/views/login.dart';
 import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 

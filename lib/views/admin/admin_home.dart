@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_report_list.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/admin/admin_account_list.dart';

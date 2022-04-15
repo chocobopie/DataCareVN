@@ -3,7 +3,7 @@ import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/change_password.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/authentication_view_model.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:provider/provider.dart';

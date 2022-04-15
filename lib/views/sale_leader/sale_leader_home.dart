@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
-import 'package:login_sample/widgets/ImageTextButton.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_list.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_list.dart';
-import 'package:login_sample/views/employee/employee_issue.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/views/employee/employee_take_attendance.dart';
 import 'package:login_sample/widgets/SideBar.dart';

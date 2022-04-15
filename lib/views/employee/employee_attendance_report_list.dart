@@ -8,7 +8,7 @@ import 'package:login_sample/models/fromDateToDate.dart';
 import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
 import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
@@ -68,13 +68,13 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
             setState(() {
-              _attendances.clear();
               if(index >= _maxPages){
                 index = 0;
                 _currentPage = index;
               }else{
                 _currentPage = index;
               }
+              _attendances.clear();
             });
             _getSelfAttendanceList(isRefresh: false);
           },

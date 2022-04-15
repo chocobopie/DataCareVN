@@ -10,7 +10,7 @@ import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/view_models/attendance_view_model.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -314,10 +314,8 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
                                         children: <Widget>[
-
                                           Expanded(child: Text(_getEmployeeName(_attendance.accountId)), flex: 2,),
                                           const Spacer(),
-                                          
                                           Expanded(child: Text(periodOfDayNames[_attendance.periodOfDayId]), flex: 1,),
                                           const Spacer(),
                                           if(( (_timeHmsNow > 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow > 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)

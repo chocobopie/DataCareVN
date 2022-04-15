@@ -3,6 +3,7 @@ import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/timeline.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/timeline_list_view_model.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class SaleEmpDealTimeline extends StatefulWidget {
@@ -16,7 +17,7 @@ class SaleEmpDealTimeline extends StatefulWidget {
 
 class _SaleEmpDealTimelineState extends State<SaleEmpDealTimeline> {
 
-  late List<Timeline> _timeLines = [];
+  late final List<Timeline> _timeLines = [];
   late int _currentPage = 0, _maxPages = 0;
   final RefreshController _refreshController = RefreshController();
 
@@ -35,6 +36,27 @@ class _SaleEmpDealTimelineState extends State<SaleEmpDealTimeline> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Card(
+        elevation: 10.0,
+        child: _maxPages > 0 ? NumberPaginator(
+          numberPages: _maxPages,
+          initialPage: 0,
+          buttonSelectedBackgroundColor: mainBgColor,
+          onPageChange: (int index) {
+            setState(() {
+              if(index >= _maxPages){
+                index = 0;
+                _currentPage = index;
+              }else{
+                _currentPage = index;
+              }
+              _timeLines.clear();
+            });
+            _getTimelineByDealId(isRefresh: false, dealId: widget.deal.dealId, currentPage: _currentPage);
+          },
+        ) : null,
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -48,8 +70,8 @@ class _SaleEmpDealTimelineState extends State<SaleEmpDealTimeline> {
               elevation: 20.0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50),
-                  topRight: Radius.circular(50),
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
                 ),
               ),
               margin: const EdgeInsets.only(top: 100.0),
@@ -62,10 +84,9 @@ class _SaleEmpDealTimelineState extends State<SaleEmpDealTimeline> {
                       setState(() {
                         _timeLines.clear();
                       });
-                      _currentPage = 0;
                       _refreshController.resetNoData();
 
-                      _getTimelineByDealId(isRefresh: true, dealId: widget.deal.dealId, currentPage: _currentPage);
+                      _getTimelineByDealId(isRefresh: false, dealId: widget.deal.dealId, currentPage: _currentPage);
 
                       if(_timeLines.isNotEmpty){
                         _refreshController.refreshCompleted();
@@ -143,13 +164,12 @@ class _SaleEmpDealTimelineState extends State<SaleEmpDealTimeline> {
   void _getTimelineByDealId({ required bool isRefresh ,required dealId, required currentPage}) async {
     List<Timeline> timeLineList = await TimelineListViewModel().getTimelineByDealId(isRefresh: isRefresh, dealId: dealId, currentPage: currentPage);
 
+    _timeLines.clear();
     if(timeLineList.isNotEmpty){
       setState(() {
         _timeLines.addAll(timeLineList);
-      });
-      if(_timeLines.isNotEmpty){
         _maxPages = _timeLines[0].maxPage;
-      }
+      });
     }else{
       _refreshController.loadNoData();
     }

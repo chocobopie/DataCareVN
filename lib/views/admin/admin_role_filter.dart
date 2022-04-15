@@ -3,7 +3,7 @@ import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/role_list_view_model.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

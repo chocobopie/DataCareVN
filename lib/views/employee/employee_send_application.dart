@@ -7,7 +7,7 @@ import 'package:login_sample/models/application.dart';
 import 'package:login_sample/view_models/application_view_model.dart';
 import 'package:login_sample/views/employee/employee_application_list.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';

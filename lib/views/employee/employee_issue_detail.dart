@@ -8,7 +8,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_view_model.dart';
 import 'package:login_sample/view_models/deal_view_model.dart';
 import 'package:login_sample/view_models/issue_view_model.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';

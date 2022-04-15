@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_payroll_management.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';

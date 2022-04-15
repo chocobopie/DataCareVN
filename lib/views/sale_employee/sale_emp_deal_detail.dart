@@ -1,23 +1,19 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/contact.dart';
 import 'package:login_sample/models/deal.dart';
-import 'package:login_sample/services/api_service.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_view_model.dart';
 import 'package:login_sample/view_models/contact_view_model.dart';
 import 'package:login_sample/view_models/deal_view_model.dart';
-import 'package:login_sample/views/providers/account_provider.dart';
-import 'package:login_sample/views/sale_employee/sale_emp_date_filter.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_timeline.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_filter.dart';
 import 'package:login_sample/widgets/CustomDatePicker.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
-import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:provider/provider.dart';
@@ -147,8 +143,8 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                 children: [
                                   Expanded(
                                     child: CustomDropdownFormField2(
-                                        value: _dealStage.text.isEmpty ? dealStagesNames[ widget.deal.dealStageId] : dealStagesNames[int.parse(_dealStage.text)],
-                                        borderColor: _readOnly != true ? mainBgColor : null,
+                                        value: _dealStage.text.isEmpty ? dealStagesNames[widget.deal.dealStageId] : dealStagesNames[int.parse(_dealStage.text)],
+                                        borderColor: widget.deal.dealStageId != 5 ? _readOnly != true ? mainBgColor : null : null,
                                         label: 'Tiến trình hợp đồng',
                                         hintText: Text(
                                           dealStagesNames[
@@ -408,7 +404,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                     const SizedBox(width: 10.0,),
                                     Expanded(
                                         child: _readOnly == true
-                                            ? CustomTextButton(color: Colors.blue, text: 'Chỉnh sửa',
+                                            ? CustomTextButton(color: mainBgColor, text: 'Chỉnh sửa',
                                                 onPressed: () {
                                                   setState(() {
                                                     _readOnly = false;
@@ -417,7 +413,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                                 },
                                               )
                                             : CustomTextButton(
-                                                color: Colors.blue,
+                                                color: mainBgColor,
                                                 text: 'Lưu',
                                                 onPressed: () async {
                                                   if(!_formKey.currentState!.validate()){
