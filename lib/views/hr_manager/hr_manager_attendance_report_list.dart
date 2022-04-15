@@ -13,14 +13,11 @@ import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/views/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
-import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_attendance_list.dart';
 import 'package:login_sample/views/hr_manager/hr_manager_application_list.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class HrManagerAttendanceReportList extends StatefulWidget {
   const HrManagerAttendanceReportList({Key? key}) : super(key: key);
@@ -33,6 +30,8 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
 
   late Account _currentAccount;
   DateTime? _selectedDay = DateTime.parse( DateFormat('yyyy-MM-dd').format(DateTime.now()));
+  late DateTime _currentTime, _today;
+  late double _timeHmsNow;
 
   final RefreshController _refreshController = RefreshController();
   TextEditingController attendanceController = TextEditingController();
@@ -52,6 +51,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _getOtherAttendanceList(isRefresh: true);
     _getAllEmployee();
+    _getCurrentTime();
   }
 
   @override
@@ -296,7 +296,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                     },
                     child: ListView.builder(
                         itemBuilder: (context, index) {
-                          final attendance = _attendances[index];
+                          final _attendance = _attendances[index];
                           return Padding(
                             padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
                             child: Card(
@@ -315,21 +315,55 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                       child: Row(
                                         children: <Widget>[
 
-                                          Expanded(child: Text(_getEmployeeName(attendance.accountId)), flex: 2,),
+                                          Expanded(child: Text(_getEmployeeName(_attendance.accountId)), flex: 2,),
                                           const Spacer(),
                                           
-                                          Expanded(child: Text(periodOfDayNames[attendance.periodOfDayId]), flex: 1,),
+                                          Expanded(child: Text(periodOfDayNames[_attendance.periodOfDayId]), flex: 1,),
                                           const Spacer(),
-                                          _customDropdownButton(attendance, _attendances.indexOf(attendance)),
-                                          if(attendance.attendanceStatusId == 0) const Expanded(child: Text('Đúng giờ', style: TextStyle(fontSize: 16.0, color: Colors.green),)),
-
-                                          if(attendance.attendanceStatusId == 1) const Expanded(child: Text('Cho phép trễ', style: TextStyle(fontSize: 16.0, color: Colors.blue),)),
-
-                                          if(attendance.attendanceStatusId == 2) const Expanded(child: Text('Cho pheps nghỉ', style: TextStyle(fontSize: 16.0, color: Colors.purple),)),
-
-                                          if(attendance.attendanceStatusId == 3) const Expanded(child: Text('Trễ', style: TextStyle(fontSize: 16.0, color: Colors.brown,),)),
-
-                                          if(attendance.attendanceStatusId == 4) const Expanded(child: Text('Vắng', style: TextStyle(fontSize: 16.0, color: Colors.red,),)),
+                                          if(( (_timeHmsNow > 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow > 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                            _customDropdownButton(_attendance, _attendances.indexOf(_attendance)),
+                                          // if(_attendance.attendanceStatusId == 0) const Expanded(child: Text('Đúng giờ', style: TextStyle(fontSize: 16.0, color: Colors.green),)),
+                                          // if(_attendance.attendanceStatusId == 1) const Expanded(child: Text('Cho phép trễ', style: TextStyle(fontSize: 16.0, color: Colors.blue),)),
+                                          // if(_attendance.attendanceStatusId == 2) const Expanded(child: Text('Cho pheps nghỉ', style: TextStyle(fontSize: 16.0, color: Colors.purple),)),
+                                          // if(_attendance.attendanceStatusId == 3) const Expanded(child: Text('Trễ', style: TextStyle(fontSize: 16.0, color: Colors.brown,),)),
+                                          // if(_attendance.attendanceStatusId == 4) const Expanded(child: Text('Vắng', style: TextStyle(fontSize: 16.0, color: Colors.red,),)),
+                                          if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                            const Expanded(child: Text('Chưa điểm danh', style: TextStyle(color: Colors.grey),),),
+                                          if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                            Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                              style: TextStyle(color: _attendance.attendanceStatusId != 4
+                                                  ? _attendance.attendanceStatusId != 3
+                                                  ? _attendance.attendanceStatusId != 2
+                                                  ? _attendance.attendanceStatusId != 1 ? Colors.green
+                                                  : Colors.blue : Colors.purple : Colors.brown : Colors.red,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16.0
+                                              ),
+                                            ),),
+                                          if( ( (_timeHmsNow > 10.30 && _attendance.periodOfDayId == 0 ) || (_timeHmsNow > 14.30 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                            Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                              style: TextStyle(color: _attendance.attendanceStatusId != 4
+                                                  ? _attendance.attendanceStatusId != 3
+                                                  ? _attendance.attendanceStatusId != 2
+                                                  ? _attendance.attendanceStatusId != 1 ? Colors.green
+                                                  : Colors.blue : Colors.purple : Colors.brown : Colors.red,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16.0
+                                              ),
+                                            ),),
+                                          if(_attendance.date != _today)
+                                            _customDropdownButton(_attendance, _attendances.indexOf(_attendance)),
+                                          if(_attendance.date != _today)
+                                            Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                              style: TextStyle(color: _attendance.attendanceStatusId != 4
+                                                  ? _attendance.attendanceStatusId != 3
+                                                  ? _attendance.attendanceStatusId != 2
+                                                  ? _attendance.attendanceStatusId != 1 ? Colors.green
+                                                  : Colors.blue : Colors.purple : Colors.brown : Colors.red,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16.0
+                                              ),
+                                            ),),
                                         ],
                                       ),
                                     ),
@@ -367,6 +401,12 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
         ],
       ),
     );
+  }
+
+  void _getCurrentTime() async {
+    _currentTime = DateTime.now();
+    _timeHmsNow = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
+    _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
   }
 
   String _getEmployeeName(int accountId){
@@ -521,7 +561,6 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Cập nhật trạng thái cho ${_getEmployeeName(attendance.accountId)} thất bại')));
                   }
-
               },
             ),
           ],

@@ -29,12 +29,11 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
   late final List<Attendance> _attendances = [];
   late Account _currentAccount;
   int _currentPage = 0, _maxPages = 0;
-  int? _periodOfDayId, _attendanceStatusId, _periodOfDayNowLocal;
+  int? _periodOfDayId, _attendanceStatusId;
   String _fromDateToDateString = 'Ngày';
   DateTime? _fromDate, _toDate;
-  late DateTime _currentTime;
+  late DateTime _currentTime, _today;
   late double _timeHmsNow;
-  late final DateTime _today;
 
   final RefreshController _refreshController = RefreshController();
 
@@ -393,9 +392,6 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
     _currentTime = DateTime.now();
     _timeHmsNow = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
     _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
-    if(_timeHmsNow <= 10.30) _periodOfDayNowLocal = 0;
-    if(_timeHmsNow > 12 && _timeHmsNow < 17.30) _periodOfDayNowLocal = 1;
-    print(_today);
   }
 }
 
