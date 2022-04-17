@@ -220,11 +220,10 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
   void _getSelfAttendanceList({required bool isRefresh, required int accountId, required int currentPage,DateTime? fromDate, DateTime? toDate}) async {
     List<Attendance>? listAttendance = await AttendanceListViewModel().getSelfAttendanceList(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
-
-    if(listAttendance != null){
+    _attendances.clear();
+    if(listAttendance!.isNotEmpty){
       setState(() {
         _attendances.addAll(listAttendance);
-
           if(_timeHms >= 8.30 && _timeHms <= 10.30){
             if(_attendances[0].attendanceStatusId == 4 && _attendances[0].periodOfDayId == 0){
               _isTook = false;
@@ -245,8 +244,6 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
             _isTook = true;
             _takeAttendanceString = 'Bạn không thể điểm danh vì đã quá giờ hoặc chưa đến giờ điểm danh';
           }
-
-
       });
     }else{
       setState(() {

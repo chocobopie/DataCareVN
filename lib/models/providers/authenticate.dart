@@ -39,13 +39,13 @@ class AuthProvider with ChangeNotifier{
 
     if(response.statusCode == 200){
       print('Login successful');
-      print(jsonDecode(response.body));
 
       _loggedInStatus = Status.loggedIn;
       notifyListeners();
 
       return Account.fromJson(jsonDecode(response.body));
     }else{
+      print('Login failed');
 
       Account? account;
       _loggedInStatus = Status.loggedInFailed;

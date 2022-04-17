@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_home.dart';
@@ -155,7 +154,6 @@ class _LoginState extends State<Login> {
                       if(account != null){
 
                         Provider.of<AccountProvider>(context, listen: false).setAccount(account!);
-
 
                         if(account!.statusId == 1){
                           if(account!.roleId == 0){
