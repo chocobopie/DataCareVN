@@ -18,6 +18,7 @@ class CustomReadOnlyTextField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.always,
           contentPadding: const EdgeInsets.only(left: 20.0, top: 15.0, bottom: 15.0, right: 10.0),
           labelText: title,
+          hintMaxLines: 5,
           hintText: text,
           labelStyle: const TextStyle(
             color: defaultFontColor,

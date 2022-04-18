@@ -222,7 +222,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                             },
                             itemHeight: 40,
                             itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                            dropdownWidth: 150,
+                            dropdownWidth: 200,
                             dropdownPadding: const EdgeInsets.symmetric(vertical: 10),
                             dropdownDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),

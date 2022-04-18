@@ -186,8 +186,8 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                             },
                             itemHeight: 40,
                             itemPadding: const EdgeInsets.only(left: 5, right: 5),
-                            dropdownWidth: 150,
-                            dropdownPadding: const EdgeInsets.symmetric(vertical: 10),
+                            dropdownWidth: 200,
+                            dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
                             dropdownDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                               color: Colors.white,
