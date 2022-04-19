@@ -239,9 +239,10 @@ class _WrapperState extends State<Wrapper> {
   void getAllPeriodOfDay() async {
 
     periodOfDay.clear();
-    periodOfDayNames.clear();
 
     periodOfDay = await PeriodOfDayListViewModel().getPeriodOfDay();
+
+    periodOfDayNames.clear();
 
     for(int i = 0; i < periodOfDay.length; i++){
       periodOfDayNames.add(periodOfDay[i].name);

@@ -318,41 +318,39 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                           const Spacer(),
                                           Expanded(child: Text(periodOfDayNames[_attendance.periodOfDayId]), flex: 1,),
                                           const Spacer(),
-                                          if(( (_timeHmsNow > 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow > 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
-                                            _customDropdownButton(_attendance, _attendances.indexOf(_attendance)),
+                                          // if(( (_timeHmsNow > 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow > 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                          //   _customDropdownButton(_attendance, _attendances.indexOf(_attendance)),
                                           // if(_attendance.attendanceStatusId == 0) const Expanded(child: Text('Đúng giờ', style: TextStyle(fontSize: 16.0, color: Colors.green),)),
                                           // if(_attendance.attendanceStatusId == 1) const Expanded(child: Text('Cho phép trễ', style: TextStyle(fontSize: 16.0, color: Colors.blue),)),
                                           // if(_attendance.attendanceStatusId == 2) const Expanded(child: Text('Cho pheps nghỉ', style: TextStyle(fontSize: 16.0, color: Colors.purple),)),
                                           // if(_attendance.attendanceStatusId == 3) const Expanded(child: Text('Trễ', style: TextStyle(fontSize: 16.0, color: Colors.brown,),)),
                                           // if(_attendance.attendanceStatusId == 4) const Expanded(child: Text('Vắng', style: TextStyle(fontSize: 16.0, color: Colors.red,),)),
-                                          if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
-                                            const Expanded(child: Text('Chưa điểm danh', style: TextStyle(color: Colors.grey),),),
-                                          if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
-                                            Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
-                                              style: TextStyle(color: _attendance.attendanceStatusId != 4
-                                                  ? _attendance.attendanceStatusId != 3
-                                                  ? _attendance.attendanceStatusId != 2
-                                                  ? _attendance.attendanceStatusId != 1 ? Colors.green
-                                                  : Colors.blue : Colors.purple : Colors.brown : Colors.red,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16.0
-                                              ),
-                                            ),),
-                                          if( ( (_timeHmsNow > 10.30 && _attendance.periodOfDayId == 0 ) || (_timeHmsNow > 14.30 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
-                                            Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
-                                              style: TextStyle(color: _attendance.attendanceStatusId != 4
-                                                  ? _attendance.attendanceStatusId != 3
-                                                  ? _attendance.attendanceStatusId != 2
-                                                  ? _attendance.attendanceStatusId != 1 ? Colors.green
-                                                  : Colors.blue : Colors.purple : Colors.brown : Colors.red,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16.0
-                                              ),
-                                            ),),
-                                          if(_attendance.date != _today)
-                                            _customDropdownButton(_attendance, _attendances.indexOf(_attendance)),
-                                          if(_attendance.date != _today)
-                                            Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                          // if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                          //   const Expanded(child: Text('Chưa điểm danh', style: TextStyle(color: Colors.grey),),),
+                                          // if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                          //   Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                          //     style: TextStyle(color: _attendance.attendanceStatusId != 4
+                                          //         ? _attendance.attendanceStatusId != 3
+                                          //         ? _attendance.attendanceStatusId != 2
+                                          //         ? _attendance.attendanceStatusId != 1 ? Colors.green
+                                          //         : Colors.blue : Colors.purple : Colors.brown : Colors.red,
+                                          //         fontWeight: FontWeight.w600,
+                                          //         fontSize: 16.0
+                                          //     ),
+                                          //   ),),
+                                          // if( ( (_timeHmsNow > 10.30 && _attendance.periodOfDayId == 0 ) || (_timeHmsNow > 14.30 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                          //   Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
+                                          //     style: TextStyle(color: _attendance.attendanceStatusId != 4
+                                          //         ? _attendance.attendanceStatusId != 3
+                                          //         ? _attendance.attendanceStatusId != 2
+                                          //         ? _attendance.attendanceStatusId != 1 ? Colors.green
+                                          //         : Colors.blue : Colors.purple : Colors.brown : Colors.red,
+                                          //         fontWeight: FontWeight.w600,
+                                          //         fontSize: 16.0
+                                          //     ),
+                                          //   ),),
+                                          _customDropdownButton(_attendance, _attendances.indexOf(_attendance)),
+                                          Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
                                               style: TextStyle(color: _attendance.attendanceStatusId != 4
                                                   ? _attendance.attendanceStatusId != 3
                                                   ? _attendance.attendanceStatusId != 2

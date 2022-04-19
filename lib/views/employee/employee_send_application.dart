@@ -217,7 +217,7 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                                     if(  ( (date.hour + date.minute/100) < 9.30 ) || ( (date.hour + date.minute/100) > 10.30 ) ){
                                       setState(() {
                                         _isAllowTime = false;
-                                        _expectedWorkingTimeError = 'Bạn chỉ được xin phép đi trễ từ 9 giờ 30 - 10 giờ 30';
+                                        _expectedWorkingTimeError = 'Bạn chỉ được xin phép đi trễ trong khoảng thời gian từ 9 giờ 30 - 10 giờ 30';
                                         _expectedWorkingTime = null;
                                         _expectedWorkingTimeString = '';
                                       });
@@ -231,7 +231,7 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                                     if(  ( (date.hour + date.minute/100) < 13.30 ) || (date.hour + date.minute/100) > 14.30 ){
                                       setState(() {
                                         _isAllowTime = false;
-                                        _expectedWorkingTimeError = 'Bạn chỉ được xin phép đi trễ từ 13 giờ 30 - 14 giờ 30';
+                                        _expectedWorkingTimeError = 'Bạn chỉ được xin phép đi trễ trong khoảng thời gian từ 13 giờ 30 - 14 giờ 30';
                                         _expectedWorkingTime = null;
                                         _expectedWorkingTimeString = '';
                                       });
@@ -278,10 +278,10 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                           bool data = await _sendApplication();
                           if(data == true){
                             Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gửi ${applicationTypesNames[_applicationTypeId!]} thành công') ));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gửi ${applicationTypesNames[_applicationTypeId!].toLowerCase()} thành công') ));
                           }else{
                             Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gửi ${applicationTypesNames[_applicationTypeId!]} thất bại') ));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gửi ${applicationTypesNames[_applicationTypeId!].toLowerCase()} thất bại') ));
                           }
                         },
                     ),

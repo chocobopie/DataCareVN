@@ -295,9 +295,9 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                         const Spacer(),
                                         Expanded(child: Text(periodOfDayNames[_attendance.periodOfDayId])),
                                         const Spacer(),
-                                        if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                        if(_attendance.attendanceStatusId == 4 && ( (_timeHmsNow <= 9.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 13.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
                                           const Expanded(child: Text('Chưa điểm danh', style: TextStyle(color: Colors.grey),),),
-                                        if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 10.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 14.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                        if(_attendance.attendanceStatusId != 4 && ( (_timeHmsNow <= 9.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 0) || (_timeHmsNow <= 13.30 && _timeHmsNow > 0 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
                                           Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
                                             style: TextStyle(color: _attendance.attendanceStatusId != 4
                                                 ? _attendance.attendanceStatusId != 3
@@ -308,7 +308,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                                 fontSize: 16.0
                                             ),
                                           ),),
-                                        if( ( (_timeHmsNow > 10.30 && _attendance.periodOfDayId == 0 ) || (_timeHmsNow > 14.30 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
+                                        if( ( (_timeHmsNow > 9.30 && _attendance.periodOfDayId == 0 ) || (_timeHmsNow > 13.30 && _attendance.periodOfDayId == 1) ) && _attendance.date == _today)
                                           Expanded(child: Text(attendanceStatusNames[_attendance.attendanceStatusId],
                                             style: TextStyle(color: _attendance.attendanceStatusId != 4
                                                 ? _attendance.attendanceStatusId != 3
