@@ -15,7 +15,7 @@ enum Status {
 }
 
 class AuthProvider with ChangeNotifier{
-  String stockUrl = 'https://trungpd2022.azurewebsites.net/api/v1/';
+  String stockUrl = 'https://datacarevn.azurewebsites.net/api/v1/';
 
   late Status _loggedInStatus = Status.notLoggedIn;
 

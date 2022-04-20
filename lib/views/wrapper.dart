@@ -16,11 +16,10 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
 
-
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
     getOverallInfor();
+    super.initState();
   }
 
   @override
@@ -47,175 +46,142 @@ class _WrapperState extends State<Wrapper> {
   }
 
   //Convert Future<List<Model> to List<Model> to List<String>
-  void getAllBlocksName(){
+  void getAllBlocksName() async {
 
     blocks.clear();
+
+    blocks = await ApiService().getAllBlocks();
+
     blockNames.clear();
 
-    ApiService().getAllBlocks().then((value) {
-      blocks.addAll(value);
-      for(int i = 0; i < blocks.length; i++){
-        blockNames.add(blocks[i].name);
-      }
-    });
+    for(int i = 0; i < blocks.length; i++){
+      blockNames.add(blocks[i].name);
+    }
   }
 
-  void getAllDealServicesName(){
+  void getAllDealServicesName() async {
 
     dealServices.clear();
+
+    dealServices = await ApiService().getAllService();
+
     dealServicesNames.clear();
 
-    ApiService().getAllService().then((value) {
-        dealServices.addAll(value);
-
-        if(dealServicesNames.isNotEmpty){
-          dealServicesNames.clear();
-        }
-        for(int i = 0; i < dealServices.length; i++){
-          dealServicesNames.add(dealServices[i].name);
-        }
-    });
+    for(int i = 0; i < dealServices.length; i++){
+      dealServicesNames.add(dealServices[i].name);
+    }
   }
 
-  void geAllDepartment(){
+  void geAllDepartment() async {
     departments.clear();
 
-    ApiService().getAllDepartment().then((value) {
-      departments.addAll(value);
-    });
+    departments = await ApiService().getAllDepartment();
   }
 
-  void getAllDealVatName(){
+  void getAllDealVatName() async {
 
     dealVats.clear();
+
+    dealVats = await ApiService().getAllVat();
+
     dealVatsNames.clear();
 
-    ApiService().getAllVat().then((value) {
-        dealVats.addAll(value);
-
-        if(dealVatsNames.isNotEmpty){
-          dealVatsNames.clear();
-        }
-        for(int i = 0; i < dealVats.length; i++){
-          dealVatsNames.add(dealVats[i].name);
-        }
-    });
+    for(int i = 0; i < dealVats.length; i++){
+      dealVatsNames.add(dealVats[i].name);
+    }
   }
 
-  void getAllDealStageName(){
+  void getAllDealStageName() async {
 
     dealStages.clear();
+
+    dealStages = await ApiService().getAllDealStages();
+
     dealStagesNames.clear();
 
-    ApiService().getAllDealStages().then((value) {
-        dealStages.addAll(value);
-
-        if(dealStagesNames.isNotEmpty){
-          dealStagesNames.clear();
-        }
-        for(int i = 0; i < dealStages.length; i++){
-          dealStagesNames.add(dealStages[i].name);
-        }
-    });
+    for(int i = 0; i < dealStages.length; i++){
+      dealStagesNames.add(dealStages[i].name);
+    }
   }
 
-  void getAllDealTypeName(){
+  void getAllDealTypeName() async {
 
     dealTypes.clear();
+
+    dealTypes = await ApiService().getAllDealType();
+
     dealTypesNames.clear();
 
-    ApiService().getAllDealType().then((value) {
-        dealTypes.addAll(value);
-
-        if(dealTypesNames.isNotEmpty){
-          dealTypesNames.clear();
-        }
-        for(int i = 0; i < dealTypes.length; i++){
-          dealTypesNames.add(dealTypes[i].name);
-        }
-    });
+    for(int i = 0; i < dealTypes.length; i++){
+      dealTypesNames.add(dealTypes[i].name);
+    }
   }
 
-  void getAllPermissionStatusName(){
+
+  void getAllPermissionStatusName() async {
 
     permissionStatuses.clear();
+
+    permissionStatuses = await ApiService().getAllPermissionStatus();
+
     permissionStatusesNames.clear();
 
-    ApiService().getAllPermissionStatus().then((value) {
-        permissionStatuses.addAll(value);
-
-        if(permissionStatusesNames.isNotEmpty){
-          permissionStatusesNames.clear();
-        }
-        for(int i = 0; i < permissionStatuses.length; i++){
-          permissionStatusesNames.add(permissionStatuses[i].name);
-        }
-    });
+    for(int i = 0; i < permissionStatuses.length; i++){
+      permissionStatusesNames.add(permissionStatuses[i].name);
+    }
   }
 
-  void getAllRoleName(){
+  void getAllRoleName() async {
 
     roles.clear();
+
+    roles = await ApiService().getAllRoles();
+
     rolesNames.clear();
 
-    ApiService().getAllRoles().then((value) {
-        roles.addAll(value);
-
-        if(rolesNames.isNotEmpty){
-          rolesNames.clear();
-        }
-        for(int i = 0; i < roles.length; i++){
-          rolesNames.add(roles[i].name);
-        }
-    });
+    for(int i = 0; i < roles.length; i++){
+      rolesNames.add(roles[i].name);
+    }
   }
 
-  void getAllLeadSourcesName(){
+  void getAllLeadSourcesName() async {
 
     leadSources.clear();
+
+    leadSources = await ApiService().getAllLeadSource();
+
     leadSourceNames.clear();
 
-    ApiService().getAllLeadSource().then((value) {
-        leadSources.addAll(value);
-
-        if(leadSourceNames.isNotEmpty){
-          leadSourceNames.clear();
-        }
-        for(int i = 0; i < leadSources.length; i++){
-          leadSourceNames.add(leadSources[i].name);
-        }
-    });
+    for(int i = 0; i < leadSources.length; i++){
+      leadSourceNames.add(leadSources[i].name);
+    }
   }
 
-  void getAllGendersName(){
+  void getAllGendersName() async {
     genders.clear();
+
+    genders = await ApiService().getAllGender();
+
     gendersNames.clear();
 
-    ApiService().getAllGender().then((value) {
-      genders.addAll(value);
-
-      if(gendersNames.isNotEmpty){
-        gendersNames.clear();
-      }
-      for(int i = 0; i < genders.length; i++){
-        gendersNames.add(genders[i].name);
-      }
-    });
+    for(int i = 0; i < genders.length; i++){
+      gendersNames.add(genders[i].name);
+    }
   }
 
-  void getAllTeams(){
+  void getAllTeams()async{
     teams.clear();
-    ApiService().getAllTeam().then((value) {
-      teams.addAll(value);
-    });
+    
+    teams = await ApiService().getAllTeam();
   }
 
   void getAllApplicationStatuses() async {
 
     applicationStatuses.clear();
-    applicationStatusesNames.clear();
 
     applicationStatuses = await ApplicationStatusListViewModel().getApplicationsStatus();
+
+    applicationStatusesNames.clear();
 
     for(int i = 0; i < applicationStatuses.length; i++){
       applicationStatusesNames.add(applicationStatuses[i].name);
@@ -225,7 +191,6 @@ class _WrapperState extends State<Wrapper> {
   void getAllApplicationTypes() async {
 
     applicationTypes.clear();
-    applicationTypesNames.clear();
 
     applicationTypes = await ApplicationTypeListViewModel().getApplicationType();
 
@@ -252,9 +217,10 @@ class _WrapperState extends State<Wrapper> {
   void getAttendanceStatuses() async {
 
     attendanceStatuses.clear();
-    attendanceStatusNames.clear();
 
     attendanceStatuses = await AttendanceStatusListViewModel().getAttendanceStatus();
+
+    attendanceStatusNames.clear();
 
     for(int i = 0; i < attendanceStatuses.length; i++){
       attendanceStatusNames.add(attendanceStatuses[i].name);

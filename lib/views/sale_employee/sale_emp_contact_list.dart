@@ -446,6 +446,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
     if(contactList.isNotEmpty){
       setState(() {
+        _contacts.clear();
         _contacts.addAll(contactList);
         if(_contacts.isNotEmpty){
           _maxPages = _contacts[0].maxPage!;

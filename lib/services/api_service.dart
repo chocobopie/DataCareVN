@@ -35,7 +35,7 @@ import 'package:login_sample/models/timeline.dart';
 import 'package:login_sample/models/vat.dart';
 
 class ApiService {
-  String stockUrl = 'https://trungpd2022.azurewebsites.net/api/v1/';
+  String stockUrl = 'https://datacarevn.azurewebsites.net/api/v1/';
 
   //Contacts
   Future<List<Contact>> getAllContactsByAccountId( {required bool isRefresh, required int accountId, required int currentPage, int? limit, DateTime? fromDate, DateTime? toDate} ) async {

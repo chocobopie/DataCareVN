@@ -435,9 +435,9 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
       attendanceStatusId: _attendanceStatusId, periodOfDay: _periodOfDayId, selectedDate: _selectedDay
     );
 
-    _attendances.clear();
     if(listAttendance != null){
       setState(() {
+        _attendances.clear();
         _attendances.addAll(listAttendance);
         _maxPages = _attendances[0].maxPage!;
       });
@@ -457,8 +457,8 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
             : const Icon(Icons.access_time_filled, size: 30, color: Colors.purple,)
             : const Icon(Icons.access_time_filled, size: 30, color: Colors.brown,)
             : const Icon(Icons.access_time_filled, size: 30, color: Colors.red,),
-        customItemsIndexes: const [4],
-        customItemsHeight: 8,
+        customItemsIndexes: const [8],
+        customItemsHeight: 4,
         items: [
           ...MenuItems.firstItems.map(
                 (item) =>
@@ -472,9 +472,9 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
           int replaceAttendanceStatusId = MenuItems.onChanged(context, value as MenuItem);
           _updateAttendances(attendance, replaceAttendanceStatusId);
         },
-        itemHeight: 48,
+        itemHeight: 40,
         itemPadding: const EdgeInsets.only(left: 10),
-        dropdownWidth: 150,
+        dropdownWidth: 200,
         dropdownDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25.0),
           color: Colors.white,
@@ -494,41 +494,43 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25),
           ),
-          title: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Thay đổi trạng thái của ${_getEmployeeName(attendance.accountId)} ngày ${DateFormat('dd-MM-yyyy').format(attendance.date)} ca ${periodOfDayNames[attendance.periodOfDayId].toLowerCase()}',
-                        style: const TextStyle(fontSize: 18.0, color: defaultFontColor),
-                      ),
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Thay đổi trạng thái của ${_getEmployeeName(attendance.accountId)} ngày ${DateFormat('dd-MM-yyyy').format(attendance.date)} ca ${periodOfDayNames[attendance.periodOfDayId].toLowerCase()}',
+                      style: const TextStyle(fontSize: 18.0, color: defaultFontColor),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 10.0,),
-                Row(
-                  children: [
-                    const Spacer(),
-                    Text(
-                      attendanceStatusNames[attendance.attendanceStatusId],
-                      style: TextStyle(fontSize: 18.0, color: attendance.attendanceStatusId != 4 ? attendance.attendanceStatusId != 3 ? attendance.attendanceStatusId != 0 ? null : Colors.green : Colors.brown : Colors.red),
-                    ),
-                    const Spacer(),
-                    const Icon(Icons.arrow_forward_outlined, color: defaultFontColor,),
-                    const Spacer(),
-                    Text(
-                      attendanceStatusNames[replaceAttendanceStatusId],
-                      style: TextStyle(fontSize: 18.0, color: replaceAttendanceStatusId != 4 ? replaceAttendanceStatusId != 3 ? replaceAttendanceStatusId != 0 ? null : Colors.green : Colors.brown : Colors.red),
-                    ),
-                    const Spacer(),
-                  ],
-                )
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0,),
+              Row(
+                children: [
+                  const Spacer(),
+                  Text(
+                    attendanceStatusNames[attendance.attendanceStatusId],
+                    style: TextStyle(fontSize: 16.0, color: attendance.attendanceStatusId != 4 ? attendance.attendanceStatusId != 3 ? attendance.attendanceStatusId != 2 ? attendance.attendanceStatusId != 1
+                        ? Colors.green : Colors.blue : Colors.purple : Colors.brown : Colors.red),
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.arrow_forward_rounded, color: defaultFontColor,),
+                  const Spacer(),
+                  Text(
+                    attendanceStatusNames[replaceAttendanceStatusId],
+                    style: TextStyle(fontSize: 16.0, color: replaceAttendanceStatusId != 4 ? replaceAttendanceStatusId != 3 ? replaceAttendanceStatusId != 2 ? replaceAttendanceStatusId != 1
+                        ? Colors.green : Colors.blue : Colors.purple : Colors.brown : Colors.red),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+
+            ],
           ),
           actions: <Widget>[
             TextButton(
@@ -577,9 +579,11 @@ class MenuItem {
 }
 
 class MenuItems {
-  static const List<MenuItem> firstItems = [onTime, late, absent];
+  static const List<MenuItem> firstItems = [onTime, lateAccepted, dayOffAccepted, late, absent];
 
   static const onTime = MenuItem(text: 'Đúng giờ', icon: Icon(Icons.access_time_filled, color: Colors.green));
+  static const lateAccepted = MenuItem(text: 'Cho phép trễ', icon: Icon(Icons.access_time_filled, color: Colors.blue));
+  static const dayOffAccepted = MenuItem(text: 'Cho phép nghỉ', icon: Icon(Icons.access_time_filled, color: Colors.purple));
   static const late = MenuItem(text: 'Trễ', icon: Icon(Icons.access_time_filled, color: Colors.brown));
   static const absent = MenuItem(text: 'Vắng', icon: Icon(Icons.access_time_filled, color: Colors.red));
 
@@ -605,6 +609,10 @@ class MenuItems {
     switch (item) {
       case MenuItems.onTime:
         return 0;
+      case MenuItems.lateAccepted:
+        return 1;
+      case MenuItems.dayOffAccepted:
+        return 2;
       case MenuItems.late:
         return 3;
       case MenuItems.absent:
