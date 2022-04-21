@@ -96,7 +96,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                                 ),
                               ],
                             ),
-                            child: (_isTook == false && _timeHms < 17.30 && _timeHms >= 8.30) ? TextButton(
+                            child: (_isTook == false && _timeHms < 14.30 && _timeHms >= 8.30) ? TextButton(
                               onPressed: () async {
                                 showLoaderDialog(context);
                                 final data = await _takeAttendance(account: _currentAccount);

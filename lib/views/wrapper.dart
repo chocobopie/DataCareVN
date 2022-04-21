@@ -171,7 +171,7 @@ class _WrapperState extends State<Wrapper> {
 
   void getAllTeams()async{
     teams.clear();
-    
+
     teams = await ApiService().getAllTeam();
   }
 
