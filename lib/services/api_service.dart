@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/application_type.dart';
 import 'package:login_sample/models/attendance_status.dart';
 import 'package:login_sample/models/change_password.dart';
+import 'package:login_sample/models/payroll.dart';
 import 'package:login_sample/models/period_of_day.dart';
 import 'package:login_sample/models/register_account.dart';
 import 'package:login_sample/models/WorldTimeAPI.dart';
@@ -1652,5 +1654,42 @@ class ApiService {
     }
   }
 
+  //CompanyPayroll
+  Future<List<PayrollCompany>?> getListPayrollCompany({required bool isRefresh, required int currentPage, int? payrollCompanyId, int? isClosing, DateTime? fromDate, DateTime? toDate, int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+    String url = stockUrl + 'payroll-companies?payroll-company-id=${payrollCompanyId ?? ''}&is-closing=${isClosing ?? ''}&from-date=${fromDate ?? ''}&to-date=${toDate ?? ''}&page=$currentPage&limit=${limit ?? 1}';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get list of payroll company successfully | 200');
+      return jsonResponse.map((data) => PayrollCompany.fromJson(data)).toList();
+    }else{
+      print("Failed to get list of payroll company | 400");
+      List<PayrollCompany>? result;
+      return result;
+    }
+  }
+
+  //Payroll
+  Future<List<Payroll>?> getListPayroll({required bool isRefresh, required int currentPage, int? payrollCompanyId, int? accountId, int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+    String url = stockUrl + 'payrolls?payroll-company-id=${payrollCompanyId ?? ''}&account-id=${accountId ?? ''}&page=$currentPage&limit=${limit ?? 1}';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get list of payroll successfully| 200');
+      return jsonResponse.map((data) => Payroll.fromJson(data)).toList();
+    }else{
+      print("Failed to get list of payroll | 400");
+      List<Payroll>? result;
+      return result;
+    }
+  }
 }
 

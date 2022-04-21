@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/payroll.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
+import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
+import 'package:login_sample/view_models/payroll_list_view_model.dart';
+import 'package:login_sample/widgets/CustomExpansionTile.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:provider/provider.dart';
 
@@ -16,14 +21,24 @@ class EmployeePayroll extends StatefulWidget {
 
 class _EmployeePayrollState extends State<EmployeePayroll> {
 
-  DateTime _selectedMonth = DateTime.now();
-  late Account _currentAccount = Account();
+  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month - 1);
+  DateTime? _fromDate, _toDate;
+  final int _currentPage = 0;
+  late Account? _currentAccount;
   String _payrollTitleStatus = 'Dự kiến';
+
+  PayrollCompany? _payrollCompany;
+  Payroll? _payroll;
 
   @override
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
+    _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
+    _getPayrollCompany(isRefresh: true);
+    print(_fromDate);
+    print(_toDate);
   }
 
   @override
@@ -72,6 +87,9 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         );
 
                         if (date != null) {
+                          _payrollCompany = null;
+                          _payroll = null;
+
                           setState(() {
                             _selectedMonth = date;
                             if(_selectedMonth.year <= DateTime.now().year){
@@ -82,9 +100,13 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                                 _payrollTitleStatus = 'Dự kiến';
                               }
                             }
-
-                            print(_selectedMonth);
                           });
+
+                          _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
+                          _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
+                          _getPayrollCompany(isRefresh: true);
+                          print(_fromDate);
+                          print(_toDate);
                         }
                       },
                       icon: const Icon(
@@ -102,33 +124,147 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                   const SizedBox(height: 20.0,),
                   //Lương
                   if(_selectedMonth.month != DateTime.now().month)
-                  PayrollExpansionTile(
-                    selectedDate: _selectedMonth,
-                    payrollTitleStatus: _payrollTitleStatus,
-                    currentAccount: _currentAccount,
-                  ),
+                  _payroll != null ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 1,
+                          offset: const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                      gradient: const LinearGradient(
+                        stops: [0.02, 0.01],
+                        colors: [Colors.blue, Colors.white],
+                      ),
+                    ),
+                    child: Theme(
+                      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}', style: const TextStyle(fontSize: 14.0),),
+                        trailing: Text('${_payroll!.actualSalaryReceived}'),
+                        children: <Widget>[
+                          const Divider(color: Colors.blueGrey, thickness: 1.0,),
+                          ListTile(
+                            title: const Text('Lương cơ bản', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.basicSalary.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Trợ cấp', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.allowance.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền đỗ xe', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.parkingFee.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền phạt', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.fine.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Bảo hiểm cá nhân', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.personalInsurance.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Bảo hiểm công ty đóng', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.companyInsurance.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng ký mới', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.newSignPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng tái ký', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.renewedPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng quản lý bán hàng', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.managementSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng hỗ trợ bán hàng', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.supporterSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng CLB 20', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.clB20SalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.contentManagerFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng cộng tác quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng quản lý nội dung Ads cho website', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng cộng tác quản lý website', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.collaboratorWebsiteTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng tái ký quản lý website', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.renewedWebsiteTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng cộng tác quản lý Ads', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.collaboratorAdsTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng giảng viên', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.lecturerEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng trợ giảng', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.tutorEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng CSKH', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.techcareEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng thi đua', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.emulationBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng tuyển dụng', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.recruitmentBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng cá nhân', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.personalBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Tiền thưởng nhóm', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.teamBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text(
+                              'Thực nhận',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            trailing: Text(moneyFormat(_payroll!.actualSalaryReceived.toString()),
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ) : const Center(child: CircularProgressIndicator()),
                   const SizedBox(height: 20.0,),
-
-                  // if(_currentAccount.roleId == 1)
-                  // IconTextButtonSmall2(
-                  //     imageUrl: 'assets/images/payroll-management.png',
-                  //     text: 'Quản lý lương của các nhân viên',
-                  //     colorsButton: const [Colors.green, Colors.white],
-                  //     onPressed: (){
-                  //       Navigator.push(context, MaterialPageRoute(builder: (context) => const HrManagerPayrollList()
-                  //       ));
-                  //     }
-                  // ),
-
-                  // if(_currentAccount.roleId ==3)
-                  //   IconTextButtonSmall2(
-                  //       imageUrl: 'assets/images/payroll-management.png',
-                  //       text: 'Xem doanh thu của phòng ban',
-                  //       colorsButton: const [Colors.green, Colors.white],
-                  //       onPressed: (){
-                  //         Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleManagerPayrollManagement()));
-                  //       }
-                  //   ),
                 ],
               )
           ),
@@ -153,6 +289,29 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
         ],
       ),
     );
+  }
+  
+  void _getPayrollCompany({required bool isRefresh}) async {
+    List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, isClosing: 1, limit: 1);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _payrollCompany = result[0];
+        _getPayroll(isRefresh: true);
+      });
+      print(_payrollCompany!.date);
+    }
+  }
+
+  void _getPayroll({required bool isRefresh}) async {
+    List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount!.accountId, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _payroll = result[0];
+      });
+      print(_payroll!.basicSalary);
+    }
   }
 }
 

@@ -85,7 +85,7 @@ class Payroll {
     clB20SalesBonus: json["clB20SalesBonus"],
     contentManagerFanpageTechnicalEmployeeBonus: json["contentManagerFanpageTechnicalEmployeeBonus"],
     collaboratorFanpageTechnicalEmployeeBonus: json["collaboratorFanpageTechnicalEmployeeBonus"],
-    renewedFanpageTechnicalEmployeeBonus: json["renewedManpageTechnicalEmployeeBonus"],
+    renewedFanpageTechnicalEmployeeBonus: json["renewedFanpageTechnicalEmployeeBonus"],
     contentManagerWebsiteAdsTechnicalEmployeeBonus: json["contentManagerWebsiteAdsTechnicalEmployeeBonus"],
     collaboratorWebsiteTechnicalEmployeeBonus: json["collaboratorWebsiteTechnicalEmployeeBonus"],
     renewedWebsiteTechnicalEmployeeBonus: json["renewedWebsiteTechnicalEmployeeBonus"],

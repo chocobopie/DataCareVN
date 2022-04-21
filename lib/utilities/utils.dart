@@ -22,6 +22,9 @@ const defaultFontColor = Color.fromARGB(255, 107, 106, 144);
 
 const locale = 'vi';
 String formatNumber(String s) => NumberFormat.decimalPattern(locale).format(int.parse(s));
+String moneyFormat(String s){
+  return formatNumber(s.replaceAll('.', ''));
+}
 String get currency => NumberFormat.compactSimpleCurrency(locale: locale).currencySymbol;
 //==================================================================Loading dialog
 showLoaderDialog(BuildContext context){
