@@ -162,75 +162,80 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                             trailing: Text(moneyFormat(_payroll!.companyInsurance.toString()), style: const TextStyle(fontSize: 14.0,),),
                           ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
-                          ListTile(
-                            title: const Text('Thưởng ký mới', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.newSignPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng ký mới', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.newSignPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
-                          ListTile(
-                            title: const Text('Thưởng tái ký', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.renewedPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng tái ký', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.renewedPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
-                          ListTile(
-                            title: const Text('Thưởng quản lý bán hàng', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.managementSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng quản lý bán hàng', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.managementSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
-                          ListTile(
-                            title: const Text('Thưởng hỗ trợ bán hàng', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.supporterSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng hỗ trợ bán hàng', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.supporterSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
-                          ListTile(
-                            title: const Text('Thưởng CLB 20', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.clB20SalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng CLB 20', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.clB20SalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Thưởng quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.contentManagerFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.contentManagerFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Thưởng cộng tác quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng cộng tác quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Thưởng quản lý nội dung Ads cho website', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng tái ký quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.renewedFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Thưởng cộng tác quản lý website', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.collaboratorWebsiteTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng quản lý nội dung Ads cho website', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Thưởng tái ký quản lý website', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.renewedWebsiteTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng cộng tác  quản lý website', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.collaboratorWebsiteTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Thưởng cộng tác quản lý Ads', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.collaboratorAdsTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng tái ký quản lý website', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.renewedWebsiteTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Thưởng giảng viên', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.lecturerEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng cộng tác quản lý Ads', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.collaboratorAdsTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Thưởng trợ giảng', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.tutorEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng giảng viên', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.lecturerEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           if(_currentAccount!.roleId == 6)
-                          ListTile(
-                            title: const Text('Tiền thưởng CSKH', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.techcareEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
+                            ListTile(
+                              title: const Text('Thưởng trợ giảng', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.tutorEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
+                          if(_currentAccount!.roleId == 6)
+                            ListTile(
+                              title: const Text('Tiền thưởng CSKH', style: TextStyle(fontSize: 14.0,),),
+                              trailing: Text(moneyFormat(_payroll!.techcareEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                            ),
                           ListTile(
                             title: const Text('Tiền thưởng thi đua', style: TextStyle(fontSize: 14.0,),),
                             trailing: Text(moneyFormat(_payroll!.emulationBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
