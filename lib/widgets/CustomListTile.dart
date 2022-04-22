@@ -26,35 +26,7 @@ class CustomListTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (listTileLabel == 'Tiền gửi xe' ||
-              listTileLabel == 'Tiền phạt' ||
-              listTileLabel == 'Bảo hiểm cá nhân' ||
-              listTileLabel == 'Bảo hiểm công ty đóng')
-            Text(
-              '- ${numberEditController.text}',
-              style: const TextStyle(
-                fontSize: 12.0,
-              ),
-            ),
-          if (listTileLabel == 'Lương cơ bản' ||
-              listTileLabel == 'Quản lý' ||
-              listTileLabel == 'Người hỗ trợ' ||
-              listTileLabel == 'CLB 20' ||
-              listTileLabel == 'Tuyển dụng' ||
-              listTileLabel == 'Thưởng CTTĐ' ||
-              listTileLabel == 'Thưởng nóng cá nhân' ||
-              listTileLabel == 'Thưởng nóng nhóm' ||
-              listTileLabel == 'Cá nhân ký mới' ||
-              listTileLabel == 'Cá nhân tái ký' ||
-              listTileLabel == 'Thưởng thi đua' ||
-              listTileLabel == 'Thưởng tuyển dụng'
-          )
-            Text(
-              '+ ${numberEditController.text}',
-              style: const TextStyle(
-                fontSize: 12.0,
-              ),
-            ),
+            Text(numberEditController.text, style: const TextStyle(fontSize: 12.0,),),
           if(readOnly == false)
           EditMoneyButton(
             numberController: numberEditController,

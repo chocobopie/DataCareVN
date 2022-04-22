@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/views/employee/employee_received_issue_list.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
@@ -67,6 +68,16 @@ class _TechnicalEmployeeHomeState extends State<TechnicalEmployeeHome> {
                           }
                       ),
                       const SizedBox(width: 20.0,),
+                      ImageTextButton(
+                          imageUrl: 'assets/images/salary.png',
+                          text: 'Xem lương',
+                          buttonColors: const [Colors.pink, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const EmployeePayroll(),
+                            ));
+                          }
+                      ),
                     ],
                   ),
                 ],
