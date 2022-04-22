@@ -72,7 +72,7 @@ class _AdminDepartmentAddNewState extends State<AdminDepartmentAddNew> {
                         const SizedBox(height: 20.0,),
 
                         if(_filterBlockId != null)
-                          if(_filterBlockId != 0)
+                          if(_filterBlockId == 1)
                         CustomEditableTextFormField(
                             borderColor: mainBgColor,
                             text: _departmentName.text.isEmpty ? '' : _departmentName.text,
@@ -87,7 +87,7 @@ class _AdminDepartmentAddNewState extends State<AdminDepartmentAddNew> {
                         ),
 
                         if(_filterBlockId != null)
-                          if(_filterBlockId != 0)
+                          if(_filterBlockId == 1)
                         Padding(
                           padding: const EdgeInsets.only(top: 20.0),
                           child: CustomTextButton(

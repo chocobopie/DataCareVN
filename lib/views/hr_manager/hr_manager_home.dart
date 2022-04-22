@@ -98,17 +98,17 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                           }
                       ),
 
-                      const SizedBox(width: 30.0,),
-                      ImageTextButton(
-                          imageUrl: 'assets/images/payroll-management.png',
-                          text: 'Quản lý lương của các nhân viên',
-                          buttonColors: const [Colors.green, Colors.white],
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const HrManagerPayrollList(),
-                            ));
-                          }
-                      ),
+                      // const SizedBox(width: 30.0,),
+                      // ImageTextButton(
+                      //     imageUrl: 'assets/images/payroll-management.png',
+                      //     text: 'Quản lý lương của các nhân viên',
+                      //     buttonColors: const [Colors.green, Colors.white],
+                      //     onPressed: (){
+                      //       Navigator.push(context, MaterialPageRoute(
+                      //         builder: (context) => const HrManagerPayrollList(),
+                      //       ));
+                      //     }
+                      // ),
                     ],
                   ),
                 ],

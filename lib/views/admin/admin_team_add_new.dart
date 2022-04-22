@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/main.dart';
+import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/utilities/utils.dart';
@@ -64,7 +65,7 @@ class _AdminTeamAddNewState extends State<AdminTeamAddNew> {
                               readonly: true,
                               onTap: () async {
                                 final data = await Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => AdminDepartmentFilter(departmentList: departments),
+                                  builder: (context) => AdminDepartmentFilter(departmentList: getDepartmentListInBlock(block: Block(blockId: 1, name: ''))),
                                 ));
                                 if(data != null){
                                   setState(() {

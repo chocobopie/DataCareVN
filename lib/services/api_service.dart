@@ -1691,5 +1691,52 @@ class ApiService {
       return result;
     }
   }
+  Future<bool> updatePayroll(Payroll payroll) async {
+
+    String url = stockUrl + 'payrolls/${payroll.payrollId}';
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "payrollId": payroll.payrollId,
+        "accountId": payroll.accountId,
+        "basicSalary": payroll.basicSalary,
+        "allowance": payroll.allowance,
+        "parkingFee": payroll.parkingFee,
+        "fine": payroll.fine,
+        "personalInsurance": payroll.personalInsurance,
+        "companyInsurance": payroll.companyInsurance,
+        "actualSalaryReceived": payroll.actualSalaryReceived,
+        "newSignPersonalSalesBonus": payroll.newSignPersonalSalesBonus,
+        "renewedPersonalSalesBonus": payroll.renewedPersonalSalesBonus,
+        "managementSalesBonus": payroll.managementSalesBonus,
+        "supporterSalesBonus": payroll.supporterSalesBonus,
+        "clB20SalesBonus": payroll.clB20SalesBonus,
+        "contentManagerfanpageTechnicalEmployeeBonus": payroll.contentManagerFanpageTechnicalEmployeeBonus,
+        "collaboratorFanpageTechnicalEmployeeBonus": payroll.collaboratorFanpageTechnicalEmployeeBonus,
+        "renewedFanpageTechnicalEmployeeBonus": payroll.renewedFanpageTechnicalEmployeeBonus,
+        "contentManagerwebsiteAdsTechnicalEmployeeBonus": payroll.contentManagerWebsiteAdsTechnicalEmployeeBonus,
+        "collaboratorWebsiteTechnicalEmployeeBonus": payroll.collaboratorWebsiteTechnicalEmployeeBonus,
+        "renewedWebsiteTechnicalEmployeeBonus": payroll.renewedWebsiteTechnicalEmployeeBonus,
+        "collaboratorAdsTechnicalEmployeeBonus": payroll.collaboratorAdsTechnicalEmployeeBonus,
+        "lecturerEducationTechnicalEmployeeBonus": payroll.lecturerEducationTechnicalEmployeeBonus,
+        "tutorEducationTechnicalEmployeeBonus": payroll.tutorEducationTechnicalEmployeeBonus,
+        "techcareEducationTechnicalEmployeeBonus": payroll.techcareEducationTechnicalEmployeeBonus,
+        "emulationBonus": payroll.emulationBonus,
+        "recruitmentBonus": payroll.recruitmentBonus,
+        "personalBonus": payroll.personalBonus,
+        "teamBonus": payroll.teamBonus
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update payroll successfully | 200');
+      return true;
+    }else{
+      print('Update payroll failed | 400');
+      return false;
+    }
+  }
 }
 

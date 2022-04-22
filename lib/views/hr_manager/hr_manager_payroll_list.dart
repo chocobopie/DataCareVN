@@ -188,34 +188,6 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
                       ],
                     ),
                   ),
-                  // SizedBox(
-                  //   child: TextField(
-                  //     autofocus: true,
-                  //     readOnly: true,
-                  //     decoration: InputDecoration(
-                  //       floatingLabelBehavior: FloatingLabelBehavior.always,
-                  //       contentPadding: const EdgeInsets.only(left: 20.0),
-                  //       labelText: 'Số nhân viên',
-                  //       hintText: '${empPayrolls.length}',
-                  //       labelStyle: const TextStyle(
-                  //         color: Color.fromARGB(255, 107, 106, 144),
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.w500,
-                  //       ),
-                  //       enabledBorder: OutlineInputBorder(
-                  //         borderSide:
-                  //             const BorderSide(color: Colors.blue, width: 2),
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       ),
-                  //       focusedBorder: OutlineInputBorder(
-                  //         borderSide:
-                  //             const BorderSide(color: Colors.blue, width: 2),
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       ),
-                  //     ),
-                  //   ),
-                  //   width: 150.0,
-                  // ),
                 ],
               )),
 
@@ -255,8 +227,8 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
                         padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => HrManagerPayrollDetail(empPayrolls: account,)));
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (context) => HrManagerPayrollDetail(empPayrolls: account,)));
                           },
                           child: Card(
                             elevation: 10.0,

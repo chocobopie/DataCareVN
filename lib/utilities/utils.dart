@@ -210,7 +210,7 @@ String getTeamName(int teamId, departmentId){
   return name;
 }
 
-List<Department> getDepartmentListInBlock({required Block block}){
+List<Department> getDepartmentListInBlock({required Block block,}){
   List<Department> departmentList = [];
   for(int i = 0; i < departments.length; i++){
     if(block.blockId == departments[i].blockId){

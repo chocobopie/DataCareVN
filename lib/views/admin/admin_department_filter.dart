@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/view_models/department_list_view_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AdminDepartmentFilter extends StatefulWidget {
@@ -172,7 +171,6 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                                                       child: Text(department.name),
                                                       flex: 2,
                                                     ),
-
                                                   ],
                                                 ),
                                               ),

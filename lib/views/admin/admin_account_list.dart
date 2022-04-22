@@ -17,7 +17,9 @@ import 'package:login_sample/views/admin/admin_team_add_new.dart';
 import 'package:login_sample/views/admin/admin_team_filter.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/hr_manager/hr_manager_payroll_detail.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -411,6 +413,21 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                           ],
                                         ),
                                       ),
+                                      if(_currentAccount.roleId == 1)
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: CustomTextButton(
+                                                  color: mainBgColor,
+                                                  text: 'Xem lương',
+                                                  onPressed: (){
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (context) => HrManagerPayrollDetail(empAccount: account,)));
+                                                  },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                     ],
                                   ),
                                 ),

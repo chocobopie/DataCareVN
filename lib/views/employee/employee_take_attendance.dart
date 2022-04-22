@@ -166,7 +166,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                             }
                         ),
                       ),
-                      if(_currentAccount.roleId == 1)
+                      if(_currentAccount.roleId == 1 || _currentAccount.roleId == 2)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                           child: IconTextButtonSmall2(
