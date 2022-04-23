@@ -278,48 +278,58 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 CustomListTile(listTileLabel: 'Tiền phạt', alertDialogLabel: 'Cập nhật tiền phạt', numberEditController: fineController, value: fineController.text.isEmpty ? _payroll!.fine.toString() : fineController.text,),
                                 CustomListTile(listTileLabel: 'Bảo hiểm cá nhân', alertDialogLabel: 'Bảo hiểm cá nhân', numberEditController: personalInsuranceController, value: personalInsuranceController.text.isEmpty ? _payroll!.personalInsurance.toString() : personalInsuranceController.text,),
                                 CustomListTile(listTileLabel: 'Bảo hiểm công ty đóng', alertDialogLabel: 'Cập nhật bảo hiểm công ty đóng', numberEditController: companyInsuranceController, value: companyInsuranceController.text.isEmpty ? _payroll!.companyInsurance.toString() : companyInsuranceController.text,),
-                                CustomListTile(listTileLabel: 'Tiền thưởng ký mới', alertDialogLabel: 'Cập nhật thưởng ký mới', numberEditController: newSignPersonalSalesBonusController, value: newSignPersonalSalesBonusController.text.isEmpty ? _payroll!.newSignPersonalSalesBonus.toString() : newSignPersonalSalesBonusController.text,),
-                                CustomListTile(listTileLabel: 'Tiền thưởng tái ký', alertDialogLabel: 'Cập nhật thưởng tái ký', numberEditController: renewedPersonalSalesBonusController, value:renewedPersonalSalesBonusController.text.isEmpty ? _payroll!.renewedPersonalSalesBonus.toString() : renewedPersonalSalesBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng quản lý bán hàng', alertDialogLabel: 'Cập nhật thưởng quản lý bán hàng', numberEditController: managementSalesBonusController, value:managementSalesBonusController.text.isEmpty ? _payroll!.managementSalesBonus.toString() : managementSalesBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng hỗ trợ bán hàng', alertDialogLabel: 'Cập nhật thưởng hỗ trợ bán hàng', numberEditController: supporterSalesBonusController, value: supporterSalesBonusController.text.isEmpty ? _payroll!.supporterSalesBonus.toString() : supporterSalesBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng CLB 20', alertDialogLabel: 'Cập nhật thưởng CLB 20', numberEditController: clB20SalesBonusController, value: clB20SalesBonusController.text.isEmpty ? _payroll!.clB20SalesBonus.toString() : clB20SalesBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng Fanpage', numberEditController: contentManagerFanpageTechnicalEmployeeBonusController, value:  contentManagerFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. contentManagerFanpageTechnicalEmployeeBonus.toString() : contentManagerFanpageTechnicalEmployeeBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý Fanpage', alertDialogLabel: 'Cập nhật cộng tác quản lý Fanpage', numberEditController: collaboratorFanpageTechnicalEmployeeBonusController, value: collaboratorFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString() : collaboratorFanpageTechnicalEmployeeBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng tái ký quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng tái ký quản lý Fanpage', numberEditController: renewedFanpageTechnicalEmployeeBonusController, value: renewedFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.renewedFanpageTechnicalEmployeeBonus.toString() : renewedFanpageTechnicalEmployeeBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng quản lý nội dung Ads cho website', alertDialogLabel: 'Cập nhật thưởng quản lý nội dung cho website', numberEditController: contentManagerWebsiteAdsTechnicalEmployeeBonusController, value: contentManagerWebsiteAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus.toString() : contentManagerWebsiteAdsTechnicalEmployeeBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng  cộng tác quản lý website', alertDialogLabel: 'Cập nhật thưởng cộng tác quản lý website', numberEditController: collaboratorWebsiteTechnicalEmployeeBonusController, value: collaboratorWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorWebsiteTechnicalEmployeeBonus.toString() : collaboratorWebsiteTechnicalEmployeeBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng tái ký quản lý website', alertDialogLabel: 'Cập nhật thưởng tái ký quản lý website', numberEditController: renewedWebsiteTechnicalEmployeeBonusController, value:  renewedWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. renewedWebsiteTechnicalEmployeeBonus.toString() :  renewedWebsiteTechnicalEmployeeBonusController.text),
-                                CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý nội dung Ads', alertDialogLabel: 'Cập nhật thưởng cộng tác quản lý Ads', numberEditController: collaboratorAdsTechnicalEmployeeBonusController, value: collaboratorAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorAdsTechnicalEmployeeBonus.toString() : collaboratorAdsTechnicalEmployeeBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng giảng viên', alertDialogLabel: 'Cập nhật thưởng giảng viên', numberEditController: lecturerEducationTechnicalEmployeeBonusController, value: lecturerEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.lecturerEducationTechnicalEmployeeBonus.toString() : lecturerEducationTechnicalEmployeeBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng trợ giảng', alertDialogLabel: 'Cập nhật trợ cấp', numberEditController: tutorEducationTechnicalEmployeeBonusController, value:tutorEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.tutorEducationTechnicalEmployeeBonus.toString() : tutorEducationTechnicalEmployeeBonusController.text),
-                                CustomListTile(listTileLabel: 'Thưởng CSKH', alertDialogLabel: 'Cập nhật thưởng CSKH', numberEditController: techcareEducationTechnicalEmployeeBonusController, value: techcareEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.techcareEducationTechnicalEmployeeBonus.toString() : techcareEducationTechnicalEmployeeBonusController.text,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Tiền thưởng ký mới', alertDialogLabel: 'Cập nhật thưởng ký mới', numberEditController: newSignPersonalSalesBonusController, value: newSignPersonalSalesBonusController.text.isEmpty ? _payroll!.newSignPersonalSalesBonus.toString() : newSignPersonalSalesBonusController.text,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Tiền thưởng tái ký', alertDialogLabel: 'Cập nhật thưởng tái ký', numberEditController: renewedPersonalSalesBonusController, value:renewedPersonalSalesBonusController.text.isEmpty ? _payroll!.renewedPersonalSalesBonus.toString() : renewedPersonalSalesBonusController.text,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng quản lý bán hàng', alertDialogLabel: 'Cập nhật thưởng quản lý bán hàng', numberEditController: managementSalesBonusController, value:managementSalesBonusController.text.isEmpty ? _payroll!.managementSalesBonus.toString() : managementSalesBonusController.text,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng hỗ trợ bán hàng', alertDialogLabel: 'Cập nhật thưởng hỗ trợ bán hàng', numberEditController: supporterSalesBonusController, value: supporterSalesBonusController.text.isEmpty ? _payroll!.supporterSalesBonus.toString() : supporterSalesBonusController.text,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng CLB 20', alertDialogLabel: 'Cập nhật thưởng CLB 20', numberEditController: clB20SalesBonusController, value: clB20SalesBonusController.text.isEmpty ? _payroll!.clB20SalesBonus.toString() : clB20SalesBonusController.text,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng Fanpage', numberEditController: contentManagerFanpageTechnicalEmployeeBonusController, value:  contentManagerFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. contentManagerFanpageTechnicalEmployeeBonus.toString() : contentManagerFanpageTechnicalEmployeeBonusController.text,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý Fanpage', alertDialogLabel: 'Cập nhật cộng tác quản lý Fanpage', numberEditController: collaboratorFanpageTechnicalEmployeeBonusController, value: collaboratorFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString() : collaboratorFanpageTechnicalEmployeeBonusController.text,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng tái ký quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng tái ký quản lý Fanpage', numberEditController: renewedFanpageTechnicalEmployeeBonusController, value: renewedFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.renewedFanpageTechnicalEmployeeBonus.toString() : renewedFanpageTechnicalEmployeeBonusController.text,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng quản lý nội dung Ads cho website', alertDialogLabel: 'Cập nhật thưởng quản lý nội dung cho website', numberEditController: contentManagerWebsiteAdsTechnicalEmployeeBonusController, value: contentManagerWebsiteAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus.toString() : contentManagerWebsiteAdsTechnicalEmployeeBonusController.text,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng  cộng tác quản lý website', alertDialogLabel: 'Cập nhật thưởng cộng tác quản lý website', numberEditController: collaboratorWebsiteTechnicalEmployeeBonusController, value: collaboratorWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorWebsiteTechnicalEmployeeBonus.toString() : collaboratorWebsiteTechnicalEmployeeBonusController.text,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng tái ký quản lý website', alertDialogLabel: 'Cập nhật thưởng tái ký quản lý website', numberEditController: renewedWebsiteTechnicalEmployeeBonusController, value:  renewedWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. renewedWebsiteTechnicalEmployeeBonus.toString() :  renewedWebsiteTechnicalEmployeeBonusController.text),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý nội dung Ads', alertDialogLabel: 'Cập nhật thưởng cộng tác quản lý Ads', numberEditController: collaboratorAdsTechnicalEmployeeBonusController, value: collaboratorAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorAdsTechnicalEmployeeBonus.toString() : collaboratorAdsTechnicalEmployeeBonusController.text,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng giảng viên', alertDialogLabel: 'Cập nhật thưởng giảng viên', numberEditController: lecturerEducationTechnicalEmployeeBonusController, value: lecturerEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.lecturerEducationTechnicalEmployeeBonus.toString() : lecturerEducationTechnicalEmployeeBonusController.text,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng trợ giảng', alertDialogLabel: 'Cập nhật trợ cấp', numberEditController: tutorEducationTechnicalEmployeeBonusController, value:tutorEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.tutorEducationTechnicalEmployeeBonus.toString() : tutorEducationTechnicalEmployeeBonusController.text),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng CSKH', alertDialogLabel: 'Cập nhật thưởng CSKH', numberEditController: techcareEducationTechnicalEmployeeBonusController, value: techcareEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.techcareEducationTechnicalEmployeeBonus.toString() : techcareEducationTechnicalEmployeeBonusController.text,),
                                 CustomListTile(listTileLabel: 'Thưởng thi đua', alertDialogLabel: 'Cập nhật thưởng thi đua', numberEditController: emulationBonusController, value: emulationBonusController.text.isEmpty ? _payroll!.emulationBonus.toString() : emulationBonusController.text ),
                                 CustomListTile(listTileLabel: 'Thưởng tuyển dụng', alertDialogLabel: 'Cập nhật thưởng tuyển dụng', numberEditController: recruitmentBonusController, value: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus.toString() : recruitmentBonusController.text),
                                 CustomListTile(listTileLabel: 'Thưởng cá nhân', alertDialogLabel: 'Cập nhật thưởng cá nhân', numberEditController: personalBonusController, value: personalBonusController.text.isEmpty ? _payroll!.personalBonus.toString() : personalBonusController.text),
                                 CustomListTile(listTileLabel: 'Thưởng nhóm', alertDialogLabel: 'Cập nhật thưởng nhóm', numberEditController: teamBonusController, value: teamBonusController.text.isEmpty ? _payroll!.teamBonus.toString() : teamBonusController.text),
-                                CustomTextButton(
-                                    color: mainBgColor,
-                                    text: 'Lưu',
-                                    onPressed: () async {
-                                      _reverseMoneyFormat();
-                                      print(basicSalaryController.text);
-                                      showLoaderDialog(context);
-                                      bool result = await _updateAPayroll();
-                                      if(result == true){
-                                        Navigator.pop(context);
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('Cập nhật lương cho ${widget.empAccount.fullname} thành công')),
-                                        );
-                                        Future.delayed(const Duration(seconds: 1), (){
-                                          Navigator.pop(context);
-                                        });
-                                      }else{
-                                        Navigator.pop(context);
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('Cập nhật lương cho ${widget.empAccount.fullname} thất bại')),
-                                        );
-                                      }
-                                    },
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: CustomTextButton(
+                                            color: mainBgColor,
+                                            text: 'Lưu',
+                                            onPressed: () async {
+                                              _reverseMoneyFormat();
+                                              print(basicSalaryController.text);
+                                              showLoaderDialog(context);
+                                              bool result = await _updateAPayroll();
+                                              if(result == true){
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text('Cập nhật lương cho ${widget.empAccount.fullname} thành công')),
+                                                );
+                                                Future.delayed(const Duration(seconds: 1), (){
+                                                  Navigator.pop(context);
+                                                });
+                                              }else{
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text('Cập nhật lương cho ${widget.empAccount.fullname} thất bại')),
+                                                );
+                                              }
+                                            },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 )
                               ],
                             ),

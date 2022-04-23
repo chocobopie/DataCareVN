@@ -43,9 +43,9 @@ class EditMoneyButton extends StatelessWidget {
                 TextButton(
                     child: const Text("Huỷ"),
                     onPressed: (){
-                      numberController.value = const TextEditingValue(
-                        text: '',
-                      );
+                      // numberController.value = const TextEditingValue(
+                      //   text: '',
+                      // );
                       Navigator.pop(context);
                     }
                 ),
