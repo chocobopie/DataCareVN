@@ -51,7 +51,9 @@ class EditMoneyButton extends StatelessWidget {
                 ),
                 TextButton(
                   child: const Text("Lưu"),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
               ],
             ),

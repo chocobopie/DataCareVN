@@ -12,6 +12,7 @@ import 'package:login_sample/widgets/CustomListTile.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:provider/provider.dart';
 
 class HrManagerPayrollDetail extends StatefulWidget {
@@ -296,6 +297,30 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 CustomListTile(listTileLabel: 'Thưởng tuyển dụng', alertDialogLabel: 'Cập nhật thưởng tuyển dụng', numberEditController: recruitmentBonusController, value: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus.toString() : recruitmentBonusController.text),
                                 CustomListTile(listTileLabel: 'Thưởng cá nhân', alertDialogLabel: 'Cập nhật thưởng cá nhân', numberEditController: personalBonusController, value: personalBonusController.text.isEmpty ? _payroll!.personalBonus.toString() : personalBonusController.text),
                                 CustomListTile(listTileLabel: 'Thưởng nhóm', alertDialogLabel: 'Cập nhật thưởng nhóm', numberEditController: teamBonusController, value: teamBonusController.text.isEmpty ? _payroll!.teamBonus.toString() : teamBonusController.text),
+                                CustomTextButton(
+                                    color: mainBgColor,
+                                    text: 'Lưu',
+                                    onPressed: () async {
+                                      _reverseMoneyFormat();
+                                      print(basicSalaryController.text);
+                                      showLoaderDialog(context);
+                                      bool result = await _updateAPayroll();
+                                      if(result == true){
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text('Cập nhật lương cho ${widget.empAccount.fullname} thành công')),
+                                        );
+                                        Future.delayed(const Duration(seconds: 1), (){
+                                          Navigator.pop(context);
+                                        });
+                                      }else{
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text('Cập nhật lương cho ${widget.empAccount.fullname} thất bại')),
+                                        );
+                                      }
+                                    },
+                                )
                               ],
                             ),
                           ),
@@ -329,6 +354,35 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
         ],
       ),
     );
+  }
+
+  void _reverseMoneyFormat(){
+    basicSalaryController.text = basicSalaryController.text.replaceAll('.', '');
+    allowanceController.text = allowanceController.text.replaceAll('.', '');
+    parkingFeeController.text = parkingFeeController.text.replaceAll('.', '');
+    fineController.text = fineController.text.replaceAll('.', '');
+    personalInsuranceController.text = personalInsuranceController.text.replaceAll('.', '');
+    companyInsuranceController.text = companyInsuranceController.text.replaceAll('.', '');
+    actualSalaryReceivedController.text = actualSalaryReceivedController.text.replaceAll('.', '');
+    newSignPersonalSalesBonusController.text = newSignPersonalSalesBonusController.text.replaceAll('.', '');
+    renewedPersonalSalesBonusController.text = renewedPersonalSalesBonusController.text.replaceAll('.', '');
+    managementSalesBonusController.text = managementSalesBonusController.text.replaceAll('.', '');
+    supporterSalesBonusController.text = supporterSalesBonusController.text.replaceAll('.', '');
+    clB20SalesBonusController.text = clB20SalesBonusController.text.replaceAll('.', '');
+    contentManagerFanpageTechnicalEmployeeBonusController.text = contentManagerFanpageTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    collaboratorFanpageTechnicalEmployeeBonusController.text = collaboratorFanpageTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    renewedFanpageTechnicalEmployeeBonusController.text = renewedFanpageTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    contentManagerWebsiteAdsTechnicalEmployeeBonusController.text = contentManagerWebsiteAdsTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    collaboratorWebsiteTechnicalEmployeeBonusController.text = collaboratorWebsiteTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    renewedWebsiteTechnicalEmployeeBonusController.text = renewedWebsiteTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    collaboratorAdsTechnicalEmployeeBonusController.text = collaboratorAdsTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    lecturerEducationTechnicalEmployeeBonusController.text = lecturerEducationTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    tutorEducationTechnicalEmployeeBonusController.text = tutorEducationTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    techcareEducationTechnicalEmployeeBonusController.text = techcareEducationTechnicalEmployeeBonusController.text.replaceAll('.', '');
+    emulationBonusController.text = emulationBonusController.text.replaceAll('.', '');
+    recruitmentBonusController.text = recruitmentBonusController.text.replaceAll('.', '');
+    personalBonusController.text = personalBonusController.text.replaceAll('.', '');
+    teamBonusController.text = teamBonusController.text.replaceAll('.', '');
   }
 
   Future<bool> _updateAPayroll() async {
