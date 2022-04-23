@@ -1700,7 +1700,6 @@ class ApiService {
       },
       body: jsonEncode(<String, dynamic>{
         "payrollId": payroll.payrollId,
-        "accountId": payroll.accountId,
         "basicSalary": payroll.basicSalary,
         "allowance": payroll.allowance,
         "parkingFee": payroll.parkingFee,
