@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/models/team.dart';
+import 'package:login_sample/view_models/account_list_view_model.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_payroll_detail.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:provider/provider.dart';
 
 
 class SaleManagerPayrollManagement extends StatefulWidget {
@@ -16,22 +21,18 @@ class SaleManagerPayrollManagement extends StatefulWidget {
 
 class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagement> {
 
-  DateTime _selectedMonth = DateTime.now();
+  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month - 1);
+  DateTime? _fromDate, _toDate, _maxTime;
+  final int _currentPage = 0;
+  Account? _currentAccount;
+  List<Team> _teams = [];
+  final List<Account> _saleEmployees = [];
+  
 
-  String _revenueStatusTitle = 'Dự kiến';
-
-  // final List<Map> teams =
-  // List.generate(1, (index) => {"id": index, "name": "Nhóm $index"})
-  //     .toList();
-
-  List<Map> teams = [
-    {"id": 1, "name": "Nhóm Hải Yến"},
-    {"id": 2, "name": "Nhóm Bùi Tuấn"},
-  ];
-
-  // final List<Map> employees =
-  // List.generate(10, (index) => {"id": index, "name": "Nhân viên $index"})
-  //     .toList();
+  // final List<Map> _teams = [
+  //   {"id": 1, "name": "Nhóm Hải Yến"},
+  //   {"id": 2, "name": "Nhóm Bùi Tuấn"},
+  // ];
 
   List<Map> employees = [
     {"id": 0, "name": "Trà Bảo Hiển", "role": 'Trưởng nhóm kinh doanh', "KPI:": "70%", "revenue:" : '5.000.000 VNĐ'},
@@ -40,6 +41,18 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
     {"id": 3, "name": "Tăng Quang Vinh", "role": 'Nhân viên kinh doanh', "KPI:": "40%", "revenue:" : '6.000.000 VNĐ'},
     {"id": 4, "name": "Ngô Kim Sơn", "role": 'Nhân viên kinh doanh', "KPI:": "50%", "revenue:" : '7.000.000 VNĐ'}
   ];
+
+
+  @override
+  void initState() {
+    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
+    _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
+    _maxTime = _selectedMonth;
+    _teams = getTeamListInDepartment(department: Department(departmentId: _currentAccount!.departmentId, blockId: _currentAccount!.blockId!, name: ''));
+    _getListSaleEmployee();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +80,6 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
               child: ListView(
                 padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
                 children: <Widget>[
-
                   //Nút chọn tháng
                   Container(
                     width: 200.0,
@@ -84,7 +96,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                             pickerModel: CustomMonthPicker(
                                 currentTime: DateTime.now(),
                                 minTime: DateTime(2016),
-                                maxTime: DateTime.now(),
+                                maxTime: _maxTime!,
                                 locale: LocaleType.vi,
                             ),
                         );
@@ -92,16 +104,11 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                         if (date != null) {
                           setState(() {
                             _selectedMonth = date;
-                            if(_selectedMonth.year <= DateTime.now().year){
-                              if(_selectedMonth.month < DateTime.now().month){
-                                _revenueStatusTitle = 'Đã chốt';
-                              }
-                              if(_selectedMonth.month == DateTime.now().month){
-                                _revenueStatusTitle = 'Dự kiến';
-                              }
-                            }
-                            print(_selectedMonth);
                           });
+                          _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
+                          _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
+
+                          print(_selectedMonth);
                         }
                       },
                       icon: const Icon(
@@ -157,7 +164,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                            decoration: InputDecoration(
                              floatingLabelBehavior: FloatingLabelBehavior.always,
                              contentPadding: const EdgeInsets.only(left: 20.0),
-                             labelText: 'Tổng doanh thu của phòng tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)} - $_revenueStatusTitle',
+                             labelText: 'Tổng doanh thu của phòng tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
                              hintText: '145.200.000 VNĐ',
                              labelStyle: const TextStyle(
                                color: Color.fromARGB(255, 107, 106, 144),
@@ -214,7 +221,6 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                        builder: (context) => SaleManagerPayrollDetail(
                                          empName: 'của bản thân',
                                          selectMonth: DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10),
-                                         revenueStatusTitle: _revenueStatusTitle,
                                        ),
                                    ));
                                  },
@@ -230,15 +236,22 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                      ),
                      const SizedBox(height: 20.0,),
 
-                     Padding(
+                     (_teams.isNotEmpty && _saleEmployees.isNotEmpty) ? Padding(
                        padding: EdgeInsets.only(left: leftRight * 0.04, right: leftRight * 0.04),
                        child: Theme(
                          data: ThemeData().copyWith(dividerColor: Colors.transparent),
                          child: ListView.builder(
                            physics: const NeverScrollableScrollPhysics(),
                            shrinkWrap: true,
-                           itemCount: teams.length,
-                           itemBuilder: (BuildContext ctx, index){
+                           itemCount: _teams.length,
+                           itemBuilder: (context, index){
+                             final _team = _teams[index];
+                             List<Account> _saleEmpListView = [];
+                             for(int i = 0; i < _saleEmployees.length; i++){
+                               if(_saleEmployees[i].teamId == _team.teamId){
+                                 _saleEmpListView.add(_saleEmployees[i]);
+                               }
+                             }
                              return Padding(
                                padding: const EdgeInsets.only(bottom: 10.0),
                                child: Container(
@@ -271,7 +284,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                      ),
                                    ),
                                    title: Text(
-                                     teams[index]['name'],
+                                     _team.name,
                                      style: const TextStyle(
                                        color: Colors.black,
                                      ),
@@ -281,10 +294,11 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                      ListView.builder(
                                          physics: const NeverScrollableScrollPhysics(),
                                          shrinkWrap: true,
-                                         itemCount: employees.length,
+                                         itemCount: _saleEmpListView.length,
                                          itemBuilder: (context, index){
-                                           return ListTile(
-                                             title: Text(employees[index]['name'], style: const TextStyle(fontSize: 12.0,),),
+                                           final _saleEmployee = _saleEmpListView[index];
+                                             return ListTile(
+                                             title: Text(_saleEmployee.fullname!, style: const TextStyle(fontSize: 12.0,),),
                                              trailing: Row(
                                                mainAxisSize: MainAxisSize.min,
                                                children: <Widget>[
@@ -298,9 +312,8 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                    onPressed: (){
                                                      Navigator.push(context, MaterialPageRoute(
                                                          builder: (context) => SaleManagerPayrollDetail(
-                                                           empName: employees[index]['name'],
+                                                           empName: _saleEmployee.fullname!,
                                                            selectMonth: DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10),
-                                                           revenueStatusTitle: _revenueStatusTitle,
                                                          )
                                                      ));
                                                    },
@@ -309,7 +322,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                  ),
                                                ],
                                              ),
-                                             subtitle: Text(employees[index]['role'], style: const TextStyle(fontSize: 12.0,),),
+                                             subtitle: Text(rolesNames[_saleEmployee.roleId!], style: const TextStyle(fontSize: 12.0,),),
                                              dense: true,
                                            );
                                          }
@@ -321,7 +334,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                            },
                          ),
                        ),
-                     ),
+                     ) : const Center(child: CircularProgressIndicator()),
                    ],
                 ),
               ),
@@ -350,5 +363,17 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
       ),
     );
   }
+
+  void _getListSaleEmployee() async {
+    List<Account>? result = await AccountListViewModel().getAllSalesForDeal(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount!.accountId!, limit: 1000000);
+
+    if(result != null){
+      setState(() {
+        _saleEmployees.clear();
+        _saleEmployees.addAll(result);
+      });
+    }
+  }
+
 }
 
