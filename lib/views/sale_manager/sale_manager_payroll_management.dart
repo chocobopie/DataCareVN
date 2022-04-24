@@ -35,6 +35,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
   final List<Payroll> _payrolls = [];
   final List<Account> _saleEmployees = [];
   final List<Sale> _sales = [];
+  num _totalRevenue = 0;
 
   PayrollCompany? _payrollCompany;
 
@@ -161,7 +162,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                              floatingLabelBehavior: FloatingLabelBehavior.always,
                              contentPadding: const EdgeInsets.only(left: 20.0),
                              labelText: 'Tổng doanh thu của phòng tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
-                             hintText: '145.200.000 VNĐ',
+                             hintText: moneyFormat(_totalRevenue.toString()),
                              labelStyle: const TextStyle(
                                color: Color.fromARGB(255, 107, 106, 144),
                                fontSize: 18,
@@ -205,12 +206,12 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                              colors: [Colors.green, Colors.white],
                            ),
                          ),
-                         child: ListTile(
-                           title: const Text('Doanh thu của bản thân', style: TextStyle(fontSize: 12.0,),),
+                         child: _currentAccount != null ? ListTile(
+                           title: Text(_currentAccount!.fullname!, style: const TextStyle(fontSize: 12.0,),),
                            trailing: Row(
                              mainAxisSize: MainAxisSize.min,
                              children: <Widget>[
-                               const Text('KPI: 58.2%', style: TextStyle(fontSize: 10.0,),),
+                               Text('KPI: ${moneyFormat(_getKPIPercent(employee: _currentAccount!).toString())}%', style: const TextStyle(fontSize: 10.0,),),
                                TextButton.icon(
                                  onPressed: (){
                                    Navigator.push(context, MaterialPageRoute(
@@ -221,13 +222,13 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                    ));
                                  },
                                  icon: const Icon(Icons.attach_money),
-                                 label: const Text('13.200.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+                                 label: Text(moneyFormat(_getSaleEach(employee: _currentAccount!).toString()), style: const TextStyle(fontSize: 12.0,),),
                                ),
                              ],
                            ),
                            subtitle: const Text('Trưởng phòng kinh doanh', style: TextStyle(fontSize: 12.0,),),
                            dense: true,
-                         ),
+                         ) : const Center(child: CircularProgressIndicator()),
                        ),
                      ),
                      const SizedBox(height: 20.0,),
@@ -242,10 +243,12 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                            itemCount: _teams.length,
                            itemBuilder: (context, index){
                              final _team = _teams[index];
+                             num _totalRevenueTeam = 0;
                              List<Account> _saleEmpListView = [];
                              for(int i = 0; i < _saleEmployees.length; i++){
                                if(_saleEmployees[i].teamId == _team.teamId){
                                  _saleEmpListView.add(_saleEmployees[i]);
+                                 _totalRevenueTeam = _totalRevenueTeam + _getSaleEach(employee: _saleEmployees[i]);
                                }
                              }
                              return Padding(
@@ -271,7 +274,8 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                  child: ExpansionTile(
                                    collapsedBackgroundColor: mainBgColor,
                                    trailing: TextButton.icon(onPressed: (){}, icon: const Icon(Icons.attach_money),
-                                       label: const Text('66.000.000 VNĐ')),
+                                       label: Text(moneyFormat(_totalRevenueTeam.toString()))
+                                   ),
                                    subtitle: const Text(
                                      'Tổng doanh thu của nhóm:',
                                      style: TextStyle(
@@ -298,9 +302,9 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                              trailing: Row(
                                                mainAxisSize: MainAxisSize.min,
                                                children: <Widget>[
-                                                 const Text(
-                                                   'KPI: 52.8%',
-                                                   style: TextStyle(
+                                                 Text(
+                                                   'KPI: ${_getKPIPercent(employee: _saleEmployee)}%',
+                                                   style: const TextStyle(
                                                      fontSize: 10.0,
                                                    ),
                                                  ),
@@ -314,7 +318,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                      ));
                                                    },
                                                    icon: const Icon(Icons.attach_money),
-                                                   label: const Text('13.200.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
+                                                   label: Text(moneyFormat(_getSaleEach(employee: _saleEmployee).toString()), style: const TextStyle(fontSize: 12.0,),),
                                                  ),
                                                ],
                                              ),
@@ -374,23 +378,77 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
 
   void _getListPayroll({required bool isRefresh}) async {
     List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1000000);
+    List<Payroll>? result2 = [];
 
-    if(result!.isNotEmpty){
+    
+    for(int i = 0; i < result!.length; i++){
+      for(int j = 0; j < _saleEmployees.length; j++){
+        if(_saleEmployees[j].accountId == result[i].accountId){
+          result2.add(result[i]);
+        }
+      }
+    }
+
+    for(int i = 0; i < result2.length; i++){
+      print(result2[i].payrollId);
+    }
+
+    if(result2.isNotEmpty){
       setState(() {
         _payrolls.clear();
-        _payrolls.addAll(result);
+        _payrolls.addAll(result2);
       });
+      for(int i = 0; i < result2.length; i++){
+        final result = await _getListSale(isRefresh: true, payrollId: result2[i].payrollId);
+        setState(() {
+          _sales.add(result![0]);
+        });
+        print(_sales[i].payrollId);
+      }
+      for(int i = 0; i < _sales.length; i++){
+        num total = _totalRevenue + _sales[i].newSignEducationSales + _sales[i].newSignFacebookContentSales + _sales[i].newSignWebsiteContentSales
+            + _sales[i].renewedEducationSales + _sales[i].renewedFacebookContentSales + _sales[i].renewedWebsiteContentSales + _sales[i].adsSales;
+        setState(() {
+          _totalRevenue = total;
+        });
+      }
     }
   }
 
-  void _getListSale({required bool isRefresh, required int payrollId}) async {
+  Future<List<Sale>?> _getListSale({required bool isRefresh, required int payrollId}) async {
+
     List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: _currentPage, payrollId: payrollId ,limit: 1);
 
-    if(result!.isNotEmpty){
-      setState(() {
-        _sales.addAll(result);
-      });
+    return result;
+  }
+
+  num _getSaleEach({required Account employee}){
+    num number = 0;
+    for(int i = 0; i < _payrolls.length; i++){
+      if(employee.accountId == _payrolls[i].accountId){
+        for(int j = 0; j < _sales.length; j++){
+          if(_payrolls[i].payrollId == _sales[j].payrollId){
+            number = _sales[j].adsSales + _sales[j].renewedWebsiteContentSales + _sales[j].renewedFacebookContentSales + _sales[j].renewedEducationSales + _sales[j].newSignWebsiteContentSales + _sales[j].newSignFacebookContentSales + _sales[j].newSignEducationSales;
+          }
+        }
+      }
     }
+    return number;
+  }
+
+  num _getKPIPercent({required Account employee}){
+    num number = 0;
+    for(int i = 0; i < _payrolls.length; i++){
+      if(employee.accountId == _payrolls[i].accountId){
+        for(int j = 0; j < _sales.length; j++){
+          if(_payrolls[i].payrollId == _sales[j].payrollId){
+            number = (_sales[j].adsSales + _sales[j].renewedWebsiteContentSales + _sales[j].renewedFacebookContentSales + _sales[j].renewedEducationSales
+                + _sales[j].newSignWebsiteContentSales + _sales[j].newSignFacebookContentSales + _sales[j].newSignEducationSales) / _sales[i].kpi * 100;
+          }
+        }
+      }
+    }
+    return number;
   }
 
   void _getListSaleEmployee() async {
