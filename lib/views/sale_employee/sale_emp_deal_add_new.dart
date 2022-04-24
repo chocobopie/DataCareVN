@@ -393,7 +393,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
       dealId: 0,
       title: _dealTitle.text,
       dealStageId: int.parse(_dealStageId.text),
-      amount: _dealAmount.text.isEmpty ? 0 : int.parse(_dealAmount.text),
+      amount: _dealAmount.text.isEmpty ? 0 : num.parse(_dealAmount.text),
       closedDate: _dealClosedDate.text.isEmpty ? DateTime.now() : DateTime.parse(_dealClosedDate.text),
       dealOwnerId: _currentAccount.roleId != 5 ? _filterAccount.accountId! : _currentAccount.accountId!,
       linkTrello: _linkTrello.text.isEmpty ? '' : _linkTrello.text,

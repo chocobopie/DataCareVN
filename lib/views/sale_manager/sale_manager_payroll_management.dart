@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/payroll.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
+import 'package:login_sample/models/sale.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
+import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
+import 'package:login_sample/view_models/payroll_list_view_model.dart';
+import 'package:login_sample/view_models/sale_list_view_model.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_payroll_detail.dart';
@@ -26,31 +32,21 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
   final int _currentPage = 0;
   Account? _currentAccount;
   List<Team> _teams = [];
+  final List<Payroll> _payrolls = [];
   final List<Account> _saleEmployees = [];
-  
+  final List<Sale> _sales = [];
 
-  // final List<Map> _teams = [
-  //   {"id": 1, "name": "Nhóm Hải Yến"},
-  //   {"id": 2, "name": "Nhóm Bùi Tuấn"},
-  // ];
-
-  List<Map> employees = [
-    {"id": 0, "name": "Trà Bảo Hiển", "role": 'Trưởng nhóm kinh doanh', "KPI:": "70%", "revenue:" : '5.000.000 VNĐ'},
-    {"id": 1, "name": "Khưu Quang Tú", "role": 'Nhân viên kinh doanh', "KPI:": "30%", "revenue:" : '3.000.000 VNĐ'},
-    {"id": 2, "name": "Lường Cao Thọ", "role": 'Nhân viên kinh doanh', "KPI:": "60%", "revenue:" : '2.000.000 VNĐ'},
-    {"id": 3, "name": "Tăng Quang Vinh", "role": 'Nhân viên kinh doanh', "KPI:": "40%", "revenue:" : '6.000.000 VNĐ'},
-    {"id": 4, "name": "Ngô Kim Sơn", "role": 'Nhân viên kinh doanh', "KPI:": "50%", "revenue:" : '7.000.000 VNĐ'}
-  ];
-
+  PayrollCompany? _payrollCompany;
 
   @override
   void initState() {
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getListSaleEmployee();
     _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
     _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
     _maxTime = _selectedMonth;
     _teams = getTeamListInDepartment(department: Department(departmentId: _currentAccount!.departmentId, blockId: _currentAccount!.blockId!, name: ''));
-    _getListSaleEmployee();
+    _getPayrollCompany(isRefresh: true);
     super.initState();
   }
 
@@ -362,6 +358,39 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
         ],
       ),
     );
+  }
+
+  void _getPayrollCompany({required bool isRefresh}) async {
+    List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, isClosing: 1, limit: 1);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _payrollCompany = null;
+        _payrollCompany = result[0];
+      });
+      _getListPayroll(isRefresh: true);
+    }
+  }
+
+  void _getListPayroll({required bool isRefresh}) async {
+    List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1000000);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _payrolls.clear();
+        _payrolls.addAll(result);
+      });
+    }
+  }
+
+  void _getListSale({required bool isRefresh, required int payrollId}) async {
+    List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: _currentPage, payrollId: payrollId ,limit: 1);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _sales.addAll(result);
+      });
+    }
   }
 
   void _getListSaleEmployee() async {

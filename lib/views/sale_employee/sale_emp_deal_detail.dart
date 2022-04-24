@@ -506,7 +506,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
         dealId: widget.deal.dealId,
         title: _dealTitle.text.isEmpty ? widget.deal.title : _dealTitle.text,
         dealStageId: _dealStage.text.isEmpty ? widget.deal.dealStageId : int.parse(_dealStage.text),
-        amount: _dealAmount.text.isEmpty ? widget.deal.amount > 0 ? widget.deal.amount : 0 : int.parse(_dealAmount.text),
+        amount: _dealAmount.text.isEmpty ? widget.deal.amount > 0 ? widget.deal.amount : 0 : num.parse(_dealAmount.text),
         closedDate: _dealClosedDate.text.isEmpty ? widget.deal.closedDate : DateTime.parse(_dealClosedDate.text),
         dealOwnerId: _dealOwnerId.text.isEmpty ? widget.deal.dealOwnerId : int.parse(_dealOwnerId.text),
         linkTrello: _dealLinkTrello.text.isEmpty ? widget.deal.linkTrello : _dealLinkTrello.text.isEmpty ? '' : _dealLinkTrello.text,

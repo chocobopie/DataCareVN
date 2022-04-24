@@ -31,6 +31,7 @@ import 'package:login_sample/models/payroll_permission.dart';
 import 'package:login_sample/models/permission.dart';
 import 'package:login_sample/models/permission_status.dart';
 import 'package:login_sample/models/role.dart';
+import 'package:login_sample/models/sale.dart';
 import 'package:login_sample/models/service.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/models/timeline.dart';
@@ -1706,7 +1707,6 @@ class ApiService {
         "fine": payroll.fine,
         "personalInsurance": payroll.personalInsurance,
         "companyInsurance": payroll.companyInsurance,
-        "actualSalaryReceived": payroll.actualSalaryReceived,
         "newSignPersonalSalesBonus": payroll.newSignPersonalSalesBonus,
         "renewedPersonalSalesBonus": payroll.renewedPersonalSalesBonus,
         "managementSalesBonus": payroll.managementSalesBonus,
@@ -1735,6 +1735,26 @@ class ApiService {
     }else{
       print('Update payroll failed | 400');
       return false;
+    }
+  }
+
+  //sales
+  Future<List<Sale>?> getListSales({required bool isRefresh, required int currentPage, int? payrollId, int? saleId, int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'sales?sale-id=${saleId ?? ''}&payroll-id=${payrollId ?? ''}&page=$currentPage&limit=${limit ?? 1}';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get list of sales successfully| 200');
+      return jsonResponse.map((data) => Sale.fromJson(data)).toList();
+    }else{
+      print("Failed to get list of sales | 400");
+      List<Sale>? result;
+      return result;
     }
   }
 }

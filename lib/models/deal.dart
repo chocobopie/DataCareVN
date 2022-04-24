@@ -23,7 +23,7 @@ class Deal {
   int dealId;
   String title;
   int dealStageId;
-  int amount;
+  num amount;
   DateTime closedDate;
   int dealOwnerId;
   String? linkTrello;

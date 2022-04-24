@@ -75,7 +75,7 @@ class CustomEditableTextFormField extends StatelessWidget {
         ] : (inputNumberOnly == true && isPhoneNumber == true && citizenIdentity == null && isBankAccountNumber == null) ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(11),
-        ] : (inputNumberOnly == true && isPhoneNumber == null && citizenIdentity == null && isBankAccountNumber == true) ? <TextInputFormatter>[
+        ] : (inputNumberOnly == true && isPhoneNumber == null && citizenIdentity == null && isBankAccountNumber == true ) ? <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
           LengthLimitingTextInputFormatter(20),
         ] :(inputNumberOnly == false && isLimit == true && limitNumbChar != null ) ? <TextInputFormatter>[
