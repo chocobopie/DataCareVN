@@ -216,8 +216,9 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                  onPressed: (){
                                    Navigator.push(context, MaterialPageRoute(
                                        builder: (context) => SaleManagerPayrollDetail(
-                                         empName: 'của bản thân',
-                                         selectMonth: DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10),
+                                         saleEmployee: _currentAccount!,
+                                         fromDate: _fromDate!,
+                                         toDate: _toDate!,
                                        ),
                                    ));
                                  },
@@ -312,8 +313,9 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                    onPressed: (){
                                                      Navigator.push(context, MaterialPageRoute(
                                                          builder: (context) => SaleManagerPayrollDetail(
-                                                           empName: _saleEmployee.fullname!,
-                                                           selectMonth: DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10),
+                                                           saleEmployee: _saleEmployee,
+                                                           fromDate: _fromDate!,
+                                                           toDate: _toDate!,
                                                          )
                                                      ));
                                                    },
@@ -399,7 +401,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
         _payrolls.addAll(result2);
       });
       for(int i = 0; i < result2.length; i++){
-        final result = await _getListSale(isRefresh: true, payrollId: result2[i].payrollId);
+        final result = await _getSale(isRefresh: true, payrollId: result2[i].payrollId);
         setState(() {
           _sales.add(result![0]);
         });
@@ -415,7 +417,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
     }
   }
 
-  Future<List<Sale>?> _getListSale({required bool isRefresh, required int payrollId}) async {
+  Future<List<Sale>?> _getSale({required bool isRefresh, required int payrollId}) async {
 
     List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: _currentPage, payrollId: payrollId ,limit: 1);
 
