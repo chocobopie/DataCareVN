@@ -158,7 +158,6 @@ class _EmployeeActiveAccountState extends State<EmployeeActiveAccount> {
                                     );
                                     if(date != null){
                                       _accountDob = date;
-                                      print(_accountDob);
                                       setState(() {
                                         _dob = 'Ngày ${DateFormat('dd-MM-yyyy').format(_accountDob)}';
                                       });

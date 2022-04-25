@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
@@ -180,7 +179,6 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                   _applicationStatusId = applicationStatuses[i].applicationStatusId;
                                 }
                               }
-                              print(_applicationStatusId);
                               setState(() {
                                 _applications.clear();
                                 _maxPages = 0;
@@ -401,8 +399,6 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
         _applications.addAll(result);
         _maxPages = _applications[0].maxPage!;
       });
-      print(_maxPages);
-      print(_currentPage);
     }else{
        _refreshController.loadNoData();
     }

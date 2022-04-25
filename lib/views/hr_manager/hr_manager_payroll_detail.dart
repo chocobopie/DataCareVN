@@ -223,9 +223,6 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                     _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
                                     _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
                                     _getPayrollCompany(isRefresh: true);
-                                    print(_fromDate);
-                                    print(_toDate);
-                                    print(_selectedMonth);
                                   }
                                 },
                                 icon: const Icon(
@@ -308,7 +305,6 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                             text: 'Lưu',
                                             onPressed: () async {
                                               _reverseMoneyFormat();
-                                              print(basicSalaryController.text);
                                               showLoaderDialog(context);
                                               bool result = await _updateAPayroll();
                                               if(result == true){

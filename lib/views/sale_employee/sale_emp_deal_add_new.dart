@@ -124,7 +124,6 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                                 _contactCompanyName = _filterContact.companyName;
                                 _dealContactId.text = '${_filterContact.contactId}';
                               });
-                              print('Contact Id: ${_dealContactId.text}');
                             }
                           },
                       ),
@@ -165,7 +164,6 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                                 }else if(value.toString() == dealStagesNames[6].toString()){
                                   _dealStageId.text = '6';
                                 }
-                                print(_dealStageId.text);
                               },
                             ),
                           ),
@@ -183,7 +181,6 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                                 }else{
                                   _dealTypeId.text = '1';
                                 }
-                                print(_dealTypeId.text);
                               },
                             ),
                           ),
@@ -230,7 +227,6 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                                 }else if(value.toString() == dealServicesNames[6].toString()){
                                   _dealServiceId.text = '6';
                                 }
-                                print(_dealServiceId.text);
                               },
                             ),
                           ),
@@ -248,7 +244,6 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                                 }else if(value.toString() == dealVatsNames[1].toString()){
                                   _dealVatId.text = '1';
                                 }
-                                print(_dealVatId.text);
                               },
                             ),
                           ),

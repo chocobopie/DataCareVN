@@ -381,7 +381,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                             _teamNameString = '';
                                             _filterTeam = null;
                                             _accountDepartmentId.text = _filterDepartment!.departmentId.toString();
-                                            print(_filterDepartment!.departmentId);
                                           });
                                         }
                                       } : null,
@@ -457,7 +456,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                             }
                                           });
                                           _contactViewId = _dealViewId = _issueViewId = _filterViewId;
-                                          print(_filterRole!.name);
                                         }
                                       } : null : null,
                                     ),
@@ -554,7 +552,6 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                             if(value.toString() == permissionStatuses[i].name){
                                               setState(() {
                                                 _contactCreateId = permissionStatuses[i].permissionStatusId;
-                                                print(_contactCreateId);
                                               });
                                             }
                                           }

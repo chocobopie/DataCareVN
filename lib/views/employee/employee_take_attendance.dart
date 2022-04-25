@@ -247,7 +247,6 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
   void _getOverallInfo() async {
       _currentTime = DateTime.now();
       _timeHms = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
-      print(_timeHms);
       _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
       _getSelfAttendanceList(isRefresh: true, accountId: _currentAccount.accountId!, currentPage: 0, fromDate: _today, toDate: _today);
   }

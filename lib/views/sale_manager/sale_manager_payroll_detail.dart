@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/account.dart';
@@ -166,8 +163,8 @@ class _SaleManagerPayrollDetailState extends State<SaleManagerPayrollDetail> {
                             trailing: Text(moneyFormat(_sale!.kpi.toString()), style: const TextStyle(fontSize: 12.0,),),
                           ),
                           ListTile(
-                            title: const Text('% đạt KPI', style: TextStyle(fontSize: 12.0,),),
-                            trailing: Text(moneyFormat((_totalRevenue / _sale!.kpi * 100).toString()), style: const TextStyle(fontSize: 12.0,),),
+                            title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
+                            trailing: Text( '${((_totalRevenue / _sale!.kpi) * 100).round()} %', style: const TextStyle(fontSize: 12.0,),),
                           ),
                           ListTile(
                             title: const  Text('Doanh thu đạt được',
@@ -249,6 +246,4 @@ class _SaleManagerPayrollDetailState extends State<SaleManagerPayrollDetail> {
 
     return result;
   }
-
-
 }

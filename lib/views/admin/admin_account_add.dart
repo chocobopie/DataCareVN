@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/models/register_account.dart';
 import 'package:login_sample/models/department.dart';
+import 'package:login_sample/models/register_account.dart';
 import 'package:login_sample/models/role.dart';
 import 'package:login_sample/models/team.dart';
+import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_register_view_model.dart';
 import 'package:login_sample/views/admin/admin_department_filter.dart';
 import 'package:login_sample/views/admin/admin_team_filter.dart';
 import 'package:login_sample/widgets/CustomDropdownFormField2.dart';
 import 'package:login_sample/widgets/CustomEditableTextField.dart';
 import 'package:login_sample/widgets/CustomExpansionTile.dart';
-import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'admin_role_filter.dart';
 
@@ -33,7 +33,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
   String _filterRoleString = '', _filterDepartmentString = '', _filterTeamString = '', _departmentPermNameString = '', _teamPermNameString = '';
 
   int? _contactCreateId, _contactViewId, _contactUpdateId, _contactDeleteId, _dealCreateId, _dealViewId, _dealUpdateId, _dealDeleteId, _issueCreateId, _issueViewId, _issueUpdateId, _issueDeleteId;
-  int? _accountViewId, _accountCreateId, _accountUpdateId, _accountDeleteId, _attendanceViewId, _attendanceUpdateId;
+  int? _accountViewId, _attendanceViewId, _attendanceUpdateId;
   int? _filterViewId, _filterBlockId;
 
 
@@ -331,7 +331,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                         if(value.toString() == permissionStatuses[i].name){
                                           setState(() {
                                             _contactCreateId = permissionStatuses[i].permissionStatusId;
-                                            print(_contactCreateId);
                                           });
                                         }
                                       }
@@ -352,7 +351,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                       if(value.toString() == permissionStatuses[i].name){
                                         setState(() {
                                           _contactUpdateId = permissionStatuses[i].permissionStatusId;
-                                          print(_contactUpdateId);
                                         });
                                       }
                                     }
@@ -373,7 +371,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                       if(value.toString() == permissionStatuses[i].name){
                                         setState(() {
                                           _contactDeleteId = permissionStatuses[i].permissionStatusId;
-                                          print(_contactDeleteId);
                                         });
                                       }
                                     }
@@ -404,7 +401,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _dealCreateId = permissionStatuses[i].permissionStatusId;
-                                        print(_dealCreateId);
                                       });
                                     }
                                   }
@@ -425,7 +421,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _dealUpdateId = permissionStatuses[i].permissionStatusId;
-                                        print(_dealUpdateId);
                                       });
                                     }
                                   }
@@ -446,7 +441,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _dealDeleteId = permissionStatuses[i].permissionStatusId;
-                                        print(_dealDeleteId);
                                       });
                                     }
                                   }
@@ -477,7 +471,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _issueCreateId = permissionStatuses[i].permissionStatusId;
-                                        print(_issueCreateId);
                                       });
                                     }
                                   }
@@ -498,7 +491,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _issueUpdateId = permissionStatuses[i].permissionStatusId;
-                                        print(_issueUpdateId);
                                       });
                                     }
                                   }
@@ -519,7 +511,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _issueDeleteId = permissionStatuses[i].permissionStatusId;
-                                        print(_issueDeleteId);
                                       });
                                     }
                                   }
@@ -552,7 +543,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _accountViewId = permissionStatuses[i].permissionStatusId;
-                                        print(_accountViewId);
+
                                       });
                                     }
                                   }
@@ -583,7 +574,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _attendanceViewId = permissionStatuses[i].permissionStatusId;
-                                        print(_attendanceViewId);
                                       });
                                     }
                                   }
@@ -602,7 +592,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                     if(value.toString() == permissionStatuses[i].name){
                                       setState(() {
                                         _attendanceUpdateId = permissionStatuses[i].permissionStatusId;
-                                        print(_attendanceUpdateId);
                                       });
                                     }
                                   }
@@ -705,10 +694,6 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
     bool result = false;
 
     if(_filterRole != null && _filterBlockId != null){
-      print(_filterRole!.roleId);
-      print(_filterTeam?.teamId);
-      print(_filterDepartment?.departmentId);
-      print(_filterDepartmentPerm?.departmentId);
 
       RegisterAccount registerAccount = RegisterAccount(
           email: _accountEmail.text,

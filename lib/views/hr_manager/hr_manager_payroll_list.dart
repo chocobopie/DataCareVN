@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_payroll_detail.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:number_paginator/number_paginator.dart';
 
@@ -106,7 +104,6 @@ class _HrManagerPayrollListState extends State<HrManagerPayrollList> {
 
   @override
   Widget build(BuildContext context) {
-    double leftRight = MediaQuery.of(context).size.width * 0.05;
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Card(

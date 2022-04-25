@@ -66,7 +66,6 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                                 fromDate = DateTime.tryParse(DateFormat('yyyy-MM-dd').format(date))!;
                                 fromDateString = DateFormat('dd-MM-yyyy').format(fromDate);
                               });
-                              print('Từ ngày $fromDate');
                             }
                           },
                           decoration: InputDecoration(
@@ -117,7 +116,6 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                                 toDate = DateTime.tryParse(DateFormat('yyyy-MM-dd').format(date))!;
                                 toDateString = DateFormat('dd-MM-yyyy').format(toDate);
                               });
-                              print('Đến ngày $toDate');
                             }
                           },
                           decoration: InputDecoration(
@@ -203,7 +201,6 @@ class _SaleEmpDateFilterState extends State<SaleEmpDateFilter> {
                                 FromDateToDate fromDateToDate =  FromDateToDate(fromDateString: fromDateString, toDateString: toDateString, fromDate: fromDate, toDate: toDate);
                                 Navigator.pop(context, fromDateToDate);
                               }else if(fromDate.isAfter(toDate) || toDate.isBefore(fromDate)){
-                                print('Error');
                               }else{
                                 FromDateToDate fromDateToDate =  FromDateToDate(fromDateString: fromDateString, toDateString: toDateString, fromDate: fromDate, toDate: toDate);
                                 Navigator.pop(context, fromDateToDate);

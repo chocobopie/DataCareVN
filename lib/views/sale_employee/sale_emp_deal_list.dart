@@ -32,7 +32,7 @@ class SaleEmpDealList extends StatefulWidget {
 
 class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
-  bool _isSearching = false, _isAsc = false;
+  bool _isSearching = false;
   String _fullname = 'Người quản lý hợp đồng', _fromDateToDateString = 'Ngày chốt hợp đồng', _contactName = 'Tên khách hàng', _searchString = '';
   int _currentPage = 0, _maxPages = 0;
 
@@ -270,7 +270,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                       _deals.clear();
                     });
                     _refreshController.resetNoData();
-                    print('Curent page: $_currentPage');
 
                     _getFilter(isRefresh: false);
 
@@ -540,7 +539,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
         _refreshController.loadNoData();
       });
     }
-    print('Max page: $_maxPages');
   }
 
   void _getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, int? contactId, DateTime? fromDate, DateTime? toDate}) async {
@@ -558,7 +556,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
         _refreshController.loadNoData();
       });
     }
-    print('Max page: $_maxPages');
   }
 
   void _getADealByDealId({required int accountId, required int dealId}) async {

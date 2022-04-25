@@ -93,8 +93,6 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                           _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
                           _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
                           _getPayrollCompany(isRefresh: true);
-                          print(_fromDate);
-                          print(_toDate);
                         }
                       },
                       icon: const Icon(
@@ -134,7 +132,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                       data: ThemeData().copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}', style: const TextStyle(fontSize: 14.0),),
-                        trailing: Text('${_payroll!.actualSalaryReceived}'),
+                        trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
                         children: <Widget>[
                           const Divider(color: Colors.blueGrey, thickness: 1.0,),
                           ListTile(
@@ -260,7 +258,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            trailing: Text(moneyFormat(_payroll!.actualSalaryReceived.toString()),
+                            trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ',
                               style: const TextStyle(
                                 color: Colors.red,
                                 fontWeight: FontWeight.w600,

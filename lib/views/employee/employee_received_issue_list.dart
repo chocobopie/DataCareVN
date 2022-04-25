@@ -150,9 +150,7 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                             if(data != null){
                               FromDateToDate fromDateToDate2 = data;
                               _deadlineFromDate = fromDateToDate2.fromDate;
-                              print(_deadlineFromDate);
                               _deadlineToDate = fromDateToDate2.toDate;
-                              print(_deadlineToDate);
                               setState(() {
                                 _issues.clear();
                                 _fromDateToDateDeadlineString = 'Hạn chót: ${fromDateToDate2.fromDateString} → ${fromDateToDate2.toDateString}';

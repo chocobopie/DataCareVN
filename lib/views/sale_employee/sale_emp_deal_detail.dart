@@ -182,7 +182,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                                         .toString()) {
                                                   _dealStage.text = '6';
                                                 }
-                                                print(_dealStage.text);
                                               }
                                             : null),
                                   ),
@@ -202,7 +201,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                           } else {
                                             _dealType.text = '1';
                                           }
-                                          print(_dealType.text);
                                         }
                                             : null),
                                   ),
@@ -276,7 +274,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                                   .toString()) {
                                             _dealService.text = '6';
                                           }
-                                          print(_dealService.text);
                                         }
                                             : null),
                                   ),
@@ -313,7 +310,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                       setState(() {
                                         _dealClosedDate.text = date.toString();
                                         _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
-                                        print(date);
                                       });
                                     }
                                   } : null,
@@ -426,7 +422,6 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                                 onPressed: () {
                                                   setState(() {
                                                     _readOnly = false;
-                                                    print('Chỉnh sửa');
                                                   });
                                                 },
                                               )

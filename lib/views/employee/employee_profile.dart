@@ -184,7 +184,6 @@ class _EmployeeProfileState extends State<EmployeeProfile> {
                               setState(() {
                                 _dateOfBirth.text = date.toString();
                                 _dateOfBirthString = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
-                                print(date);
                               });
                             }
                           } : null,

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
@@ -39,8 +38,6 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
     _currentDate = DateTime.tryParse(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     _currentTime = _currentDate!.add(Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
     _currentTimeCalculated = _currentTime!.hour + _currentTime!.minute/100;
-    print(_currentDate );
-    print(_currentTime);
   }
 
   @override
@@ -177,7 +174,6 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                                   _periodOfDayError = '';
                                 });
                               }
-                              print(_periodOfDayId);
                               setState(() {
                                 _expectedWorkingTime = null;
                                 _expectedWorkingTimeString = '';
@@ -209,9 +205,6 @@ class _EmployeeLateExcuseState extends State<EmployeeLateExcuse> {
                                   _expectedWorkingTime = DateTime.tryParse(DateFormat('yyyy-MM-dd').format(_assignedDate!));
                                   _expectedWorkingTime = _assignedDate?.add(Duration(hours: date.hour, minutes: date.minute));
                                   _expectedWorkingTimeString = DateFormat.Hm().format(date);
-                                  print(_assignedDate);
-                                  print(_expectedWorkingTime);
-                                  print(date);
 
                                   if(_periodOfDayId == 0){
                                     if(  ( (date.hour + date.minute/100) < 9.30 ) || ( (date.hour + date.minute/100) > 10.30 ) ){

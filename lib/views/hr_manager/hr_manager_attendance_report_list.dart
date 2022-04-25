@@ -163,7 +163,6 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                   _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay!)}';
                                   _maxPages = 0;
                                   _attendances.clear();
-                                  print(_selectedDay);
                                 });
 
                                 _getOtherAttendanceList(isRefresh: true);

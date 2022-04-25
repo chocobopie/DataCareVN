@@ -139,7 +139,6 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                                   }else if(value.toString() == gendersNames[2]){
                                     _contactGender.text = '2';
                                   }
-                                  print(_contactGender.text);
                                 } : null
                             ),
                           ),
@@ -184,7 +183,6 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                                   }else if(value.toString() == leadSourceNames[2]){
                                     _contactLeadSourceId.text = '2';
                                   }
-                                  print(_contactLeadSourceId.text);
                                 } : null
                             ),
                           ),
@@ -304,7 +302,6 @@ class _SaleEmpContactDetailState extends State<SaleEmpContactDetail> {
                                   onPressed: () {
                                     setState(() {
                                       _readOnly = false;
-                                      print('Chỉnh sửa');
                                     });
                                   },
                                   child: const Text('Chỉnh sửa', style: TextStyle(color: Colors.white),),

@@ -27,7 +27,7 @@ class SaleEmpContactList extends StatefulWidget {
 
 class _SaleEmpContactListState extends State<SaleEmpContactList> {
 
-  bool _isSearching = false, _isAsc = false;
+  bool _isSearching = false;
   String _fullname = 'Nhân viên tạo', _searchString = '', _fromDateToDateString = 'Ngày tạo';
   int _currentPage = 0, _maxPages = 0, _contactOwnerId = -1;
 
@@ -231,7 +231,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                       _contacts.clear();
                     });
                     _refreshController.resetNoData();
-                    print('Current page: $_currentPage');
 
                     if(_isSearching == false || _searchString.isEmpty){
                       _getOverallInfo(_currentPage, _currentAccount);

@@ -213,7 +213,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                            trailing: Row(
                              mainAxisSize: MainAxisSize.min,
                              children: <Widget>[
-                               Text('KPI: ${moneyFormat(_getKPIPercent(employee: _currentAccount!).toString())}%', style: const TextStyle(fontSize: 10.0,),),
+                               Text('KPI: ${_getKPIPercent(employee: _currentAccount!)} %', style: const TextStyle(fontSize: 10.0,),),
                                TextButton.icon(
                                  onPressed: (){
                                    Navigator.push(context, MaterialPageRoute(
@@ -306,7 +306,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                mainAxisSize: MainAxisSize.min,
                                                children: <Widget>[
                                                  Text(
-                                                   'KPI: ${_getKPIPercent(employee: _saleEmployee)}%',
+                                                   'KPI: ${_getKPIPercent(employee: _saleEmployee)} %',
                                                    style: const TextStyle(
                                                      fontSize: 10.0,
                                                    ),
@@ -393,10 +393,6 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
       }
     }
 
-    for(int i = 0; i < result2.length; i++){
-      print(result2[i].payrollId);
-    }
-
     if(result2.isNotEmpty){
       setState(() {
         _payrolls.clear();
@@ -450,8 +446,8 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
       if(employee.accountId == _payrolls[i].accountId){
         for(int j = 0; j < _sales.length; j++){
           if(_payrolls[i].payrollId == _sales[j].payrollId){
-            number = (_sales[j].adsSales + _sales[j].renewedWebsiteContentSales + _sales[j].renewedFacebookContentSales + _sales[j].renewedEducationSales
-                + _sales[j].newSignWebsiteContentSales + _sales[j].newSignFacebookContentSales + _sales[j].newSignEducationSales) / _sales[i].kpi * 100;
+            number = ((_sales[j].adsSales + _sales[j].renewedWebsiteContentSales + _sales[j].renewedFacebookContentSales + _sales[j].renewedEducationSales
+                + _sales[j].newSignWebsiteContentSales + _sales[j].newSignFacebookContentSales + _sales[j].newSignEducationSales) / _sales[i].kpi * 100).round();
           }
         }
       }
