@@ -100,12 +100,14 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
 
                         if (date != null) {
                           setState(() {
+                            _payrollCompany = null;
+                            _payrolls.clear();
+                            _sales.clear();
                             _selectedMonth = date;
                           });
                           _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
                           _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
-
-                          print(_selectedMonth);
+                          _getPayrollCompany(isRefresh: true);
                         }
                       },
                       icon: const Icon(
@@ -124,7 +126,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
               )
           ),
 
-          Padding(
+          _payrollCompany != null && _payrolls.isNotEmpty  && _sales.isNotEmpty ? Padding(
             padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.21),
             child: Container(
               decoration: BoxDecoration(
@@ -341,7 +343,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                 ),
               ),
             ),
-          ),
+          ) : const Center(child: CircularProgressIndicator()),
 
           Positioned(
             top: 0.0,
@@ -400,12 +402,16 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
         _payrolls.clear();
         _payrolls.addAll(result2);
       });
+      
+      List<Sale>? result3 = [];
       for(int i = 0; i < result2.length; i++){
         final result = await _getSale(isRefresh: true, payrollId: result2[i].payrollId);
+        result3.add(result![0]);
+      }
+      if(result3.isNotEmpty){
         setState(() {
-          _sales.add(result![0]);
+          _sales.addAll(result3);
         });
-        print(_sales[i].payrollId);
       }
       for(int i = 0; i < _sales.length; i++){
         num total = _totalRevenue + _sales[i].newSignEducationSales + _sales[i].newSignFacebookContentSales + _sales[i].newSignWebsiteContentSales
