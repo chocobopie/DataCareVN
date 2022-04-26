@@ -266,7 +266,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
                               title: Text('Lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
-                              trailing: Text('${_payroll!.actualSalaryReceived}'),
+                              trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
                                 CustomListTile(listTileLabel: 'Lương cơ bản', alertDialogLabel: 'Cập nhật lương cơ bản', value: basicSalaryController.text.isEmpty ? _payroll!.basicSalary.toString() : basicSalaryController.text ,numberEditController: basicSalaryController),
@@ -475,7 +475,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}', style: const TextStyle(fontSize: 14.0),),
-          trailing: Text(moneyFormat(_payroll!.actualSalaryReceived.toString())),
+          trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
           children: <Widget>[
             const Divider(color: Colors.blueGrey, thickness: 1.0,),
             ListTile(
@@ -601,7 +601,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              trailing: Text(moneyFormat(_payroll!.actualSalaryReceived.toString()),
+              trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ',
                 style: const TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,

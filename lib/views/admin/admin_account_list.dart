@@ -295,10 +295,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(
-                left: 0.0,
-                right: 0.0,
-                top: MediaQuery.of(context).size.height * 0.21),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -323,7 +320,6 @@ class _AdminAccountListState extends State<AdminAccountList> {
                       topRight: Radius.circular(25),
                     ),
                   ),
-
                   child: _accounts.isNotEmpty ? SmartRefresher(
                     controller: _refreshController,
                     enablePullUp: true,
