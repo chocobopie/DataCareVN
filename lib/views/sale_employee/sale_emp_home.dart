@@ -137,7 +137,7 @@ class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Nhân viên kinh doanh",
+                "Khối kinh doanh",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

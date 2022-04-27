@@ -92,7 +92,7 @@ class _TechnicalEmployeeHomeState extends State<TechnicalEmployeeHome> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Phòng kinh doanh",
+                'Khối kỹ thuật',
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

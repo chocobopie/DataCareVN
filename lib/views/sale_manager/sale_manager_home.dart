@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/views/sale_manager/sale_manager_payroll_management.dart';
@@ -19,7 +20,6 @@ class HomeSaleManager extends StatefulWidget {
 }
 
 class _HomeSaleManagerState extends State<HomeSaleManager> {
-
   
   @override
   Widget build(BuildContext context) {
@@ -149,7 +149,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Phòng kinh doanh",
+                'Khối kinh doanh',
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

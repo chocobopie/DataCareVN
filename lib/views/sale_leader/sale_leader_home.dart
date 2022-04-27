@@ -353,7 +353,7 @@ class _HomeSaleLeaderState extends State<HomeSaleLeader> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Trưởng nhóm kinh doanh",
+                "Khối kinh doanh",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,
