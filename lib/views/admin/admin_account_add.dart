@@ -59,7 +59,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
             if(data != false){
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Tạo tài khoản mới thành công')),
+                const SnackBar(content: Text('Tạo tài khoản mới cho nhân viên thành công')),
               );
               Future.delayed(const Duration(seconds: 1), (){
                 Navigator.pop(context);
@@ -67,7 +67,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
             }else{
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Tạo tài khoản mới thất bại')),
+                const SnackBar(content: Text('Tạo tài khoản mới cho nhân viên thất bại')),
               );
             }
 
@@ -126,6 +126,11 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                   onTap: () async {
                                   final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter(isHrManagerFilter: true,) ));
                                   if( data != null ){
+
+                                    _contactCreateId = _dealCreateId = _issueCreateId = 0;
+                                    _contactDeleteId = _contactUpdateId = _dealDeleteId = _dealUpdateId = _issueDeleteId = _issueUpdateId = 0;
+                                    _contactViewId = _dealViewId = _issueViewId = 0;
+
                                     setState(() {
                                       _filterRole = data;
 
@@ -616,7 +621,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                   readonly: true,
                                   onTap: () async {
                                     final data = await Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => AdminDepartmentFilter(departmentList: _filterBlockId != 0 ? getDepartmentListInBlock(block: getBlock(blockId: 1)) : departments),
+                                      builder: (context) => AdminDepartmentFilter(departmentList: _filterBlockId == 0 ? getDepartmentListInBlock(block: getBlock(blockId: 1)) : departments),
                                     ));
                                     if(data != null){
                                       _filterDepartmentPerm = data;
