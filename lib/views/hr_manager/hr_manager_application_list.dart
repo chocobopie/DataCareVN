@@ -285,7 +285,10 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                                         children: [
                                           const Expanded(child: Text('Tên nhân viên:', style: TextStyle(fontSize: 14.0),)),
                                           const Spacer(),
-                                          Text(_getEmployeeName(_application.accountId), style: const TextStyle(fontSize: 14.0),),
+                                          SizedBox(
+                                              height: 20.0, width: MediaQuery.of(context).size.width * 0.5,
+                                              child: Align(alignment: Alignment.centerRight,
+                                                  child: Text(_getEmployeeName(_application.accountId), style: const TextStyle(fontSize: 14.0), overflow: TextOverflow.ellipsis, softWrap: false,))),
                                         ],
                                       ),
                                     ),

@@ -934,7 +934,6 @@ class ApiService {
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
       print('Take attendance for ${account.fullname} successfully');
-      print(response.body);
       return Attendance.fromJson(jsonDecode(response.body));
     }else{
       print('Failed to take attendance for ${account.fullname}');
