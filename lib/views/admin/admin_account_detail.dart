@@ -839,7 +839,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                       readonly: true,
                                       onTap: _readOnly != true ? () async {
                                         final data = await Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => AdminDepartmentFilter(departmentList: _currentEmpAccount.roleId == 6 ? getDepartmentListInBlock(block: getBlock(blockId: 1)) : departments ),
+                                          builder: (context) => AdminDepartmentFilter(departmentList: _currentEmpAccount.roleId == 2 ? getDepartmentListInBlock(block: getBlock(blockId: 1)) : departments ),
                                         ));
                                         if(data != null){
                                           _filterDepartmentPerm = data;
@@ -981,7 +981,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                         if( (check == true && check2 == true && check3 == true) || (check4 == true && check5 == true && check6 == true) || check7 == true){
                                           Navigator.pop(context);
                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Cập nhật tài khoản thành công')),
+                                            SnackBar(content: Text('Cập nhật tài khoản ${_currentEmpAccount.fullname} thành công')),
                                           );
                                           Future.delayed(const Duration(seconds: 1), (){
                                             Navigator.pop(context);
@@ -989,7 +989,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                         }else{
                                           Navigator.pop(context);
                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Cập nhật tài khoản thất bại')),
+                                            SnackBar(content: Text('Cập nhật tài khoản ${_currentEmpAccount.fullname} thất bại')),
                                           );
                                         }
 

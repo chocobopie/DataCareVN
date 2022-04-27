@@ -122,16 +122,6 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                   margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
                   child: Column(
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 30.0, right: 40.0),
-                        child: Row(
-                          children: const <Widget>[
-                            Text('Thuộc khối', style: TextStyle(color: defaultFontColor),),
-                            Spacer(),
-                            Text('Tên phòng ban', style: TextStyle(color: defaultFontColor),),
-                          ],
-                        ),
-                      ),
                       Expanded(
                         child: SmartRefresher(
                             controller: _refreshController,
@@ -162,15 +152,23 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
                                                 padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
                                                 child: Row(
                                                   children: <Widget>[
-                                                    Expanded(
-                                                      child: Text(blockNames[department.blockId]),
-                                                      flex: 1,
+                                                    const Expanded(
+                                                      child: Text('Phòng:'),
                                                     ),
                                                     const Spacer(),
-                                                    Expanded(
-                                                      child: Text(department.name),
-                                                      flex: 2,
+                                                    Text(department.name),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    const Expanded(
+                                                      child: Text('Thuộc khối:'),
                                                     ),
+                                                    const Spacer(),
+                                                    Text(blockNames[department.blockId]),
                                                   ],
                                                 ),
                                               ),
@@ -212,13 +210,4 @@ class _AdminDepartmentFilterState extends State<AdminDepartmentFilter> {
       ),
     );
   }
-
-  // void _getAllDepartment() async {
-  //   List<Department> departmentList = await DepartmentListViewModel().getAllDepartment();
-  //
-  //   setState(() {
-  //     _departments.addAll(departmentList);
-  //   });
-  //     _refreshController.loadNoData();
-  // }
 }

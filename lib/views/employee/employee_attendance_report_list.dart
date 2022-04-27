@@ -40,13 +40,13 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
+    _getSelfAttendanceList(isRefresh: true);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _getCurrentTime();
-    _getSelfAttendanceList(isRefresh: true);
   }
 
   @override
@@ -374,7 +374,6 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
       periodOfDayId: _periodOfDayId, fromDate: _fromDate, toDate: _toDate, attendanceStatusId: _attendanceStatusId,
     );
 
-    _attendances.clear();
     if(listAttendance != null){
       setState(() {
         _attendances.addAll(listAttendance);

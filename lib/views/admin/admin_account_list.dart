@@ -365,7 +365,10 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                           children: <Widget>[
                                             const Expanded(child: Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),)),
                                             const Spacer(),
-                                            Text(account.fullname!),
+                                            SizedBox(
+                                              height: 20.0, width: MediaQuery.of(context).size.width * 0.5,
+                                              child: Align( alignment: Alignment.centerRight,child: Text(account.fullname!, overflow: TextOverflow.ellipsis, softWrap: false,)),
+                                            ),
                                           ],
                                         ),
                                       ),
