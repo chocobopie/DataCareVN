@@ -77,6 +77,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
             child: _maxPage > 0 ? NumberPaginator(
                 buttonSelectedBackgroundColor: mainBgColor,
                 numberPages: _maxPage,
+                initialPage: 0,
                 onPageChange: (int index){
                   setState(() {
                     if(index >= _maxPage){
@@ -134,7 +135,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                               builder: (context) => const SaleEmpFilter(saleForIssue: true),
                             ));
                             if(data != null){
-                              _currentPage = 0;
+                              _currentPage = _currentPage = 0;
                               _filterAccount = data;
                               setState(() {
                                 _tagAccount = 'Nhân viên được giao: ${_filterAccount.fullname!}' ;
@@ -157,6 +158,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                 _createFromDate = fromDateToDate.fromDate;
                                 _createToDate = fromDateToDate.toDate;
                                 setState(() {
+                                  _currentPage = _currentPage = 0;
                                   _issues.clear();
                                   _fromDateToDateCreateDateString = 'Ngày tạo: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                 });
@@ -177,6 +179,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                 _deadlineFromDate = fromDateToDate2.fromDate;
                                 _deadlineToDate = fromDateToDate2.toDate;
                                 setState(() {
+                                  _currentPage = _currentPage = 0;
                                   _issues.clear();
                                   _fromDatetoDateDeadlineString = 'Hạn chót: ${fromDateToDate2.fromDateString} → ${fromDateToDate2.toDateString}';
                                 });
@@ -191,6 +194,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                 _fromDatetoDateDeadlineString = 'Hạn chót';
                                 _fromDateToDateCreateDateString = 'Ngày tạo vấn đề';
                                 _tagAccount = 'Tên nhân viên được giao';
+                                _currentPage = _currentPage = 0;
                               });
                               _filterAccount = Account();
                               _deadlineFromDate = null;
