@@ -256,7 +256,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                 color: mainBgColor,
                                 onPressed: () async {
                                   final data = await Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => _currentAccount.roleId == 1 ? const AdminRoleFilter(isHrManagerFilter: true,) : const AdminRoleFilter(isAdminFilter: true,)
+                                      builder: (context) => _currentAccount.roleId == 2 ? const AdminRoleFilter(isHrInternFilter: true,) : const AdminRoleFilter(isAdminFilter: true,)
                                   ));
                                   if(data != null){
                                     _roleFilter = data;
@@ -477,7 +477,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                   });
                   _currentPage = 0;
                   _searchString = value.toString();
-                  _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.accountId!, search: _searchString);
+                  _getAllAccount(isRefresh: true, currentPage: _currentPage, accountId: _currentAccount.roleId == 2 ? _currentAccount.accountId! : 0, search: _searchString);
                 },
               ),
               actions: <Widget>[
@@ -531,7 +531,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
   
   void _onGoBack(){
     if(_isSearching == true && _searchString.isNotEmpty){
-      _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.accountId!, search: _searchString);
+      _getAllAccount(isRefresh: false, currentPage: _currentPage, accountId: _currentAccount.roleId == 2 ? _currentAccount.accountId! : 0, search: _searchString);
     }else{
       _getFilter(isRefresh: false);
     }
@@ -546,7 +546,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
   }
 
   void _getFilter({required bool isRefresh}){
-    _getAllAccount(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!,
+    _getAllAccount(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.roleId == 2 ? _currentAccount.accountId! : 0,
         blockId: _blockFilter != null ?_blockFilter!.blockId : null,
         departmentId: _departmentFilter != null ? _departmentFilter!.departmentId : null,
         teamId: _teamFilter != null ? _teamFilter!.teamId : null,
@@ -555,10 +555,11 @@ class _AdminAccountListState extends State<AdminAccountList> {
   }
 
   void _getAllAccount({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, String? search}) async {
-    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId, search: search
-    );
 
     _accounts.clear();
+
+    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId, search: search);
+
     if(accountList.isNotEmpty){
       setState(() {
         _accounts.addAll(accountList);

@@ -124,7 +124,7 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                   title: 'Chức vụ',
                                   readonly: true,
                                   onTap: () async {
-                                  final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter(isHrManagerFilter: true,) ));
+                                  final data = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRoleFilter(isHrInternFilter: true,) ));
                                   if( data != null ){
 
                                     _contactCreateId = _dealCreateId = _issueCreateId = 0;

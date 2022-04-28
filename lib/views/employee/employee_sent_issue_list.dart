@@ -281,20 +281,12 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                                         children: <Widget>[
                                           const Text('Tiêu đề:'),
                                           const Spacer(),
-                                          Text(issue.title),
+                                          SizedBox(
+                                              height: 20.0, width: MediaQuery.of(context).size.width * 0.5,
+                                              child: Align(alignment: Alignment.bottomRight,child: Text(issue.title, overflow: TextOverflow.ellipsis,softWrap: false,))),
                                         ],
                                       ),
                                     ),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                    //   child: Row(
-                                    //     children: <Widget>[
-                                    //       const Text('Nhân viên tạo vấn đề:'),
-                                    //       const Spacer(),
-                                    //       Text(_getEmployeeName(issue.ownerId)),
-                                    //     ],
-                                    //   ),
-                                    // ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
@@ -401,9 +393,6 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
   }
   
   void _onGoBack(){
-    setState(() {
-      _issues.clear();
-    });
     _getAllIssue(isRefresh: false);
   }
   

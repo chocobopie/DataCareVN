@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/employee/employee_issue.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_list.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_list.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/views/employee/employee_take_attendance.dart';
+import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
 
@@ -323,23 +325,23 @@ class _HomeSaleLeaderState extends State<HomeSaleLeader> {
                     ),
                   ),
                   //Hàng 3
-                  // Row(
-                  //   children: [
-                  //     Padding(
-                  //       padding: const EdgeInsets.only(top: 20.0, left: 20),
-                  //       child: ImageTextButton(
-                  //           imageUrl: 'assets/images/issue.png',
-                  //           text: 'Vấn đề',
-                  //           buttonColors: const [Colors.grey, Colors.white],
-                  //           onPressed: (){
-                  //             Navigator.push(context, MaterialPageRoute(
-                  //               builder: (context) => const EmpIssue(),
-                  //             ));
-                  //           }
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0, left: 20),
+                        child: ImageTextButton(
+                            imageUrl: 'assets/images/issue.png',
+                            text: 'Vấn đề',
+                            buttonColors: const [Colors.grey, Colors.white],
+                            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const EmployeeIssue(),
+                              ));
+                            }
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               )
           ),
