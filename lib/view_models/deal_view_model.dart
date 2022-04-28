@@ -28,8 +28,8 @@ class DealViewModel with ChangeNotifier{
     return result;
   }
 
-  Future<bool> updateADeal(Deal deal) async {
-    bool result = await ApiService().updateADeal(deal);
+  Future<bool> updateADeal(Deal deal, int accountId) async {
+    bool result = await ApiService().updateADeal(deal, accountId);
 
     notifyListeners();
 

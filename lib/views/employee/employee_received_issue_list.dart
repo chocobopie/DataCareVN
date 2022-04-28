@@ -61,8 +61,13 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
           numberPages: _maxPage,
           onPageChange: (int index){
             setState(() {
+              if(index >= _maxPage){
+                index = 0;
+                _currentPage = index;
+              }else{
+                _currentPage = index;
+              }
               _issues.clear();
-              _currentPage = index;
             });
             _getAllIssue(isRefresh: false);
           },

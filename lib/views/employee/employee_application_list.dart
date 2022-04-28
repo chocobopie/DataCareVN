@@ -119,6 +119,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                 _fromCreatedDateToDateString = 'Ngày gửi đơn: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                 _applications.clear();
                                 _maxPages = 0;
+                                _currentPage = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             }
@@ -140,6 +141,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                 _fromAssignedDateToDateString = 'Ngày phép: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                 _applications.clear();
                                 _maxPages = 0;
+                                _currentPage = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             }
@@ -161,6 +163,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                               setState(() {
                                 _applications.clear();
                                 _maxPages = 0;
+                                _currentPage = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             },
@@ -182,6 +185,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                               setState(() {
                                 _applications.clear();
                                 _maxPages = 0;
+                                _currentPage = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             },
@@ -200,6 +204,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                                 _periodOfDayId = null;
                                 _applications.clear();
                                 _maxPages = 0;
+                                _currentPage = 0;
                               });
                               _getSelfApplicationList(isRefresh: true);
                             },
@@ -388,12 +393,13 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
   }
  void _getSelfApplicationList({required bool isRefresh}) async {
 
+   _applications.clear();
+
     List<Application>? result = await ApplicationListViewModel().getSelfApplicationList(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount!.accountId!,
         fromCreatedDate: _fromCreatedDate, toCreatedDate: _toCreatedDate, fromAssignedDate: _fromAssignedDate, toAssignedDate: _toAssignedDate,
         applicationStatusId: _applicationStatusId, periodOfDayId: _periodOfDayId
     );
 
-    _applications.clear();
     if(result != null){
       setState(() {
         _applications.addAll(result);

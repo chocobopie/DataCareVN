@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_payroll_list.dart';
+import 'package:login_sample/views/hr/hr_payroll_list.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
 

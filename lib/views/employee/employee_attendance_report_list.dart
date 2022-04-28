@@ -126,7 +126,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                   _toDate = fromDateToDate.toDate;
                                   _fromDateToDateString = 'Ngày ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                   _attendances.clear();
-                                  _maxPages = 0;
+                                  _maxPages = _currentPage = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getSelfAttendanceList(isRefresh: true);
@@ -146,7 +146,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                   if(value.toString() == periodOfDay[i].name){
                                     _periodOfDayId = periodOfDay[i].periodOfDayId;
                                     setState(() {
-                                      _maxPages = 0;
+                                      _maxPages = _currentPage = 0;
                                       _attendances.clear();
                                     });
                                   }
@@ -178,7 +178,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                             onChanged: (value) {
                               _attendanceStatusId = SortItems.onChanged(context, value as SortItem);
                               setState(() {
-                                _maxPages = 0;
+                                _maxPages = _currentPage = 0;
                                 _attendances.clear();
                               });
                               _getSelfAttendanceList(isRefresh: true);
@@ -203,7 +203,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                   _attendanceStatusId = null;
                                   _fromDateToDateString = 'Ngày';
                                   _periodOfDayId = null;
-                                  _maxPages = 0;
+                                  _maxPages = _currentPage = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getSelfAttendanceList(isRefresh: true);

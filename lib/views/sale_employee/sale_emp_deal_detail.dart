@@ -511,7 +511,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
         contactId: widget.deal.contactId
     );
 
-    bool result = await DealViewModel().updateADeal(deal);
+    bool result = await DealViewModel().updateADeal(deal, _currentAccount.accountId!);
 
     return result;
   }

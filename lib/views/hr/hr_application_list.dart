@@ -62,7 +62,12 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
           buttonSelectedBackgroundColor: mainBgColor,
           onPageChange: (int index) {
             setState(() {
-              _currentPage = index;
+              if(index >= _maxPages){
+                index = 0;
+                _currentPage = index;
+              }else{
+                _currentPage = index;
+              }
               _applications.clear();
             });
             _getOtherApplicationList(isRefresh: false);
@@ -212,7 +217,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.19),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.20),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -401,12 +406,13 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
 
   void _getOtherApplicationList({required bool isRefresh}) async {
 
+    _applications.clear();
+
     List<Application>? result = await ApplicationListViewModel().getOtherApplicationList(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount!.accountId!,
         fromCreatedDate: _fromCreatedDate, toCreatedDate: _toCreatedDate, fromAssignedDate: _fromAssignedDate, toAssignedDate: _toAssignedDate,
         applicationStatusId: _applicationStatusId, periodOfDayId: _periodOfDayId
     );
 
-    _applications.clear();
     if(result != null){
       setState(() {
         _applications.addAll(result);

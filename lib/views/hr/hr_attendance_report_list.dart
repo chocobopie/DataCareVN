@@ -14,7 +14,7 @@ import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_application_list.dart';
+import 'package:login_sample/views/hr/hr_application_list.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -100,7 +100,12 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               buttonSelectedBackgroundColor: mainBgColor,
               onPageChange: (int index) {
                 setState(() {
-                  _currentPage = index;
+                  if(index >= _maxPages){
+                    index = 0;
+                    _currentPage = index;
+                  }else{
+                    _currentPage = index;
+                  }
                   _attendances.clear();
                 });
                 _getOtherAttendanceList(isRefresh: false);
@@ -161,7 +166,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                 setState(() {
                                   _selectedDay = DateTime.parse( DateFormat('yyyy-MM-dd').format(date) );
                                   _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(_selectedDay!)}';
-                                  _maxPages = 0;
+                                  _maxPages = _currentPage = 0;
                                   _attendances.clear();
                                 });
 
@@ -182,7 +187,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                   if(value.toString() == periodOfDay[i].name){
                                     _periodOfDayId = periodOfDay[i].periodOfDayId;
                                     setState(() {
-                                      _maxPages = 0;
+                                      _maxPages = _currentPage = 0;
                                       _attendances.clear();
                                     });
                                   }
@@ -214,7 +219,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                             onChanged: (value) {
                               _attendanceStatusId = SortItems.onChanged(context, value as SortItem);
                               setState(() {
-                                _maxPages = 0;
+                                _maxPages = _currentPage = 0;
                                 _attendances.clear();
                               });
                               _getOtherAttendanceList(isRefresh: true);
@@ -237,6 +242,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                                   _attendanceStatusId = null;
                                   _selectedDay = DateTime.parse( DateFormat('yyyy-MM-dd').format(DateTime.now()));
                                   _filterDayString = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
+                                  _maxPages = _currentPage = 0;
                                 });
                                 _attendances.clear();
                                 _getAllEmployee();

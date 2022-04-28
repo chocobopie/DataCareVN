@@ -152,7 +152,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                   _filterAccount = data;
                                   _fullname = 'Người quản lý hợp đồng: ${_filterAccount.fullname!}';
                                   _deals.clear();
-                                  _maxPages = 0;
+                                  _maxPages = _currentPage = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getFilter(isRefresh: true);
@@ -174,7 +174,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                   _filterContact = data;
                                   _contactName = 'Tên khách hàng: ${_filterContact!.fullname}';
                                   _deals.clear();
-                                  _maxPages = 0;
+                                  _maxPages = _currentPage = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getFilter(isRefresh: true);
@@ -198,7 +198,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                   _toDate = fromDateToDate.toDate;
                                   _fromDateToDateString = 'Ngày chốt hợp đồng: ${fromDateToDate.fromDateString} → ${fromDateToDate.toDateString}';
                                   _deals.clear();
-                                  _maxPages = 0;
+                                  _maxPages = _currentPage = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getFilter(isRefresh: true);
@@ -218,7 +218,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                 _fromDate = null;
                                 _toDate = null;
                                 _fromDateToDateString = 'Ngày chốt hợp đồng';
-                                _maxPages = 0;
+                                _maxPages = _currentPage = 0;
                               });
                               _refreshController.resetNoData();
                               _getOverallInfo(_currentPage, _currentAccount);
@@ -330,7 +330,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                         ],
                                       ),
                                     ),
-
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(
@@ -341,6 +340,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                                         ],
                                       ),
                                     ),
+                                    if(_getContactName(deal.contactId).isNotEmpty)
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
                                       child: Row(

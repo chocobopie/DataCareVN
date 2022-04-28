@@ -353,7 +353,7 @@ class ApiService {
     }
   }
 
-  Future<bool> updateADeal(Deal deal) async {
+  Future<bool> updateADeal(Deal deal, int accountId) async {
     String url = stockUrl + 'deals/${deal.dealId}';
 
     final response = await http.put(
@@ -362,6 +362,7 @@ class ApiService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
+        "accountId": accountId,
         'dealId': deal.dealId,
         'title': deal.title,
         'dealStageId': deal.dealStageId,

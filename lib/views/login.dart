@@ -3,7 +3,7 @@ import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_home.dart';
 import 'package:login_sample/views/employee/employee_active_account.dart';
 import 'package:login_sample/views/employee/employee_forget_password.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_home.dart';
+import 'package:login_sample/views/hr/hr_home.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/sale_leader/sale_leader_home.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_home.dart';

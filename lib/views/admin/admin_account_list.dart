@@ -17,7 +17,7 @@ import 'package:login_sample/views/admin/admin_team_add_new.dart';
 import 'package:login_sample/views/admin/admin_team_filter.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/hr_manager/hr_manager_payroll_detail.dart';
+import 'package:login_sample/views/hr/hr_payroll_detail.dart';
 import 'package:login_sample/widgets/CustomOutlinedButton.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:number_paginator/number_paginator.dart';
@@ -127,7 +127,12 @@ class _AdminAccountListState extends State<AdminAccountList> {
                buttonSelectedBackgroundColor: mainBgColor,
                onPageChange: (int index) {
                  setState(() {
-                   _currentPage = index;
+                   if(index >= _maxPages){
+                     index = 0;
+                     _currentPage = index;
+                   }else{
+                     _currentPage = index;
+                   }
                    _accounts.clear();
                  });
                  if(_isSearching == true && _searchString.isNotEmpty){
@@ -191,7 +196,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                       _roleNameString = 'Chức vụ';
                                       _accounts.clear();
                                       _blockNameString = _blockFilter!.name;
-                                      _maxPages = 0;
+                                      _maxPages = _currentPage = 0;
                                     });
                                   }
                                   _getFilter(isRefresh: true);
@@ -215,7 +220,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                         _teamNameString = 'Tên nhóm';
                                         _accounts.clear();
                                         _departmentNameString = _departmentFilter!.name;
-                                        _maxPages = 0;
+                                        _maxPages = _currentPage = 0;
                                       });
                                     }
                                     _getFilter(isRefresh: true);
@@ -238,7 +243,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     setState(() {
                                       _accounts.clear();
                                       _teamNameString = _teamFilter!.name;
-                                      _maxPages = 0;
+                                      _maxPages = _currentPage = 0;
                                     });
                                   }
                                   _getFilter(isRefresh: true);
@@ -258,7 +263,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                     setState(() {
                                       _accounts.clear();
                                       _roleNameString = ('Chức vụ: ${_roleFilter!.name}' ) ;
-                                      _maxPages = 0;
+                                      _maxPages = _currentPage = 0;
                                     });
                                   }
                                   _getFilter(isRefresh: true);
@@ -277,7 +282,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                   _teamFilter = null;
                                   _roleFilter = null;
                                   _accounts.clear();
-                                  _maxPages = 0;
+                                  _maxPages = _currentPage = 0;
                                 });
                                 _refreshController.resetNoData();
                                 _getFilter(isRefresh: false);
