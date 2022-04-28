@@ -59,16 +59,14 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                   Row(
                     children: <Widget>[
                       ImageTextButton(
-                        imageUrl: 'assets/images/salary.png',
-                        text: 'Xem lương',
-                        buttonColors: const [Colors.blue, Colors.white],
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const EmployeePayroll(),
-                              ));
-                        },
+                          imageUrl: 'assets/images/account_list.png',
+                          text: 'Xem danh sách nhân viên',
+                          buttonColors: const [Colors.yellow, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const AdminAccountList(),
+                            ));
+                          }
                       ),
                       const SizedBox(width: 30.0,),
                       ImageTextButton(
@@ -86,17 +84,19 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                   const SizedBox(height: 20.0,),
                   Row(
                     children: <Widget>[
+                      if(_currentAccount.roleId != 1)
                       ImageTextButton(
-                          imageUrl: 'assets/images/account_list.png',
-                          text: 'Xem danh sách nhân viên',
-                          buttonColors: const [Colors.yellow, Colors.white],
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const AdminAccountList(),
-                            ));
-                          }
+                        imageUrl: 'assets/images/salary.png',
+                        text: 'Xem lương',
+                        buttonColors: const [Colors.blue, Colors.white],
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EmployeePayroll(),
+                              ));
+                        },
                       ),
-
                     ],
                   ),
                 ],
