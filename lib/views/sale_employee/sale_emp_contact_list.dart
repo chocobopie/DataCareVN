@@ -115,7 +115,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                 topRight: Radius.circular(25),
               ),
             ),
-            margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 90.0),
+            margin: const EdgeInsets.only(top: 90.0),
             child: Column(
               children: <Widget>[
                 Padding(
@@ -196,7 +196,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
           ),
           //Card dưới
           Padding(
-            padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.18),
+            padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.19),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,

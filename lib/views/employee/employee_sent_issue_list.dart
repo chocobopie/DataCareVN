@@ -112,7 +112,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                 topRight: Radius.circular(25),
               ),
             ),
-            margin: const EdgeInsets.only(top: 100.0),
+            margin: const EdgeInsets.only(top: 90.0),
             child: Column(
               children: <Widget>[
                 const Padding(

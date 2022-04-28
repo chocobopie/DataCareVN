@@ -90,7 +90,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
             ),
             margin: const EdgeInsets.only(top: 90),
             child: Padding(
-              padding: const EdgeInsets.only(left: 5.0, top: 5.0),
+              padding: const EdgeInsets.only(left: 5.0, top: 2.0),
               child: Column(
                 children: <Widget>[
                   SizedBox(

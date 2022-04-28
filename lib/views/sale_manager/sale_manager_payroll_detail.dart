@@ -242,7 +242,7 @@ class _SaleManagerPayrollDetailState extends State<SaleManagerPayrollDetail> {
 
   Future<List<Sale>?> _getSale({required bool isRefresh, required int payrollId}) async {
 
-    List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: 0, payrollId: payrollId ,limit: 1);
+    List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: 0, payrollId: payrollId ,limit: 1, payrollCompanyId: _payrollCompany!.payrollCompanyId);
 
     return result;
   }

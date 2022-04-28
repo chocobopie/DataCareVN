@@ -128,11 +128,11 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
             ),
             margin: const EdgeInsets.only(top: 90.0),
             child: Padding(
-              padding: const EdgeInsets.only( top: 5.0),
+              padding: const EdgeInsets.only( top: 2.0),
               child: Column(
                 children: <Widget>[
                   const Text('Lọc theo', style: TextStyle(color: defaultFontColor, fontWeight: FontWeight.w400),),
-                  const SizedBox(height: 5.0,),
+                  const SizedBox(height: 2.0,),
                   SizedBox(
                     height: 40.0,
                     child: ListView(

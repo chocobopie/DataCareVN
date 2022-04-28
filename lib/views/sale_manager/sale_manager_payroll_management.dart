@@ -393,37 +393,37 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
       }
     }
 
-    if(result2.isNotEmpty){
+    if(result2.isNotEmpty) {
       setState(() {
         _payrolls.clear();
         _payrolls.addAll(result2);
       });
-      
-      List<Sale>? result3 = [];
-      for(int i = 0; i < result2.length; i++){
-        final result = await _getSale(isRefresh: true, payrollId: result2[i].payrollId);
-        result3.add(result![0]);
-      }
-      if(result3.isNotEmpty){
-        setState(() {
-          _sales.addAll(result3);
-        });
-      }
+      _getSale(isRefresh: true);
+    }
+  }
+
+  void _getSale({required bool isRefresh}) async {
+    num total = 0;
+    _sales.clear();
+
+    List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: 0, limit: 1000000, payrollCompanyId: _payrollCompany!.payrollCompanyId);
+
+    if(result != null){
+      setState(() {
+        _sales.addAll(result);
+      });
       for(int i = 0; i < _sales.length; i++){
-        num total = _totalRevenue + _sales[i].newSignEducationSales + _sales[i].newSignFacebookContentSales + _sales[i].newSignWebsiteContentSales
-            + _sales[i].renewedEducationSales + _sales[i].renewedFacebookContentSales + _sales[i].renewedWebsiteContentSales + _sales[i].adsSales;
+        for(int j = 0; j < _payrolls.length; j++){
+          if(_sales[i].payrollId == _payrolls[j].payrollId){
+            total = _totalRevenue + _sales[i].newSignEducationSales + _sales[i].newSignFacebookContentSales + _sales[i].newSignWebsiteContentSales
+                + _sales[i].renewedEducationSales + _sales[i].renewedFacebookContentSales + _sales[i].renewedWebsiteContentSales + _sales[i].adsSales;
+          }
+        }
         setState(() {
           _totalRevenue = total;
         });
       }
     }
-  }
-
-  Future<List<Sale>?> _getSale({required bool isRefresh, required int payrollId}) async {
-
-    List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: _currentPage, payrollId: payrollId ,limit: 1);
-
-    return result;
   }
 
   num _getSaleEach({required Account employee}){

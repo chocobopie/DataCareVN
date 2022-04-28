@@ -1740,12 +1740,12 @@ class ApiService {
   }
 
   //sales
-  Future<List<Sale>?> getListSales({required bool isRefresh, required int currentPage, int? payrollId, int? saleId, int? limit}) async {
+  Future<List<Sale>?> getListSales({required bool isRefresh, required int currentPage,required int payrollCompanyId, int? payrollId, int? saleId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'sales?sale-id=${saleId ?? ''}&payroll-id=${payrollId ?? ''}&page=$currentPage&limit=${limit ?? 1}';
+    String url = stockUrl + 'sales?payroll-company-id=$payrollCompanyId&payroll-id=${payrollId ?? ''}&page=$currentPage&limit=${limit ?? 1000000}';
 
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){

@@ -135,7 +135,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
               ),
               margin: const EdgeInsets.only(top: 90.0),
               child: Padding(
-                padding: const EdgeInsets.only(top: 5.0, left: 5.0),
+                padding: const EdgeInsets.only(top: 2.0, left: 5.0),
                 child: Column(
                   children: <Widget>[
                     SizedBox(
