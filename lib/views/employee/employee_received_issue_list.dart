@@ -269,7 +269,9 @@ class _EmployeeReceivedIssueState extends State<EmployeeReceivedIssue> {
                                       children: <Widget>[
                                         const Expanded(child: Text('Tiêu đề:')),
                                         const Spacer(),
-                                        Text(issue.title),
+                                        SizedBox(
+                                            height: 20.0, width: MediaQuery.of(context).size.width * 0.5,
+                                            child: Align(alignment: Alignment.bottomRight, child: Text(issue.title, overflow: TextOverflow.ellipsis,softWrap: false,))),
                                       ],
                                     ),
                                   ),

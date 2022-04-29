@@ -288,7 +288,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                                       padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
                                       child: Row(
                                         children: [
-                                          const Expanded(child: Text('Tên nhân viên:', style: TextStyle(fontSize: 14.0),)),
+                                          const Text('Tên nhân viên:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
                                           SizedBox(
                                               height: 20.0, width: MediaQuery.of(context).size.width * 0.5,
@@ -301,7 +301,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                                       padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
                                       child: Row(
                                         children: [
-                                          const Text('Ngày gửi đơn:', style: TextStyle(fontSize: 14.0),),
+                                          const Text('Ngày gửi đơn:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
                                           Text(DateFormat('dd-MM-yyyy').format(_application.createdDate!), style: const TextStyle(fontSize: 14.0),),
                                         ],
@@ -311,7 +311,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                                       padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
                                       child: Row(
                                         children: [
-                                          Text(_application.applicationTypeId == 1 ? 'Ngày xin đi trễ:' : 'Ngày xin nghỉ phép:', style: const TextStyle(fontSize: 14.0),),
+                                          Text(_application.applicationTypeId == 1 ? 'Ngày xin đi trễ:' : 'Ngày xin nghỉ phép:', style: const TextStyle(fontSize: 12.0),),
                                           const Spacer(),
                                           Text(DateFormat('dd-MM-yyyy').format(_application.assignedDate), style: const TextStyle(fontSize: 14.0),),
                                         ],
@@ -321,7 +321,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                                       padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
                                       child: Row(
                                         children: [
-                                          Text(_application.applicationTypeId == 1 ? 'Xin đi trễ buổi:' : 'Xin nghỉ phép buổi:', style: const TextStyle(fontSize: 14.0),),
+                                          Text(_application.applicationTypeId == 1 ? 'Xin đi trễ buổi:' : 'Xin nghỉ phép buổi:', style: const TextStyle(fontSize: 12.0),),
                                           const Spacer(),
                                           Text(periodOfDayNames[_application.periodOfDayId!], style: const TextStyle(fontSize: 14.0),),
                                         ],
@@ -332,7 +332,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                                       padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
                                       child: Row(
                                         children: [
-                                          const Text('Giờ dự kiến có mặt:', style: TextStyle(fontSize: 14.0),),
+                                          const Text('Giờ dự kiến có mặt:', style: TextStyle(fontSize: 12.0),),
                                           const Spacer(),
                                           Text( '${_application.expectedWorkingTime!.hour}:${_application.expectedWorkingTime!.minute}', style: const TextStyle(fontSize: 14.0),),
                                         ],

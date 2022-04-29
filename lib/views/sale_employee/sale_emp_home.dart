@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
+import 'package:login_sample/views/employee/employee_issue.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
@@ -110,20 +111,20 @@ class _HomeSaleEmployeeState extends State<HomeSaleEmployee> {
                   ),
                   const SizedBox(height: 20.0,),
                   //Hàng 3
-                  // Row(
-                  //   children: [
-                  //     ImageTextButton(
-                  //         imageUrl: 'assets/images/issue.png',
-                  //         text: 'Xem vấn đề',
-                  //         buttonColors: const [Colors.grey, Colors.white],
-                  //         onPressed: (){
-                  //           Navigator.push(context, MaterialPageRoute(
-                  //             builder: (context) => const EmpIssue(),
-                  //           ));
-                  //         }
-                  //     ),
-                  //   ],
-                  // ),
+                  Row(
+                    children: [
+                      ImageTextButton(
+                          imageUrl: 'assets/images/issue.png',
+                          text: 'Xem vấn đề',
+                          buttonColors: const [Colors.grey, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const EmployeeIssue(),
+                            ));
+                          }
+                      ),
+                    ],
+                  ),
                 ],
               )
           ),
