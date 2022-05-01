@@ -84,7 +84,6 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                   const SizedBox(height: 20.0,),
                   Row(
                     children: <Widget>[
-                      if(_currentAccount.roleId != 1)
                       ImageTextButton(
                         imageUrl: 'assets/images/salary.png',
                         text: 'Xem lương',

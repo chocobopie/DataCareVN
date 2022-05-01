@@ -30,6 +30,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month - 1);
   DateTime? _fromDate, _toDate, _maxTime;
   final int _currentPage = 0;
+  int _maxPages = 0;
   Account? _currentAccount;
   List<Team> _teams = [];
   final List<Payroll> _payrolls = [];
@@ -127,7 +128,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
               )
           ),
 
-          _payrollCompany != null && _payrolls.isNotEmpty  && _sales.isNotEmpty ? Padding(
+          _maxPages >= 0 ? _payrollCompany != null && _payrolls.isNotEmpty  && _sales.isNotEmpty ? Padding(
             padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.21),
             child: Container(
               decoration: BoxDecoration(
@@ -344,7 +345,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                 ),
               ),
             ),
-          ) : const Center(child: CircularProgressIndicator()),
+          ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
 
           Positioned(
             top: 0.0,
@@ -370,36 +371,55 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
   }
 
   void _getPayrollCompany({required bool isRefresh}) async {
+    setState(() {
+      _maxPages = 0;
+    });
+
     List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, isClosing: 1, limit: 1);
 
     if(result!.isNotEmpty){
       setState(() {
         _payrollCompany = null;
         _payrollCompany = result[0];
+        _maxPages = 1;
       });
       _getListPayroll(isRefresh: true);
+    }else{
+      setState(() {
+        _maxPages = -1;
+      });
     }
   }
 
   void _getListPayroll({required bool isRefresh}) async {
+
     List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1000000);
     List<Payroll>? result2 = [];
 
-    
-    for(int i = 0; i < result!.length; i++){
-      for(int j = 0; j < _saleEmployees.length; j++){
-        if(_saleEmployees[j].accountId == result[i].accountId){
-          result2.add(result[i]);
+    if(result!.isEmpty){
+      setState(() {
+        _maxPages = -1;
+      });
+    }else{
+      for(int i = 0; i < result.length; i++){
+        for(int j = 0; j < _saleEmployees.length; j++){
+          if(_saleEmployees[j].accountId == result[i].accountId){
+            result2.add(result[i]);
+          }
         }
       }
-    }
-
-    if(result2.isNotEmpty) {
-      setState(() {
-        _payrolls.clear();
-        _payrolls.addAll(result2);
-      });
-      _getSale(isRefresh: true);
+      if(result2.isNotEmpty) {
+        setState(() {
+          _payrolls.clear();
+          _payrolls.addAll(result2);
+          _maxPages = 1;
+        });
+        _getSale(isRefresh: true);
+      }else{
+        setState(() {
+          _maxPages = -1;
+        });
+      }
     }
   }
 
@@ -409,9 +429,10 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
 
     List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: 0, limit: 1000000, payrollCompanyId: _payrollCompany!.payrollCompanyId);
 
-    if(result != null){
+    if(result!.isNotEmpty){
       setState(() {
         _sales.addAll(result);
+        _maxPages = 1;
       });
       for(int i = 0; i < _sales.length; i++){
         for(int j = 0; j < _payrolls.length; j++){
@@ -424,6 +445,10 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
           _totalRevenue = total;
         });
       }
+    }else{
+      setState(() {
+        _maxPages = -1;
+      });
     }
   }
 

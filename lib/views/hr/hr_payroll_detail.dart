@@ -30,6 +30,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month - 1);
   DateTime? _fromDate, _toDate, _maxTime;
   final int _currentPage = 0;
+  int _maxPages = 0;
   Account? _currentAccount;
 
   PayrollCompany? _payrollCompany;
@@ -244,7 +245,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                       //Cập nhật lương tháng này
                       if(_maxTime != null)
                       if(_selectedMonth.month == _maxTime!.month && _selectedMonth.year == _maxTime!.year)
-                        _payroll != null ? Container(
+                        _maxPages >= 0 ? _payroll != null ? Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
@@ -330,11 +331,11 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               ],
                             ),
                           ),
-                        ) : const Center(child: CircularProgressIndicator()),
+                        ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
                       //Lương tháng trước
                       if(_maxTime != null)
                       if(_selectedMonth.isBefore(_maxTime!))
-                        _payroll != null ? previousMonthPayroll() : const Center(child: CircularProgressIndicator()),
+                        _maxPages >= 0 ? _payroll != null ? previousMonthPayroll() : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
 
                       const SizedBox(height: 50.0,),
                     ],
@@ -430,24 +431,42 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   }
 
   void _getPayrollCompany({required bool isRefresh}) async {
+    setState(() {
+      _maxPages = 1;
+    });
+
     List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, isClosing: 1, limit: 1);
 
     if(result!.isNotEmpty){
       setState(() {
         _payrollCompany = null;
         _payrollCompany = result[0];
+        _maxPages = 1;
         _getPayroll(isRefresh: true);
+      });
+    }else{
+      setState(() {
+        _maxPages = -1;
       });
     }
   }
 
   void _getPayroll({required bool isRefresh}) async {
+    setState(() {
+      _maxPages = 1;
+    });
+
     List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, accountId: widget.empAccount.accountId, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1);
 
     if(result!.isNotEmpty){
       setState(() {
         _payroll = null;
         _payroll = result[0];
+        _maxPages = 1;
+      });
+    }else{
+      setState(() {
+        _maxPages = -1;
       });
     }
   }

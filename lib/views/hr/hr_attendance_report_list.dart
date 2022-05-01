@@ -259,7 +259,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
           ),
 
           //Card dưới
-          Card(
+          _maxPages >= 0 ? Card(
             elevation: 20.0,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -380,7 +380,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
                 ),
               ],
             ) : const Center(child: CircularProgressIndicator()),
-          ),
+          ) : const Center(child: Text('Không có dữ liệu')),
           Positioned(
             top: 0.0,
             left: 0.0,
@@ -435,12 +435,16 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   }
 
   void _getOtherAttendanceList({required bool isRefresh}) async {
+    setState(() {
+      _maxPages = 0;
+    });
+
     List<Attendance>? listAttendance = await AttendanceListViewModel().getOtherAttendanceList(
         accountId: _currentAccount.accountId!, isRefresh: isRefresh, currentPage: _currentPage,
       attendanceStatusId: _attendanceStatusId, periodOfDay: _periodOfDayId, selectedDate: _selectedDay
     );
 
-    if(listAttendance != null){
+    if(listAttendance!.isNotEmpty){
       setState(() {
         _attendances.clear();
         _attendances.addAll(listAttendance);
@@ -448,7 +452,7 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
       });
     }else{
       setState(() {
-        _refreshController.loadNoData();
+        _maxPages = -1;
       });
     }
   }

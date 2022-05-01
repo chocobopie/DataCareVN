@@ -218,7 +218,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
               )
           ),
 
-          Padding(
+          _maxPages >= 0 ? Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.18),
             child: Container(
               decoration: BoxDecoration(
@@ -343,7 +343,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                 ) : const Center(child: CircularProgressIndicator())
               ),
             ),
-          ),
+          ) : const Center(child: Text('Không có dữ liệu')),
           Positioned(
             top: 0.0,
             left: 0.0,
@@ -369,19 +369,23 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
   }
 
   void _getSelfAttendanceList({required bool isRefresh}) async {
+    setState(() {
+      _maxPages = 0;
+    });
+
     List<Attendance>? listAttendance = await AttendanceListViewModel().getSelfAttendanceList(
       accountId: _currentAccount.accountId!, currentPage: _currentPage, isRefresh: isRefresh,
       periodOfDayId: _periodOfDayId, fromDate: _fromDate, toDate: _toDate, attendanceStatusId: _attendanceStatusId,
     );
 
-    if(listAttendance != null){
+    if(listAttendance!.isNotEmpty){
       setState(() {
         _attendances.addAll(listAttendance);
         _maxPages = _attendances[0].maxPage!;
       });
     }else{
       setState(() {
-        _refreshController.loadNoData();
+        _maxPages = -1;
       });
     }
   }

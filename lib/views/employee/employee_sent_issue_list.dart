@@ -214,7 +214,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
           ),
 
           //Card dưới
-          Padding(
+          _maxPage >= 0 ? Padding(
             padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
@@ -329,7 +329,7 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
                 ) : const Center(child: CircularProgressIndicator()),
               ),
             ),
-          ),
+          ) : const Center(child: Text('Không có dữ liệu')),
           Positioned(
             top: 0.0,
             left: 0.0,
@@ -406,6 +406,10 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
   }
 
   void _getAllIssue({required bool isRefresh}) async {
+    setState(() {
+      _maxPage = 0;
+    });
+
     List<Issue>? issueList = await IssueListViewModel().
     getAllIssue(
         isRefresh: isRefresh, currentPage: _currentPage,
@@ -414,53 +418,16 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
         fromDeadlineDate: _deadlineFromDate, toDeadlineDate: _deadlineToDate,
     );
 
-    if(issueList != null){
+    if(issueList!.isNotEmpty){
       setState(() {
         _issues.clear();
         _issues.addAll(issueList);
         _maxPage = _issues[0].maxPage!;
       });
+    }else{
+      setState(() {
+        _maxPage = -1;
+      });
     }
   }
 }
-
-// ========================================================================Class
-
-// class SortItems {
-//   static const List<SortItem> firstItems = [asc, des];
-//
-//   static const asc = SortItem(text: 'Ngày hạn chót tăng dần', icon: Icons.arrow_drop_up);
-//   static const des = SortItem(text: 'Ngày hạn chót giảm dần', icon: Icons.arrow_drop_down);
-//
-//
-//   static Widget buildItem(SortItem item) {
-//     return Row(
-//       children: [
-//         Icon(
-//             item.icon,
-//             color: Colors.white,
-//             size: 22
-//         ),
-//         const SizedBox(
-//           width: 10,
-//         ),
-//         Text(
-//           item.text,
-//           style: const TextStyle(
-//             color: Colors.white,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   static onChanged(BuildContext context, SortItem item) {
-//     switch (item) {
-//       case SortItems.asc:
-//         return true;
-//       case SortItems.des:
-//       //Do something
-//         return false;
-//     }
-//   }
-// }

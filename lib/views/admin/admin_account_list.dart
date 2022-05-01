@@ -299,7 +299,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
               ],
             ),
           ),
-          Padding(
+          _maxPages >= 0 ? Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.22),
             child: Container(
               decoration: BoxDecoration(
@@ -442,9 +442,9 @@ class _AdminAccountListState extends State<AdminAccountList> {
                         itemCount: _accounts.length,
                         ),
                   ) : const Center(child: CircularProgressIndicator())
-                  )
+                  ),
               ),
-            ),
+            ) : const Center(child: Text('Không có dữ liệu')),
           Positioned(
             top: 0.0,
             left: 0.0,
@@ -555,6 +555,9 @@ class _AdminAccountListState extends State<AdminAccountList> {
   }
 
   void _getAllAccount({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, String? search}) async {
+    setState(() {
+      _maxPages = 0;
+    });
 
     _accounts.clear();
 
@@ -567,7 +570,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
       });
     }else{
       setState(() {
-        _refreshController.loadNoData();
+        _maxPages = -1;
       });
     }
   }

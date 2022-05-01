@@ -217,7 +217,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
               )
             ),
           ),
-          Padding(
+          _maxPages >= 0 ? Padding(
             padding: EdgeInsets.only(left: 0.0, right: 0.0, top: MediaQuery.of(context).size.height * 0.18),
             child: Container(
               decoration: BoxDecoration(
@@ -367,7 +367,7 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
                 ) : const Center(child: CircularProgressIndicator()),
               ),
             ),
-          ),
+          ) : const Center(child: Text('Không có dữ liệu')),
           Positioned(
             top: 0.0,
             left: 0.0,
@@ -392,6 +392,9 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
     );
   }
  void _getSelfApplicationList({required bool isRefresh}) async {
+    setState(() {
+      _maxPages = 0;
+    });
 
    _applications.clear();
 
@@ -400,13 +403,15 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
         applicationStatusId: _applicationStatusId, periodOfDayId: _periodOfDayId
     );
 
-    if(result != null){
+    if(result!.isNotEmpty){
       setState(() {
         _applications.addAll(result);
         _maxPages = _applications[0].maxPage!;
       });
     }else{
-       _refreshController.loadNoData();
+       setState(() {
+         _maxPages = -1;
+       });
     }
  }
 }

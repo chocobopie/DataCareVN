@@ -235,7 +235,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
 
           //Card dưới
-          Padding(
+          _maxPages >= 0 ? Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.21),
             child: Container(
               decoration: BoxDecoration(
@@ -400,7 +400,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
                 ) : const Center(child: CircularProgressIndicator())
               ),
             ),
-          ),
+          ) : const Center(child: Text('Không có dữ liệu')),
           Positioned(
             top: 0.0,
             left: 0.0,
@@ -507,16 +507,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
     }
   }
 
-  // String _getDepartmentName(int blockId, departmentId){
-  //   String name = '';
-  //   for(int i = 0; i < departments.length; i++){
-  //     if(blockId == departments[i].blockId && departmentId == departments[i].departmentId){
-  //       name = departments[i].name;
-  //     }
-  //   }
-  //   return name;
-  // }
-
   void _getOverallInfo(int currentPage, Account account){
     if(_currentAccount.roleId == 5){
       _getAllDealByDealOwnerId(isRefresh: false, dealOwnerId: _currentAccount.accountId!, currentPage: currentPage);
@@ -526,22 +516,29 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? contactId, DateTime? fromDate, DateTime? toDate}) async {
+    setState(() {
+      _maxPages = 0;
+    });
 
     List<Deal> dealList = await DealListViewModel().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, contactId: contactId);
+
     if(dealList.isNotEmpty){
       setState(() {
         _deals.clear();
         _deals.addAll(dealList);
-      });
         _maxPages = _deals[0].maxPage!;
+      });
     }else{
       setState(() {
-        _refreshController.loadNoData();
+        _maxPages = -1;
       });
     }
   }
 
   void _getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, int? contactId, DateTime? fromDate, DateTime? toDate}) async {
+    setState(() {
+      _maxPages = 0;
+    });
 
     List<Deal> dealList = await DealListViewModel().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, contactId: contactId);
 
@@ -549,11 +546,11 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
       setState(() {
         _deals.clear();
         _deals.addAll(dealList);
+        _maxPages = _deals[0].maxPage!;
       });
-      _maxPages = _deals[0].maxPage!;
     }else{
       setState(() {
-        _refreshController.loadNoData();
+        _maxPages = -1;
       });
     }
   }
@@ -627,42 +624,3 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
 }
-
-// class SortItems {
-//   static const List<SortItem> firstItems = [asc, des];
-//
-//   static const asc = SortItem(text: 'Ngày chốt tăng dần', icon: Icons.arrow_drop_up);
-//   static const des = SortItem(text: 'Ngày chốt giảm dần', icon: Icons.arrow_drop_down);
-//
-//
-//   static Widget buildItem(SortItem item) {
-//     return Row(
-//       children: [
-//         Icon(
-//             item.icon,
-//             color: Colors.white,
-//             size: 22
-//         ),
-//         const SizedBox(
-//           width: 10,
-//         ),
-//         Text(
-//           item.text,
-//           style: const TextStyle(
-//             color: Colors.white,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   static onChanged(BuildContext context, SortItem item) {
-//     switch (item) {
-//       case SortItems.asc:
-//         return true;
-//       case SortItems.des:
-//       //Do something
-//         return false;
-//     }
-//   }
-// }

@@ -150,7 +150,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                                     _maxPages = 0;
                                   }
                                   _getOverallInfo(_currentPage, _currentAccount);
-                                  // _getAllContactByOwnerId(isRefresh: true, contactOwnerId: _contactOwnerId, currentPage: _currentPage);
                                 }
                               },
                             ),
@@ -195,7 +194,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
             ),
           ),
           //Card dưới
-          Padding(
+          _maxPages >= 0 ? Padding(
             padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.19),
             child: Container(
               decoration: BoxDecoration(
@@ -328,7 +327,7 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
                 ) :  const Center(child: CircularProgressIndicator())
               ),
             ),
-          ),
+          ) : const Center(child: Text('Không có dữ liệu')),
           Positioned(
             top: 0.0,
             left: 0.0,
@@ -423,6 +422,9 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? limit, DateTime? fromDate, DateTime? toDate}) async {
+    setState(() {
+      _maxPages = 0;
+    });
 
     List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, limit: limit);
 
@@ -435,12 +437,18 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
         }
       });
     }else{
-      _refreshController.loadNoData();
+      setState(() {
+        _maxPages = -1;
+      });
     }
 
   }
 
   void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
+    setState(() {
+      _maxPages = 0;
+    });
+
     List<Contact> contactList = await ContactListViewModel().getAllContactByOwnerId(isRefresh: isRefresh, contactOwnerId: contactOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 
     if(contactList.isNotEmpty){
@@ -452,7 +460,9 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
         }
       });
     }else{
-      _refreshController.loadNoData();
+      setState(() {
+        _maxPages = -1;
+      });
     }
   }
 
