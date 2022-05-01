@@ -104,6 +104,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                             _payrolls.clear();
                             _sales.clear();
                             _selectedMonth = date;
+                            _totalRevenue = 0;
                           });
                           _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
                           _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);

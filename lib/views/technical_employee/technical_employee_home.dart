@@ -4,6 +4,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/views/employee/employee_received_issue_list.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
+import 'package:login_sample/views/employee/employee_take_attendance.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/widgets/SideBar.dart';
 import 'package:provider/provider.dart';
@@ -75,6 +76,21 @@ class _TechnicalEmployeeHomeState extends State<TechnicalEmployeeHome> {
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) => const EmployeePayroll(),
+                            ));
+                          }
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20.0,),
+                  Row(
+                    children: [
+                      ImageTextButton(
+                          imageUrl: 'assets/images/attendance-report.png',
+                          text: 'Điểm danh',
+                          buttonColors: const [Colors.red, Colors.white],
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const EmployeeTakeAttendance(),
                             ));
                           }
                       ),
