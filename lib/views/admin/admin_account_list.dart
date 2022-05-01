@@ -555,10 +555,6 @@ class _AdminAccountListState extends State<AdminAccountList> {
   }
 
   void _getAllAccount({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, String? search}) async {
-    setState(() {
-      _maxPages = 0;
-    });
-
     _accounts.clear();
 
     List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: isRefresh, currentPage: currentPage, accountId: accountId, blockId: blockId, departmentId: departmentId, teamId: teamId, roleId: roleId, search: search);

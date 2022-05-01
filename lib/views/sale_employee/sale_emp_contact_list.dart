@@ -422,9 +422,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   void _getAllContactByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? limit, DateTime? fromDate, DateTime? toDate}) async {
-    setState(() {
-      _maxPages = 0;
-    });
 
     List<Contact> contactList = await ContactListViewModel().getAllContactByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, limit: limit);
 
@@ -445,9 +442,6 @@ class _SaleEmpContactListState extends State<SaleEmpContactList> {
   }
 
   void _getAllContactByOwnerId({required bool isRefresh, required int contactOwnerId, required int currentPage, DateTime? fromDate, DateTime? toDate}) async {
-    setState(() {
-      _maxPages = 0;
-    });
 
     List<Contact> contactList = await ContactListViewModel().getAllContactByOwnerId(isRefresh: isRefresh, contactOwnerId: contactOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate);
 

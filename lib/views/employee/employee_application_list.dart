@@ -392,9 +392,6 @@ class _EmployeeApplicationListState extends State<EmployeeApplicationList> {
     );
   }
  void _getSelfApplicationList({required bool isRefresh}) async {
-    setState(() {
-      _maxPages = 0;
-    });
 
    _applications.clear();
 

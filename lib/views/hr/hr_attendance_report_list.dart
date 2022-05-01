@@ -435,9 +435,6 @@ class _HrManagerAttendanceReportListState extends State<HrManagerAttendanceRepor
   }
 
   void _getOtherAttendanceList({required bool isRefresh}) async {
-    setState(() {
-      _maxPages = 0;
-    });
 
     List<Attendance>? listAttendance = await AttendanceListViewModel().getOtherAttendanceList(
         accountId: _currentAccount.accountId!, isRefresh: isRefresh, currentPage: _currentPage,

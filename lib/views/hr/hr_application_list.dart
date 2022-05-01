@@ -216,7 +216,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
               ],
             ),
           ),
-          Padding(
+          _maxPages >= 0 ? Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.20),
             child: Container(
               decoration: BoxDecoration(
@@ -378,7 +378,7 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
                   ) : const Center(child: CircularProgressIndicator()),
               ),
             ),
-          ),
+          ) : const Center(child: Text('Không có dữ liệu')),
 
           Positioned(
             top: 0.0,
@@ -413,13 +413,15 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
         applicationStatusId: _applicationStatusId, periodOfDayId: _periodOfDayId
     );
 
-    if(result != null){
+    if(result!.isNotEmpty){
       setState(() {
         _applications.addAll(result);
         _maxPages = _applications[0].maxPage!;
       });
     }else{
-      _refreshController.loadNoData();
+      setState(() {
+        _maxPages = -1;
+      });
     }
   }
 
@@ -430,11 +432,12 @@ class _HrManagerApplicationListState extends State<HrManagerApplicationList> {
         name = _employeeList[i].fullname!;
       }
     }
+    print(accountId);
     return name;
   }
 
   void _getAllEmployee() async {
-    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: true, currentPage: 0, accountId: _currentAccount!.accountId!, limit: 100000);
+    List<Account> accountList = await AccountListViewModel().getAllAccount(isRefresh: true, currentPage: 0, accountId: _currentAccount!.accountId!, limit: 1000000);
     _employeeList.clear();
 
     setState(() {

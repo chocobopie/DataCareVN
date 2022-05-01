@@ -516,9 +516,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getAllDealByAccountId({required bool isRefresh, required int accountId, required int currentPage, int? contactId, DateTime? fromDate, DateTime? toDate}) async {
-    setState(() {
-      _maxPages = 0;
-    });
 
     List<Deal> dealList = await DealListViewModel().getAllDealByAccountId(isRefresh: isRefresh, accountId: accountId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, contactId: contactId);
 
@@ -536,9 +533,6 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getAllDealByDealOwnerId({required bool isRefresh, required int dealOwnerId, required int currentPage, int? contactId, DateTime? fromDate, DateTime? toDate}) async {
-    setState(() {
-      _maxPages = 0;
-    });
 
     List<Deal> dealList = await DealListViewModel().getAllDealByDealOwnerId(isRefresh: isRefresh, dealOwnerId: dealOwnerId, currentPage: currentPage, fromDate: fromDate, toDate: toDate, contactId: contactId);
 

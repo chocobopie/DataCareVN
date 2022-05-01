@@ -369,9 +369,6 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
   }
 
   void _getSelfAttendanceList({required bool isRefresh}) async {
-    setState(() {
-      _maxPages = 0;
-    });
 
     List<Attendance>? listAttendance = await AttendanceListViewModel().getSelfAttendanceList(
       accountId: _currentAccount.accountId!, currentPage: _currentPage, isRefresh: isRefresh,

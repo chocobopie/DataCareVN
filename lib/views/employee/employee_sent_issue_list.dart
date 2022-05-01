@@ -406,9 +406,6 @@ class _EmployeeSentIssueListState extends State<EmployeeSentIssueList> {
   }
 
   void _getAllIssue({required bool isRefresh}) async {
-    setState(() {
-      _maxPage = 0;
-    });
 
     List<Issue>? issueList = await IssueListViewModel().
     getAllIssue(
