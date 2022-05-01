@@ -297,6 +297,7 @@ class _SaleEmpFilterState extends State<SaleEmpFilter> {
   }
 
   void _filterSaleEmployee({required bool isRefresh}){
+    _salesEmployees.clear();
     if(widget.salesForContact == true) _getAllSalesForContact(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, fullname: _searchEmployeeName.text);
     if(widget.saleForIssue == true) _getAllSalesForIssue(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, fullname: _searchEmployeeName.text);
     if(widget.salesForDeal == true) _getAllSalesForDeal(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount.accountId!, fullname: _searchEmployeeName.text);

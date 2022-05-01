@@ -262,7 +262,7 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                           final date = await DatePicker.showDatePicker(
                             context,
                             locale : LocaleType.vi,
-                            minTime: DateTime.now().add(const Duration(days: 1)),
+                            minTime: DateTime.now(),
                             currentTime: DateTime.now(),
                             maxTime: DateTime.now().add(const Duration(days: 36500)),
                           );

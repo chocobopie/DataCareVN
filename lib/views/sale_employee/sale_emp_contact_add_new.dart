@@ -163,7 +163,7 @@ class _SaleEmpContactAddNewState extends State<SaleEmpContactAddNew> {
                           textEditingController: _contactOwnerId,
                           onTap: _currentAccount.roleId != 5 ? () async {
                           final data = await Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const SaleEmpFilter(),
+                            builder: (context) => const SaleEmpFilter(salesForContact: true),
                           ));
                           late Account filterAccount;
                           if(data != null){
