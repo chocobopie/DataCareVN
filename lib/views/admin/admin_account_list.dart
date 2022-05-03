@@ -256,7 +256,7 @@ class _AdminAccountListState extends State<AdminAccountList> {
                                 color: mainBgColor,
                                 onPressed: () async {
                                   final data = await Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => _currentAccount.roleId == 2 ? const AdminRoleFilter(isHrInternFilter: true,) : const AdminRoleFilter(isAdminFilter: true,)
+                                      builder: (context) => const AdminRoleFilter(isAdminFilter: true,)
                                   ));
                                   if(data != null){
                                     _roleFilter = data;

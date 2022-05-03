@@ -550,9 +550,11 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
   }
 
   void _getADealByDealId({required int accountId, required int dealId}) async {
+
     Deal? deal = await DealViewModel().getADealByAccountIdDealId(accountId: accountId, dealId: dealId);
 
       setState(() {
+        _deals.clear();
         _deals.add(deal);
         _maxPages = _deals[0].maxPage!;
       });
@@ -561,7 +563,7 @@ class _SaleEmpDealListState extends State<SaleEmpDealList> {
 
   void _onGoBack(dynamic value){
     _refreshController.resetNoData();
-
+    _deals.clear();
     if(_isSearching == false || _searchString.isEmpty){
       _getFilter(isRefresh: false);
     }else if(_isSearching == true && _searchString.isNotEmpty){

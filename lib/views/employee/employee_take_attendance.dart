@@ -215,19 +215,20 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
     if(listAttendance!.isNotEmpty){
       setState(() {
         _attendances.addAll(listAttendance);
+        for(int i = 0; i < _attendances.length; i++){
           if(_timeHms >= 8.30 && _timeHms <= 10.30){
-            if(_attendances[0].attendanceStatusId == 4 && _attendances[0].periodOfDayId == 0){
+            if(_attendances[i].attendanceStatusId == 4 && _attendances[i].periodOfDayId == 0){
               _isTook = false;
               _takeAttendanceString = 'Bạn chưa điểm danh ca sáng';
-            }else{
+            }else if(_attendances[i].attendanceStatusId != 4 && _attendances[i].periodOfDayId == 0){
               _isTook = true;
               _takeAttendanceString = 'Bạn đã điểm danh ca sáng';
             }
           }else if(_timeHms >= 12.30 && _timeHms <= 14.30){
-            if(_attendances[1].attendanceStatusId == 4 && _attendances[1].periodOfDayId == 1){
+            if(_attendances[i].attendanceStatusId == 4 && _attendances[i].periodOfDayId == 1){
               _isTook = false;
               _takeAttendanceString = 'Bạn chưa điểm danh ca chiều';
-            }else{
+            }else if(_attendances[i].attendanceStatusId != 4 && _attendances[i].periodOfDayId == 1){
               _isTook = true;
               _takeAttendanceString = 'Bạn đã điểm danh ca chiều';
             }
@@ -235,6 +236,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
             _isTook = true;
             _takeAttendanceString = 'Bạn không thể điểm danh vì đã quá giờ hoặc chưa đến giờ điểm danh';
           }
+        }
       });
     }else{
       setState(() {
