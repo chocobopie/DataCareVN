@@ -416,6 +416,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         ),
                                       ),
                                     ),
+                                    if(widget.deal.dealStageId != 5 || (widget.deal.closedDate.month >= DateTime.now().month && widget.deal.closedDate.year >= DateTime.now().year))
                                     Expanded(
                                         child: _readOnly == true
                                             ? CustomTextButton(color: mainBgColor, text: 'Chỉnh sửa',
