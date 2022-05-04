@@ -375,7 +375,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                 child: Row(
                                   children: <Widget>[
                                     if(_readOnly == true)
-                                    if( widget.deal.dealStageId != 5 || (widget.deal.dealStageId == 5 && _currentAccount.roleId == 3))
+                                    if( widget.deal.dealStageId != 5 || (widget.deal.dealStageId == 5 && _currentAccount.roleId == 3 && widget.deal.closedDate.month < DateTime.now().month && widget.deal.closedDate.year <= DateTime.now().year))
                                     Expanded(
                                         child: CustomTextButton(
                                             color: Colors.red,

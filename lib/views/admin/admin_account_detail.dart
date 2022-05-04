@@ -64,6 +64,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
   final TextEditingController _accountRoleId = TextEditingController();
 
   final TextEditingController _empName = TextEditingController();
+  final TextEditingController _empEmail = TextEditingController();
   final TextEditingController _empPhoneNumber = TextEditingController();
   final TextEditingController _empCitizenIdentityCardNumber = TextEditingController();
   final TextEditingController _empAddress = TextEditingController();
@@ -97,6 +98,15 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
     _accountBlockId.dispose();
     _accountTeamId.dispose();
     _accountRoleId.dispose();
+    _empName.dispose();
+    _empEmail.dispose();
+    _empPhoneNumber.dispose();
+    _empCitizenIdentityCardNumber.dispose();
+    _empAddress.dispose();
+    _empNationality.dispose();
+    _empBankName.dispose();
+    _empBankAccountOwnerName.dispose();
+    _empBankAccountNumber.dispose();
   }
 
   @override
@@ -131,9 +141,14 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                             children: [
                               Expanded(
                                 child: CustomEditableTextFormField(
-                                    text: _currentEmpAccount.email == null ? 'Chưa cập nhật' : _currentEmpAccount.email!,
+                                    text: _empEmail.text.isEmpty ? _currentEmpAccount.email == null ? '' : _currentEmpAccount.email! : _empEmail.text,
                                     title: 'Email',
-                                    readonly: true,
+                                    readonly: _readOnly,
+                                    isLimit: true,
+                                    limitNumbChar: 40,
+                                    inputNumberOnly: false,
+                                    borderColor: _readOnly == true ? null : mainBgColor,
+                                    textEditingController: _empEmail,
                                 ),
                               ),
                             ],
@@ -939,7 +954,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                               const SizedBox(width: 5.0,),
 
                               if(_currentEmpAccount.statusId != 0)
-                              if(_currentAccount.roleId == 0 && _currentEmpAccount.roleId != 1)
+                              if(_currentAccount.roleId == 0)
                               Expanded(
                                 child: CustomTextButton(
                                     color: mainBgColor,
@@ -959,7 +974,10 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
                                         showLoaderDialog(context);
 
-                                        bool? check, check2, check3, check4, check5, check6, check7;
+                                        bool? check, check2, check3, check4, check5, check6, check7, check8;
+                                        if(_currentEmpAccount.roleId == 1){
+                                          check8 = await _updateAnAccount();
+                                        }
 
                                         if(_currentEmpAccount.roleId == 2){
                                           check = await _updateHrInternPermission();
@@ -978,7 +996,7 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
                                         }
 
 
-                                        if( (check == true && check2 == true && check3 == true) || (check4 == true && check5 == true && check6 == true) || check7 == true){
+                                        if( (check == true && check2 == true && check3 == true) || (check4 == true && check5 == true && check6 == true) || check7 == true || check8 == true){
                                           Navigator.pop(context);
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(content: Text('Cập nhật tài khoản ${_currentEmpAccount.fullname} thành công')),
@@ -1074,9 +1092,10 @@ class _AdminAccountDetailState extends State<AdminAccountDetail> {
 
   }
   Future<bool> _updateAnAccount() async {
+
     Account account = Account(
       accountId: _currentEmpAccount.accountId,
-      email: _currentEmpAccount.email,
+      email: _empEmail.text.isEmpty ? _currentEmpAccount.email : _empEmail.text,
       fullname: _empName.text.isEmpty ? _currentEmpAccount.fullname : _empName.text,
       phoneNumber: _empPhoneNumber.text.isEmpty ? _currentEmpAccount.phoneNumber : _empPhoneNumber.text,
       address: _empAddress.text.isEmpty ? _currentEmpAccount.address : _empAddress.text,
