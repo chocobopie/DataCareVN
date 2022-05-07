@@ -215,6 +215,25 @@ class ApiService {
     }
   }
 
+  Future<List<Deal>?> getDealListBySaleId({required int saleId, required bool isRefresh, required int currentPage,int? limit}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'deals?sale-id=$saleId&page=$currentPage&limit=${limit ?? 10}';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print('Got all deals by SaleId| 200');
+      return jsonResponse.map((data) => Deal.fromJson(data)).toList();
+    } else {
+      print("Failed to get all deals by SaleId");
+      List<Deal>? result;
+      return result;
+    }
+  }
+
   Future<Deal> getADealByAccountIdDealId({required int accountId, required int dealId}) async {
     String url = stockUrl + 'deals?account-id=$accountId&deal-id=$dealId';
 

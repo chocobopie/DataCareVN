@@ -10,12 +10,12 @@ import 'package:login_sample/view_models/payroll_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_view_model.dart';
 import 'package:login_sample/view_models/sale_list_view_model.dart';
 import 'package:login_sample/view_models/sale_view_model.dart';
+import 'package:login_sample/views/sale_employee/sale_deal_list.dart';
 import 'package:login_sample/widgets/CustomListTile.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
-import 'package:provider/provider.dart';
 
 class HrManagerPayrollDetail extends StatefulWidget {
   const HrManagerPayrollDetail({Key? key, required this.empAccount})
@@ -220,7 +220,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                   );
 
                                   if (date != null) {
-                                    _resetController();
+                                    _resetAllController();
                                     setState(() {
                                       _selectedMonth = date;
                                       _payrollCompany = null;
@@ -328,6 +328,10 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 CustomListTile(listTileLabel: 'Thưởng tuyển dụng', alertDialogLabel: 'Cập nhật thưởng tuyển dụng', numberEditController: recruitmentBonusController, value: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus.toString() : recruitmentBonusController.text, readOnly: _readOnlyPayroll,),
                                 CustomListTile(listTileLabel: 'Thưởng cá nhân', alertDialogLabel: 'Cập nhật thưởng cá nhân', numberEditController: personalBonusController, value: personalBonusController.text.isEmpty ? _payroll!.personalBonus.toString() : personalBonusController.text, readOnly: _readOnlyPayroll,),
                                 CustomListTile(listTileLabel: 'Thưởng nhóm', alertDialogLabel: 'Cập nhật thưởng nhóm', numberEditController: teamBonusController, value: teamBonusController.text.isEmpty ? _payroll!.teamBonus.toString() : teamBonusController.text, readOnly: _readOnlyPayroll,),
+                                ListTile(
+                                  title: const Text('Thực nhận', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600,),),
+                                  trailing: Text( '${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600,),),
+                                ),
 
                                  if(_readOnlyPayroll == false)
                                  Padding(
@@ -343,13 +347,12 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                               showLoaderDialog(context);
                                               bool result = await _updateAPayroll();
                                               if(result == true){
+                                                _resetPayrollControllers();
+                                                _getPayroll(isRefresh: true);
                                                 Navigator.pop(context);
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(content: Text('Cập nhật lương cho ${widget.empAccount.fullname} thành công')),
                                                 );
-                                                Future.delayed(const Duration(seconds: 1), (){
-                                                  Navigator.pop(context);
-                                                });
                                               }else{
                                                 Navigator.pop(context);
                                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -365,7 +368,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               ],
                             ),
                           ),
-                        ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
+                        ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu của lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
 
                       const SizedBox(height: 10.0,),
                       //Xem && cập nhật KPI
@@ -394,7 +397,14 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
                               title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
-                              trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
+                              trailing: TextButton(child: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
+                                onPressed: (){
+                                  print(_sale!.saleId);
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) => SaleDealList(saleId: _sale!.saleId, empAccount: widget.empAccount)
+                                  ));
+                                },
+                              ),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
                                 ListTile(
@@ -483,7 +493,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                     ),
                                   ),
                                   trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ' ,
-                                    style: const  TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.red,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -503,13 +513,12 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                               showLoaderDialog(context);
                                               bool result = await _updateKPI();
                                               if(result == true){
+                                                saleKPIController.clear();
+                                                _getSale(isRefresh: true);
                                                 Navigator.pop(context);
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(content: Text('Cập nhật KPI cho ${widget.empAccount.fullname} thành công')),
                                                 );
-                                                Future.delayed(const Duration(seconds: 1), (){
-                                                  Navigator.pop(context);
-                                                });
                                               }else{
                                                 Navigator.pop(context);
                                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -525,7 +534,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               ],
                             ),
                           ),
-                        ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
+                        ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu của doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
 
                       const SizedBox(height: 50.0,),
                     ],
@@ -656,7 +665,36 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     saleKPIController.text = saleKPIController.text.replaceAll('.', '');
   }
 
-  void _resetController(){
+  void _resetPayrollControllers(){
+    basicSalaryController.clear();
+    allowanceController.clear();
+    parkingFeeController.clear();
+    fineController.clear();
+    personalInsuranceController.clear();
+    companyInsuranceController.clear();
+    actualSalaryReceivedController.clear();
+    newSignPersonalSalesBonusController.clear();
+    renewedPersonalSalesBonusController.clear();
+    managementSalesBonusController.clear();
+    supporterSalesBonusController.clear();
+    clB20SalesBonusController.clear();
+    contentManagerFanpageTechnicalEmployeeBonusController.clear();
+    collaboratorFanpageTechnicalEmployeeBonusController.clear();
+    renewedFanpageTechnicalEmployeeBonusController.clear();
+    contentManagerWebsiteAdsTechnicalEmployeeBonusController.clear();
+    collaboratorWebsiteTechnicalEmployeeBonusController.clear();
+    renewedWebsiteTechnicalEmployeeBonusController.clear();
+    collaboratorAdsTechnicalEmployeeBonusController.clear();
+    lecturerEducationTechnicalEmployeeBonusController.clear();
+    tutorEducationTechnicalEmployeeBonusController.clear();
+    techcareEducationTechnicalEmployeeBonusController.clear();
+    emulationBonusController.clear();
+    recruitmentBonusController.clear();
+    personalBonusController.clear();
+    teamBonusController.clear();
+  }
+
+  void _resetAllController(){
     basicSalaryController.clear();
     allowanceController.clear();
     parkingFeeController.clear();
@@ -742,297 +780,5 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     bool result = await PayrollViewModel().updatePayroll(payroll);
 
     return result;
-  }
-
-  Container previousMonthPayroll() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(5.0),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            blurRadius: 1,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-        gradient: const LinearGradient(
-          stops: [0.02, 0.01],
-          colors: [Colors.blue, Colors.white],
-        ),
-      ),
-      child: Theme(
-        data: ThemeData().copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}', style: const TextStyle(fontSize: 14.0),),
-          trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
-          children: <Widget>[
-            const Divider(color: Colors.blueGrey, thickness: 1.0,),
-            ListTile(
-              title: const Text('Lương cơ bản', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.basicSalary.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text('Trợ cấp', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.allowance.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text('Tiền đỗ xe', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.parkingFee.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text('Tiền phạt', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.fine.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text('Bảo hiểm cá nhân', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.personalInsurance.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text('Bảo hiểm công ty đóng', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.companyInsurance.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 ||widget.empAccount.roleId == 5)
-              ListTile(
-                title: const Text('Thưởng ký mới', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.newSignPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)
-              ListTile(
-                title: const Text('Thưởng tái ký', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.renewedPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)
-              ListTile(
-                title: const Text('Thưởng quản lý bán hàng', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.managementSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)
-              ListTile(
-                title: const Text('Thưởng hỗ trợ bán hàng', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.supporterSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)
-              ListTile(
-                title: const Text('Thưởng CLB 20', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.clB20SalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.contentManagerFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng cộng tác quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng tái ký quản lý Fanpage', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.renewedFanpageTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng quản lý nội dung Ads cho website', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng cộng tác  quản lý website', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.collaboratorWebsiteTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng tái ký quản lý website', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.renewedWebsiteTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng cộng tác quản lý Ads', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.collaboratorAdsTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng giảng viên', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.lecturerEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Thưởng trợ giảng', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.tutorEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            if(widget.empAccount.roleId == 6)
-              ListTile(
-                title: const Text('Tiền thưởng CSKH', style: TextStyle(fontSize: 14.0,),),
-                trailing: Text(moneyFormat(_payroll!.techcareEducationTechnicalEmployeeBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-              ),
-            ListTile(
-              title: const Text('Tiền thưởng thi đua', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.emulationBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text('Tiền thưởng tuyển dụng', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.recruitmentBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text('Tiền thưởng cá nhân', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.personalBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text('Tiền thưởng nhóm', style: TextStyle(fontSize: 14.0,),),
-              trailing: Text(moneyFormat(_payroll!.teamBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-            ),
-            ListTile(
-              title: const Text(
-                'Thực nhận',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ',
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Padding previousMonthKpi() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(5.0),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 1,
-              offset: const Offset(0, 3), // changes position of shadow
-            ),
-          ],
-          gradient: const LinearGradient(
-            stops: [0.02, 0.01],
-            colors: [Colors.green, Colors.white],
-          ),
-        ),
-        child: Theme(
-          data: ThemeData().copyWith(dividerColor: Colors.transparent),
-          child: ExpansionTile(
-            title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
-            trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
-            children: <Widget>[
-              const Divider(color: Colors.blueGrey, thickness: 1.0,),
-              ListTile(
-                  title: const Text(
-                    'Facebook content',
-                    style: TextStyle(
-                      fontSize: 12.0,
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.newSignFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0,),),
-                        ],
-                      ),
-                      const SizedBox(width: 20.0,),
-                      Column(
-                        children: <Widget>[
-                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.renewedFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                    ],
-                  )
-              ),
-              ListTile(
-                  title: const Text('Đào tạo', style: TextStyle(fontSize: 12.0,),),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.newSignEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                      const SizedBox(width: 20.0,),
-                      Column(
-                        children: <Widget>[
-                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.renewedEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                    ],
-                  )
-              ),
-              ListTile(
-                  title: const Text('Website content', style: TextStyle(fontSize: 12.0,),),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.newSignWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                      const SizedBox(width: 20.0,),
-                      Column(
-                        children: <Widget>[
-                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.renewedWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                    ],
-                  )
-              ),
-              ListTile(
-                title: const Text('Ads', style: TextStyle(fontSize: 12.0,),),
-                trailing: Text(moneyFormat(_sale!.adsSales.toString()), style: const TextStyle(fontSize: 12.0),),
-              ),
-              const Divider(color: Colors.grey,thickness: 1.0,),
-              ListTile(
-                title: const Text('KPI', style: TextStyle(fontSize: 12.0,),),
-                trailing: Text(moneyFormat(_sale!.kpi.toString()), style: const TextStyle(fontSize: 12.0,),),
-              ),
-              ListTile(
-                title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
-                trailing: Text( '${((_totalRevenue / _sale!.kpi) * 100).round()} %', style: const TextStyle(fontSize: 12.0,),),
-              ),
-              ListTile(
-                title: const  Text('Doanh thu đạt được',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ' ,
-                  style: const  TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
