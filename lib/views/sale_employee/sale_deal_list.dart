@@ -6,6 +6,7 @@ import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/contact_list_view_model.dart';
 import 'package:login_sample/view_models/deal_list_view_model.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -133,9 +134,9 @@ class _SaleDealListState extends State<SaleDealList> {
                               ),
                               child: InkWell(
                                 onTap: () {
-                                  // Navigator.push(context, MaterialPageRoute(
-                                  //     builder: (context) => SaleEmpDealDetail(deal: deal, readOnly: widget.issueView,)
-                                  // )).then(_onGoBack);
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) => SaleEmpDealDetail(deal: deal, readOnly: true,)
+                                  ));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
