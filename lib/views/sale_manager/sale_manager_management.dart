@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login_sample/views/sale_manager/sale_manager_payroll_management.dart';
+import 'package:login_sample/views/sale_manager/sale_manager_kpi_report.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
@@ -48,7 +48,7 @@ class SaleManagerManagement extends StatelessWidget {
                           text: 'Lương và doanh thu của phòng ban',
                           colorsButton: const [Colors.green, Colors.white],
                           onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleManagerPayrollManagement()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleManagerKpiReportManagement()));
                           }
                       ),
                     ],

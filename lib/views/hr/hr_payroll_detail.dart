@@ -4,10 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/payroll.dart';
-import 'package:login_sample/models/providers/account_provider.dart';
+import 'package:login_sample/models/sale.dart';
 import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_view_model.dart';
+import 'package:login_sample/view_models/sale_list_view_model.dart';
 import 'package:login_sample/widgets/CustomListTile.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
@@ -27,14 +28,16 @@ class HrManagerPayrollDetail extends StatefulWidget {
 
 class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
 
-  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month - 1);
+  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _fromDate, _toDate, _maxTime;
   final int _currentPage = 0;
-  int _maxPages = 0;
-  Account? _currentAccount;
+  int _hasPayroll = 0, _hasSale = 0;
+  num _totalRevenue = 0;
+  bool _readOnlyPayroll = false, _readOnlyKPI = false;
 
   PayrollCompany? _payrollCompany;
   Payroll? _payroll;
+  Sale? _sale;
 
   final TextEditingController basicSalaryController = TextEditingController();
   final TextEditingController allowanceController = TextEditingController();
@@ -62,10 +65,10 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   final TextEditingController recruitmentBonusController = TextEditingController();
   final TextEditingController personalBonusController = TextEditingController();
   final TextEditingController teamBonusController = TextEditingController();
+  final TextEditingController saleKPIController = TextEditingController();
 
   @override
   void initState() {
-    _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
     _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
     _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
     _maxTime = _selectedMonth;
@@ -75,6 +78,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
 
   @override
   void dispose() {
+    saleKPIController.dispose();
     basicSalaryController.dispose();
     allowanceController.dispose();
     parkingFeeController.dispose();
@@ -219,8 +223,45 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                       _selectedMonth = date;
                                       _payrollCompany = null;
                                       _payroll = null;
+                                      _sale = null;
                                     });
+                                    if( _selectedMonth.month == DateTime.now().month - 1 && _selectedMonth.year == DateTime.now().year && DateTime.now().day >= 1 && DateTime.now().day <= 5 ){
+                                      setState(() {
+                                        _readOnlyPayroll = false;
+                                      });
+                                      print('false');
+                                    }else if( _selectedMonth.month == DateTime.now().month && _selectedMonth.year == DateTime.now().year ){
+                                      setState(() {
+                                        _readOnlyPayroll = false;
+                                      });
+                                      print('true');
+                                    }else{
+                                      setState(() {
+                                        setState(() {
+                                          _readOnlyPayroll = true;
+                                        });
+                                      });
+                                    }
 
+                                    if( _selectedMonth.month >= DateTime.now().month -1 && _selectedMonth.year == DateTime.now().year ){
+                                      if(_selectedMonth.month == DateTime.now().month - 1 && DateTime.now().day >= 1 && DateTime.now().day <= 5){
+                                        setState(() {
+                                          _readOnlyKPI = false;
+                                        });
+                                      }else if(_selectedMonth.month == DateTime.now().month){
+                                        setState(() {
+                                          _readOnlyKPI = false;
+                                        });
+                                      }else{
+                                        setState(() {
+                                          _readOnlyKPI = true;
+                                        });
+                                      }
+                                    }else{
+                                      setState(() {
+                                        _readOnlyKPI = true;
+                                      });
+                                    }
                                     _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
                                     _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
                                     _getPayrollCompany(isRefresh: true);
@@ -242,10 +283,10 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                         ],
                       ),
                       const SizedBox(height: 20.0,),
-                      //Cập nhật lương tháng này
+                      //Xem && cập nhật lương
                       if(_maxTime != null)
-                      if(_selectedMonth.month == _maxTime!.month && _selectedMonth.year == _maxTime!.year)
-                        _maxPages >= 0 ? _payroll != null ? Container(
+                      if(_selectedMonth.month >= _maxTime!.month - 1 && _selectedMonth.year == _maxTime!.year)
+                        _hasPayroll >= 0 ? _payroll != null ? Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: const BorderRadius.all(
@@ -270,33 +311,34 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
-                                CustomListTile(listTileLabel: 'Lương cơ bản', alertDialogLabel: 'Cập nhật lương cơ bản', value: basicSalaryController.text.isEmpty ? _payroll!.basicSalary.toString() : basicSalaryController.text ,numberEditController: basicSalaryController),
-                                CustomListTile(listTileLabel: 'Trợ cấp', alertDialogLabel: 'Cập nhật trợ cấp', value: allowanceController.text.isEmpty ? _payroll!.allowance.toString() : allowanceController.text, numberEditController: allowanceController),
-                                CustomListTile(listTileLabel: 'Tiền giữ xe', alertDialogLabel: 'Cập nhật tiền giữ xe', numberEditController: parkingFeeController, value: parkingFeeController.text.isEmpty ? _payroll!.parkingFee.toString() : parkingFeeController.text),
-                                CustomListTile(listTileLabel: 'Tiền phạt', alertDialogLabel: 'Cập nhật tiền phạt', numberEditController: fineController, value: fineController.text.isEmpty ? _payroll!.fine.toString() : fineController.text,),
-                                CustomListTile(listTileLabel: 'Bảo hiểm cá nhân', alertDialogLabel: 'Bảo hiểm cá nhân', numberEditController: personalInsuranceController, value: personalInsuranceController.text.isEmpty ? _payroll!.personalInsurance.toString() : personalInsuranceController.text,),
-                                CustomListTile(listTileLabel: 'Bảo hiểm công ty đóng', alertDialogLabel: 'Cập nhật bảo hiểm công ty đóng', numberEditController: companyInsuranceController, value: companyInsuranceController.text.isEmpty ? _payroll!.companyInsurance.toString() : companyInsuranceController.text,),
-                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Tiền thưởng ký mới', alertDialogLabel: 'Cập nhật thưởng ký mới', numberEditController: newSignPersonalSalesBonusController, value: newSignPersonalSalesBonusController.text.isEmpty ? _payroll!.newSignPersonalSalesBonus.toString() : newSignPersonalSalesBonusController.text,),
-                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Tiền thưởng tái ký', alertDialogLabel: 'Cập nhật thưởng tái ký', numberEditController: renewedPersonalSalesBonusController, value:renewedPersonalSalesBonusController.text.isEmpty ? _payroll!.renewedPersonalSalesBonus.toString() : renewedPersonalSalesBonusController.text,),
-                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng quản lý bán hàng', alertDialogLabel: 'Cập nhật thưởng quản lý bán hàng', numberEditController: managementSalesBonusController, value:managementSalesBonusController.text.isEmpty ? _payroll!.managementSalesBonus.toString() : managementSalesBonusController.text,),
-                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng hỗ trợ bán hàng', alertDialogLabel: 'Cập nhật thưởng hỗ trợ bán hàng', numberEditController: supporterSalesBonusController, value: supporterSalesBonusController.text.isEmpty ? _payroll!.supporterSalesBonus.toString() : supporterSalesBonusController.text,),
-                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng CLB 20', alertDialogLabel: 'Cập nhật thưởng CLB 20', numberEditController: clB20SalesBonusController, value: clB20SalesBonusController.text.isEmpty ? _payroll!.clB20SalesBonus.toString() : clB20SalesBonusController.text,),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng Fanpage', numberEditController: contentManagerFanpageTechnicalEmployeeBonusController, value:  contentManagerFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. contentManagerFanpageTechnicalEmployeeBonus.toString() : contentManagerFanpageTechnicalEmployeeBonusController.text,),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý Fanpage', alertDialogLabel: 'Cập nhật cộng tác quản lý Fanpage', numberEditController: collaboratorFanpageTechnicalEmployeeBonusController, value: collaboratorFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString() : collaboratorFanpageTechnicalEmployeeBonusController.text,),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng tái ký quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng tái ký quản lý Fanpage', numberEditController: renewedFanpageTechnicalEmployeeBonusController, value: renewedFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.renewedFanpageTechnicalEmployeeBonus.toString() : renewedFanpageTechnicalEmployeeBonusController.text,),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng quản lý nội dung Ads cho website', alertDialogLabel: 'Cập nhật thưởng quản lý nội dung cho website', numberEditController: contentManagerWebsiteAdsTechnicalEmployeeBonusController, value: contentManagerWebsiteAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus.toString() : contentManagerWebsiteAdsTechnicalEmployeeBonusController.text,),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng  cộng tác quản lý website', alertDialogLabel: 'Cập nhật thưởng cộng tác quản lý website', numberEditController: collaboratorWebsiteTechnicalEmployeeBonusController, value: collaboratorWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorWebsiteTechnicalEmployeeBonus.toString() : collaboratorWebsiteTechnicalEmployeeBonusController.text,),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng tái ký quản lý website', alertDialogLabel: 'Cập nhật thưởng tái ký quản lý website', numberEditController: renewedWebsiteTechnicalEmployeeBonusController, value:  renewedWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. renewedWebsiteTechnicalEmployeeBonus.toString() :  renewedWebsiteTechnicalEmployeeBonusController.text),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý nội dung Ads', alertDialogLabel: 'Cập nhật thưởng cộng tác quản lý Ads', numberEditController: collaboratorAdsTechnicalEmployeeBonusController, value: collaboratorAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorAdsTechnicalEmployeeBonus.toString() : collaboratorAdsTechnicalEmployeeBonusController.text,),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng giảng viên', alertDialogLabel: 'Cập nhật thưởng giảng viên', numberEditController: lecturerEducationTechnicalEmployeeBonusController, value: lecturerEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.lecturerEducationTechnicalEmployeeBonus.toString() : lecturerEducationTechnicalEmployeeBonusController.text,),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng trợ giảng', alertDialogLabel: 'Cập nhật trợ cấp', numberEditController: tutorEducationTechnicalEmployeeBonusController, value:tutorEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.tutorEducationTechnicalEmployeeBonus.toString() : tutorEducationTechnicalEmployeeBonusController.text),
-                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng CSKH', alertDialogLabel: 'Cập nhật thưởng CSKH', numberEditController: techcareEducationTechnicalEmployeeBonusController, value: techcareEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.techcareEducationTechnicalEmployeeBonus.toString() : techcareEducationTechnicalEmployeeBonusController.text,),
-                                CustomListTile(listTileLabel: 'Thưởng thi đua', alertDialogLabel: 'Cập nhật thưởng thi đua', numberEditController: emulationBonusController, value: emulationBonusController.text.isEmpty ? _payroll!.emulationBonus.toString() : emulationBonusController.text ),
-                                CustomListTile(listTileLabel: 'Thưởng tuyển dụng', alertDialogLabel: 'Cập nhật thưởng tuyển dụng', numberEditController: recruitmentBonusController, value: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus.toString() : recruitmentBonusController.text),
-                                CustomListTile(listTileLabel: 'Thưởng cá nhân', alertDialogLabel: 'Cập nhật thưởng cá nhân', numberEditController: personalBonusController, value: personalBonusController.text.isEmpty ? _payroll!.personalBonus.toString() : personalBonusController.text),
-                                CustomListTile(listTileLabel: 'Thưởng nhóm', alertDialogLabel: 'Cập nhật thưởng nhóm', numberEditController: teamBonusController, value: teamBonusController.text.isEmpty ? _payroll!.teamBonus.toString() : teamBonusController.text),
+                                CustomListTile(listTileLabel: 'Lương cơ bản', alertDialogLabel: 'Cập nhật lương cơ bản', value: basicSalaryController.text.isEmpty ? _payroll!.basicSalary.toString() : basicSalaryController.text ,numberEditController: basicSalaryController, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Trợ cấp', alertDialogLabel: 'Cập nhật trợ cấp', value: allowanceController.text.isEmpty ? _payroll!.allowance.toString() : allowanceController.text, numberEditController: allowanceController, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Tiền giữ xe', alertDialogLabel: 'Cập nhật tiền giữ xe', numberEditController: parkingFeeController, value: parkingFeeController.text.isEmpty ? _payroll!.parkingFee.toString() : parkingFeeController.text, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Tiền phạt', alertDialogLabel: 'Cập nhật tiền phạt', numberEditController: fineController, value: fineController.text.isEmpty ? _payroll!.fine.toString() : fineController.text, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Bảo hiểm cá nhân', alertDialogLabel: 'Bảo hiểm cá nhân', numberEditController: personalInsuranceController, value: personalInsuranceController.text.isEmpty ? _payroll!.personalInsurance.toString() : personalInsuranceController.text, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Bảo hiểm công ty đóng', alertDialogLabel: 'Cập nhật bảo hiểm công ty đóng', numberEditController: companyInsuranceController, value: companyInsuranceController.text.isEmpty ? _payroll!.companyInsurance.toString() : companyInsuranceController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Tiền thưởng ký mới', alertDialogLabel: 'Cập nhật thưởng ký mới', numberEditController: newSignPersonalSalesBonusController, value: newSignPersonalSalesBonusController.text.isEmpty ? _payroll!.newSignPersonalSalesBonus.toString() : newSignPersonalSalesBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Tiền thưởng tái ký', alertDialogLabel: 'Cập nhật thưởng tái ký', numberEditController: renewedPersonalSalesBonusController, value:renewedPersonalSalesBonusController.text.isEmpty ? _payroll!.renewedPersonalSalesBonus.toString() : renewedPersonalSalesBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng quản lý bán hàng', alertDialogLabel: 'Cập nhật thưởng quản lý bán hàng', numberEditController: managementSalesBonusController, value:managementSalesBonusController.text.isEmpty ? _payroll!.managementSalesBonus.toString() : managementSalesBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng hỗ trợ bán hàng', alertDialogLabel: 'Cập nhật thưởng hỗ trợ bán hàng', numberEditController: supporterSalesBonusController, value: supporterSalesBonusController.text.isEmpty ? _payroll!.supporterSalesBonus.toString() : supporterSalesBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng CLB 20', alertDialogLabel: 'Cập nhật thưởng CLB 20', numberEditController: clB20SalesBonusController, value: clB20SalesBonusController.text.isEmpty ? _payroll!.clB20SalesBonus.toString() : clB20SalesBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng Fanpage', numberEditController: contentManagerFanpageTechnicalEmployeeBonusController, value:  contentManagerFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. contentManagerFanpageTechnicalEmployeeBonus.toString() : contentManagerFanpageTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý Fanpage', alertDialogLabel: 'Cập nhật cộng tác quản lý Fanpage', numberEditController: collaboratorFanpageTechnicalEmployeeBonusController, value: collaboratorFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString() : collaboratorFanpageTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng tái ký quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng tái ký quản lý Fanpage', numberEditController: renewedFanpageTechnicalEmployeeBonusController, value: renewedFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.renewedFanpageTechnicalEmployeeBonus.toString() : renewedFanpageTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng quản lý nội dung Ads cho website', alertDialogLabel: 'Cập nhật thưởng quản lý nội dung cho website', numberEditController: contentManagerWebsiteAdsTechnicalEmployeeBonusController, value: contentManagerWebsiteAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus.toString() : contentManagerWebsiteAdsTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng  cộng tác quản lý website', alertDialogLabel: 'Cập nhật thưởng cộng tác quản lý website', numberEditController: collaboratorWebsiteTechnicalEmployeeBonusController, value: collaboratorWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorWebsiteTechnicalEmployeeBonus.toString() : collaboratorWebsiteTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng tái ký quản lý website', alertDialogLabel: 'Cập nhật thưởng tái ký quản lý website', numberEditController: renewedWebsiteTechnicalEmployeeBonusController, value:  renewedWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. renewedWebsiteTechnicalEmployeeBonus.toString() :  renewedWebsiteTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý nội dung Ads', alertDialogLabel: 'Cập nhật thưởng cộng tác quản lý Ads', numberEditController: collaboratorAdsTechnicalEmployeeBonusController, value: collaboratorAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorAdsTechnicalEmployeeBonus.toString() : collaboratorAdsTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng giảng viên', alertDialogLabel: 'Cập nhật thưởng giảng viên', numberEditController: lecturerEducationTechnicalEmployeeBonusController, value: lecturerEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.lecturerEducationTechnicalEmployeeBonus.toString() : lecturerEducationTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng trợ giảng', alertDialogLabel: 'Cập nhật trợ cấp', numberEditController: tutorEducationTechnicalEmployeeBonusController, value:tutorEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.tutorEducationTechnicalEmployeeBonus.toString() : tutorEducationTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng CSKH', alertDialogLabel: 'Cập nhật thưởng CSKH', numberEditController: techcareEducationTechnicalEmployeeBonusController, value: techcareEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.techcareEducationTechnicalEmployeeBonus.toString() : techcareEducationTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Thưởng thi đua', alertDialogLabel: 'Cập nhật thưởng thi đua', numberEditController: emulationBonusController, value: emulationBonusController.text.isEmpty ? _payroll!.emulationBonus.toString() : emulationBonusController.text, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Thưởng tuyển dụng', alertDialogLabel: 'Cập nhật thưởng tuyển dụng', numberEditController: recruitmentBonusController, value: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus.toString() : recruitmentBonusController.text, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Thưởng cá nhân', alertDialogLabel: 'Cập nhật thưởng cá nhân', numberEditController: personalBonusController, value: personalBonusController.text.isEmpty ? _payroll!.personalBonus.toString() : personalBonusController.text, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Thưởng nhóm', alertDialogLabel: 'Cập nhật thưởng nhóm', numberEditController: teamBonusController, value: teamBonusController.text.isEmpty ? _payroll!.teamBonus.toString() : teamBonusController.text, readOnly: _readOnlyPayroll,),
 
-                                Padding(
+                                 if(_readOnlyPayroll == false)
+                                 Padding(
                                   padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
                                   child: Row(
                                     children: [
@@ -332,10 +374,149 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                             ),
                           ),
                         ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
+
+                      const SizedBox(height: 10.0,),
+                      //Xem && cập nhật KPI
+                      if(_maxTime != null)
+                        if(_selectedMonth.month >= _maxTime!.month - 1 && _selectedMonth.year == _maxTime!.year)
+                        _hasSale >= 0 ? _sale != null ? Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 1,
+                                offset: const Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                            gradient: const LinearGradient(
+                              stops: [0.02, 0.01],
+                              colors: [Colors.green, Colors.white],
+                            ),
+                          ),
+                          child: Theme(
+                            data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+                              trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
+                              children: <Widget>[
+                                const Divider(color: Colors.blueGrey, thickness: 1.0,),
+                                ListTile(
+                                    title: const Text(
+                                      'Facebook content',
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                      ),
+                                    ),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Column(
+                                          children: <Widget>[
+                                            const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                                            Text(moneyFormat(_sale!.newSignFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0,),),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20.0,),
+                                        Column(
+                                          children: <Widget>[
+                                            const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                                            Text(moneyFormat(_sale!.renewedFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                ListTile(
+                                    title: const Text('Đào tạo', style: TextStyle(fontSize: 12.0,),),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Column(
+                                          children: <Widget>[
+                                            const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                                            Text(moneyFormat(_sale!.newSignEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20.0,),
+                                        Column(
+                                          children: <Widget>[
+                                            const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                                            Text(moneyFormat(_sale!.renewedEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                ListTile(
+                                    title: const Text('Website content', style: TextStyle(fontSize: 12.0,),),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Column(
+                                          children: <Widget>[
+                                            const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                                            Text(moneyFormat(_sale!.newSignWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20.0,),
+                                        Column(
+                                          children: <Widget>[
+                                            const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                                            Text(moneyFormat(_sale!.renewedWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                ListTile(
+                                  title: const Text('Ads', style: TextStyle(fontSize: 12.0,),),
+                                  trailing: Text(moneyFormat(_sale!.adsSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                ),
+                                const Divider(color: Colors.grey,thickness: 1.0,),
+                                CustomListTile(listTileLabel: 'KPI', alertDialogLabel: 'Cập nhật KPI', value: saleKPIController.text.isEmpty ? _sale!.kpi.toString() : saleKPIController.text ,numberEditController: saleKPIController, readOnly: _readOnlyKPI,),
+                                ListTile(
+                                  title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
+                                  trailing: Text( _totalRevenue > 0 ? '${((_totalRevenue / _sale!.kpi) * 100).round()} %' : '0%', style: const TextStyle(fontSize: 12.0,),),
+                                ),
+                                ListTile(
+                                  title: const  Text('Doanh thu đạt được',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ' ,
+                                    style: const  TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
+
                       //Lương tháng trước
                       if(_maxTime != null)
-                      if(_selectedMonth.isBefore(_maxTime!))
-                        _maxPages >= 0 ? _payroll != null ? previousMonthPayroll() : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
+                      if(_selectedMonth.isBefore(_maxTime!) && _selectedMonth.month < _maxTime!.month - 1 && _selectedMonth.year <= _maxTime!.year)
+                        _hasPayroll >= 0 ? _payroll != null ? previousMonthPayroll()
+                            : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu cho lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
+
+                      //Doanh thu tháng trước
+                      if(_maxTime != null)
+                        if(_selectedMonth.isBefore(_maxTime!) && _selectedMonth.month < _maxTime!.month - 1 && _selectedMonth.year <= _maxTime!.year)
+                      if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)
+                      _hasSale >= 0 ? _sale != null ? previousMonthKpi()
+                          : const Padding(padding: EdgeInsets.only(top: 10.0), child: Center(child: CircularProgressIndicator()),
+                      ) : Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Center(child: Text('Không có dữ liệu cho doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
+                      ),
 
                       const SizedBox(height: 50.0,),
                     ],
@@ -359,6 +540,206 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _getPayrollCompany({required bool isRefresh}) async {
+    setState(() {
+      _hasPayroll = 0;
+      _hasSale = 0;
+    });
+
+    List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, limit: 1);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _payrollCompany = null;
+        _payrollCompany = result[0];
+        _hasPayroll = 1;
+        _getPayroll(isRefresh: true);
+      });
+    }else{
+      setState(() {
+        _hasPayroll = -1;
+        _hasSale = -1;
+      });
+    }
+  }
+
+  void _getPayroll({required bool isRefresh}) async {
+    setState(() {
+      _hasPayroll = 0;
+      _hasSale = 0;
+    });
+
+    List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, accountId: widget.empAccount.accountId, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _payroll = null;
+        _payroll = result[0];
+        _hasPayroll = 1;
+      });
+      if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5){
+        _getSale(isRefresh: true);
+      }
+    }else{
+      setState(() {
+        _hasPayroll = -1;
+        _hasSale = -1;
+      });
+    }
+  }
+
+  void _getSale({required bool isRefresh}) async {
+    setState(() {
+      _hasSale = 0;
+    });
+
+    List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: 0, payrollCompanyId: _payrollCompany!.payrollCompanyId, payrollId: _payroll!.payrollId, limit: 1);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _sale = null;
+        _sale = result[0];
+        _hasSale = 1;
+        _totalRevenue = _sale!.adsSales + _sale!.newSignWebsiteContentSales + _sale!.newSignEducationSales + _sale!.newSignFacebookContentSales
+            + _sale!.renewedWebsiteContentSales + _sale!.renewedEducationSales + _sale!.renewedFacebookContentSales;
+      });
+    }else{
+      setState(() {
+        _hasSale = -1;
+      });
+    }
+  }
+
+  Padding previousMonthKpi() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5.0),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              blurRadius: 1,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+          gradient: const LinearGradient(
+            stops: [0.02, 0.01],
+            colors: [Colors.green, Colors.white],
+          ),
+        ),
+        child: Theme(
+          data: ThemeData().copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+            trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
+            children: <Widget>[
+              const Divider(color: Colors.blueGrey, thickness: 1.0,),
+              ListTile(
+                  title: const Text(
+                    'Facebook content',
+                    style: TextStyle(
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.newSignFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0,),),
+                        ],
+                      ),
+                      const SizedBox(width: 20.0,),
+                      Column(
+                        children: <Widget>[
+                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.renewedFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+              ListTile(
+                  title: const Text('Đào tạo', style: TextStyle(fontSize: 12.0,),),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.newSignEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                      const SizedBox(width: 20.0,),
+                      Column(
+                        children: <Widget>[
+                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.renewedEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+              ListTile(
+                  title: const Text('Website content', style: TextStyle(fontSize: 12.0,),),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.newSignWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                      const SizedBox(width: 20.0,),
+                      Column(
+                        children: <Widget>[
+                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.renewedWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+              ListTile(
+                title: const Text('Ads', style: TextStyle(fontSize: 12.0,),),
+                trailing: Text(moneyFormat(_sale!.adsSales.toString()), style: const TextStyle(fontSize: 12.0),),
+              ),
+              const Divider(color: Colors.grey,thickness: 1.0,),
+              ListTile(
+                title: const Text('KPI', style: TextStyle(fontSize: 12.0,),),
+                trailing: Text(moneyFormat(_sale!.kpi.toString()), style: const TextStyle(fontSize: 12.0,),),
+              ),
+              ListTile(
+                title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
+                trailing: Text( '${((_totalRevenue / _sale!.kpi) * 100).round()} %', style: const TextStyle(fontSize: 12.0,),),
+              ),
+              ListTile(
+                title: const  Text('Doanh thu đạt được',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ' ,
+                  style: const  TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -393,82 +774,41 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   }
 
   Future<bool> _updateAPayroll() async {
-      Payroll payroll = Payroll(
-          payrollId: _payroll!.payrollId,
-          payrollCompanyId: _payroll!.payrollCompanyId,
-          accountId: _payroll!.accountId,
-          basicSalary: basicSalaryController.text.isEmpty ? _payroll!.basicSalary : num.tryParse(basicSalaryController.text)!,
-          allowance: allowanceController.text.isEmpty ? _payroll!.allowance : num.tryParse(allowanceController.text)!,
-          parkingFee: parkingFeeController.text.isEmpty ? _payroll!.parkingFee : num.tryParse(parkingFeeController.text)!,
-          fine: fineController.text.isEmpty ? _payroll!.fine : num.tryParse(fineController.text)!,
-          personalInsurance: personalInsuranceController.text.isEmpty ? _payroll!.personalInsurance : num.tryParse(personalInsuranceController.text)!,
-          companyInsurance: companyInsuranceController.text.isEmpty ? _payroll!.companyInsurance : num.tryParse(companyInsuranceController.text)!,
-          actualSalaryReceived: _payroll!.actualSalaryReceived,
-          newSignPersonalSalesBonus: newSignPersonalSalesBonusController.text.isEmpty ? _payroll!.newSignPersonalSalesBonus : num.tryParse(newSignPersonalSalesBonusController.text)!,
-          renewedPersonalSalesBonus: renewedPersonalSalesBonusController.text.isEmpty ? _payroll!.renewedPersonalSalesBonus : num.tryParse(renewedPersonalSalesBonusController.text)!,
-          managementSalesBonus: managementSalesBonusController.text.isEmpty ? _payroll!.managementSalesBonus : num.tryParse(managementSalesBonusController.text)!,
-          supporterSalesBonus: supporterSalesBonusController.text.isEmpty ? _payroll!.supporterSalesBonus : num.tryParse(supporterSalesBonusController.text)!,
-          clB20SalesBonus: clB20SalesBonusController.text.isEmpty ? _payroll!.clB20SalesBonus : num.tryParse(clB20SalesBonusController.text)!,
-          contentManagerFanpageTechnicalEmployeeBonus: contentManagerFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerFanpageTechnicalEmployeeBonus : num.tryParse(contentManagerFanpageTechnicalEmployeeBonusController.text)!,
-          collaboratorFanpageTechnicalEmployeeBonus: collaboratorFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorFanpageTechnicalEmployeeBonus : num.tryParse(collaboratorFanpageTechnicalEmployeeBonusController.text)!,
-          renewedFanpageTechnicalEmployeeBonus: renewedFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.renewedFanpageTechnicalEmployeeBonus : num.tryParse(renewedFanpageTechnicalEmployeeBonusController.text)!,
-          contentManagerWebsiteAdsTechnicalEmployeeBonus: contentManagerWebsiteAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus : num.tryParse(contentManagerWebsiteAdsTechnicalEmployeeBonusController.text)!,
-          collaboratorWebsiteTechnicalEmployeeBonus: collaboratorWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorWebsiteTechnicalEmployeeBonus : num.tryParse(collaboratorWebsiteTechnicalEmployeeBonusController.text)!,
-          renewedWebsiteTechnicalEmployeeBonus: renewedWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.renewedWebsiteTechnicalEmployeeBonus : num.tryParse(renewedWebsiteTechnicalEmployeeBonusController.text)!,
-          collaboratorAdsTechnicalEmployeeBonus: collaboratorAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorAdsTechnicalEmployeeBonus : num.tryParse(collaboratorAdsTechnicalEmployeeBonusController.text)!,
-          lecturerEducationTechnicalEmployeeBonus: lecturerEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.lecturerEducationTechnicalEmployeeBonus : num.tryParse(lecturerEducationTechnicalEmployeeBonusController.text)!,
-          tutorEducationTechnicalEmployeeBonus: tutorEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.tutorEducationTechnicalEmployeeBonus : num.tryParse(tutorEducationTechnicalEmployeeBonusController.text)!,
-          techcareEducationTechnicalEmployeeBonus: techcareEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.techcareEducationTechnicalEmployeeBonus : num.tryParse(techcareEducationTechnicalEmployeeBonusController.text)!,
-          emulationBonus: emulationBonusController.text.isEmpty ? _payroll!.emulationBonus : num.tryParse(emulationBonusController.text)!,
-          recruitmentBonus: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus : num.tryParse(recruitmentBonusController.text)!,
-          personalBonus: personalBonusController.text.isEmpty ? _payroll!.personalBonus : num.tryParse(personalBonusController.text)!,
-          teamBonus: teamBonusController.text.isEmpty ? _payroll!.teamBonus : num.tryParse(teamBonusController.text)!
+    Payroll payroll = Payroll(
+        payrollId: _payroll!.payrollId,
+        payrollCompanyId: _payroll!.payrollCompanyId,
+        accountId: _payroll!.accountId,
+        basicSalary: basicSalaryController.text.isEmpty ? _payroll!.basicSalary : num.tryParse(basicSalaryController.text)!,
+        allowance: allowanceController.text.isEmpty ? _payroll!.allowance : num.tryParse(allowanceController.text)!,
+        parkingFee: parkingFeeController.text.isEmpty ? _payroll!.parkingFee : num.tryParse(parkingFeeController.text)!,
+        fine: fineController.text.isEmpty ? _payroll!.fine : num.tryParse(fineController.text)!,
+        personalInsurance: personalInsuranceController.text.isEmpty ? _payroll!.personalInsurance : num.tryParse(personalInsuranceController.text)!,
+        companyInsurance: companyInsuranceController.text.isEmpty ? _payroll!.companyInsurance : num.tryParse(companyInsuranceController.text)!,
+        actualSalaryReceived: _payroll!.actualSalaryReceived,
+        newSignPersonalSalesBonus: newSignPersonalSalesBonusController.text.isEmpty ? _payroll!.newSignPersonalSalesBonus : num.tryParse(newSignPersonalSalesBonusController.text)!,
+        renewedPersonalSalesBonus: renewedPersonalSalesBonusController.text.isEmpty ? _payroll!.renewedPersonalSalesBonus : num.tryParse(renewedPersonalSalesBonusController.text)!,
+        managementSalesBonus: managementSalesBonusController.text.isEmpty ? _payroll!.managementSalesBonus : num.tryParse(managementSalesBonusController.text)!,
+        supporterSalesBonus: supporterSalesBonusController.text.isEmpty ? _payroll!.supporterSalesBonus : num.tryParse(supporterSalesBonusController.text)!,
+        clB20SalesBonus: clB20SalesBonusController.text.isEmpty ? _payroll!.clB20SalesBonus : num.tryParse(clB20SalesBonusController.text)!,
+        contentManagerFanpageTechnicalEmployeeBonus: contentManagerFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerFanpageTechnicalEmployeeBonus : num.tryParse(contentManagerFanpageTechnicalEmployeeBonusController.text)!,
+        collaboratorFanpageTechnicalEmployeeBonus: collaboratorFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorFanpageTechnicalEmployeeBonus : num.tryParse(collaboratorFanpageTechnicalEmployeeBonusController.text)!,
+        renewedFanpageTechnicalEmployeeBonus: renewedFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.renewedFanpageTechnicalEmployeeBonus : num.tryParse(renewedFanpageTechnicalEmployeeBonusController.text)!,
+        contentManagerWebsiteAdsTechnicalEmployeeBonus: contentManagerWebsiteAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerWebsiteAdsTechnicalEmployeeBonus : num.tryParse(contentManagerWebsiteAdsTechnicalEmployeeBonusController.text)!,
+        collaboratorWebsiteTechnicalEmployeeBonus: collaboratorWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorWebsiteTechnicalEmployeeBonus : num.tryParse(collaboratorWebsiteTechnicalEmployeeBonusController.text)!,
+        renewedWebsiteTechnicalEmployeeBonus: renewedWebsiteTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.renewedWebsiteTechnicalEmployeeBonus : num.tryParse(renewedWebsiteTechnicalEmployeeBonusController.text)!,
+        collaboratorAdsTechnicalEmployeeBonus: collaboratorAdsTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorAdsTechnicalEmployeeBonus : num.tryParse(collaboratorAdsTechnicalEmployeeBonusController.text)!,
+        lecturerEducationTechnicalEmployeeBonus: lecturerEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.lecturerEducationTechnicalEmployeeBonus : num.tryParse(lecturerEducationTechnicalEmployeeBonusController.text)!,
+        tutorEducationTechnicalEmployeeBonus: tutorEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.tutorEducationTechnicalEmployeeBonus : num.tryParse(tutorEducationTechnicalEmployeeBonusController.text)!,
+        techcareEducationTechnicalEmployeeBonus: techcareEducationTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.techcareEducationTechnicalEmployeeBonus : num.tryParse(techcareEducationTechnicalEmployeeBonusController.text)!,
+        emulationBonus: emulationBonusController.text.isEmpty ? _payroll!.emulationBonus : num.tryParse(emulationBonusController.text)!,
+        recruitmentBonus: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus : num.tryParse(recruitmentBonusController.text)!,
+        personalBonus: personalBonusController.text.isEmpty ? _payroll!.personalBonus : num.tryParse(personalBonusController.text)!,
+        teamBonus: teamBonusController.text.isEmpty ? _payroll!.teamBonus : num.tryParse(teamBonusController.text)!
     );
 
-      bool result = await PayrollViewModel().updatePayroll(payroll);
+    bool result = await PayrollViewModel().updatePayroll(payroll);
 
-      return result;
-  }
-
-  void _getPayrollCompany({required bool isRefresh}) async {
-    setState(() {
-      _maxPages = 1;
-    });
-
-    List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, isClosing: 1, limit: 1);
-
-    if(result!.isNotEmpty){
-      setState(() {
-        _payrollCompany = null;
-        _payrollCompany = result[0];
-        _maxPages = 1;
-        _getPayroll(isRefresh: true);
-      });
-    }else{
-      setState(() {
-        _maxPages = -1;
-      });
-    }
-  }
-
-  void _getPayroll({required bool isRefresh}) async {
-    setState(() {
-      _maxPages = 1;
-    });
-
-    List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, accountId: widget.empAccount.accountId, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1);
-
-    if(result!.isNotEmpty){
-      setState(() {
-        _payroll = null;
-        _payroll = result[0];
-        _maxPages = 1;
-      });
-    }else{
-      setState(() {
-        _maxPages = -1;
-      });
-    }
+    return result;
   }
 
   Container previousMonthPayroll() {

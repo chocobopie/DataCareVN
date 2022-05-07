@@ -20,7 +20,7 @@ class EmployeePayroll extends StatefulWidget {
 
 class _EmployeePayrollState extends State<EmployeePayroll> {
 
-  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month - 1);
+  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _fromDate, _toDate;
   final int _currentPage = 0;
   int _maxPages = 0;
@@ -301,7 +301,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
       _maxPages = 1;
     });
 
-    List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, isClosing: 1, limit: 1);
+    List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, limit: 1);
 
     if(result!.isNotEmpty){
       setState(() {

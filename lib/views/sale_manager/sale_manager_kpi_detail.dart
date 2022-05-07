@@ -9,18 +9,18 @@ import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_list_view_model.dart';
 import 'package:login_sample/view_models/sale_list_view_model.dart';
 
-class SaleManagerPayrollDetail extends StatefulWidget {
-  const SaleManagerPayrollDetail({Key? key, required this.saleEmployee, required this.fromDate, required this.toDate}) : super(key: key);
+class SaleManagerKpiDetail extends StatefulWidget {
+  const SaleManagerKpiDetail({Key? key, required this.saleEmployee, required this.fromDate, required this.toDate}) : super(key: key);
 
   final Account saleEmployee;
   final DateTime fromDate;
   final DateTime toDate;
 
   @override
-  _SaleManagerPayrollDetailState createState() => _SaleManagerPayrollDetailState();
+  _SaleManagerKpiDetailState createState() => _SaleManagerKpiDetailState();
 }
 
-class _SaleManagerPayrollDetailState extends State<SaleManagerPayrollDetail> {
+class _SaleManagerKpiDetailState extends State<SaleManagerKpiDetail> {
 
   Payroll? _payroll;
   Sale? _sale;

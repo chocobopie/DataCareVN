@@ -13,19 +13,19 @@ import 'package:login_sample/view_models/payroll_list_view_model.dart';
 import 'package:login_sample/view_models/sale_list_view_model.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/utilities/utils.dart';
-import 'package:login_sample/views/sale_manager/sale_manager_payroll_detail.dart';
+import 'package:login_sample/views/sale_manager/sale_manager_kpi_detail.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:provider/provider.dart';
 
 
-class SaleManagerPayrollManagement extends StatefulWidget {
-  const SaleManagerPayrollManagement({Key? key}) : super(key: key);
+class SaleManagerKpiReportManagement extends StatefulWidget {
+  const SaleManagerKpiReportManagement({Key? key}) : super(key: key);
 
   @override
-  _SaleManagerPayrollManagementState createState() => _SaleManagerPayrollManagementState();
+  _SaleManagerKpiReportManagementState createState() => _SaleManagerKpiReportManagementState();
 }
 
-class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagement> {
+class _SaleManagerKpiReportManagementState extends State<SaleManagerKpiReportManagement> {
 
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month - 1);
   DateTime? _fromDate, _toDate, _maxTime;
@@ -219,7 +219,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                TextButton.icon(
                                  onPressed: (){
                                    Navigator.push(context, MaterialPageRoute(
-                                       builder: (context) => SaleManagerPayrollDetail(
+                                       builder: (context) => SaleManagerKpiDetail(
                                          saleEmployee: _currentAccount!,
                                          fromDate: _fromDate!,
                                          toDate: _toDate!,
@@ -316,7 +316,7 @@ class _SaleManagerPayrollManagementState extends State<SaleManagerPayrollManagem
                                                  TextButton.icon(
                                                    onPressed: (){
                                                      Navigator.push(context, MaterialPageRoute(
-                                                         builder: (context) => SaleManagerPayrollDetail(
+                                                         builder: (context) => SaleManagerKpiDetail(
                                                            saleEmployee: _saleEmployee,
                                                            fromDate: _fromDate!,
                                                            toDate: _toDate!,

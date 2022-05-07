@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
-import 'package:login_sample/views/sale_manager/sale_manager_payroll_management.dart';
+import 'package:login_sample/views/sale_manager/sale_manager_kpi_report.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_contact_list.dart';
@@ -132,7 +132,7 @@ class _HomeSaleManagerState extends State<HomeSaleManager> {
                           text: 'Xem doanh thu của phòng ban',
                           buttonColors: const [Colors.green, Colors.white],
                           onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleManagerPayrollManagement()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SaleManagerKpiReportManagement()));
                           }
                       ),
                     ],
