@@ -4,10 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/payroll.dart';
+import 'package:login_sample/models/sale.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_list_view_model.dart';
+import 'package:login_sample/view_models/sale_list_view_model.dart';
+import 'package:login_sample/views/sale_employee/sale_deal_list.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:provider/provider.dart';
 
@@ -23,11 +26,13 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _fromDate, _toDate;
   final int _currentPage = 0;
-  int _maxPages = 0;
+  int _hasPayroll = 0, _hasSale = 0;
   late Account? _currentAccount;
+  num _totalRevenue = 0;
 
   PayrollCompany? _payrollCompany;
   Payroll? _payroll;
+  Sale? _sale;
 
   @override
   void initState() {
@@ -84,11 +89,12 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         );
 
                         if (date != null) {
-                          _payrollCompany = null;
-                          _payroll = null;
 
                           setState(() {
                             _selectedMonth = date;
+                            _payrollCompany = null;
+                            _payroll = null;
+                            _sale = null;
                           });
 
                           _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
@@ -110,7 +116,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                   ),
                   const SizedBox(height: 20.0,),
                   //Lương
-                  _maxPages >= 0 ? _payroll != null ? Container(
+                  _hasPayroll >= 0 ? _payroll != null ? Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: const BorderRadius.all(
@@ -268,8 +274,140 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         ],
                       ),
                     ),
-                  ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
-                  const SizedBox(height: 20.0,),
+                  ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu cho lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
+                  const SizedBox(height: 10.0,),
+                  if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
+                  _hasSale >= 0 ? _sale != null ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 1,
+                          offset: const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                      gradient: const LinearGradient(
+                        stops: [0.02, 0.01],
+                        colors: [Colors.green, Colors.white],
+                      ),
+                    ),
+                    child: Theme(
+                      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        initiallyExpanded: false,
+                        title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+                        trailing: TextButton(child: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => SaleDealList(saleId: _sale!.saleId, empAccount: _currentAccount!)
+                            ));
+                          },
+                        ),
+                        children: <Widget>[
+                          const Divider(color: Colors.blueGrey, thickness: 1.0,),
+                          ListTile(
+                              title: const Text(
+                                'Facebook content',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                                      Text(moneyFormat(_sale!.newSignFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0,),),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 20.0,),
+                                  Column(
+                                    children: <Widget>[
+                                      const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                                      Text(moneyFormat(_sale!.renewedFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                    ],
+                                  ),
+                                ],
+                              )
+                          ),
+                          ListTile(
+                              title: const Text('Đào tạo', style: TextStyle(fontSize: 12.0,),),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                                      Text(moneyFormat(_sale!.newSignEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 20.0,),
+                                  Column(
+                                    children: <Widget>[
+                                      const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                                      Text(moneyFormat(_sale!.renewedEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                    ],
+                                  ),
+                                ],
+                              )
+                          ),
+                          ListTile(
+                              title: const Text('Website content', style: TextStyle(fontSize: 12.0,),),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                                      Text(moneyFormat(_sale!.newSignWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 20.0,),
+                                  Column(
+                                    children: <Widget>[
+                                      const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                                      Text(moneyFormat(_sale!.renewedWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                                    ],
+                                  ),
+                                ],
+                              )
+                          ),
+                          ListTile(
+                            title: const Text('Ads', style: TextStyle(fontSize: 12.0,),),
+                            trailing: Text(moneyFormat(_sale!.adsSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                          ),
+                          const Divider(color: Colors.grey,thickness: 1.0,),
+                          ListTile(
+                            title: const Text('KPI', style: TextStyle(fontSize: 12.0,),),
+                            trailing: Text(moneyFormat(_sale!.kpi.toString()), style: const TextStyle(fontSize: 12.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
+                            trailing: Text( '${((_totalRevenue / _sale!.kpi) * 100).round()} %', style: const TextStyle(fontSize: 12.0,),),
+                          ),
+                          ListTile(
+                            title: const  Text('Doanh thu đạt được',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ',
+                              style: const  TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu cho doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
                 ],
               )
           ),
@@ -298,7 +436,8 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
   
   void _getPayrollCompany({required bool isRefresh}) async {
     setState(() {
-      _maxPages = 1;
+      _hasPayroll = 0;
+      _hasSale = 0;
     });
 
     List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, limit: 1);
@@ -306,31 +445,61 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
     if(result!.isNotEmpty){
       setState(() {
         _payrollCompany = result[0];
-        _maxPages = 1;
+        _hasPayroll = 1;
         _getPayroll(isRefresh: true);
       });
     }else{
       setState(() {
-        _maxPages = -1;
+        _hasPayroll = -1;
+        _hasSale = -1;
       });
     }
   }
 
   void _getPayroll({required bool isRefresh}) async {
     setState(() {
-      _maxPages = 1;
+      _hasPayroll = 0;
+      _hasSale = 0;
     });
 
     List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, accountId: _currentAccount!.accountId, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1);
 
     if(result!.isNotEmpty){
       setState(() {
+        _payroll = null;
         _payroll = result[0];
-        _maxPages = 1;
+        _hasPayroll = 1;
+      });
+      if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
+        {
+          _getSale(isRefresh: true);
+        }
+    }else{
+      setState(() {
+        _hasPayroll = -1;
+        _hasSale = -1;
+      });
+    }
+  }
+
+  void _getSale({required bool isRefresh}) async {
+    setState(() {
+      _hasSale = 0;
+    });
+
+    List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: 0, payrollCompanyId: _payrollCompany!.payrollCompanyId, payrollId: _payroll!.payrollId, limit: 1);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _sale = null;
+        _sale = result[0];
+        _hasSale = 1;
+        _totalRevenue = _sale!.adsSales + _sale!.newSignWebsiteContentSales + _sale!.newSignEducationSales + _sale!.newSignFacebookContentSales
+            + _sale!.renewedWebsiteContentSales + _sale!.renewedEducationSales + _sale!.renewedFacebookContentSales;
       });
     }else{
       setState(() {
-        _maxPages = -1;
+        _hasSale = -1;
       });
     }
   }
@@ -411,109 +580,6 @@ class BonusExpansionTile2 extends StatelessWidget {
               trailing: Text(''
                   '2.060.500 VNĐ',
                 style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class PayrollExpansionTile extends StatelessWidget {
-  const PayrollExpansionTile({
-    Key? key, required this.selectedDate, required this.payrollTitleStatus, required this.currentAccount,
-  }) : super(key: key);
-
-  final DateTime selectedDate;
-  final String payrollTitleStatus;
-  final Account currentAccount;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(5.0),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            blurRadius: 1,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-        gradient: const LinearGradient(
-          stops: [0.02, 0.01],
-          colors: [Colors.red, Colors.white],
-        ),
-      ),
-      child: Theme(
-        data: ThemeData().copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          title: Text('Lương tháng ${DateFormat('dd-MM-yyyy').format(selectedDate).substring(3, 10)} - $payrollTitleStatus', style: const TextStyle(fontSize: 14.0),),
-          trailing: const Text('14.670.000 VNĐ'),
-          children: <Widget>[
-            const Divider(color: Colors.blueGrey, thickness: 1.0,),
-            if(currentAccount.roleId != 1)
-            const ListTile(
-              title: Text('Hợp đồng đào tạo - Ký mới', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('1.500.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            if(currentAccount.roleId != 1)
-            const ListTile(
-              title: Text('Tiền quảng cáo', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('500.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            if(currentAccount.roleId != 1)
-            const ListTile(
-              title: Text('Tiền thưởng hỗ trợ sale', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('500.0000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            if(currentAccount.roleId != 1)
-            const ListTile(
-              title: Text('Tiền thưởng quản lý Fanpage', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('200.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            if(currentAccount.roleId != 1)
-            const ListTile(
-              title: Text('Tiền thưởng quản lý content cho Fanpage', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('700.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            ListTile(
-              title: const Text('Lương cơ bản', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text(currentAccount.roleId == 1 ? '10.000.000 VNĐ' : '3.000.000 VNĐ' , style: const TextStyle(fontSize: 12.0,),),
-            ),
-            const ListTile(
-              title: Text('Tiền gửi xe', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('30.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            const ListTile(
-              title: Text('Tiền phạt', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('0 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            const ListTile(
-              title: Text('Bảo hiểm cá nhân', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('100.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            const ListTile(
-              title: Text('Bảo hiểm công ty đóng', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('100.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            ListTile(
-              title: const Text(
-                'Thực nhận',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              trailing: Text( currentAccount.roleId != 1 ? '14.670.000 VNĐ' : '9.770.000 VNĐ',
-                style: const TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,
                 ),

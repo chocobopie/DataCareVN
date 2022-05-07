@@ -399,7 +399,6 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
                               trailing: TextButton(child: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
                                 onPressed: (){
-                                  print(_sale!.saleId);
                                   Navigator.push(context, MaterialPageRoute(
                                       builder: (context) => SaleDealList(saleId: _sale!.saleId, empAccount: widget.empAccount)
                                   ));
