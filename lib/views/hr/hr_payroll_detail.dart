@@ -9,6 +9,7 @@ import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_view_model.dart';
 import 'package:login_sample/view_models/sale_list_view_model.dart';
+import 'package:login_sample/view_models/sale_view_model.dart';
 import 'package:login_sample/widgets/CustomListTile.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
@@ -33,7 +34,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   final int _currentPage = 0;
   int _hasPayroll = 0, _hasSale = 0;
   num _totalRevenue = 0;
-  bool _readOnlyPayroll = false, _readOnlyKPI = false;
+  bool _readOnlyPayroll = true, _readOnlyKPI = false;
 
   PayrollCompany? _payrollCompany;
   Payroll? _payroll;
@@ -219,28 +220,19 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                   );
 
                                   if (date != null) {
+                                    _resetController();
                                     setState(() {
                                       _selectedMonth = date;
                                       _payrollCompany = null;
                                       _payroll = null;
                                       _sale = null;
                                     });
+
                                     if( _selectedMonth.month == DateTime.now().month - 1 && _selectedMonth.year == DateTime.now().year && DateTime.now().day >= 1 && DateTime.now().day <= 5 ){
                                       setState(() {
                                         _readOnlyPayroll = false;
                                       });
                                       print('false');
-                                    }else if( _selectedMonth.month == DateTime.now().month && _selectedMonth.year == DateTime.now().year ){
-                                      setState(() {
-                                        _readOnlyPayroll = false;
-                                      });
-                                      print('true');
-                                    }else{
-                                      setState(() {
-                                        setState(() {
-                                          _readOnlyPayroll = true;
-                                        });
-                                      });
                                     }
 
                                     if( _selectedMonth.month >= DateTime.now().month -1 && _selectedMonth.year == DateTime.now().year ){
@@ -285,7 +277,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                       const SizedBox(height: 20.0,),
                       //Xem && cập nhật lương
                       if(_maxTime != null)
-                      if(_selectedMonth.month >= _maxTime!.month - 1 && _selectedMonth.year == _maxTime!.year)
+                      // if(_selectedMonth.month >= _maxTime!.month - 1 && _selectedMonth.year == _maxTime!.year)
                         _hasPayroll >= 0 ? _payroll != null ? Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -347,7 +339,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                             color: mainBgColor,
                                             text: 'Lưu',
                                             onPressed: () async {
-                                              _reverseMoneyFormat();
+                                              _reversePayrollMoneyFormat();
                                               showLoaderDialog(context);
                                               bool result = await _updateAPayroll();
                                               if(result == true){
@@ -377,8 +369,9 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
 
                       const SizedBox(height: 10.0,),
                       //Xem && cập nhật KPI
+                      if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)
                       if(_maxTime != null)
-                        if(_selectedMonth.month >= _maxTime!.month - 1 && _selectedMonth.year == _maxTime!.year)
+                        // if(_selectedMonth.month >= _maxTime!.month - 1 && _selectedMonth.year == _maxTime!.year)
                         _hasSale >= 0 ? _sale != null ? Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -495,28 +488,44 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                )
+                                ),
+                                if(_readOnlyKPI == false)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomTextButton(
+                                            color: mainBgColor,
+                                            text: 'Lưu',
+                                            onPressed: () async {
+                                              _reverseKPIMoneyFormat();
+                                              showLoaderDialog(context);
+                                              bool result = await _updateKPI();
+                                              if(result == true){
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text('Cập nhật KPI cho ${widget.empAccount.fullname} thành công')),
+                                                );
+                                                Future.delayed(const Duration(seconds: 1), (){
+                                                  Navigator.pop(context);
+                                                });
+                                              }else{
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text('Cập nhật KPI cho ${widget.empAccount.fullname} thất bại')),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
                               ],
                             ),
                           ),
                         ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu')),
-
-                      //Lương tháng trước
-                      if(_maxTime != null)
-                      if(_selectedMonth.isBefore(_maxTime!) && _selectedMonth.month < _maxTime!.month - 1 && _selectedMonth.year <= _maxTime!.year)
-                        _hasPayroll >= 0 ? _payroll != null ? previousMonthPayroll()
-                            : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu cho lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
-
-                      //Doanh thu tháng trước
-                      if(_maxTime != null)
-                        if(_selectedMonth.isBefore(_maxTime!) && _selectedMonth.month < _maxTime!.month - 1 && _selectedMonth.year <= _maxTime!.year)
-                      if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)
-                      _hasSale >= 0 ? _sale != null ? previousMonthKpi()
-                          : const Padding(padding: EdgeInsets.only(top: 10.0), child: Center(child: CircularProgressIndicator()),
-                      ) : Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Center(child: Text('Không có dữ liệu cho doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
-                      ),
 
                       const SizedBox(height: 50.0,),
                     ],
@@ -614,137 +623,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     }
   }
 
-  Padding previousMonthKpi() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(5.0),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 1,
-              offset: const Offset(0, 3), // changes position of shadow
-            ),
-          ],
-          gradient: const LinearGradient(
-            stops: [0.02, 0.01],
-            colors: [Colors.green, Colors.white],
-          ),
-        ),
-        child: Theme(
-          data: ThemeData().copyWith(dividerColor: Colors.transparent),
-          child: ExpansionTile(
-            title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
-            trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
-            children: <Widget>[
-              const Divider(color: Colors.blueGrey, thickness: 1.0,),
-              ListTile(
-                  title: const Text(
-                    'Facebook content',
-                    style: TextStyle(
-                      fontSize: 12.0,
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.newSignFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0,),),
-                        ],
-                      ),
-                      const SizedBox(width: 20.0,),
-                      Column(
-                        children: <Widget>[
-                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.renewedFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                    ],
-                  )
-              ),
-              ListTile(
-                  title: const Text('Đào tạo', style: TextStyle(fontSize: 12.0,),),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.newSignEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                      const SizedBox(width: 20.0,),
-                      Column(
-                        children: <Widget>[
-                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.renewedEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                    ],
-                  )
-              ),
-              ListTile(
-                  title: const Text('Website content', style: TextStyle(fontSize: 12.0,),),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.newSignWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                      const SizedBox(width: 20.0,),
-                      Column(
-                        children: <Widget>[
-                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
-                          Text(moneyFormat(_sale!.renewedWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                        ],
-                      ),
-                    ],
-                  )
-              ),
-              ListTile(
-                title: const Text('Ads', style: TextStyle(fontSize: 12.0,),),
-                trailing: Text(moneyFormat(_sale!.adsSales.toString()), style: const TextStyle(fontSize: 12.0),),
-              ),
-              const Divider(color: Colors.grey,thickness: 1.0,),
-              ListTile(
-                title: const Text('KPI', style: TextStyle(fontSize: 12.0,),),
-                trailing: Text(moneyFormat(_sale!.kpi.toString()), style: const TextStyle(fontSize: 12.0,),),
-              ),
-              ListTile(
-                title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
-                trailing: Text( '${((_totalRevenue / _sale!.kpi) * 100).round()} %', style: const TextStyle(fontSize: 12.0,),),
-              ),
-              ListTile(
-                title: const  Text('Doanh thu đạt được',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ' ,
-                  style: const  TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _reverseMoneyFormat(){
+  void _reversePayrollMoneyFormat(){
     basicSalaryController.text = basicSalaryController.text.replaceAll('.', '');
     allowanceController.text = allowanceController.text.replaceAll('.', '');
     parkingFeeController.text = parkingFeeController.text.replaceAll('.', '');
@@ -771,6 +650,60 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     recruitmentBonusController.text = recruitmentBonusController.text.replaceAll('.', '');
     personalBonusController.text = personalBonusController.text.replaceAll('.', '');
     teamBonusController.text = teamBonusController.text.replaceAll('.', '');
+  }
+
+  void _reverseKPIMoneyFormat(){
+    saleKPIController.text = saleKPIController.text.replaceAll('.', '');
+  }
+
+  void _resetController(){
+    basicSalaryController.clear();
+    allowanceController.clear();
+    parkingFeeController.clear();
+    fineController.clear();
+    personalInsuranceController.clear();
+    companyInsuranceController.clear();
+    actualSalaryReceivedController.clear();
+    newSignPersonalSalesBonusController.clear();
+    renewedPersonalSalesBonusController.clear();
+    managementSalesBonusController.clear();
+    supporterSalesBonusController.clear();
+    clB20SalesBonusController.clear();
+    contentManagerFanpageTechnicalEmployeeBonusController.clear();
+    collaboratorFanpageTechnicalEmployeeBonusController.clear();
+    renewedFanpageTechnicalEmployeeBonusController.clear();
+    contentManagerWebsiteAdsTechnicalEmployeeBonusController.clear();
+    collaboratorWebsiteTechnicalEmployeeBonusController.clear();
+    renewedWebsiteTechnicalEmployeeBonusController.clear();
+    collaboratorAdsTechnicalEmployeeBonusController.clear();
+    lecturerEducationTechnicalEmployeeBonusController.clear();
+    tutorEducationTechnicalEmployeeBonusController.clear();
+    techcareEducationTechnicalEmployeeBonusController.clear();
+    emulationBonusController.clear();
+    recruitmentBonusController.clear();
+    personalBonusController.clear();
+    teamBonusController.clear();
+    saleKPIController.clear();
+  }
+
+  Future<bool> _updateKPI() async {
+
+    Sale sale = Sale(
+        saleId: _sale!.saleId,
+        payrollId: _sale!.payrollId,
+        kpi: saleKPIController.text.isEmpty ? _sale!.kpi : num.tryParse(saleKPIController.text)!,
+        newSignEducationSales: _sale!.newSignEducationSales,
+        renewedEducationSales: _sale!.renewedEducationSales,
+        newSignFacebookContentSales: _sale!.newSignFacebookContentSales,
+        renewedFacebookContentSales: _sale!.renewedFacebookContentSales,
+        newSignWebsiteContentSales: _sale!.newSignWebsiteContentSales,
+        renewedWebsiteContentSales: _sale!.renewedWebsiteContentSales,
+        adsSales: _sale!.adsSales
+    );
+
+    bool result = await SaleViewModel().updateKPI(sale);
+
+    return result;
   }
 
   Future<bool> _updateAPayroll() async {
@@ -968,6 +901,136 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Padding previousMonthKpi() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5.0),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              blurRadius: 1,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+          gradient: const LinearGradient(
+            stops: [0.02, 0.01],
+            colors: [Colors.green, Colors.white],
+          ),
+        ),
+        child: Theme(
+          data: ThemeData().copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+            trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
+            children: <Widget>[
+              const Divider(color: Colors.blueGrey, thickness: 1.0,),
+              ListTile(
+                  title: const Text(
+                    'Facebook content',
+                    style: TextStyle(
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.newSignFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0,),),
+                        ],
+                      ),
+                      const SizedBox(width: 20.0,),
+                      Column(
+                        children: <Widget>[
+                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.renewedFacebookContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+              ListTile(
+                  title: const Text('Đào tạo', style: TextStyle(fontSize: 12.0,),),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.newSignEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                      const SizedBox(width: 20.0,),
+                      Column(
+                        children: <Widget>[
+                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.renewedEducationSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+              ListTile(
+                  title: const Text('Website content', style: TextStyle(fontSize: 12.0,),),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          const Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.newSignWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                      const SizedBox(width: 20.0,),
+                      Column(
+                        children: <Widget>[
+                          const Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
+                          Text(moneyFormat(_sale!.renewedWebsiteContentSales.toString()), style: const TextStyle(fontSize: 12.0),),
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+              ListTile(
+                title: const Text('Ads', style: TextStyle(fontSize: 12.0,),),
+                trailing: Text(moneyFormat(_sale!.adsSales.toString()), style: const TextStyle(fontSize: 12.0),),
+              ),
+              const Divider(color: Colors.grey,thickness: 1.0,),
+              ListTile(
+                title: const Text('KPI', style: TextStyle(fontSize: 12.0,),),
+                trailing: Text(moneyFormat(_sale!.kpi.toString()), style: const TextStyle(fontSize: 12.0,),),
+              ),
+              ListTile(
+                title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
+                trailing: Text( '${((_totalRevenue / _sale!.kpi) * 100).round()} %', style: const TextStyle(fontSize: 12.0,),),
+              ),
+              ListTile(
+                title: const  Text('Doanh thu đạt được',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ' ,
+                  style: const  TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

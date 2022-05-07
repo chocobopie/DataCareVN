@@ -1758,5 +1758,27 @@ class ApiService {
       return result;
     }
   }
+
+  Future<bool> updateKPI(Sale sale) async {
+
+    String url = stockUrl + 'sales/${sale.saleId}';
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "saleId": sale.saleId,
+        "kpi": sale.kpi
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update KPI successfully | 200');
+      return true;
+    }else{
+      print('Update KPI failed | 400');
+      return false;
+    }
+  }
 }
 
