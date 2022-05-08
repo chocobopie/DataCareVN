@@ -3,19 +3,23 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/account.dart';
+import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/payroll.dart';
 import 'package:login_sample/models/sale.dart';
+import 'package:login_sample/view_models/deal_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_view_model.dart';
 import 'package:login_sample/view_models/sale_list_view_model.dart';
 import 'package:login_sample/view_models/sale_view_model.dart';
 import 'package:login_sample/views/sale_employee/sale_deal_list.dart';
+import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/widgets/CustomListTile.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:login_sample/widgets/CustomReadOnlyTextField.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HrManagerPayrollDetail extends StatefulWidget {
   const HrManagerPayrollDetail({Key? key, required this.empAccount})
@@ -31,14 +35,16 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
 
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _fromDate, _toDate, _maxTime;
-  final int _currentPage = 0;
-  int _hasPayroll = 0, _hasSale = 0;
+  int _hasPayroll = 0, _hasSale = 0, _currentPage = 0, _maxPages = 0;
   num _totalRevenue = 0;
   bool _readOnlyPayroll = true, _readOnlyKPI = false;
+  late final List<Deal> _deals = [];
 
   PayrollCompany? _payrollCompany;
   Payroll? _payroll;
   Sale? _sale;
+
+  final RefreshController _refreshController = RefreshController();
 
   final TextEditingController basicSalaryController = TextEditingController();
   final TextEditingController allowanceController = TextEditingController();
@@ -79,6 +85,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
 
   @override
   void dispose() {
+    _refreshController.dispose();
     saleKPIController.dispose();
     basicSalaryController.dispose();
     allowanceController.dispose();
@@ -397,13 +404,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
                               title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
-                              trailing: TextButton(child: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
-                                onPressed: (){
-                                  Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => SaleDealList(saleId: _sale!.saleId, empAccount: widget.empAccount)
-                                  ));
-                                },
-                              ),
+                              trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
                                 ListTile(
@@ -535,7 +536,130 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                           ),
                         ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu của doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
 
-                      const SizedBox(height: 50.0,),
+                      const SizedBox(height: 10.0,),
+                      //Xem hợp đồng
+                      if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)
+                        if(_maxTime != null)
+                          _maxPages >= 0 ? _deals.isNotEmpty ? Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(5.0),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  blurRadius: 1,
+                                  offset: const Offset(0, 3), // changes position of shadow
+                                ),
+                              ],
+                              gradient: const LinearGradient(
+                                stops: [0.02, 0.01],
+                                colors: [Colors.orange, Colors.white],
+                              ),
+                            ),
+                            child: Theme(
+                              data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                              child: ExpansionTile(
+                                title: Text('Danh sách hợp đồng đã xuống tiền tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+                                children: <Widget>[
+                                  const Divider(color: Colors.blueGrey, thickness: 1.0,),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.5,
+                                    child: SmartRefresher(
+                                      controller: _refreshController,
+                                      enablePullUp: true,
+                                      onRefresh: () async{
+                                        setState(() {
+                                          _deals.clear();
+                                        });
+                                        _refreshController.resetNoData();
+
+                                        _getDealListBySaleId(isRefresh: true);
+
+                                        if(_deals.isNotEmpty){
+                                          _refreshController.refreshCompleted();
+                                        }else{
+                                          _refreshController.refreshFailed();
+                                        }
+                                      },
+                                      child: ListView.builder(
+                                        itemBuilder: (context, index){
+                                          final deal = _deals[index];
+                                          return Padding(
+                                              padding: const EdgeInsets.only(bottom: 10.0, left: 15.0),
+                                              child: Card(
+                                                elevation: 10.0,
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.all(Radius.circular(10))
+                                                ),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(context, MaterialPageRoute(
+                                                        builder: (context) => SaleEmpDealDetail(deal: deal, readOnly: true,)
+                                                    ));
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: Column(
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              const Text('Mã số hợp đồng:', style: TextStyle(fontSize: 12.0),),
+                                                              const Spacer(),
+                                                              Text('${deal.dealId}', style: const TextStyle(fontSize: 14.0),),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              const Text('Loại dịch vụ:', style: TextStyle(fontSize: 12.0),),
+                                                              const Spacer(),
+                                                              Text( dealServicesNames[deal.serviceId], style: const TextStyle(fontSize: 14.0)),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              const Text('Loại hợp đồng:', style: TextStyle(fontSize: 12.0),),
+                                                              const Spacer(),
+                                                              Text( dealTypesNames[deal.dealTypeId], style: const TextStyle(fontSize: 14.0)),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              const Text('Số tiền:', style: TextStyle(fontSize: 12.0),),
+                                                              const Spacer(),
+                                                              Text(deal.amount > 0 ? '${formatNumber(deal.amount.toString().replaceAll('.', ''))} đ' : 'Chưa chốt giá', style: const TextStyle(fontSize: 14.0),),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+
+                                          );
+                                        },
+                                        itemCount: _deals.length,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ) : const Center(child: CircularProgressIndicator()) : Text('Không có dữ liệu cho các hợp đồng đã xuống tiền trong tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}'),
+                      const SizedBox(height: 40.0,),
                     ],
                   ),
                 ),
@@ -565,9 +689,11 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     setState(() {
       _hasPayroll = 0;
       _hasSale = 0;
+      _maxPages = 0;
+      _deals.clear();
     });
 
-    List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: _currentPage, fromDate: _fromDate, toDate: _toDate, limit: 1);
+    List<PayrollCompany>? result = await PayrollCompanyListViewModel().getListPayrollCompany(isRefresh: isRefresh, currentPage: 0, fromDate: _fromDate, toDate: _toDate, limit: 1);
 
     if(result!.isNotEmpty){
       setState(() {
@@ -580,6 +706,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
       setState(() {
         _hasPayroll = -1;
         _hasSale = -1;
+        _maxPages = -1;
       });
     }
   }
@@ -588,9 +715,10 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     setState(() {
       _hasPayroll = 0;
       _hasSale = 0;
+      _maxPages = 0;
     });
 
-    List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: _currentPage, accountId: widget.empAccount.accountId, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1);
+    List<Payroll>? result = await PayrollListViewModel().getListPayroll(isRefresh: isRefresh, currentPage: 0, accountId: widget.empAccount.accountId, payrollCompanyId: _payrollCompany!.payrollCompanyId, limit: 1);
 
     if(result!.isNotEmpty){
       setState(() {
@@ -605,6 +733,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
       setState(() {
         _hasPayroll = -1;
         _hasSale = -1;
+        _maxPages = -1;
       });
     }
   }
@@ -612,6 +741,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   void _getSale({required bool isRefresh}) async {
     setState(() {
       _hasSale = 0;
+      _maxPages = 0;
     });
 
     List<Sale>? result = await SaleListViewModel().getListSales(isRefresh: isRefresh, currentPage: 0, payrollCompanyId: _payrollCompany!.payrollCompanyId, payrollId: _payroll!.payrollId, limit: 1);
@@ -624,9 +754,33 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
         _totalRevenue = _sale!.adsSales + _sale!.newSignWebsiteContentSales + _sale!.newSignEducationSales + _sale!.newSignFacebookContentSales
             + _sale!.renewedWebsiteContentSales + _sale!.renewedEducationSales + _sale!.renewedFacebookContentSales;
       });
+      print(_sale!.saleId);
+      _getDealListBySaleId(isRefresh: true);
     }else{
       setState(() {
         _hasSale = -1;
+        _maxPages = -1;
+      });
+    }
+  }
+
+  void _getDealListBySaleId({required bool isRefresh}) async {
+    setState(() {
+      _maxPages = 0;
+    });
+
+    List<Deal>? result = await DealListViewModel().getDealListBySaleId(saleId: _sale!.saleId, isRefresh: isRefresh, currentPage: 0, limit: 1000000);
+
+    if(result!.isNotEmpty){
+      setState(() {
+        _deals.clear();
+        _deals.addAll(result);
+        _maxPages = _deals[0].maxPage!;
+        _refreshController.loadNoData();
+      });
+    }else{
+      setState(() {
+        _maxPages = -1;
       });
     }
   }
