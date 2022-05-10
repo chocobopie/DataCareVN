@@ -23,6 +23,8 @@ class AdminAccountAdd extends StatefulWidget {
 class _AdminAccountAddState extends State<AdminAccountAdd> {
 
   final TextEditingController _accountEmail = TextEditingController();
+  final TextEditingController _empBasicSalaryController = TextEditingController();
+  final TextEditingController _saleEmpKpiController = TextEditingController();
 
   Department? _filterDepartment, _filterDepartmentPerm;
   Team? _filterTeam, _filterTeamPerm;
@@ -36,12 +38,13 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
   int? _accountViewId, _attendanceViewId, _attendanceUpdateId;
   int? _filterViewId, _filterBlockId;
 
-
   @override
   void dispose() {
     super.dispose();
     _accountEmail.dispose();
-  }
+    _empBasicSalaryController.dispose();
+    _saleEmpKpiController.dispose();
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +146,8 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                                       _departmentPermNameString = '';
                                       _filterTeamPerm = null;
                                       _teamPermNameString = '';
+                                      _empBasicSalaryController.clear();
+                                      _saleEmpKpiController.clear();
 
                                       if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5){
                                         _filterBlockId = 1;
@@ -178,6 +183,47 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
                           ],
                         ),
                       ),
+                      if(_filterRole != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: CustomEditableTextFormField(
+                                  inputMoney: true,
+                                  isNull: false,
+                                  borderColor: mainBgColor,
+                                  inputNumberOnly: true,
+                                  text: _empBasicSalaryController.text.isNotEmpty ? formatNumber(_empBasicSalaryController.text.replaceAll('.', '')) : _empBasicSalaryController.text,
+                                  title: 'Lương cơ bản',
+                                  readonly: false,
+                                  textEditingController: _empBasicSalaryController
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if(_filterRole != null)
+                        if(_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: CustomEditableTextFormField(
+                                    inputMoney: true,
+                                    isNull: false,
+                                    borderColor: mainBgColor,
+                                    inputNumberOnly: true,
+                                    text: _saleEmpKpiController.text.isNotEmpty ? formatNumber(_saleEmpKpiController.text.replaceAll('.', '')) : _saleEmpKpiController.text,
+                                    title: 'KPI',
+                                    readonly: false,
+                                    textEditingController: _saleEmpKpiController
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       if(_filterBlockId != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
@@ -722,7 +768,9 @@ class _AdminAccountAddState extends State<AdminAccountAdd> {
           viewAttendancePermissionId: _attendanceViewId ?? 0,
           viewContactPermissionId: _contactViewId ?? 0,
           viewDealPermissionId: _dealViewId ?? 0,
-          viewIssuePermissionId: _issueViewId ?? 0
+          viewIssuePermissionId: _issueViewId ?? 0,
+          basicSalary: num.tryParse(_empBasicSalaryController.text),
+          kpi: (_filterRole!.roleId == 3 || _filterRole!.roleId == 4 || _filterRole!.roleId == 5) ? num.tryParse(_saleEmpKpiController.text) : null
       );
 
       RegisterAccount? data = await AccountRegisterViewModel().registerAnAccount(registerAccount);

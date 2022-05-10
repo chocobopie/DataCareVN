@@ -28,6 +28,8 @@ class RegisterAccount {
     required this.viewIssuePermissionId,
     required this.updateIssuePermissionId,
     required this.deleteIssuePermissionId,
+    this.basicSalary,
+    this.kpi,
   });
 
   String email;
@@ -52,6 +54,8 @@ class RegisterAccount {
   int? viewIssuePermissionId;
   int? updateIssuePermissionId;
   int? deleteIssuePermissionId;
+  num? basicSalary;
+  num? kpi;
 
   factory RegisterAccount.fromJson(Map<String, dynamic> json) => RegisterAccount(
     email: json["email"],
@@ -76,6 +80,8 @@ class RegisterAccount {
     viewIssuePermissionId: json["viewIssuePermissionId"],
     updateIssuePermissionId: json["updateIssuePermissionId"],
     deleteIssuePermissionId: json["deleteIssuePermissionId"],
+    basicSalary: json["basicSalary"],
+    kpi: json["kpi"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -101,5 +107,7 @@ class RegisterAccount {
     "viewIssuePermissionId": viewIssuePermissionId,
     "updateIssuePermissionId": updateIssuePermissionId,
     "deleteIssuePermissionId": deleteIssuePermissionId,
+    "basicSalary": basicSalary,
+    "kpi": kpi,
   };
 }

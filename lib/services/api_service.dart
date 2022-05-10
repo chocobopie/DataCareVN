@@ -523,7 +523,9 @@ class ApiService {
         "createIssuePermissionId": registerAccount.createIssuePermissionId,
         "viewIssuePermissionId": registerAccount.viewIssuePermissionId,
         "updateIssuePermissionId": registerAccount.updateIssuePermissionId,
-        "deleteIssuePermissionId": registerAccount.deleteIssuePermissionId
+        "deleteIssuePermissionId": registerAccount.deleteIssuePermissionId,
+        "basicSalary": registerAccount.basicSalary,
+        "kpi": registerAccount.kpi
       }),
     );
 

@@ -306,7 +306,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                           child: Theme(
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
-                              title: Text('Lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+                              title: Text('Lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)} ${_payrollCompany?.isClosing == 0 ? '- Dự kiến' : ''}', style: const TextStyle(fontSize: 14.0),),
                               trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
@@ -570,18 +570,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                       controller: _refreshController,
                                       enablePullUp: true,
                                       onRefresh: () async{
-                                        setState(() {
-                                          _deals.clear();
-                                        });
-                                        _refreshController.resetNoData();
-
-                                        _getDealListBySaleId(isRefresh: true);
-
-                                        if(_deals.isNotEmpty){
-                                          _refreshController.refreshCompleted();
-                                        }else{
-                                          _refreshController.refreshFailed();
-                                        }
+                                        _refreshController.refreshCompleted();
                                       },
                                       child: ListView.builder(
                                         itemBuilder: (context, index){
@@ -690,6 +679,9 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
       _hasPayroll = 0;
       _hasSale = 0;
       _maxPages = 0;
+      _payrollCompany = null;
+      _payroll = null;
+      _sale = null;
       _deals.clear();
     });
 
