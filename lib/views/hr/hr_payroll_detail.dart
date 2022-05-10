@@ -306,7 +306,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                           child: Theme(
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
-                              title: Text('Lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)} ${_payrollCompany?.isClosing == 0 ? '- Dự kiến' : ''}', style: const TextStyle(fontSize: 14.0),),
+                              title: Text('Lương ${_payrollCompany?.isClosing == 0 ? '- Dự kiến' : ''}', style: const TextStyle(fontSize: 14.0),),
                               trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
@@ -375,7 +375,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               ],
                             ),
                           ),
-                        ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu của lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
+                        ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu của lương')),
 
                       const SizedBox(height: 10.0,),
                       //Xem && cập nhật KPI
@@ -403,7 +403,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                           child: Theme(
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
-                              title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+                              title: const Text('Doanh thu', style: TextStyle(fontSize: 14.0),),
                               trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
@@ -534,7 +534,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               ],
                             ),
                           ),
-                        ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu của doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
+                        ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu của doanh thu')),
 
                       const SizedBox(height: 10.0,),
                       //Xem hợp đồng
@@ -561,7 +561,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                             child: Theme(
                               data: ThemeData().copyWith(dividerColor: Colors.transparent),
                               child: ExpansionTile(
-                                title: Text('Danh sách hợp đồng đã xuống tiền tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+                                title: const Text('Danh sách hợp đồng đã xuống tiền', style: TextStyle(fontSize: 14.0),),
                                 children: <Widget>[
                                   const Divider(color: Colors.blueGrey, thickness: 1.0,),
                                   SizedBox(
@@ -647,7 +647,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 ],
                               ),
                             ),
-                          ) : const Center(child: CircularProgressIndicator()) : Text('Không có dữ liệu cho các hợp đồng đã xuống tiền trong tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}'),
+                          ) : const Center(child: CircularProgressIndicator()) : Text('Không có dữ liệu của các hợp đồng đã xuống tiền'),
                       const SizedBox(height: 40.0,),
                     ],
                   ),

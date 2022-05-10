@@ -149,7 +149,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                     child: Theme(
                       data: ThemeData().copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
-                        title: Text('Lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)} ${_payrollCompany?.isClosing == 0 ? '- Dự kiến' : ''}', style: const TextStyle(fontSize: 14.0),),
+                        title: Text('Lương ${_payrollCompany?.isClosing == 0 ? '- Dự kiến' : ''}', style: const TextStyle(fontSize: 14.0),),
                         trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
                         children: <Widget>[
                           const Divider(color: Colors.blueGrey, thickness: 1.0,),
@@ -286,7 +286,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         ],
                       ),
                     ),
-                  ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu cho lương tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
+                  ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu của lương')),
                   const SizedBox(height: 10.0,),
                   //Doanh thu
                   if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
@@ -312,7 +312,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                       data: ThemeData().copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         initiallyExpanded: false,
-                        title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+                        title: Text('Doanh thu', style: const TextStyle(fontSize: 14.0),),
                         trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
                         children: <Widget>[
                           const Divider(color: Colors.blueGrey, thickness: 1.0,),
@@ -414,7 +414,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         ],
                       ),
                     ),
-                  ) : const Center(child: CircularProgressIndicator()) : Center(child: Text('Không có dữ liệu cho doanh thu tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}')),
+                  ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu của doanh thu')),
                   const SizedBox(height: 10.0,),
                   //Hợp đồng
                   if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
@@ -439,7 +439,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         child: Theme(
                           data: ThemeData().copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
-                            title: Text('Danh sách hợp đồng đã xuống tiền tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}', style: const TextStyle(fontSize: 14.0),),
+                            title: Text('Danh sách hợp đồng đã xuống tiền', style: const TextStyle(fontSize: 14.0),),
                             children: <Widget>[
                               const Divider(color: Colors.blueGrey, thickness: 1.0,),
                               SizedBox(
@@ -525,7 +525,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                             ],
                           ),
                         ),
-                      ) : const Center(child: CircularProgressIndicator()) : Text('Không có dữ liệu cho các hợp đồng đã xuống tiền trong tháng ${DateFormat('MM-yyyy').format(_selectedMonth)}'),
+                      ) : const Center(child: CircularProgressIndicator()) : const Text('Không có dữ liệu cuả các hợp đồng đã xuống tiền'),
                 ],
               )
           ),
