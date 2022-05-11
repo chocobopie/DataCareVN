@@ -12,7 +12,6 @@ import 'package:login_sample/view_models/payroll_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_view_model.dart';
 import 'package:login_sample/view_models/sale_list_view_model.dart';
 import 'package:login_sample/view_models/sale_view_model.dart';
-import 'package:login_sample/views/sale_employee/sale_deal_list.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/widgets/CustomListTile.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
@@ -239,7 +238,6 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                       setState(() {
                                         _readOnlyPayroll = false;
                                       });
-                                      print('false');
                                     }
 
                                     if( _selectedMonth.month >= DateTime.now().month -1 && _selectedMonth.year == DateTime.now().year ){
@@ -307,7 +305,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
                               title: Text('Lương ${_payrollCompany?.isClosing == 0 ? '- Dự kiến' : ''}', style: const TextStyle(fontSize: 14.0),),
-                              trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
+                              trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} đ'),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
                                 CustomListTile(listTileLabel: 'Lương cơ bản', alertDialogLabel: 'Cập nhật lương cơ bản', value: basicSalaryController.text.isEmpty ? _payroll!.basicSalary.toString() : basicSalaryController.text ,numberEditController: basicSalaryController, readOnly: _readOnlyPayroll,),
@@ -337,7 +335,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 CustomListTile(listTileLabel: 'Thưởng nhóm', alertDialogLabel: 'Cập nhật thưởng nhóm', numberEditController: teamBonusController, value: teamBonusController.text.isEmpty ? _payroll!.teamBonus.toString() : teamBonusController.text, readOnly: _readOnlyPayroll,),
                                 ListTile(
                                   title: const Text('Thực nhận', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600,),),
-                                  trailing: Text( '${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600,),),
+                                  trailing: Text( '${moneyFormat(_payroll!.actualSalaryReceived.toString())} đ', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600,),),
                                 ),
 
                                  if(_readOnlyPayroll == false)
@@ -375,7 +373,33 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               ],
                             ),
                           ),
-                        ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu của lương')),
+                        ) : const Center(child: CircularProgressIndicator())
+                            : Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(5.0),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  blurRadius: 1,
+                                  offset: const Offset(0, 3), // changes position of shadow
+                                ),
+                              ],
+                              gradient: const LinearGradient(
+                                stops: [0.02, 0.01],
+                                colors: [Colors.blue, Colors.white],
+                              ),
+                            ),
+                            child: Theme(
+                              data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                              child: const ExpansionTile(
+                                trailing: SizedBox(),
+                                title: Text('Không có dữ liệu của lương'),
+                              ),
+                            )
+                        ),
 
                       const SizedBox(height: 10.0,),
                       //Xem && cập nhật KPI
@@ -404,7 +428,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                             data: ThemeData().copyWith(dividerColor: Colors.transparent),
                             child: ExpansionTile(
                               title: const Text('Doanh thu', style: TextStyle(fontSize: 14.0),),
-                              trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
+                              trailing: Text('${moneyFormat(_totalRevenue.toString())} đ'),
                               children: <Widget>[
                                 const Divider(color: Colors.blueGrey, thickness: 1.0,),
                                 ListTile(
@@ -492,7 +516,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ' ,
+                                  trailing: Text('${moneyFormat(_totalRevenue.toString())} đ' ,
                                     style: const TextStyle(
                                       color: Colors.red,
                                       fontWeight: FontWeight.w600,
@@ -534,7 +558,33 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                               ],
                             ),
                           ),
-                        ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu của doanh thu')),
+                        ) : const Center(child: CircularProgressIndicator())
+                            : Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(5.0),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  blurRadius: 1,
+                                  offset: const Offset(0, 3), // changes position of shadow
+                                ),
+                              ],
+                              gradient: const LinearGradient(
+                                stops: [0.02, 0.01],
+                                colors: [Colors.green, Colors.white],
+                              ),
+                            ),
+                            child: Theme(
+                              data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                              child: const ExpansionTile(
+                                trailing: SizedBox(),
+                                title: Text('Không có dữ liệu của doanh thu'),
+                              ),
+                            )
+                        ),
 
                       const SizedBox(height: 10.0,),
                       //Xem hợp đồng
@@ -647,7 +697,34 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 ],
                               ),
                             ),
-                          ) : const Center(child: CircularProgressIndicator()) : Text('Không có dữ liệu của các hợp đồng đã xuống tiền'),
+                          ) : const Center(child: CircularProgressIndicator())
+                              : Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    blurRadius: 1,
+                                    offset: const Offset(0, 3), // changes position of shadow
+                                  ),
+                                ],
+                                gradient: const LinearGradient(
+                                  stops: [0.02, 0.01],
+                                  colors: [Colors.orange, Colors.white],
+                                ),
+                              ),
+                              child: Theme(
+                                data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                                child: const ExpansionTile(
+                                  trailing: SizedBox(),
+                                  title: Text('Không có dữ liệu của các hợp đồng đã xuống tiền'),
+                                ),
+                              )
+                          ),
+
                       const SizedBox(height: 40.0,),
                     ],
                   ),

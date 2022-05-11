@@ -82,7 +82,7 @@ class _SaleManagerKpiDetailState extends State<SaleManagerKpiDetail> {
                       child: ExpansionTile(
                           initiallyExpanded: true,
                           title: Text('Doanh thu tháng ${DateFormat('MM-yyyy').format(widget.fromDate)}'),
-                          trailing: Text(moneyFormat(_totalRevenue.toString())),
+                          trailing: Text('${moneyFormat(_totalRevenue.toString())} đ'),
                         children: <Widget>[
                           const Divider(color: Colors.blueGrey, thickness: 1.0,),
                           ListTile(
@@ -173,7 +173,7 @@ class _SaleManagerKpiDetailState extends State<SaleManagerKpiDetail> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            trailing: Text(moneyFormat(_totalRevenue.toString()),
+                            trailing: Text('${moneyFormat(_totalRevenue.toString())} đ',
                             style: const  TextStyle(
                               color: Colors.red,
                               fontWeight: FontWeight.w600,

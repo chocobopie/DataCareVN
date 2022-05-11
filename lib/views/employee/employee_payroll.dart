@@ -150,7 +150,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                       data: ThemeData().copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         title: Text('Lương ${_payrollCompany?.isClosing == 0 ? '- Dự kiến' : ''}', style: const TextStyle(fontSize: 14.0),),
-                        trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ'),
+                        trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} đ'),
                         children: <Widget>[
                           const Divider(color: Colors.blueGrey, thickness: 1.0,),
                           ListTile(
@@ -276,7 +276,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} VNĐ',
+                            trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} đ',
                               style: const TextStyle(
                                 color: Colors.red,
                                 fontWeight: FontWeight.w600,
@@ -286,8 +286,35 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         ],
                       ),
                     ),
-                  ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu của lương')),
+                  ) : const Center(child: CircularProgressIndicator())
+                      : Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(5.0),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            blurRadius: 1,
+                            offset: const Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                        gradient: const LinearGradient(
+                          stops: [0.02, 0.01],
+                          colors: [Colors.blue, Colors.white],
+                        ),
+                      ),
+                      child: Theme(
+                        data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                        child: const ExpansionTile(
+                          trailing: SizedBox(),
+                          title: Text('Không có dữ liệu của lương'),
+                        ),
+                      )
+                  ),
                   const SizedBox(height: 10.0,),
+
                   //Doanh thu
                   if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
                   _hasSale >= 0 ? _sale != null ? Container(
@@ -312,8 +339,8 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                       data: ThemeData().copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         initiallyExpanded: false,
-                        title: Text('Doanh thu', style: const TextStyle(fontSize: 14.0),),
-                        trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ'),
+                        title: const Text('Doanh thu', style: TextStyle(fontSize: 14.0),),
+                        trailing: Text('${moneyFormat(_totalRevenue.toString())} đ'),
                         children: <Widget>[
                           const Divider(color: Colors.blueGrey, thickness: 1.0,),
                           ListTile(
@@ -404,7 +431,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            trailing: Text('${moneyFormat(_totalRevenue.toString())} VNĐ',
+                            trailing: Text('${moneyFormat(_totalRevenue.toString())} đ',
                               style: const  TextStyle(
                                 color: Colors.red,
                                 fontWeight: FontWeight.w600,
@@ -414,8 +441,35 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         ],
                       ),
                     ),
-                  ) : const Center(child: CircularProgressIndicator()) : const Center(child: Text('Không có dữ liệu của doanh thu')),
+                  ) : const Center(child: CircularProgressIndicator())
+                      : Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(5.0),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            blurRadius: 1,
+                            offset: const Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                        gradient: const LinearGradient(
+                          stops: [0.02, 0.01],
+                          colors: [Colors.green, Colors.white],
+                        ),
+                      ),
+                      child: Theme(
+                        data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                        child: const ExpansionTile(
+                          trailing: SizedBox(),
+                          title: Text('Không có dữ liệu của doanh thu'),
+                        ),
+                      )
+                  ),
                   const SizedBox(height: 10.0,),
+
                   //Hợp đồng
                   if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
                       _maxPages >= 0 ? _deals.isNotEmpty ? Container(
@@ -439,7 +493,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                         child: Theme(
                           data: ThemeData().copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
-                            title: Text('Danh sách hợp đồng đã xuống tiền', style: const TextStyle(fontSize: 14.0),),
+                            title: const Text('Danh sách hợp đồng đã xuống tiền', style: TextStyle(fontSize: 14.0),),
                             children: <Widget>[
                               const Divider(color: Colors.blueGrey, thickness: 1.0,),
                               SizedBox(
@@ -525,7 +579,32 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                             ],
                           ),
                         ),
-                      ) : const Center(child: CircularProgressIndicator()) : const Text('Không có dữ liệu cuả các hợp đồng đã xuống tiền'),
+                      ) : const Center(child: CircularProgressIndicator()) : Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 1,
+                                offset: const Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                            gradient: const LinearGradient(
+                              stops: [0.02, 0.01],
+                              colors: [Colors.orange, Colors.white],
+                            ),
+                          ),
+                          child: Theme(
+                            data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                            child: const ExpansionTile(
+                              trailing: SizedBox(),
+                              title: Text('Không có dữ liệu của các hợp đồng đã xuống tiền'),
+                            ),
+                          )
+                      ),
                 ],
               )
           ),
@@ -653,93 +732,5 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
         _maxPages = -1;
       });
     }
-  }
-}
-
-
-
-class BonusExpansionTile2 extends StatelessWidget {
-  const BonusExpansionTile2({
-    Key? key
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(5.0),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            blurRadius: 1,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-        gradient: const LinearGradient(
-          stops: [0.02, 0.01],
-          colors: [Colors.green, Colors.white],
-        ),
-      ),
-      child: Theme(
-        data: ThemeData().copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          title: const Text('Thưởng'),
-          trailing: const Text('2.060.500 VNĐ'),
-          children: <Widget>[
-            const Divider(color: Colors.blueGrey, thickness: 1.0,),
-            ListTile(
-              title: const Text('Cá nhân', style: TextStyle(fontSize: 12.0,),),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Column(
-                    children: const <Widget>[
-                      Text('Ký mới', style: TextStyle(fontSize: 12.0,),),
-                      Text('99.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-                    ],
-                  ),
-                  const SizedBox(width: 20.0,),
-                  Column(
-                    children: const <Widget>[
-                      Text('Tái ký', style: TextStyle(fontSize: 12.0,),),
-                      Text('297.000 VNĐ', style: TextStyle(fontSize: 12.0,),),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            const ListTile(
-              title: Text('Quản lý', style: TextStyle(fontSize: 12.0,),),
-              trailing: Text('964.500 VNĐ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            const ListTile(
-              title: Text('Người hỗ trợ', style: TextStyle(fontSize: 12.0,),),
-            ),
-            const ListTile(
-              title: Text('CLB 20', style: TextStyle(fontSize: 12.0,),),
-            ),
-            const ListTile(
-              title: Text(
-                'Thực nhận',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              trailing: Text(''
-                  '2.060.500 VNĐ',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

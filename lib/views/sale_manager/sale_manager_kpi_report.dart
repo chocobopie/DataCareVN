@@ -74,7 +74,7 @@ class _SaleManagerKpiReportManagementState extends State<SaleManagerKpiReportMan
                   topRight: Radius.circular(25),
                 ),
               ),
-              margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 100.0),
+              margin: const EdgeInsets.only(top: 100.0),
               child: ListView(
                 padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 5.0),
                 children: <Widget>[
@@ -165,7 +165,7 @@ class _SaleManagerKpiReportManagementState extends State<SaleManagerKpiReportMan
                            decoration: InputDecoration(
                              floatingLabelBehavior: FloatingLabelBehavior.always,
                              contentPadding: const EdgeInsets.only(left: 20.0),
-                             labelText: 'Tổng doanh thu của phòng tháng ${DateFormat('dd-MM-yyyy').format(_selectedMonth).substring(3, 10)}',
+                             labelText: 'Tổng doanh thu của phòng',
                              hintText: moneyFormat(_totalRevenue.toString()),
                              labelStyle: const TextStyle(
                                color: Color.fromARGB(255, 107, 106, 144),
@@ -216,18 +216,17 @@ class _SaleManagerKpiReportManagementState extends State<SaleManagerKpiReportMan
                              mainAxisSize: MainAxisSize.min,
                              children: <Widget>[
                                Text('KPI: ${_getKPIPercent(employee: _currentAccount!)} %', style: const TextStyle(fontSize: 10.0,),),
-                               TextButton.icon(
+                               TextButton(
                                  onPressed: (){
                                    Navigator.push(context, MaterialPageRoute(
-                                       builder: (context) => SaleManagerKpiDetail(
-                                         saleEmployee: _currentAccount!,
-                                         fromDate: _fromDate!,
-                                         toDate: _toDate!,
-                                       ),
+                                     builder: (context) => SaleManagerKpiDetail(
+                                       saleEmployee: _currentAccount!,
+                                       fromDate: _fromDate!,
+                                       toDate: _toDate!,
+                                     ),
                                    ));
                                  },
-                                 icon: const Icon(Icons.attach_money),
-                                 label: Text(moneyFormat(_getSaleEach(employee: _currentAccount!).toString()), style: const TextStyle(fontSize: 12.0,),),
+                                   child: Text('${moneyFormat(_getSaleEach(employee: _currentAccount!).toString())} đ', style: const TextStyle(fontSize: 12.0, color: Colors.black),),
                                ),
                              ],
                            ),
@@ -278,8 +277,9 @@ class _SaleManagerKpiReportManagementState extends State<SaleManagerKpiReportMan
                                  ),
                                  child: ExpansionTile(
                                    collapsedBackgroundColor: mainBgColor,
-                                   trailing: TextButton.icon(onPressed: (){}, icon: const Icon(Icons.attach_money),
-                                       label: Text(moneyFormat(_totalRevenueTeam.toString()))
+                                   trailing: TextButton(
+                                       onPressed: null,
+                                       child: Text('${moneyFormat(_totalRevenueTeam.toString())} đ', style: const TextStyle(color: Colors.black),),
                                    ),
                                    subtitle: const Text(
                                      'Tổng doanh thu của nhóm:',
@@ -313,7 +313,7 @@ class _SaleManagerKpiReportManagementState extends State<SaleManagerKpiReportMan
                                                      fontSize: 10.0,
                                                    ),
                                                  ),
-                                                 TextButton.icon(
+                                                 TextButton(
                                                    onPressed: (){
                                                      Navigator.push(context, MaterialPageRoute(
                                                          builder: (context) => SaleManagerKpiDetail(
@@ -323,9 +323,21 @@ class _SaleManagerKpiReportManagementState extends State<SaleManagerKpiReportMan
                                                          )
                                                      ));
                                                    },
-                                                   icon: const Icon(Icons.attach_money),
-                                                   label: Text(moneyFormat(_getSaleEach(employee: _saleEmployee).toString()), style: const TextStyle(fontSize: 12.0,),),
+                                                   child: Text('${moneyFormat(_getSaleEach(employee: _saleEmployee).toString())} đ', style: const TextStyle(fontSize: 12.0, color: Colors.black),),
                                                  ),
+                                                 // TextButton.icon(
+                                                 //   onPressed: (){
+                                                 //     Navigator.push(context, MaterialPageRoute(
+                                                 //         builder: (context) => SaleManagerKpiDetail(
+                                                 //           saleEmployee: _saleEmployee,
+                                                 //           fromDate: _fromDate!,
+                                                 //           toDate: _toDate!,
+                                                 //         )
+                                                 //     ));
+                                                 //   },
+                                                 //   icon: const Icon(Icons.attach_money),
+                                                 //   label: Text(moneyFormat(_getSaleEach(employee: _saleEmployee).toString()), style: const TextStyle(fontSize: 12.0,),),
+                                                 // ),
                                                ],
                                              ),
                                              subtitle: Text(rolesNames[_saleEmployee.roleId!], style: const TextStyle(fontSize: 12.0,),),
