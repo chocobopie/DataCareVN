@@ -156,31 +156,35 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         onChanged: widget.deal.dealStageId != 5 &&
                                                 _readOnly != true ? (value) {
                                                 if (value.toString() == dealStagesNames[0].toString()) {
-                                                  _dealStage.text = '0';
-                                                } else if (value.toString() ==
-                                                    dealStagesNames[1]
-                                                        .toString()) {
-                                                  _dealStage.text = '1';
-                                                } else if (value.toString() ==
-                                                    dealStagesNames[2]
-                                                        .toString()) {
-                                                  _dealStage.text = '2';
-                                                } else if (value.toString() ==
-                                                    dealStagesNames[3]
-                                                        .toString()) {
-                                                  _dealStage.text = '3';
-                                                } else if (value.toString() ==
-                                                    dealStagesNames[4]
-                                                        .toString()) {
-                                                  _dealStage.text = '4';
-                                                } else if (value.toString() ==
-                                                    dealStagesNames[5]
-                                                        .toString()) {
-                                                  _dealStage.text = '5';
-                                                } else if (value.toString() ==
-                                                    dealStagesNames[6]
-                                                        .toString()) {
-                                                  _dealStage.text = '6';
+                                                  setState(() {
+                                                    _dealStage.text = '0';
+                                                  });
+                                                } else if (value.toString() == dealStagesNames[1].toString()) {
+                                                  setState(() {
+                                                    _dealStage.text = '1';
+                                                  });
+                                                } else if (value.toString() == dealStagesNames[2].toString()) {
+                                                  setState(() {
+                                                    _dealStage.text = '2';
+                                                  });
+                                                } else if (value.toString() == dealStagesNames[3].toString()) {
+                                                  setState(() {
+                                                    _dealStage.text = '3';
+                                                  });
+                                                } else if (value.toString() == dealStagesNames[4].toString()) {
+                                                  setState(() {
+                                                    _dealStage.text = '4';
+                                                  });
+                                                } else if (value.toString() == dealStagesNames[5].toString()) {
+                                                  setState(() {
+                                                    _dealStage.text = '5';
+                                                    _dealClosedDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                                                    _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
+                                                  });
+                                                } else if (value.toString() == dealStagesNames[6].toString()) {
+                                                  setState(() {
+                                                    _dealStage.text = '6';
+                                                  });
                                                 }
                                               }
                                             : null),
@@ -284,6 +288,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
 
                               //Số tiền
                               CustomEditableTextFormField(
+                                  isNull: (_dealStage.text == '5' || widget.deal.dealStageId == 5) ? false : true,
                                   inputMoney: true,
                                   borderColor: _readOnly != true ? mainBgColor : null,
                                   inputNumberOnly: true,
@@ -294,12 +299,13 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                               ),
                               const SizedBox(height: 20.0,),
 
+
                               CustomDatePicker(
                                   readOnly: true,
-                                  borderColor: _readOnly != true ? mainBgColor : null,
-                                  label: 'Ngày chốt hợp đồng',
+                                  borderColor: (_dealStage.text != '5' && widget.deal.dealStageId != 5) ? _readOnly != true ? mainBgColor : null : null,
+                                  label: 'Ngày chốt hợp đồng ${ (widget.deal.dealStageId != 5 && _dealStage.text != '5') ? '- Dự kiến' : ''}',
                                   hintText: _closeDate.isNotEmpty ? _closeDate : 'Ngày ${DateFormat('dd-MM-yyyy').format(widget.deal.closedDate)}',
-                                  onTap: _readOnly != true ? () async {
+                                  onTap: (_dealStage.text != '5' && widget.deal.dealStageId != 5) ? _readOnly != true ? () async {
                                     final date = await DatePicker.showDatePicker(context,
                                       locale: LocaleType.vi,
                                       minTime: DateTime.now(),
@@ -312,7 +318,7 @@ class _SaleEmpDealDetailState extends State<SaleEmpDealDetail> {
                                         _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
                                       });
                                     }
-                                  } : null,
+                                  } : null : null,
                               ),
                               const SizedBox(height: 20.0,),
 

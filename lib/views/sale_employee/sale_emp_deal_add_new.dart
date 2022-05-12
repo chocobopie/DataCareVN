@@ -150,19 +150,35 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                                 items: dealStagesNames,
                                 onChanged: (value){
                                 if(value.toString() == dealStagesNames[0].toString()){
-                                  _dealStageId.text = '0';
+                                  setState(() {
+                                    _dealStageId.text = '0';
+                                  });
                                 }else if(value.toString() == dealStagesNames[1].toString()){
-                                  _dealStageId.text = '1';
+                                  setState(() {
+                                    _dealStageId.text = '1';
+                                  });
                                 }else if(value.toString() == dealStagesNames[2].toString()){
-                                  _dealStageId.text = '2';
+                                  setState(() {
+                                    _dealStageId.text = '2';
+                                  });
                                 }else if(value.toString() == dealStagesNames[3].toString()){
-                                  _dealStageId.text = '3';
+                                  setState(() {
+                                    _dealStageId.text = '3';
+                                  });
                                 }else if(value.toString() == dealStagesNames[4].toString()){
-                                  _dealStageId.text = '4';
+                                  setState(() {
+                                    _dealStageId.text = '4';
+                                  });
                                 }else if(value.toString() == dealStagesNames[5].toString()){
-                                  _dealStageId.text = '5';
+                                  setState(() {
+                                    _dealStageId.text = '5';
+                                    _dealClosedDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                                    _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(DateTime.now())}';
+                                  });
                                 }else if(value.toString() == dealStagesNames[6].toString()){
-                                  _dealStageId.text = '6';
+                                  setState(() {
+                                    _dealStageId.text = '6';
+                                  });
                                 }
                               },
                             ),
@@ -190,8 +206,8 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                       //Tổng giá trị
                       CustomEditableTextFormField(
+                          isNull: _dealStageId.text == '5' ? false : true,
                           inputMoney: true,
-                          isNull: true,
                           borderColor: mainBgColor,
                           inputNumberOnly: true,
                           text: _dealAmount.text.isNotEmpty ? formatNumber(_dealAmount.text.replaceAll('.', '')) : _dealAmount.text,
@@ -253,12 +269,11 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
 
                       //Ngày đóng
                       CustomEditableTextFormField(
-                          borderColor: mainBgColor,
+                          borderColor: _dealStageId.text != '5' ? mainBgColor : null,
                           text: _closeDate,
-                          title: 'Ngày chốt hợp đồng',
-                          readonly: false,
-                          onTap: () async {
-                          FocusScope.of(context).requestFocus(FocusNode());
+                          title: 'Ngày chốt hợp đồng ${_dealStageId.text != '5' ? '- Dự kiến' : ''}',
+                          readonly: true,
+                          onTap: _dealStageId.text != '5' ? () async {
                           final date = await DatePicker.showDatePicker(
                             context,
                             locale : LocaleType.vi,
@@ -267,10 +282,12 @@ class _SaleEmpDealAddNewState extends State<SaleEmpDealAddNew> {
                             maxTime: DateTime.now().add(const Duration(days: 36500)),
                           );
                           if(date != null){
-                            _dealClosedDate.text = date.toString();
-                            _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
+                            setState(() {
+                              _dealClosedDate.text = date.toString();
+                              _closeDate = 'Ngày ${DateFormat('dd-MM-yyyy').format(date)}';
+                            });
                           }
-                        },
+                        } : null,
                       ),
                       const SizedBox(height: 20.0,),
 

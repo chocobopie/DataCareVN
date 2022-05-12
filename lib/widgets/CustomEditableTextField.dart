@@ -54,6 +54,14 @@ class CustomEditableTextFormField extends StatelessWidget {
             if(value.length < 9){
               return 'Số CMND/CCCD sai định dạng';
             }
+          }else if(inputMoney == true){
+            String money = value.replaceAll('.', '');
+            if(num.tryParse(money) == null ){
+              return 'Hãy cập nhật $title';
+            }
+            if(num.tryParse(money)! <= 0){
+              return 'Số tiền không được bé hơn 0';
+            }
           }
           return null;
         } : null,

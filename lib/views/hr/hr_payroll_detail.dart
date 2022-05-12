@@ -261,7 +261,9 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                     }
                                     _fromDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
                                     _toDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0);
+
                                     _getPayrollCompany(isRefresh: true);
+
                                   }
                                 },
                                 icon: const Icon(
