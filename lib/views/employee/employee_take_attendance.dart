@@ -10,6 +10,7 @@ import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_attendance_report_list.dart';
 import 'package:login_sample/views/employee/employee_send_application.dart';
 import 'package:login_sample/utilities/utils.dart';
+import 'package:login_sample/views/hr/hr_attendance_rule.dart';
 import 'package:login_sample/widgets/IconTextButtonSmall2.dart';
 import 'package:provider/provider.dart';
 
@@ -180,6 +181,20 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                               }
                           ),
                         ),
+                      if(_currentAccount.roleId == 1)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                        child: IconTextButtonSmall2(
+                            imageUrl: 'assets/images/rules.png',
+                            text: 'Xem quy định nghỉ phép',
+                            colorsButton: const [Colors.blue, Colors.white],
+                            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const HrAttendanceRule(),
+                              )).then((value) => _getOverallInfo());
+                            }
+                        ),
+                      ),
                     ],
                   )
                 ],

@@ -3,6 +3,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/application_type.dart';
+import 'package:login_sample/models/attendance_rule.dart';
 import 'package:login_sample/models/attendance_status.dart';
 import 'package:login_sample/models/change_password.dart';
 import 'package:login_sample/models/payroll.dart';
@@ -1799,6 +1800,22 @@ class ApiService {
     }else{
       print('Update KPI failed | 400');
       return false;
+    }
+  }
+
+  //AttendanceRule
+  Future<AttendanceRule?> getAttendanceRule() async {
+    String url = stockUrl + 'attendance-rules';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      print('Got attendance rule | 200');
+      return AttendanceRule.fromJson(jsonResponse);
+    } else {
+      print('Failed to get attendance rule | 400');
+      AttendanceRule? result;
+      return result;
     }
   }
 }

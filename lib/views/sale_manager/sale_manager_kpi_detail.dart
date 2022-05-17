@@ -155,10 +155,7 @@ class _SaleManagerKpiDetailState extends State<SaleManagerKpiDetail> {
                           ),
                           ListTile(
                               title: const Text('Ads', style: TextStyle(fontSize: 12.0,),),
-                              trailing: Padding(
-                                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.2),
-                                child: Text(moneyFormat(_sale!.adsSales.toString()), style: const TextStyle(fontSize: 12.0),),
-                              ),
+                              trailing: Text(moneyFormat(_sale!.adsSales.toString()), style: const TextStyle(fontSize: 12.0),),
                           ),
                           const Divider(color: Colors.grey,thickness: 1.0,),
                           ListTile(

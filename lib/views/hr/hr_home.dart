@@ -96,6 +96,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                               ));
                         },
                       ),
+                      const SizedBox(width: 30.0,),
                     ],
                   ),
                 ],
