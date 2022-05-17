@@ -112,7 +112,7 @@ class _HrAttendanceRuleState extends State<HrAttendanceRule> {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               title: const Text(
-                "Xem quy định nghỉ phép",
+                "Quy định của công ty",
                 style: TextStyle(
                   letterSpacing: 0.0,
                   fontSize: 20.0,

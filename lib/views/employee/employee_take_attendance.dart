@@ -186,7 +186,7 @@ class _EmployeeTakeAttendanceState extends State<EmployeeTakeAttendance> {
                         padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                         child: IconTextButtonSmall2(
                             imageUrl: 'assets/images/rules.png',
-                            text: 'Xem quy định nghỉ phép',
+                            text: 'Xem quy định của công ty',
                             colorsButton: const [Colors.blue, Colors.white],
                             onPressed: (){
                               Navigator.push(context, MaterialPageRoute(
