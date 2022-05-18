@@ -965,6 +965,34 @@ class ApiService {
     }
   }
 
+  Future<int?> getCountAttendance({required int accountId, required DateTime fromDate, required DateTime toDate, required int attendanceStatusId}) async {
+
+    String url = stockUrl + 'attendances/count?account-id=$accountId&from-date=$fromDate&to-date=$toDate&attendance-status-id=$attendanceStatusId';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Take attendance count for StatusId $attendanceStatusId successfully');
+      return int.tryParse(response.body);
+    }else{
+      print('Failed to get attendance count for StatusId: $attendanceStatusId');
+      return 0;
+    }
+  }
+
+  Future<int?> getCountAvailableApprovedAbsence({required int accountId, required DateTime fromDate}) async {
+
+    String url = stockUrl + 'attendances/count-available-approved-absences?account-id=$accountId&date=$fromDate';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Take available approved absence successfully');
+      return int.tryParse(response.body);
+    }else{
+      print('Failed to get available approved absence');
+      return 0;
+    }
+  }
+
   Future<bool> updateAnAttendance({required Attendance attendance}) async {
     String url = stockUrl + 'attendances/${attendance.attendanceId}';
 

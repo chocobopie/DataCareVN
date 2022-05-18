@@ -12,7 +12,6 @@ import 'package:login_sample/view_models/deal_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_list_view_model.dart';
 import 'package:login_sample/view_models/sale_list_view_model.dart';
-import 'package:login_sample/views/sale_employee/sale_deal_list.dart';
 import 'package:login_sample/views/sale_employee/sale_emp_deal_detail.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
 import 'package:provider/provider.dart';

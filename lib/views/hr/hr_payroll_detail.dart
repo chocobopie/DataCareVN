@@ -238,6 +238,14 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                       setState(() {
                                         _readOnlyPayroll = false;
                                       });
+                                    }else if(_selectedMonth.month == DateTime.now().month && _selectedMonth.year == DateTime.now().year){
+                                      setState(() {
+                                        _readOnlyPayroll = false;
+                                      });
+                                    }else{
+                                      setState(() {
+                                        _readOnlyPayroll = true;
+                                      });
                                     }
 
                                     if( _selectedMonth.month >= DateTime.now().month -1 && _selectedMonth.year == DateTime.now().year ){

@@ -20,4 +20,20 @@ class AttendanceViewModel with ChangeNotifier{
 
     return result;
   }
+
+  Future<int?> getCountAttendance({required int accountId, required DateTime fromDate, required DateTime toDate, required int attendanceStatusId}) async {
+    int? result = await ApiService().getCountAttendance(accountId: accountId, fromDate: fromDate, toDate: toDate, attendanceStatusId: attendanceStatusId);
+
+    notifyListeners();
+
+    return result;
+  }
+
+  Future<int?> getCountAvailableApprovedAbsence({required int accountId, required DateTime fromDate}) async {
+    int? result = await ApiService().getCountAvailableApprovedAbsence(accountId: accountId, fromDate: fromDate);
+
+    notifyListeners();
+
+    return result;
+  }
 }
