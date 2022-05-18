@@ -4,10 +4,12 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance.dart';
+import 'package:login_sample/models/attendance_rule.dart';
 import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/attendance_list_view_model.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
+import 'package:login_sample/view_models/attendance_rule_view_model.dart';
 import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/widgets/CustomDropDownFormField2Filter.dart';
 import 'package:login_sample/widgets/CustomMonthPicker.dart';
@@ -28,11 +30,12 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
   late final List<Attendance> _attendances = [];
   late Account _currentAccount;
   int _currentPage = 0, _maxPages = 0;
-  int? _periodOfDayId, _attendanceStatusId, _ontTimeCount, _lateAcceptedCount, _dayOffAcceptedCount, _lateCount, _absentCount, _availableApprovedAbsenceCount;
+  int? _periodOfDayId, _attendanceStatusId, _ontTimeCount, _lateAcceptedCount, _dayOffAcceptedCount, _lateCount, _absentCount, _availableApprovedAbsenceCount, _availableApprovedLateCount;
   late String _selectMonthString;
   DateTime? _fromDate, _toDate;
   late DateTime _currentTime, _today;
   late double _timeHmsNow;
+  AttendanceRule? _attendanceRule;
 
   final RefreshController _refreshController = RefreshController();
 
@@ -270,7 +273,6 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                         _getSelfAttendanceList(isRefresh: false);
 
                                         if(_attendances.isNotEmpty){
-                                          _refreshController.isLoading;
                                           _refreshController.loadComplete();
                                         }else{
                                           _refreshController.loadFailed();
@@ -349,7 +351,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                       ExpansionTile(
                         title: const Text('Thống kê điểm danh trong tháng', style: TextStyle(color: defaultFontColor),),
                         children: <Widget>[
-                          (_ontTimeCount != null && _lateAcceptedCount != null && _dayOffAcceptedCount != null && _lateCount != null && _absentCount != null && _availableApprovedAbsenceCount != null) ? Padding(
+                          (_ontTimeCount != null && _lateAcceptedCount != null && _dayOffAcceptedCount != null && _lateCount != null && _absentCount != null && _availableApprovedAbsenceCount != null && _availableApprovedLateCount != null) ? Padding(
                             padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                             child: Column(
                               children: <Widget>[
@@ -425,7 +427,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                     children: [
                                       const Expanded(flex: 4,child: Text('Số ca đi trễ có phép còn khả dụng')),
                                       const Spacer(),
-                                      Text('$_lateAcceptedCount'),
+                                      Text('$_availableApprovedLateCount'),
                                     ],
                                   ),
                                 ),
@@ -638,6 +640,8 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
       });
     }
 
+    _getAvailableApprovedLate();
+
   }
 
   void _getCountAvailableApprovedAbsence() async {
@@ -652,11 +656,34 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
     });
   }
 
+  void _getAvailableApprovedLate() async {
+    setState(() {
+      _availableApprovedLateCount = null;
+    });
+
+    AttendanceRule? result = await AttendanceRuleViewModel().getAttendanceRule();
+
+    if(result != null){
+      _attendanceRule = result;
+      int num = _attendanceRule!.maximumApprovedLateShiftPerMonth - _lateAcceptedCount!;
+        if(num >= 0){
+          setState(() {
+            _availableApprovedLateCount = num;
+          });
+        }else{
+          setState(() {
+            _availableApprovedLateCount = 0;
+          });
+        }
+    }
+  }
+
   void _getCurrentTime() async {
     _currentTime = DateTime.now();
     _timeHmsNow = _currentTime.toLocal().hour + (_currentTime.toLocal().minute/100);
     _today = DateTime.parse( DateFormat('yyyy-MM-dd').format(_currentTime) );
   }
+
 }
 
 class SortItems {
