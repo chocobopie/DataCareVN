@@ -36,4 +36,20 @@ class AttendanceViewModel with ChangeNotifier{
 
     return result;
   }
+
+  Future<int?> getExceedApprovedLateCount({required int accountId, required DateTime fromDate}) async {
+    int? result = await ApiService().getExceedApprovedLateCount(accountId: accountId, fromDate: fromDate);
+
+    notifyListeners();
+
+    return result;
+  }
+
+  Future<int?> getExceedApprovedAbsencesCount({required int accountId, required DateTime fromDate}) async {
+    int? result = await ApiService().getExceedApprovedAbsencesCount(accountId: accountId, fromDate: fromDate);
+
+    notifyListeners();
+
+    return result;
+  }
 }

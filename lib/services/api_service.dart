@@ -979,6 +979,34 @@ class ApiService {
     }
   }
 
+  Future<int?> getExceedApprovedLateCount({required int accountId, required DateTime fromDate}) async {
+
+    String url = stockUrl + 'attendances/count-exceed-approved-lates?account-id=$accountId&date=$fromDate';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Get exceed approved late count successfully');
+      return int.tryParse(response.body);
+    }else{
+      print('Failed to get exceed approved late count');
+      return 0;
+    }
+  }
+
+  Future<int?> getExceedApprovedAbsencesCount({required int accountId, required DateTime fromDate}) async {
+
+    String url = stockUrl + 'attendances/count-exceed-approved-absences?account-id=$accountId&date=$fromDate';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      print('Get exceed approved absences count successfully');
+      return int.tryParse(response.body);
+    }else{
+      print('Failed to get exceed approved absences count');
+      return 0;
+    }
+  }
+
   Future<int?> getCountAvailableApprovedAbsence({required int accountId, required DateTime fromDate}) async {
 
     String url = stockUrl + 'attendances/count-available-approved-absences?account-id=$accountId&date=$fromDate';
