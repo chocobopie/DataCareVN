@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/application_type.dart';
@@ -965,9 +964,10 @@ class ApiService {
     }
   }
 
-  Future<int?> getCountAttendance({required int accountId, required DateTime fromDate, required DateTime toDate, required int attendanceStatusId}) async {
 
-    String url = stockUrl + 'attendances/count?account-id=$accountId&from-date=$fromDate&to-date=$toDate&attendance-status-id=$attendanceStatusId';
+  Future<int?> getCountAttendance({required int accountId, required DateTime fromDate, required DateTime toDate, int? attendanceStatusId}) async {
+
+    String url = stockUrl + 'attendances/count?account-id=$accountId&from-date=$fromDate&to-date=$toDate&attendance-status-id=${attendanceStatusId ?? ''}';
 
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
@@ -1874,5 +1874,7 @@ class ApiService {
       return result;
     }
   }
+
+
 }
 

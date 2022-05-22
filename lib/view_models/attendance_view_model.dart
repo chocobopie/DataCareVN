@@ -21,7 +21,7 @@ class AttendanceViewModel with ChangeNotifier{
     return result;
   }
 
-  Future<int?> getCountAttendance({required int accountId, required DateTime fromDate, required DateTime toDate, required int attendanceStatusId}) async {
+  Future<int?> getCountAttendance({required int accountId, required DateTime fromDate, required DateTime toDate, int? attendanceStatusId}) async {
     int? result = await ApiService().getCountAttendance(accountId: accountId, fromDate: fromDate, toDate: toDate, attendanceStatusId: attendanceStatusId);
 
     notifyListeners();
