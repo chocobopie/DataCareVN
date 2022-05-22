@@ -1875,6 +1875,30 @@ class ApiService {
     }
   }
 
+  Future<bool> updateAttendanceRule(AttendanceRule attendanceRule) async {
+
+    String url = stockUrl + 'attendance-rules/${attendanceRule.attendanceRuleId}';
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "attendanceRuleId": attendanceRule.attendanceRuleId,
+        "maximumApprovedLateShiftPerMonth": attendanceRule.maximumApprovedLateShiftPerMonth,
+        "maximumApprovedAbsenceShiftPerMonth": attendanceRule.maximumApprovedAbsenceShiftPerMonth,
+        "maximumApprovedAbsenceShiftPerYear": attendanceRule.maximumApprovedAbsenceShiftPerYear,
+        "fineForEachLateShift": attendanceRule.fineForEachLateShift
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update a contact successfully | 200');
+      return true;
+    }else{
+      print('Update a contact failed | 400');
+      return false;
+    }
+  }
 
 }
 

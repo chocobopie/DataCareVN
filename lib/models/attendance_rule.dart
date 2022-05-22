@@ -17,7 +17,7 @@ class AttendanceRule {
   int maximumApprovedLateShiftPerMonth;
   int maximumApprovedAbsenceShiftPerMonth;
   int maximumApprovedAbsenceShiftPerYear;
-  int fineForEachLateShift;
+  num fineForEachLateShift;
 
   factory AttendanceRule.fromJson(Map<String, dynamic> json) => AttendanceRule(
     attendanceRuleId: json["attendanceRuleId"],

@@ -12,4 +12,11 @@ class AttendanceRuleViewModel with ChangeNotifier{
     return result;
   }
 
+  Future<bool> updateAttendanceRule(AttendanceRule attendanceRule) async {
+    bool result = await ApiService().updateAttendanceRule(attendanceRule);
+
+    notifyListeners();
+
+    return result;
+  }
 }

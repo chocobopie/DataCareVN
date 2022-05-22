@@ -3,13 +3,14 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/EditMoneyButton.dart';
 
 class CustomListTile extends StatelessWidget {
-  const CustomListTile({Key? key, required this.numberEditController, required this.listTileLabel, required this.alertDialogLabel, this.readOnly, this.value,}) : super(key: key);
+  const CustomListTile({Key? key, required this.numberEditController, required this.listTileLabel, required this.alertDialogLabel, this.readOnly, this.value, this.numberFormat,}) : super(key: key);
 
   final TextEditingController numberEditController;
   final String listTileLabel;
   final String alertDialogLabel;
   final bool? readOnly;
   final String? value;
+  final bool? numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class CustomListTile extends StatelessWidget {
           EditMoneyButton(
             numberController: numberEditController,
             label: alertDialogLabel,
+            numberFormat: numberFormat,
           ),
         ],
       ),

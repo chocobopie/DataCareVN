@@ -4,11 +4,12 @@ import 'package:login_sample/utilities/utils.dart';
 
 class EditMoneyButton extends StatelessWidget {
   const EditMoneyButton({
-    Key? key, required this.numberController, required this.label
+    Key? key, required this.numberController, required this.label, this.numberFormat
   }) : super(key: key);
 
   final TextEditingController numberController;
   final String label;
+  final bool? numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,9 @@ class EditMoneyButton extends StatelessWidget {
                 keyboardType: TextInputType.number,
                 controller: numberController,
                 onChanged: (string){
-                  string = formatNumber(string.replaceAll('.', ''));
+                  if(numberFormat == true || numberFormat == null){
+                    string = formatNumber(string.replaceAll('.', ''));
+                  }
                   numberController.value = TextEditingValue(
                     text: string,
                     selection: TextSelection.collapsed(offset: string.length),
