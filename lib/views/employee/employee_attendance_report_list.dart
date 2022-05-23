@@ -347,7 +347,6 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                 : const Center(child: Text('Không có dữ liệu')),
                           ],
                       ),
-
                       ExpansionTile(
                         title: const Text('Thống kê điểm danh trong tháng', style: TextStyle(color: defaultFontColor),),
                         children: <Widget>[

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:login_sample/models/ManagementCommission.dart';
 import 'package:login_sample/models/PayrollCompany.dart';
+import 'package:login_sample/models/PersonalCommission.dart';
 import 'package:login_sample/models/application_type.dart';
 import 'package:login_sample/models/attendance_rule.dart';
 import 'package:login_sample/models/attendance_status.dart';
@@ -1900,5 +1902,35 @@ class ApiService {
     }
   }
 
+  //Commission
+  Future<List<PersonalCommission>?> getListPersonalCommission() async {
+    String url = stockUrl + 'personal-commissions';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get list of personal commission successfully | 200');
+      return jsonResponse.map((data) => PersonalCommission.fromJson(data)).toList();
+    }else{
+      print("Failed to get list of personal commission | 400");
+      List<PersonalCommission>? result;
+      return result;
+    }
+  }
+
+  Future<List<ManagementCommission>?> getListManagementCommission() async {
+    String url = stockUrl + 'management-commissions';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get list of personal management successfully | 200');
+      return jsonResponse.map((data) => ManagementCommission.fromJson(data)).toList();
+    }else{
+      print("Failed to get list of management commission | 400");
+      List<ManagementCommission>? result;
+      return result;
+    }
+  }
 }
 
