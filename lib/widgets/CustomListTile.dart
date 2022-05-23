@@ -3,7 +3,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/widgets/EditMoneyButton.dart';
 
 class CustomListTile extends StatelessWidget {
-  const CustomListTile({Key? key, required this.numberEditController, required this.listTileLabel, required this.alertDialogLabel, this.readOnly, this.value, this.moneyFormatType, this.percentlFormatType,}) : super(key: key);
+  const CustomListTile({Key? key, required this.numberEditController, required this.listTileLabel, required this.alertDialogLabel, this.readOnly, this.value, this.moneyFormatType, this.percentFormatType,}) : super(key: key);
 
   final TextEditingController numberEditController;
   final String listTileLabel;
@@ -11,7 +11,7 @@ class CustomListTile extends StatelessWidget {
   final bool? readOnly;
   final String? value;
   final bool? moneyFormatType;
-  final bool? percentlFormatType;
+  final bool? percentFormatType;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +25,13 @@ class CustomListTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-            Text( numberEditController.text.isEmpty ? value == null ? '0' : moneyFormat(value!) : numberEditController.text, style: const TextStyle(fontSize: 14.0,),),
+            Text( numberEditController.text.isEmpty ? value == null ? '0' : (percentFormatType == false || percentFormatType == null) ? moneyFormat(value!) : value.toString() : numberEditController.text, style: const TextStyle(fontSize: 14.0,),),
           if(readOnly == false || readOnly == null)
           EditMoneyButton(
             numberController: numberEditController,
             label: alertDialogLabel,
             moneyFormatType: moneyFormatType,
-            percentFormatType: percentlFormatType,
+            percentFormatType: percentFormatType,
           ),
         ],
       ),

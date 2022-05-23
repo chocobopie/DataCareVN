@@ -257,7 +257,14 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
     return result;
   }
 
-  Future<bool> _updateManagementCommission(ManagementCommission managementCommission) async {
+  Future<bool> _updateManagementCommission() async {
+
+    ManagementCommission managementCommission = ManagementCommission(
+        managementCommissionId: _managementCommission!.managementCommissionId,
+        percentageOfKpi: _managementPercentageOfKPIController.text.isEmpty ? _managementCommission!.percentageOfKpi : double.tryParse(_managementPercentageOfKPIController.text)!,
+        commission: _managementCommissionController.text.isEmpty ? _managementCommission!.commission : double.tryParse(_managementCommissionController.text)!,
+    );
+
     bool result = await CommissionViewModel().updateManagementCommission(managementCommission);
     return result;
   }
@@ -289,8 +296,38 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
             const Divider(color: Colors.blueGrey, thickness: 1.0,),
             _managementCommission != null ? Column(
               children: <Widget>[
-                CustomListTile(listTileLabel: 'Phầm trăm KPI đạt', alertDialogLabel: 'Cập nhật phần trăm KPI đạt', value: _managementPercentageOfKPIController.text.isEmpty ? _managementCommission!.percentageOfKpi.toString() :  _managementPercentageOfKPIController.text ,numberEditController: _managementPercentageOfKPIController, readOnly: false, moneyFormatType: false, percentlFormatType: true),
-                CustomListTile(listTileLabel: 'Thưởng', alertDialogLabel: 'Cập nhật thưởng', value:  _managementCommissionController.text.isEmpty ? _managementCommission!.commission.toString() :  _managementCommissionController.text ,numberEditController:  _managementCommissionController, readOnly: false, moneyFormatType: false, percentlFormatType: true),
+                CustomListTile(listTileLabel: 'Phầm trăm KPI đạt', alertDialogLabel: 'Cập nhật phần trăm KPI đạt', value: _managementPercentageOfKPIController.text.isEmpty ? _managementCommission!.percentageOfKpi.toString() :  _managementPercentageOfKPIController.text ,numberEditController: _managementPercentageOfKPIController, readOnly: false, moneyFormatType: false, percentFormatType: true),
+                CustomListTile(listTileLabel: 'Thưởng', alertDialogLabel: 'Cập nhật thưởng', value:  _managementCommissionController.text.isEmpty ? _managementCommission!.commission.toString() :  _managementCommissionController.text ,numberEditController:  _managementCommissionController, readOnly: false, moneyFormatType: false, percentFormatType: true),
+                if(_managementPercentageOfKPIController.text.isNotEmpty || _managementCommissionController.text.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextButton(
+                          color: mainBgColor,
+                          text: 'Lưu',
+                          onPressed: () async {
+                            showLoaderDialog(context);
+                            bool result = await _updateManagementCommission();
+                            if(result == true){
+                              _getListManagementCommission();
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Cập nhật quy định tiền thưởng quản lý thành công')),
+                              );
+                            }else{
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Cập nhật quy định tiền thưởng quản lý thất bại')),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ) : const Center(child: Padding(
               padding: EdgeInsets.all(10.0),
@@ -423,7 +460,6 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
                                   ],
                                 ),
                               ),
-
                             ],
                           ),
                         ),

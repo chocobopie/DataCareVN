@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:login_sample/utilities/utils.dart';
 
 class EditMoneyButton extends StatelessWidget {
@@ -29,7 +30,7 @@ class EditMoneyButton extends StatelessWidget {
                 ],
                 minLines: 2,
                 maxLines: 5,
-                decoration: (moneyFormatType == true || moneyFormatType == null) ? InputDecoration(suffixText: currency) : null,
+                decoration: (moneyFormatType == true || moneyFormatType == null) ? const InputDecoration(suffixText: 'đ') : percentFormatType == true ? const InputDecoration(suffixText: '%') : null,
                 keyboardType: (percentFormatType == false || percentFormatType == null) ? TextInputType.number : const TextInputType.numberWithOptions(decimal: true, signed: true),
                 controller: numberController,
                 onChanged: (string){
@@ -40,7 +41,6 @@ class EditMoneyButton extends StatelessWidget {
                     text: string,
                     selection: TextSelection.collapsed(offset: string.length),
                   );
-
                 },
               ),
               title: Text(label, style: const TextStyle(color: defaultFontColor, fontSize: 16.0),),
@@ -57,6 +57,10 @@ class EditMoneyButton extends StatelessWidget {
                 TextButton(
                   child: const Text("Lưu"),
                   onPressed: () {
+                    if(percentFormatType == true){
+                      num number = num.tryParse(numberController.text)! / 100;
+                      numberController.text = number.toString();
+                    }
                     Navigator.pop(context);
                   },
                 ),
