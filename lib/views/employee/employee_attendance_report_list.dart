@@ -343,7 +343,10 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
                                   ),
                                 ],
                               ),
-                            ) : const Center(child: CircularProgressIndicator())
+                            ) : const Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
                                 : const Center(child: Text('Không có dữ liệu')),
                           ],
                       ),

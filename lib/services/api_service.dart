@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:login_sample/models/ManagementCommission.dart';
+import 'package:login_sample/models/management_commission.dart';
 import 'package:login_sample/models/PayrollCompany.dart';
-import 'package:login_sample/models/PersonalCommission.dart';
+import 'package:login_sample/models/personal_commission.dart';
 import 'package:login_sample/models/application_type.dart';
 import 'package:login_sample/models/attendance_rule.dart';
 import 'package:login_sample/models/attendance_status.dart';
@@ -1924,12 +1924,63 @@ class ApiService {
     final response = await http.get(Uri.parse(url));
     if(response.statusCode == 200){
       List jsonResponse = json.decode(response.body);
-      print('Get list of personal management successfully | 200');
+      print('Get list of management commission successfully | 200');
       return jsonResponse.map((data) => ManagementCommission.fromJson(data)).toList();
     }else{
       print("Failed to get list of management commission | 400");
       List<ManagementCommission>? result;
       return result;
+    }
+  }
+
+  Future<bool> updatePersonalCommission(PersonalCommission personalCommission) async {
+
+    String url = stockUrl + 'personal-commissions/${personalCommission.personalCommissionId}';
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "personalCommissionId": personalCommission.personalCommissionId,
+        "percentageOfKPI": personalCommission.percentageOfKpi,
+        "newSignCommissionForSalesManager": personalCommission.newSignCommissionForSalesManager,
+        "renewedSignCommissionForSalesManager": personalCommission.renewedSignCommissionForSalesManager,
+        "newSignCommissionForSalesLeader": personalCommission.newSignCommissionForSalesLeader,
+        "renewedSignCommissionForSalesLeader": personalCommission.renewedSignCommissionForSalesLeader,
+        "newSignCommissionForSalesEmloyee": personalCommission.newSignCommissionForSalesEmloyee,
+        "renewedSignCommissionForSalesEmployee": personalCommission.renewedSignCommissionForSalesEmployee
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update Personal Commission successfully | 200');
+      return true;
+    }else{
+      print('Update Personal Commission failed | 400');
+      return false;
+    }
+  }
+
+  Future<bool> updateManagementCommission(ManagementCommission managementCommission) async {
+
+    String url = stockUrl + 'management-commissions/${managementCommission.managementCommissionId}';
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "managementCommissionId": managementCommission.managementCommissionId,
+        "percentageOfKPI": managementCommission.percentageOfKpi,
+        "commission": managementCommission.commission
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update Management Commission successfully | 200');
+      return true;
+    }else{
+      print('Update Management Commission failed | 400');
+      return false;
     }
   }
 }

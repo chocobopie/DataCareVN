@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:login_sample/models/ManagementCommission.dart';
-import 'package:login_sample/models/PersonalCommission.dart';
+import 'package:login_sample/models/management_commission.dart';
+import 'package:login_sample/models/personal_commission.dart';
 import 'package:login_sample/services/api_service.dart';
 
 class CommissionListViewModel with ChangeNotifier{

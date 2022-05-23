@@ -4,12 +4,13 @@ import 'package:login_sample/utilities/utils.dart';
 
 class EditMoneyButton extends StatelessWidget {
   const EditMoneyButton({
-    Key? key, required this.numberController, required this.label, this.numberFormat
+    Key? key, required this.numberController, required this.label, this.moneyFormatType, this.percentFormatType
   }) : super(key: key);
 
   final TextEditingController numberController;
   final String label;
-  final bool? numberFormat;
+  final bool? moneyFormatType;
+  final bool? percentFormatType;
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +29,18 @@ class EditMoneyButton extends StatelessWidget {
                 ],
                 minLines: 2,
                 maxLines: 5,
-                decoration: InputDecoration(suffixText: currency),
-                keyboardType: TextInputType.number,
+                decoration: (moneyFormatType == true || moneyFormatType == null) ? InputDecoration(suffixText: currency) : null,
+                keyboardType: (percentFormatType == false || percentFormatType == null) ? TextInputType.number : const TextInputType.numberWithOptions(decimal: true, signed: true),
                 controller: numberController,
                 onChanged: (string){
-                  if(numberFormat == true || numberFormat == null){
+                  if(moneyFormatType == true || moneyFormatType == null){
                     string = formatNumber(string.replaceAll('.', ''));
                   }
                   numberController.value = TextEditingValue(
                     text: string,
                     selection: TextSelection.collapsed(offset: string.length),
                   );
+
                 },
               ),
               title: Text(label, style: const TextStyle(color: defaultFontColor, fontSize: 16.0),),
@@ -46,9 +48,9 @@ class EditMoneyButton extends StatelessWidget {
                 TextButton(
                     child: const Text("Huỷ"),
                     onPressed: (){
-                      // numberController.value = const TextEditingValue(
-                      //   text: '',
-                      // );
+                      if(numberController.text.isNotEmpty){
+                        numberController.clear();
+                      }
                       Navigator.pop(context);
                     }
                 ),
