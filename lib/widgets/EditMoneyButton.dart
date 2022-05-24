@@ -57,10 +57,10 @@ class EditMoneyButton extends StatelessWidget {
                 TextButton(
                   child: const Text("Lưu"),
                   onPressed: () {
-                    if(percentFormatType == true){
-                      num number = num.tryParse(numberController.text)! / 100;
-                      numberController.text = number.toString();
-                    }
+                    // if(percentFormatType == true){
+                    //   num number = num.tryParse(numberController.text)! * 100;
+                    //   numberController.text = number.toString();
+                    // }
                     Navigator.pop(context);
                   },
                 ),

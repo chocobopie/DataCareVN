@@ -6,6 +6,7 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/attendance_rule_view_model.dart';
 import 'package:login_sample/view_models/commission_list_view_model.dart';
 import 'package:login_sample/view_models/commission_view_model.dart';
+import 'package:login_sample/views/hr/hr_company_rule_detail.dart';
 import 'package:login_sample/widgets/CustomListTile.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -261,9 +262,10 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
 
     ManagementCommission managementCommission = ManagementCommission(
         managementCommissionId: _managementCommission!.managementCommissionId,
-        percentageOfKpi: _managementPercentageOfKPIController.text.isEmpty ? _managementCommission!.percentageOfKpi : double.tryParse(_managementPercentageOfKPIController.text)!,
-        commission: _managementCommissionController.text.isEmpty ? _managementCommission!.commission : double.tryParse(_managementCommissionController.text)!,
+        percentageOfKpi: _managementPercentageOfKPIController.text.isEmpty ? _managementCommission!.percentageOfKpi : double.tryParse(_managementPercentageOfKPIController.text)!/100,
+        commission: _managementCommissionController.text.isEmpty ? _managementCommission!.commission : double.tryParse(_managementCommissionController.text)!/100,
     );
+
 
     bool result = await CommissionViewModel().updateManagementCommission(managementCommission);
     return result;
@@ -296,8 +298,8 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
             const Divider(color: Colors.blueGrey, thickness: 1.0,),
             _managementCommission != null ? Column(
               children: <Widget>[
-                CustomListTile(listTileLabel: 'Phầm trăm KPI đạt', alertDialogLabel: 'Cập nhật phần trăm KPI đạt', value: _managementPercentageOfKPIController.text.isEmpty ? _managementCommission!.percentageOfKpi.toString() :  _managementPercentageOfKPIController.text ,numberEditController: _managementPercentageOfKPIController, readOnly: false, moneyFormatType: false, percentFormatType: true),
-                CustomListTile(listTileLabel: 'Thưởng', alertDialogLabel: 'Cập nhật thưởng', value:  _managementCommissionController.text.isEmpty ? _managementCommission!.commission.toString() :  _managementCommissionController.text ,numberEditController:  _managementCommissionController, readOnly: false, moneyFormatType: false, percentFormatType: true),
+                CustomListTile(listTileLabel: 'Phầm trăm KPI đạt', alertDialogLabel: 'Cập nhật phần trăm KPI đạt', value: _managementPercentageOfKPIController.text.isEmpty ? (_managementCommission!.percentageOfKpi*100).toString() :  _managementPercentageOfKPIController.text ,numberEditController: _managementPercentageOfKPIController, readOnly: false, moneyFormatType: false, percentFormatType: true),
+                CustomListTile(listTileLabel: 'Thưởng', alertDialogLabel: 'Cập nhật thưởng', value:  _managementCommissionController.text.isEmpty ? (_managementCommission!.commission*100).toString() :  _managementCommissionController.text ,numberEditController:  _managementCommissionController, readOnly: false, moneyFormatType: false, percentFormatType: true),
                 if(_managementPercentageOfKPIController.text.isNotEmpty || _managementCommissionController.text.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
@@ -312,6 +314,10 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
                             bool result = await _updateManagementCommission();
                             if(result == true){
                               _getListManagementCommission();
+                              setState(() {
+                                _managementCommissionController.clear();
+                                _managementPercentageOfKPIController.clear();
+                              });
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Cập nhật quy định tiền thưởng quản lý thành công')),
@@ -386,85 +392,38 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
                   itemCount: _listPersonalCommission.length,
                   itemBuilder: (context, index){
                     final _personalCommission = _listPersonalCommission[index];
-                    TextEditingController _newCommissionSaleEmployeeController = TextEditingController();
-                    return ExpansionTile(
-                      title: const Text('Phần trăm KPI đạt'),
-                      trailing: Text('${_personalCommission.percentageOfKpi}'),
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20.0),
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: [
-                                    const Text('Thưởng kí mới cho NVKD'),
-                                    const Spacer(),
-                                    Text('${_personalCommission.newSignCommissionForSalesEmloyee}'),
-                                  ],
-                                ),
-                              ),
-                              const Divider(color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: [
-                                    const Text('Thưởng tái kí cho NVKD'),
-                                    const Spacer(),
-                                    Text('${_personalCommission.renewedSignCommissionForSalesEmployee}'),
-                                  ],
-                                ),
-                              ),
-                              const Divider(color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: [
-                                    const Text('Thưởng kí mới cho TNKD'),
-                                    const Spacer(),
-                                    Text('${_personalCommission.newSignCommissionForSalesLeader}'),
-                                  ],
-                                ),
-                              ),
-                              const Divider(color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: [
-                                    const Text('Thưởng tái kí cho TNKD'),
-                                    const Spacer(),
-                                    Text('${_personalCommission.renewedSignCommissionForSalesLeader}'),
-                                  ],
-                                ),
-                              ),
-                              const Divider(color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: [
-                                    const Text('Thưởng kí mới cho TPKD'),
-                                    const Spacer(),
-                                    Text('${_personalCommission.newSignCommissionForSalesManager}'),
-                                  ],
-                                ),
-                              ),
-                              const Divider(color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
-                                child: Row(
-                                  children: [
-                                    const Text('Thưởng tái kí cho TPKD'),
-                                    const Spacer(),
-                                    Text('${_personalCommission.renewedSignCommissionForSalesManager}'),
-                                  ],
-                                ),
-                              ),
-                            ],
+                    return Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0, left: 10.0),
+                        child: Card(
+                          elevation: 10.0,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10))
                           ),
-                        ),
-                        const Divider(color: Colors.grey,),
-                      ],
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => HrCompanyRuleDetail(personalCommission: _personalCommission,)
+                              ));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Text('Phần trăm KPI đạt', style: TextStyle(fontSize: 12.0),),
+                                        const Spacer(),
+                                        Text('${_personalCommission.percentageOfKpi * 100}%', style: const TextStyle(fontSize: 14.0),),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
                     );
                   },
                 ),

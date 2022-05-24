@@ -25,7 +25,11 @@ class CustomListTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-            Text( numberEditController.text.isEmpty ? value == null ? '0' : (percentFormatType == false || percentFormatType == null) ? moneyFormat(value!) : value.toString() : numberEditController.text, style: const TextStyle(fontSize: 14.0,),),
+            Text( numberEditController.text.isEmpty ? value == null ? '0'
+                : (percentFormatType == false || percentFormatType == null) ? moneyFormat(value!)
+                : '$value%'
+                : numberEditController.text + ((percentFormatType == false || percentFormatType == null) ? '' : '%'),
+              style: const TextStyle(fontSize: 14.0,),),
           if(readOnly == false || readOnly == null)
           EditMoneyButton(
             numberController: numberEditController,

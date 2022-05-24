@@ -573,7 +573,6 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                                               ),
                                             ),
                                           )
-
                                       );
                                     },
                                     itemCount: _deals.length,
