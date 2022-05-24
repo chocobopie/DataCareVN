@@ -143,7 +143,7 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
                                           ),
                                         ],
                                       ),
-                                    )
+                                    ),
                                 ],
                               ),
                             ) : const Padding(
@@ -253,11 +253,6 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
     }
   }
 
-  Future<bool> _updatePersonalCommission(PersonalCommission personalCommission) async {
-    bool result = await CommissionViewModel().updatePersonalCommission(personalCommission);
-    return result;
-  }
-
   Future<bool> _updateManagementCommission() async {
 
     ManagementCommission managementCommission = ManagementCommission(
@@ -269,6 +264,10 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
 
     bool result = await CommissionViewModel().updateManagementCommission(managementCommission);
     return result;
+  }
+  
+  void _onGoBack() async {
+    _getListPersonalCommission();
   }
 
   Container buildManagementCommission(BuildContext context) {
@@ -403,7 +402,7 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
                             onTap: () {
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => HrCompanyRuleDetail(personalCommission: _personalCommission,)
-                              ));
+                              )).then((value) => _onGoBack());
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
