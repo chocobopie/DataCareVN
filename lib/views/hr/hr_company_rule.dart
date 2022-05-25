@@ -6,7 +6,8 @@ import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/attendance_rule_view_model.dart';
 import 'package:login_sample/view_models/commission_list_view_model.dart';
 import 'package:login_sample/view_models/commission_view_model.dart';
-import 'package:login_sample/views/hr/hr_company_rule_detail.dart';
+import 'package:login_sample/views/hr/hr_personal_comission_add_new.dart';
+import 'package:login_sample/views/hr/hr_personal_commission_detail.dart';
 import 'package:login_sample/widgets/CustomListTile.dart';
 import 'package:login_sample/widgets/CustomTextButton.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -401,7 +402,7 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
                           child: InkWell(
                             onTap: () {
                               Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => HrCompanyRuleDetail(personalCommission: _personalCommission,)
+                                  builder: (context) => HrPersonalCommissionDetail(personalCommission: _personalCommission,)
                               )).then((value) => _onGoBack());
                             },
                             child: Padding(
@@ -428,6 +429,23 @@ class _HrCompanyRuleState extends State<HrCompanyRule> {
                 ),
               ) : const Center(child: CircularProgressIndicator()),
               height: MediaQuery.of(context).size.height * 0.4,
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: CustomTextButton(
+                        color: mainBgColor, text: 'Thêm mới',
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const HrPersonalCommissionAddNew()
+                        )).then((value) => _onGoBack());
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

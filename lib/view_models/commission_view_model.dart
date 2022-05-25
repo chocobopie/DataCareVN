@@ -20,4 +20,20 @@ class CommissionViewModel with ChangeNotifier{
 
     return result;
   }
+
+  Future<bool> createNewPersonalCommission(PersonalCommission personalCommission) async {
+    bool result = await ApiService().createNewPersonalCommission(personalCommission);
+
+    notifyListeners();
+
+    return result;
+  }
+
+  Future<bool> deleteAPersonalPermission(int personalPermissionId) async {
+    bool result = await ApiService().deleteAPersonalPermission(personalPermissionId);
+
+    notifyListeners();
+
+    return result;
+  }
 }

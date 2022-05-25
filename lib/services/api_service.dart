@@ -1983,5 +1983,50 @@ class ApiService {
       return false;
     }
   }
+
+  Future<bool> createNewPersonalCommission(PersonalCommission personalCommission) async {
+    String url = stockUrl + 'personal-commissions';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "percentageOfKPI": personalCommission.percentageOfKpi,
+        "newSignCommissionForSalesManager": personalCommission.newSignCommissionForSalesManager,
+        "renewedSignCommissionForSalesManager": personalCommission.renewedSignCommissionForSalesManager,
+        "newSignCommissionForSalesLeader": personalCommission.newSignCommissionForSalesLeader,
+        "renewedSignCommissionForSalesLeader": personalCommission.renewedSignCommissionForSalesLeader,
+        "newSignCommissionForSalesEmloyee": personalCommission.newSignCommissionForSalesEmloyee,
+        "renewedSignCommissionForSalesEmployee": personalCommission.renewedSignCommissionForSalesEmployee
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Create new personal permission successfully');
+      return true;
+    }else{
+      print('Create new personal permission failed');
+      return false;
+    }
+  }
+
+  Future<bool> deleteAPersonalPermission(int personalPermissionId) async {
+    String url = stockUrl + 'personal-commissions/$personalPermissionId';
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if(response.statusCode == 200){
+      print('Delete personal permission successfully | 200');
+      return true;
+    }else{
+      print('Delete personal permission failed | 400');
+      return false;
+    }
+  }
 }
 
