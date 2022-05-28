@@ -3,6 +3,7 @@ import 'package:login_sample/models/account.dart';
 import 'package:login_sample/views/admin/admin_account_list.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
+import 'package:login_sample/views/hr/hr_basic_salary_grade_list.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/employee/employee_take_attendance.dart';
@@ -97,6 +98,19 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                         },
                       ),
                       const SizedBox(width: 30.0,),
+                      if(_currentAccount.roleId == 1)
+                      ImageTextButton(
+                        imageUrl: 'assets/images/BasicSalaryByGrade.png',
+                        text: 'Xem lương theo cấp bậc',
+                        buttonColors: const [Colors.green, Colors.white],
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HrBasicSalaryGradeList(),
+                              ));
+                        },
+                      ),
                     ],
                   ),
                 ],

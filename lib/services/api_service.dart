@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:login_sample/models/basic_salary_by_grade.dart';
 import 'package:login_sample/models/management_commission.dart';
 import 'package:login_sample/models/PayrollCompany.dart';
 import 'package:login_sample/models/personal_commission.dart';
@@ -2026,6 +2027,21 @@ class ApiService {
     }else{
       print('Delete personal permission failed | 400');
       return false;
+    }
+  }
+
+  Future<List<BasicSalaryByGrade>?> getListBasicSalaryByGrade() async {
+    String url = stockUrl + 'basic-salary-by-grades';
+
+    final response = await http.get(Uri.parse(url));
+    if(response.statusCode == 200){
+      List jsonResponse = json.decode(response.body);
+      print('Get list of basic salary by grade successfully | 200');
+      return jsonResponse.map((data) => BasicSalaryByGrade.fromJson(data)).toList();
+    }else{
+      print("Failed to get list basic salary by grade | 400");
+      List<BasicSalaryByGrade>? result;
+      return result;
     }
   }
 }
