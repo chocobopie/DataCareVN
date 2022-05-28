@@ -10,4 +10,20 @@ class BasicSalaryGradeListViewModel with ChangeNotifier{
 
     return result;
   }
+
+  Future<bool> createNewBasicSalaryGrade(BasicSalaryByGrade basicSalaryByGrade) async {
+    bool? result = await ApiService().createNewBasicSalaryGrade(basicSalaryByGrade);
+
+    notifyListeners();
+
+    return result;
+  }
+
+  Future<bool> deleteABasicSalaryGrade(int basicSalaryId) async {
+    bool? result = await ApiService().deleteABasicSalaryGrade(basicSalaryId);
+
+    notifyListeners();
+
+    return result;
+  }
 }

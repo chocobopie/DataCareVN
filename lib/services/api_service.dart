@@ -2044,5 +2044,46 @@ class ApiService {
       return result;
     }
   }
+
+  Future<bool> createNewBasicSalaryGrade(BasicSalaryByGrade basicSalaryByGrade) async {
+    String url = stockUrl + 'basic-salary-by-grades';
+
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "basicSalary": basicSalaryByGrade.basicSalary,
+        "kpi": basicSalaryByGrade.kpi,
+        "allowance": basicSalaryByGrade.allowance
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Create new basic salary successfully | 200');
+      return true;
+    }else{
+      print('Create new basic salary failed | 400');
+      return false;
+    }
+  }
+
+  Future<bool> deleteABasicSalaryGrade(int basicSalaryId) async {
+    String url = stockUrl + 'basic-salary-by-grades/$basicSalaryId';
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if(response.statusCode == 200){
+      print('Delete personal basic salary successfully successfully | 200');
+      return true;
+    }else{
+      print('Delete personal basic salary failed | 400');
+      return false;
+    }
+  }
 }
 
