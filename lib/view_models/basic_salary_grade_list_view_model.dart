@@ -26,4 +26,12 @@ class BasicSalaryGradeListViewModel with ChangeNotifier{
 
     return result;
   }
+
+  Future<bool> updateBasicSalaryByGrade(BasicSalaryByGrade basicSalaryByGrade) async {
+    bool? result = await ApiService().updateBasicSalaryByGrade(basicSalaryByGrade);
+
+    notifyListeners();
+
+    return result;
+  }
 }

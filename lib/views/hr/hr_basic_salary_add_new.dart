@@ -71,7 +71,7 @@ class _HrBasicSalaryAddNewState extends State<HrBasicSalaryAddNew> {
                             color: mainBgColor,
                             text: 'Thêm mới',
                             onPressed: () async {
-                              _reversePayrollMoneyFormat();
+                              _reverseMoneyFormat();
                               showLoaderDialog(context);
                               bool result = await _createNewBasicSalaryByGrade();
                               if(result == true){
@@ -119,7 +119,7 @@ class _HrBasicSalaryAddNewState extends State<HrBasicSalaryAddNew> {
       ),
     );
   }
-  void _reversePayrollMoneyFormat(){
+  void _reverseMoneyFormat(){
     _basicSalaryController.text = _basicSalaryController.text.replaceAll('.', '');
     _kpiController.text = _kpiController.text.replaceAll('.', '');
     _allowanceController.text = _allowanceController.text.replaceAll('.', '');

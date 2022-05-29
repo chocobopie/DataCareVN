@@ -3,6 +3,7 @@ import 'package:login_sample/models/basic_salary_by_grade.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/basic_salary_grade_list_view_model.dart';
 import 'package:login_sample/views/hr/hr_basic_salary_add_new.dart';
+import 'package:login_sample/views/hr/hr_basic_salary_detail.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HrBasicSalaryGradeList extends StatefulWidget {
@@ -159,7 +160,11 @@ class _HrBasicSalaryGradeListState extends State<HrBasicSalaryGradeList> {
                                           ),
                                           const Spacer(),
                                           IconButton(
-                                            onPressed: (){},
+                                            onPressed: (){
+                                              Navigator.push(context, MaterialPageRoute(
+                                                builder: (context) => HrBasicSalaryDetail(basicSalaryByGrade: _basicSalaryGrade,),
+                                              )).then((value) => _onGoBack());
+                                            },
                                             icon: const Icon(Icons.edit, color: Colors.green,),
                                           ),
                                         ],

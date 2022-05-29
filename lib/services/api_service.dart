@@ -2085,5 +2085,29 @@ class ApiService {
       return false;
     }
   }
+
+  Future<bool> updateBasicSalaryByGrade(BasicSalaryByGrade basicSalaryByGrade) async {
+
+    String url = stockUrl + 'basic-salary-by-grades/${basicSalaryByGrade.basicSalaryByGradeId}';
+    final response = await http.put(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "basicSalaryByGradeId": basicSalaryByGrade.basicSalaryByGradeId,
+        "basicSalary": basicSalaryByGrade.basicSalary,
+        "kpi": basicSalaryByGrade.kpi,
+        "allowance": basicSalaryByGrade.allowance
+      }),
+    );
+
+    if(response.statusCode == 200){
+      print('Update Basic Salary By Grade successfully | 200');
+      return true;
+    }else{
+      print('Update Basic Salary By Grade failed | 400');
+      return false;
+    }
+  }
 }
 
