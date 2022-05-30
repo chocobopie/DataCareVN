@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:login_sample/models/basic_salary_by_grade.dart';
 import 'package:login_sample/models/management_commission.dart';
-import 'package:login_sample/models/PayrollCompany.dart';
+import 'package:login_sample/models/payroll_company.dart';
 import 'package:login_sample/models/personal_commission.dart';
 import 'package:login_sample/models/application_type.dart';
 import 'package:login_sample/models/attendance_rule.dart';
@@ -1792,12 +1792,11 @@ class ApiService {
         "newSignPersonalSalesBonus": payroll.newSignPersonalSalesBonus,
         "renewedPersonalSalesBonus": payroll.renewedPersonalSalesBonus,
         "managementSalesBonus": payroll.managementSalesBonus,
-        "supporterSalesBonus": payroll.supporterSalesBonus,
         "clB20SalesBonus": payroll.clB20SalesBonus,
-        "contentManagerfanpageTechnicalEmployeeBonus": payroll.contentManagerFanpageTechnicalEmployeeBonus,
+        "contentManagerFanpageTechnicalEmployeeBonus": payroll.contentManagerFanpageTechnicalEmployeeBonus,
         "collaboratorFanpageTechnicalEmployeeBonus": payroll.collaboratorFanpageTechnicalEmployeeBonus,
         "renewedFanpageTechnicalEmployeeBonus": payroll.renewedFanpageTechnicalEmployeeBonus,
-        "contentManagerwebsiteAdsTechnicalEmployeeBonus": payroll.contentManagerWebsiteAdsTechnicalEmployeeBonus,
+        "contentManagerWebsiteAdsTechnicalEmployeeBonus": payroll.contentManagerWebsiteAdsTechnicalEmployeeBonus,
         "collaboratorWebsiteTechnicalEmployeeBonus": payroll.collaboratorWebsiteTechnicalEmployeeBonus,
         "renewedWebsiteTechnicalEmployeeBonus": payroll.renewedWebsiteTechnicalEmployeeBonus,
         "collaboratorAdsTechnicalEmployeeBonus": payroll.collaboratorAdsTechnicalEmployeeBonus,
@@ -1807,8 +1806,10 @@ class ApiService {
         "emulationBonus": payroll.emulationBonus,
         "recruitmentBonus": payroll.recruitmentBonus,
         "personalBonus": payroll.personalBonus,
-        "teamBonus": payroll.teamBonus
-      }),
+        "teamBonus": payroll.teamBonus,
+        "tax": payroll.tax,
+      }
+      ),
     );
 
     if(response.statusCode == 200){

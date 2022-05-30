@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:login_sample/models/PayrollCompany.dart';
+import 'package:login_sample/models/payroll_company.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/attendance_rule.dart';
 import 'package:login_sample/models/deal.dart';
@@ -183,12 +183,12 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                           ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
                             ListTile(
-                              title: const Text('Thưởng ký mới', style: TextStyle(fontSize: 14.0,),),
+                              title: const Text('Thưởng cá nhân ký mới', style: TextStyle(fontSize: 14.0,),),
                               trailing: Text(moneyFormat(_payroll!.newSignPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
                             ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
                             ListTile(
-                              title: const Text('Thưởng tái ký', style: TextStyle(fontSize: 14.0,),),
+                              title: const Text('Thưởng cá nhân tái ký', style: TextStyle(fontSize: 14.0,),),
                               trailing: Text(moneyFormat(_payroll!.renewedPersonalSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
                             ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
@@ -196,11 +196,11 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                               title: const Text('Thưởng quản lý bán hàng', style: TextStyle(fontSize: 14.0,),),
                               trailing: Text(moneyFormat(_payroll!.managementSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
                             ),
-                          if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
-                            ListTile(
-                              title: const Text('Thưởng hỗ trợ bán hàng', style: TextStyle(fontSize: 14.0,),),
-                              trailing: Text(moneyFormat(_payroll!.supporterSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                            ),
+                          // if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
+                          //   ListTile(
+                          //     title: const Text('Thưởng hỗ trợ bán hàng', style: TextStyle(fontSize: 14.0,),),
+                          //     trailing: Text(moneyFormat(_payroll!.supporterSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          //   ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
                             ListTile(
                               title: const Text('Thưởng CLB 20', style: TextStyle(fontSize: 14.0,),),
@@ -271,6 +271,10 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                           ListTile(
                             title: const Text('Tiền thưởng nhóm', style: TextStyle(fontSize: 14.0,),),
                             trailing: Text(moneyFormat(_payroll!.teamBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Thuế', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.tax.toString()), style: const TextStyle(fontSize: 14.0,),),
                           ),
                           ListTile(
                             title: const Text(

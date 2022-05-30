@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:login_sample/models/PayrollCompany.dart';
+import 'package:login_sample/models/payroll_company.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/payroll.dart';

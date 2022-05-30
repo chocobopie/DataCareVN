@@ -1,3 +1,9 @@
+// To parse this JSON data, do
+//
+//     final payroll = payrollFromJson(jsonString);
+//     final album = albumFromJson(jsonString);
+//     final track = trackFromJson(jsonString);
+
 import 'dart:convert';
 
 Payroll payrollFromJson(String str) => Payroll.fromJson(json.decode(str));
@@ -19,7 +25,6 @@ class Payroll {
     required this.newSignPersonalSalesBonus,
     required this.renewedPersonalSalesBonus,
     required this.managementSalesBonus,
-    required this.supporterSalesBonus,
     required this.clB20SalesBonus,
     required this.contentManagerFanpageTechnicalEmployeeBonus,
     required this.collaboratorFanpageTechnicalEmployeeBonus,
@@ -35,6 +40,9 @@ class Payroll {
     required this.recruitmentBonus,
     required this.personalBonus,
     required this.teamBonus,
+    required this.tax,
+    required this.total,
+    this.maxPage,
   });
 
   int payrollId;
@@ -50,7 +58,6 @@ class Payroll {
   num newSignPersonalSalesBonus;
   num renewedPersonalSalesBonus;
   num managementSalesBonus;
-  num supporterSalesBonus;
   num clB20SalesBonus;
   num contentManagerFanpageTechnicalEmployeeBonus;
   num collaboratorFanpageTechnicalEmployeeBonus;
@@ -66,6 +73,9 @@ class Payroll {
   num recruitmentBonus;
   num personalBonus;
   num teamBonus;
+  num tax;
+  num total;
+  int? maxPage;
 
   factory Payroll.fromJson(Map<String, dynamic> json) => Payroll(
     payrollId: json["payrollId"],
@@ -81,7 +91,6 @@ class Payroll {
     newSignPersonalSalesBonus: json["newSignPersonalSalesBonus"],
     renewedPersonalSalesBonus: json["renewedPersonalSalesBonus"],
     managementSalesBonus: json["managementSalesBonus"],
-    supporterSalesBonus: json["supporterSalesBonus"],
     clB20SalesBonus: json["clB20SalesBonus"],
     contentManagerFanpageTechnicalEmployeeBonus: json["contentManagerFanpageTechnicalEmployeeBonus"],
     collaboratorFanpageTechnicalEmployeeBonus: json["collaboratorFanpageTechnicalEmployeeBonus"],
@@ -97,6 +106,9 @@ class Payroll {
     recruitmentBonus: json["recruitmentBonus"],
     personalBonus: json["personalBonus"],
     teamBonus: json["teamBonus"],
+    tax: json["tax"],
+    total: json["total"],
+    maxPage: json["maxPage"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -113,7 +125,6 @@ class Payroll {
     "newSignPersonalSalesBonus": newSignPersonalSalesBonus,
     "renewedPersonalSalesBonus": renewedPersonalSalesBonus,
     "managementSalesBonus": managementSalesBonus,
-    "supporterSalesBonus": supporterSalesBonus,
     "clB20SalesBonus": clB20SalesBonus,
     "contentManagerFanpageTechnicalEmployeeBonus": contentManagerFanpageTechnicalEmployeeBonus,
     "collaboratorFanpageTechnicalEmployeeBonus": collaboratorFanpageTechnicalEmployeeBonus,
@@ -129,5 +140,8 @@ class Payroll {
     "recruitmentBonus": recruitmentBonus,
     "personalBonus": personalBonus,
     "teamBonus": teamBonus,
+    "tax": tax,
+    "total": total,
+    "maxPage": maxPage,
   };
 }

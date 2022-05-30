@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:login_sample/models/PayrollCompany.dart';
+import 'package:login_sample/models/payroll_company.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/payroll.dart';
@@ -55,7 +55,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   final TextEditingController newSignPersonalSalesBonusController = TextEditingController();
   final TextEditingController renewedPersonalSalesBonusController = TextEditingController();
   final TextEditingController managementSalesBonusController = TextEditingController();
-  final TextEditingController supporterSalesBonusController = TextEditingController();
+  final TextEditingController taxController = TextEditingController();
   final TextEditingController clB20SalesBonusController = TextEditingController();
   final TextEditingController contentManagerFanpageTechnicalEmployeeBonusController = TextEditingController();
   final TextEditingController collaboratorFanpageTechnicalEmployeeBonusController = TextEditingController();
@@ -96,7 +96,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     newSignPersonalSalesBonusController.dispose();
     renewedPersonalSalesBonusController.dispose();
     managementSalesBonusController.dispose();
-    supporterSalesBonusController.dispose();
+    taxController.dispose();
     clB20SalesBonusController.dispose();
     contentManagerFanpageTechnicalEmployeeBonusController.dispose();
     collaboratorFanpageTechnicalEmployeeBonusController.dispose();
@@ -327,7 +327,6 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng cá nhân ký mới', alertDialogLabel: 'Cập nhật thưởng cá nhân ký mới', numberEditController: newSignPersonalSalesBonusController, value: newSignPersonalSalesBonusController.text.isEmpty ? _payroll!.newSignPersonalSalesBonus.toString() : newSignPersonalSalesBonusController.text, readOnly: _readOnlyPayroll,),
                                 if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng cá nhân tái ký', alertDialogLabel: 'Cập nhật thưởng cá nhân tái ký', numberEditController: renewedPersonalSalesBonusController, value:renewedPersonalSalesBonusController.text.isEmpty ? _payroll!.renewedPersonalSalesBonus.toString() : renewedPersonalSalesBonusController.text, readOnly: _readOnlyPayroll,),
                                 if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng quản lý', alertDialogLabel: 'Cập nhật thưởng quản lý', numberEditController: managementSalesBonusController, value:managementSalesBonusController.text.isEmpty ? _payroll!.managementSalesBonus.toString() : managementSalesBonusController.text, readOnly: _readOnlyPayroll,),
-                                if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng từ người hỗ trợ', alertDialogLabel: 'Cập nhật thưởng từ người hỗ trợ', numberEditController: supporterSalesBonusController, value: supporterSalesBonusController.text.isEmpty ? _payroll!.supporterSalesBonus.toString() : supporterSalesBonusController.text, readOnly: _readOnlyPayroll,),
                                 if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5)CustomListTile(listTileLabel: 'Thưởng CLB 20', alertDialogLabel: 'Cập nhật thưởng CLB 20', numberEditController: clB20SalesBonusController, value: clB20SalesBonusController.text.isEmpty ? _payroll!.clB20SalesBonus.toString() : clB20SalesBonusController.text, readOnly: _readOnlyPayroll,),
                                 if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng quản lý Fanpage', alertDialogLabel: 'Cập nhật thưởng Fanpage', numberEditController: contentManagerFanpageTechnicalEmployeeBonusController, value:  contentManagerFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!. contentManagerFanpageTechnicalEmployeeBonus.toString() : contentManagerFanpageTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
                                 if(widget.empAccount.roleId == 6)CustomListTile(listTileLabel: 'Thưởng cộng tác quản lý Fanpage', alertDialogLabel: 'Cập nhật cộng tác quản lý Fanpage', numberEditController: collaboratorFanpageTechnicalEmployeeBonusController, value: collaboratorFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorFanpageTechnicalEmployeeBonus.toString() : collaboratorFanpageTechnicalEmployeeBonusController.text, readOnly: _readOnlyPayroll,),
@@ -343,6 +342,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 CustomListTile(listTileLabel: 'Thưởng tuyển dụng', alertDialogLabel: 'Cập nhật thưởng tuyển dụng', numberEditController: recruitmentBonusController, value: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus.toString() : recruitmentBonusController.text, readOnly: _readOnlyPayroll,),
                                 CustomListTile(listTileLabel: 'Thưởng cá nhân', alertDialogLabel: 'Cập nhật thưởng cá nhân', numberEditController: personalBonusController, value: personalBonusController.text.isEmpty ? _payroll!.personalBonus.toString() : personalBonusController.text, readOnly: _readOnlyPayroll,),
                                 CustomListTile(listTileLabel: 'Thưởng nhóm', alertDialogLabel: 'Cập nhật thưởng nhóm', numberEditController: teamBonusController, value: teamBonusController.text.isEmpty ? _payroll!.teamBonus.toString() : teamBonusController.text, readOnly: _readOnlyPayroll,),
+                                CustomListTile(listTileLabel: 'Thuế', alertDialogLabel: 'Cập nhật thuế', numberEditController: taxController, value: taxController.text.isEmpty ? _payroll!.tax.toString() : taxController.text, readOnly: _readOnlyPayroll,),
                                 ListTile(
                                   title: const Text('Thực nhận', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600,),),
                                   trailing: Text( '${moneyFormat(_payroll!.actualSalaryReceived.toString())} đ', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600,),),
@@ -875,7 +875,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     newSignPersonalSalesBonusController.text = newSignPersonalSalesBonusController.text.replaceAll('.', '');
     renewedPersonalSalesBonusController.text = renewedPersonalSalesBonusController.text.replaceAll('.', '');
     managementSalesBonusController.text = managementSalesBonusController.text.replaceAll('.', '');
-    supporterSalesBonusController.text = supporterSalesBonusController.text.replaceAll('.', '');
+    taxController.text = taxController.text.replaceAll('.', '');
     clB20SalesBonusController.text = clB20SalesBonusController.text.replaceAll('.', '');
     contentManagerFanpageTechnicalEmployeeBonusController.text = contentManagerFanpageTechnicalEmployeeBonusController.text.replaceAll('.', '');
     collaboratorFanpageTechnicalEmployeeBonusController.text = collaboratorFanpageTechnicalEmployeeBonusController.text.replaceAll('.', '');
@@ -908,7 +908,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     newSignPersonalSalesBonusController.clear();
     renewedPersonalSalesBonusController.clear();
     managementSalesBonusController.clear();
-    supporterSalesBonusController.clear();
+    taxController.clear();
     clB20SalesBonusController.clear();
     contentManagerFanpageTechnicalEmployeeBonusController.clear();
     collaboratorFanpageTechnicalEmployeeBonusController.clear();
@@ -937,7 +937,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     newSignPersonalSalesBonusController.clear();
     renewedPersonalSalesBonusController.clear();
     managementSalesBonusController.clear();
-    supporterSalesBonusController.clear();
+    taxController.clear();
     clB20SalesBonusController.clear();
     contentManagerFanpageTechnicalEmployeeBonusController.clear();
     collaboratorFanpageTechnicalEmployeeBonusController.clear();
@@ -991,7 +991,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
         newSignPersonalSalesBonus: newSignPersonalSalesBonusController.text.isEmpty ? _payroll!.newSignPersonalSalesBonus : num.tryParse(newSignPersonalSalesBonusController.text)!,
         renewedPersonalSalesBonus: renewedPersonalSalesBonusController.text.isEmpty ? _payroll!.renewedPersonalSalesBonus : num.tryParse(renewedPersonalSalesBonusController.text)!,
         managementSalesBonus: managementSalesBonusController.text.isEmpty ? _payroll!.managementSalesBonus : num.tryParse(managementSalesBonusController.text)!,
-        supporterSalesBonus: supporterSalesBonusController.text.isEmpty ? _payroll!.supporterSalesBonus : num.tryParse(supporterSalesBonusController.text)!,
+        tax: taxController.text.isEmpty ? _payroll!.tax : num.tryParse(taxController.text)!,
         clB20SalesBonus: clB20SalesBonusController.text.isEmpty ? _payroll!.clB20SalesBonus : num.tryParse(clB20SalesBonusController.text)!,
         contentManagerFanpageTechnicalEmployeeBonus: contentManagerFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.contentManagerFanpageTechnicalEmployeeBonus : num.tryParse(contentManagerFanpageTechnicalEmployeeBonusController.text)!,
         collaboratorFanpageTechnicalEmployeeBonus: collaboratorFanpageTechnicalEmployeeBonusController.text.isEmpty ? _payroll!.collaboratorFanpageTechnicalEmployeeBonus : num.tryParse(collaboratorFanpageTechnicalEmployeeBonusController.text)!,
@@ -1006,7 +1006,8 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
         emulationBonus: emulationBonusController.text.isEmpty ? _payroll!.emulationBonus : num.tryParse(emulationBonusController.text)!,
         recruitmentBonus: recruitmentBonusController.text.isEmpty ? _payroll!.recruitmentBonus : num.tryParse(recruitmentBonusController.text)!,
         personalBonus: personalBonusController.text.isEmpty ? _payroll!.personalBonus : num.tryParse(personalBonusController.text)!,
-        teamBonus: teamBonusController.text.isEmpty ? _payroll!.teamBonus : num.tryParse(teamBonusController.text)!
+        teamBonus: teamBonusController.text.isEmpty ? _payroll!.teamBonus : num.tryParse(teamBonusController.text)!,
+        total: _payroll!.total,
     );
 
     bool result = await PayrollViewModel().updatePayroll(payroll);
