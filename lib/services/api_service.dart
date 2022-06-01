@@ -600,12 +600,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllPromotedAccounts({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, int? limit, String? search}) async {
+  Future<List<Account>> getAllPromotedAccounts({required bool isRefresh, required currentPage, int? blockId, int? departmentId, int? teamId, int? roleId, int? limit, String? search}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'sales-for-promoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&account-id=$accountId&page=0&limit=${limit ?? 10}';
+    String url = stockUrl + 'sales-for-promoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&page=0&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -617,12 +617,12 @@ class ApiService {
     }
   }
 
-  Future<List<Account>> getAllDemotedAccounts({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, int? limit, String? search}) async {
+  Future<List<Account>> getAllDemotedAccounts({required bool isRefresh, required currentPage, int? blockId, int? departmentId, int? teamId, int? roleId, int? limit, String? search}) async {
     if(isRefresh == true){
       currentPage = 0;
     }
 
-    String url = stockUrl + 'sales-for-demoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&account-id=$accountId&page=0&limit=${limit ?? 10}';
+    String url = stockUrl + 'sales-for-demoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&page=0&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
