@@ -414,7 +414,7 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                       _roleFilter = null;
                       _searchString = '';
                     });
-                    
+
                   },
                 )
                     : IconButton(

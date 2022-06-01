@@ -4,6 +4,7 @@ import 'package:login_sample/views/admin/admin_account_list.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/views/employee/employee_payroll.dart';
 import 'package:login_sample/views/hr/hr_basic_salary_grade_list.dart';
+import 'package:login_sample/views/hr/hr_promote_demote_account_list.dart';
 import 'package:login_sample/widgets/ImageTextButton.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/views/employee/employee_take_attendance.dart';
@@ -125,7 +126,7 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const EmployeePayroll(),
+                                builder: (context) => const HrPromoteDemoteAccountList(),
                               ));
                         },
                       ),
