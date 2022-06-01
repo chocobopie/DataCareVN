@@ -154,7 +154,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                       data: ThemeData().copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         title: Text('Lương ${_payrollCompany?.isClosing == 0 ? '- Dự kiến' : ''}', style: const TextStyle(fontSize: 14.0),),
-                        trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} đ'),
+                        trailing: Text('${moneyFormat(_payroll!.total.toString())} đ'),
                         children: <Widget>[
                           const Divider(color: Colors.blueGrey, thickness: 1.0,),
                           ListTile(
@@ -181,6 +181,14 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                             title: const Text('Bảo hiểm công ty đóng', style: TextStyle(fontSize: 14.0,),),
                             trailing: Text(moneyFormat(_payroll!.companyInsurance.toString()), style: const TextStyle(fontSize: 14.0,),),
                           ),
+                          ListTile(
+                            title: const Text('Thuế', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.tax.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
+                          ListTile(
+                            title: const Text('Thực nhận', style: TextStyle(fontSize: 14.0,),),
+                            trailing: Text(moneyFormat(_payroll!.actualSalaryReceived.toString()), style: const TextStyle(fontSize: 14.0,),),
+                          ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
                             ListTile(
                               title: const Text('Thưởng cá nhân ký mới', style: TextStyle(fontSize: 14.0,),),
@@ -196,11 +204,6 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                               title: const Text('Thưởng quản lý bán hàng', style: TextStyle(fontSize: 14.0,),),
                               trailing: Text(moneyFormat(_payroll!.managementSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
                             ),
-                          // if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
-                          //   ListTile(
-                          //     title: const Text('Thưởng hỗ trợ bán hàng', style: TextStyle(fontSize: 14.0,),),
-                          //     trailing: Text(moneyFormat(_payroll!.supporterSalesBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          //   ),
                           if(_currentAccount!.roleId == 3 || _currentAccount!.roleId == 4 || _currentAccount!.roleId == 5)
                             ListTile(
                               title: const Text('Thưởng CLB 20', style: TextStyle(fontSize: 14.0,),),
@@ -273,18 +276,14 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                             trailing: Text(moneyFormat(_payroll!.teamBonus.toString()), style: const TextStyle(fontSize: 14.0,),),
                           ),
                           ListTile(
-                            title: const Text('Thuế', style: TextStyle(fontSize: 14.0,),),
-                            trailing: Text(moneyFormat(_payroll!.tax.toString()), style: const TextStyle(fontSize: 14.0,),),
-                          ),
-                          ListTile(
                             title: const Text(
-                              'Thực nhận',
+                              'Tổng tiền',
                               style: TextStyle(
                                 color: Colors.red,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            trailing: Text('${moneyFormat(_payroll!.actualSalaryReceived.toString())} đ',
+                            trailing: Text('${moneyFormat(_payroll!.total.toString())} đ',
                               style: const TextStyle(
                                 color: Colors.red,
                                 fontWeight: FontWeight.w600,
