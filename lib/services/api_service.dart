@@ -600,6 +600,40 @@ class ApiService {
     }
   }
 
+  Future<List<Account>> getAllPromotedAccounts({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, int? limit, String? search}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'sales-for-promoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&account-id=$accountId&page=0&limit=${limit ?? 10}';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print('Got all accounts | 200');
+      return jsonResponse.map((data) => Account.fromJson(data)).toList();
+    } else {
+      throw Exception("Failed to get all accounts");
+    }
+  }
+
+  Future<List<Account>> getAllDemotedAccounts({required bool isRefresh, required currentPage, required int accountId, int? blockId, int? departmentId, int? teamId, int? roleId, int? limit, String? search}) async {
+    if(isRefresh == true){
+      currentPage = 0;
+    }
+
+    String url = stockUrl + 'sales-for-demoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&account-id=$accountId&page=0&limit=${limit ?? 10}';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      print('Got all accounts | 200');
+      return jsonResponse.map((data) => Account.fromJson(data)).toList();
+    } else {
+      throw Exception("Failed to get all accounts");
+    }
+  }
+
   Future<List<Account>?> getAllSalesForContact({required bool isRefresh, required int currentPage, required int accountId, String? fullname, int? blockId, int? departmentId, int? teamId, int? limit}) async {
     if(isRefresh == true){
       currentPage = 0;

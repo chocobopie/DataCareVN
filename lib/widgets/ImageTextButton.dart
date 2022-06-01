@@ -44,7 +44,7 @@ class ImageTextButton extends StatelessWidget {
                       child: Text(
                         text,
                         style: const TextStyle(
-                          fontSize: 12.0,
+                          fontSize: 10.0,
                           color: defaultFontColor,
                           fontWeight: FontWeight.w500,
                         ),

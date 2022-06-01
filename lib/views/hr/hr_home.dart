@@ -113,6 +113,24 @@ class _HomeHRManagerState extends State<HomeHRManager> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20.0,),
+                  Row(
+                    children: <Widget>[
+                      if(_currentAccount.roleId == 1)
+                      ImageTextButton(
+                        imageUrl: 'assets/images/demote-promote.png',
+                        text: 'Tăng/giảm cấp bậc lương của nhân viên',
+                        buttonColors: const [Colors.purple, Colors.white],
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EmployeePayroll(),
+                              ));
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               )),
 
