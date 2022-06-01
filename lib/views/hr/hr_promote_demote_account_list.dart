@@ -1,9 +1,11 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/block.dart';
 import 'package:login_sample/models/department.dart';
 import 'package:login_sample/models/providers/account_provider.dart';
 import 'package:login_sample/models/role.dart';
+import 'package:login_sample/models/sort_item.dart';
 import 'package:login_sample/models/team.dart';
 import 'package:login_sample/utilities/utils.dart';
 import 'package:login_sample/view_models/account_list_view_model.dart';
@@ -31,9 +33,9 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
   late final List<Account> _accounts = [];
   bool _isSearching = false;
   late Account _currentAccount;
-  late int _currentPage = 0, _maxPages = 0;
+  late int _currentPage = 0, _maxPages = 0, _currentPromoteId = 0;
   final RefreshController _refreshController = RefreshController();
-  String _blockNameString = 'Tên khối', _departmentNameString = 'Tên phòng' , _teamNameString = 'Tên nhóm', _roleNameString = 'Chức vụ', _searchString = '';
+  String _blockNameString = 'Tên khối', _departmentNameString = 'Tên phòng' , _teamNameString = 'Tên nhóm', _roleNameString = 'Chức vụ', _searchString = '', _promote = 'Được tăng';
 
   Block? _blockFilter;
   Team? _teamFilter;
@@ -44,7 +46,7 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
   void initState() {
     super.initState();
     _currentAccount = Provider.of<AccountProvider>(context, listen: false).account;
-    _getAllPromotedAccount(isRefresh: true, currentPage: 0);
+    _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
     _onGoBackGetDepartmentList();
     _onGoBackGetTeamList();
   }
@@ -74,7 +76,11 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
               }
               _accounts.clear();
             });
-            _getAllPromotedAccount(isRefresh: false, currentPage: _currentPage);
+            if(_currentPromoteId == 0){
+              _getAllPromotedAccount(isRefresh: false, currentPage: _currentPage);
+            }else{
+              _getAllDemotedAccount(isRefresh: false, currentPage: _currentPage);
+            }
 
           },
         ) : null,
@@ -110,6 +116,50 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: <Widget>[
+                            DropdownButton2(
+                              underline: const SizedBox(),
+                              buttonElevation: 0,
+                              customButton: _currentPromoteId == 0 ? const Icon(
+                                Icons.arrow_circle_up,
+                                size: 40,
+                                color:Colors.green,
+                              ) : const Icon(
+                                Icons.arrow_circle_down,
+                                size: 40,
+                                color: Colors.red,
+                              ),
+                              items: [
+                                ...SortItems.firstItems.map(
+                                      (item) =>
+                                      DropdownMenuItem<SortItem>(
+                                        value: item,
+                                        child: SortItems.buildItem(item),
+                                      ),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _currentPromoteId = SortItems.onChanged(context, value as SortItem);
+                                  _maxPages = _currentPage = 0;
+                                  _accounts.clear();
+                                });
+                                if(_currentPromoteId == 0){
+                                  _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                                }else{
+                                  _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                                }
+                              },
+                              itemHeight: 40,
+                              itemPadding: const EdgeInsets.only(left: 5, right: 5),
+                              dropdownWidth: 200,
+                              dropdownPadding: const EdgeInsets.symmetric(vertical: 5),
+                              dropdownDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white,
+                              ),
+                              dropdownElevation: 8,
+                              offset: const Offset(0, 8),
+                            ),
                             CustomOutlinedButton(
                               title: _blockNameString,
                               radius: 10.0,
@@ -131,6 +181,11 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                                     _blockNameString = _blockFilter!.name;
                                     _maxPages = _currentPage = 0;
                                   });
+                                  if(_currentPromoteId == 0){
+                                    _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                                  }else{
+                                    _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                                  }
                                 }
 
                               },
@@ -155,8 +210,12 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                                         _departmentNameString = _departmentFilter!.name;
                                         _maxPages = _currentPage = 0;
                                       });
+                                      if(_currentPromoteId == 0){
+                                        _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                                      }else{
+                                        _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                                      }
                                     }
-
                                   },
                                 ),
 
@@ -178,11 +237,15 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                                         _teamNameString = _teamFilter!.name;
                                         _maxPages = _currentPage = 0;
                                       });
+                                      if(_currentPromoteId == 0){
+                                        _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                                      }else{
+                                        _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                                      }
                                     }
-
                                   },
                                 ),
-
+                            if(_currentPromoteId == 0)
                             CustomOutlinedButton(
                               title: _roleNameString,
                               radius: 10,
@@ -198,8 +261,12 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                                     _roleNameString = ('Chức vụ: ${_roleFilter!.name}' ) ;
                                     _maxPages = _currentPage = 0;
                                   });
+                                  if(_currentPromoteId == 0){
+                                    _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                                  }else{
+                                    _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                                  }
                                 }
-
                               },
                             ),
                             IconButton(
@@ -218,7 +285,11 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                                   _maxPages = _currentPage = 0;
                                 });
                                 _refreshController.resetNoData();
-
+                                if(_currentPromoteId == 0){
+                                  _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                                }else{
+                                  _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                                }
                                 _onGoBackGetDepartmentList();
                                 _onGoBackGetTeamList();
                               },
@@ -265,7 +336,11 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                       setState(() {
                         _accounts.clear();
                       });
-                      _getAllPromotedAccount(isRefresh: false, currentPage: _currentPage);
+                      if(_currentPromoteId == 0){
+                        _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                      }else{
+                        _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                      }
 
                       if(_accounts.isNotEmpty){
                         _refreshController.refreshCompleted();
@@ -391,7 +466,11 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                   });
                   _currentPage = 0;
                   _searchString = value.toString();
-                  _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                  if(_currentPromoteId == 0){
+                    _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                  }else{
+                    _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                  }
                 },
               ),
               actions: <Widget>[
@@ -414,7 +493,11 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                       _roleFilter = null;
                       _searchString = '';
                     });
-
+                    if(_currentPromoteId == 0){
+                      _getAllPromotedAccount(isRefresh: true, currentPage: _currentPage);
+                    }else{
+                      _getAllDemotedAccount(isRefresh: true, currentPage: _currentPage);
+                    }
                   },
                 )
                     : IconButton(
@@ -447,9 +530,9 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
     _accounts.clear();
 
     List<Account> accountList = await AccountListViewModel().getAllPromotedAccounts(
-        isRefresh: isRefresh, currentPage: currentPage, blockId: _blockFilter!.blockId,
-        departmentId: _departmentFilter!.departmentId, teamId: _teamFilter!.teamId,
-        roleId: _roleFilter!.roleId, limit: 10, search: _searchString
+        isRefresh: isRefresh, currentPage: currentPage, blockId: _blockFilter?.blockId,
+        departmentId: _departmentFilter?.departmentId, teamId: _teamFilter?.teamId,
+        roleId: _roleFilter?.roleId, limit: 10, search: _searchString
     );
 
     if(accountList.isNotEmpty){
@@ -468,9 +551,9 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
     _accounts.clear();
 
     List<Account> accountList = await AccountListViewModel().getAllDemotedAccounts(
-        isRefresh: isRefresh, currentPage: currentPage, blockId: _blockFilter!.blockId,
-        departmentId: _departmentFilter!.departmentId, teamId: _teamFilter!.teamId,
-        roleId: _roleFilter!.roleId, limit: 10, search: _searchString
+        isRefresh: isRefresh, currentPage: currentPage, blockId: _blockFilter?.blockId,
+        departmentId: _departmentFilter?.departmentId, teamId: _teamFilter?.teamId,
+        roleId: _roleFilter?.roleId, limit: 10, search: _searchString
     );
 
     if(accountList.isNotEmpty){
@@ -495,5 +578,40 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
 
   void _onGoBack(){
     _getAllPromotedAccount(isRefresh: false, currentPage: _currentPage);
+  }
+}
+
+class SortItems {
+  static const List<SortItem> firstItems = [promoted, demoted];
+
+  static const promoted = SortItem(text: 'Được tăng', icon: Icon(Icons.arrow_circle_up, color: Colors.green));
+  static const demoted = SortItem(text: 'Bị giảm', icon: Icon(Icons.arrow_circle_down_sharp, color: Colors.red));
+
+
+  static Widget buildItem(SortItem item) {
+    return Row(
+      children: [
+        item.icon,
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: const TextStyle(
+            color: defaultFontColor,
+            fontSize: 16.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, SortItem item) {
+    switch (item) {
+      case SortItems.promoted:
+        return 0;
+      case SortItems.demoted:
+        return 1;
+    }
   }
 }

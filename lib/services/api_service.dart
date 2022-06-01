@@ -605,15 +605,15 @@ class ApiService {
       currentPage = 0;
     }
 
-    String url = stockUrl + 'sales-for-promoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&page=0&limit=${limit ?? 10}';
+    String url = stockUrl + 'accounts/sales-for-promoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      print('Got all accounts | 200');
+      print('Got all promote accounts | 200');
       return jsonResponse.map((data) => Account.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get all accounts");
+      throw Exception("Failed to get all promote accounts");
     }
   }
 
@@ -622,15 +622,15 @@ class ApiService {
       currentPage = 0;
     }
 
-    String url = stockUrl + 'sales-for-demoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&page=0&limit=${limit ?? 10}';
+    String url = stockUrl + 'accounts/sales-for-demoted?fullname=${search ?? ''}&block-id=${blockId ?? ''}&department-id=${departmentId ?? ''}&team-id=${teamId ?? ''}&role-id=${roleId ?? ''}&page=$currentPage&limit=${limit ?? 10}';
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      print('Got all accounts | 200');
+      print('Got all demote accounts | 200');
       return jsonResponse.map((data) => Account.fromJson(data)).toList();
     } else {
-      throw Exception("Failed to get all accounts");
+      throw Exception("Failed to get all demote accounts");
     }
   }
 
