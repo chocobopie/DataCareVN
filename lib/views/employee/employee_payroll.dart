@@ -32,7 +32,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _fromDate, _toDate;
   int _hasPayroll = 0, _hasSale = 0, _currentPage = 0, _maxPages = 0;
-  int? _exceedApprovedLateCount,  _exceedApprovedAbsencesCount, _lateCount, _absentCount, _attendanceCount;
+  int? _exceedApprovedLateCount, _exceedApprovedAbsencesCount, _lateCount, _absentCount, _attendanceCount;
   late Account? _currentAccount;
   num _totalRevenue = 0, _fineAbsence = 0, _totalFineAbsence = 0, _totalFineLate = 0;
   late final List<Deal> _deals = [];

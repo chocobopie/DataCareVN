@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:login_sample/models/attendance_rule.dart';
 import 'package:login_sample/models/payroll_company.dart';
 import 'package:login_sample/models/account.dart';
 import 'package:login_sample/models/deal.dart';
 import 'package:login_sample/models/payroll.dart';
 import 'package:login_sample/models/sale.dart';
+import 'package:login_sample/view_models/attendance_rule_view_model.dart';
+import 'package:login_sample/view_models/attendance_view_model.dart';
 import 'package:login_sample/view_models/deal_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_company_list_view_model.dart';
 import 'package:login_sample/view_models/payroll_list_view_model.dart';
@@ -35,9 +38,11 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _fromDate, _toDate, _maxTime;
   int _hasPayroll = 0, _hasSale = 0, _currentPage = 0, _maxPages = 0;
-  num _totalRevenue = 0;
+  int? _exceedApprovedLateCount, _exceedApprovedAbsencesCount, _lateCount, _absentCount, _attendanceCount;
+  num _totalRevenue = 0, _fineAbsence = 0, _totalFineAbsence = 0, _totalFineLate = 0;
   bool _readOnlyPayroll = false, _readOnlyKPI = false;
   late final List<Deal> _deals = [];
+  AttendanceRule? _attendanceRule;
 
   PayrollCompany? _payrollCompany;
   Payroll? _payroll;
@@ -738,7 +743,134 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 ),
                               )
                           ),
-
+                      if(_payroll != null)
+                        if( (_fromDate!.month != DateTime.now().month && _fromDate!.year == DateTime.now().year) || _fromDate!.year != DateTime.now().year)
+                          (_lateCount != null && _absentCount != null && _exceedApprovedAbsencesCount != null && _exceedApprovedLateCount != null && _attendanceRule != null ) ? Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    blurRadius: 1,
+                                    offset: const Offset(0, 3), // changes position of shadow
+                                  ),
+                                ],
+                                gradient: const LinearGradient(
+                                  stops: [0.02, 0.01],
+                                  colors: [Colors.red, Colors.white],
+                                ),
+                              ),
+                              child: Theme(
+                                data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  title: const Text('Tiền phạt', style: TextStyle(fontSize: 14.0),),
+                                  trailing: Text('${moneyFormat((_totalFineLate + _totalFineAbsence).toString())}đ'),
+                                  children: <Widget>[
+                                    const Divider(color: Colors.blueGrey, thickness: 1.0,),
+                                    Column(
+                                      children: [
+                                        ExpansionTile(
+                                          title: const Text('Trễ'),
+                                          trailing: Text('${ moneyFormat( ((_attendanceRule!.fineForEachLateShift * _lateCount!) + (_attendanceRule!.fineForEachLateShift * _exceedApprovedLateCount!)).toString() ) }đ'),
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                    child: Row(
+                                                      children: [
+                                                        const Expanded(flex: 4,child: Text('Số ca không phép')),
+                                                        const Spacer(),
+                                                        Text('$_lateCount'),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                    child: Row(
+                                                      children: [
+                                                        const Expanded(flex: 4,child: Text('Số ca vượt quá số lần cho phép')),
+                                                        const Spacer(),
+                                                        Text('$_exceedApprovedLateCount'),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                    child: Row(
+                                                      children: [
+                                                        const Expanded(flex: 4,child: Text('Số tiền phạt/lần')),
+                                                        const Spacer(),
+                                                        Text('${moneyFormat(_attendanceRule!.fineForEachLateShift.toString())}đ'),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    const Divider(color: Colors.grey,),
+                                    ExpansionTile(
+                                      title: const Text('Vắng'),
+                                      trailing: Text('${moneyFormat( _totalFineAbsence.toString() )}đ'),
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                child: Row(
+                                                  children: [
+                                                    const Expanded(flex: 4,child: Text('Số ca không phép')),
+                                                    const Spacer(),
+                                                    Text('$_absentCount'),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                child: Row(
+                                                  children: [
+                                                    const Expanded(flex: 4,child: Text('Số ca vượt quá số lần cho phép')),
+                                                    const Spacer(),
+                                                    Text('$_exceedApprovedAbsencesCount'),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                                child: Row(
+                                                  children: [
+                                                    const Expanded(flex: 4,child: Text('Số tiền phạt/lần')),
+                                                    const Spacer(),
+                                                    Text('${moneyFormat(_fineAbsence.toString())}đ'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ) : const Padding(
+                            padding: EdgeInsets.only(top:  10.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
                       const SizedBox(height: 40.0,),
                     ],
                   ),
@@ -773,6 +905,11 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
       _payrollCompany = null;
       _payroll = null;
       _sale = null;
+      _lateCount = null;
+      _absentCount = null;
+      _attendanceCount = null;
+      _exceedApprovedLateCount = null;
+      _exceedApprovedAbsencesCount = null;
       _deals.clear();
     });
 
@@ -809,6 +946,12 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
         _payroll = result[0];
         _hasPayroll = 1;
       });
+
+      _getCountAttendance();
+      _getAttendanceRule();
+      _getExceedApprovedAbsencesCount();
+      _getExceedApprovedLateCount();
+
       if(widget.empAccount.roleId == 3 || widget.empAccount.roleId == 4 || widget.empAccount.roleId == 5){
         _getSale(isRefresh: true);
       }
@@ -1017,5 +1160,77 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
     bool result = await PayrollViewModel().updatePayroll(payroll);
 
     return result;
+  }
+
+  void _getCountAttendance() async {
+    setState(() {
+      _lateCount = null;
+      _absentCount = null;
+      _attendanceCount = null;
+    });
+
+    int? result = await AttendanceViewModel().getCountAttendance(accountId: widget.empAccount.accountId!, fromDate: _fromDate!, toDate: _toDate!);
+    setState(() {
+      _attendanceCount = result;
+    });
+
+
+    for(int i = 3; i < 5; i++){
+      int? result2 = await AttendanceViewModel().getCountAttendance(accountId: widget.empAccount.accountId!, fromDate: _fromDate!, toDate: _toDate!, attendanceStatusId: i);
+      setState(() {
+        if(i == 3){_lateCount = result2;}
+        if(i == 4){_absentCount = result2;}
+      });
+    }
+
+    _getFineAbsence();
+  }
+
+  void _getExceedApprovedLateCount() async {
+    setState(() {
+      _exceedApprovedLateCount = null;
+    });
+
+    int? result = await AttendanceViewModel().getExceedApprovedLateCount(accountId: widget.empAccount.accountId!, fromDate: _fromDate!);
+    setState(() {
+      _exceedApprovedLateCount = result;
+    });
+  }
+
+  void _getExceedApprovedAbsencesCount() async {
+    setState(() {
+      _exceedApprovedAbsencesCount = null;
+    });
+
+    int? result = await AttendanceViewModel().getExceedApprovedAbsencesCount(accountId: widget.empAccount.accountId!, fromDate: _fromDate!);
+    setState(() {
+      _exceedApprovedAbsencesCount = result;
+    });
+  }
+
+  void _getFineAbsence() {
+    num money = _payroll!.basicSalary / _attendanceCount!;
+    setState(() {
+      _fineAbsence = money.round();
+    });
+
+    num money2 = (_fineAbsence * _absentCount!) + (_fineAbsence * _exceedApprovedAbsencesCount! );
+    setState(() {
+      _totalFineAbsence = money2;
+    });
+
+    num money3 = (_attendanceRule!.fineForEachLateShift * _lateCount!) + (_attendanceRule!.fineForEachLateShift * _exceedApprovedLateCount!);
+    setState(() {
+      _totalFineLate = money3;
+    });
+  }
+
+  void _getAttendanceRule() async {
+    AttendanceRule? result = await AttendanceRuleViewModel().getAttendanceRule();
+    if(result != null){
+      setState(() {
+        _attendanceRule = result;
+      });
+    }
   }
 }
