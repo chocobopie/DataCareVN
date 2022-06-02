@@ -116,6 +116,10 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: <Widget>[
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10.0),
+                              child: Text('Thuộc diện', style: TextStyle(color: defaultFontColor),),
+                            ),
                             DropdownButton2(
                               underline: const SizedBox(),
                               buttonElevation: 0,
@@ -584,8 +588,8 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
 class SortItems {
   static const List<SortItem> firstItems = [promoted, demoted];
 
-  static const promoted = SortItem(text: 'Được tăng', icon: Icon(Icons.arrow_circle_up, color: Colors.green));
-  static const demoted = SortItem(text: 'Bị giảm', icon: Icon(Icons.arrow_circle_down_sharp, color: Colors.red));
+  static const promoted = SortItem(text: 'Tăng bậc lương', icon: Icon(Icons.arrow_circle_up, color: Colors.green));
+  static const demoted = SortItem(text: 'Giảm bậc lương', icon: Icon(Icons.arrow_circle_down_sharp, color: Colors.red));
 
 
   static Widget buildItem(SortItem item) {
