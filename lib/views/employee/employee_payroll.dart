@@ -429,7 +429,7 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
                           ),
                           ListTile(
                             title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
-                            trailing: Text( '${((_totalRevenue / _sale!.kpi) * 100).round()} %', style: const TextStyle(fontSize: 12.0,),),
+                            trailing: Text( '${((_totalRevenue / _sale!.kpi) * 100).toStringAsFixed(2)} %', style: const TextStyle(fontSize: 12.0,),),
                           ),
                           ListTile(
                             title: const  Text('Doanh thu đạt được',
@@ -924,8 +924,6 @@ class _EmployeePayrollState extends State<EmployeePayroll> {
   }
 
   void _getFineAbsence() {
-    print(_payroll!.basicSalary);
-    print(_attendanceCount!);
     num money = _payroll!.basicSalary / _attendanceCount!;
     setState(() {
       _fineAbsence = money.round();

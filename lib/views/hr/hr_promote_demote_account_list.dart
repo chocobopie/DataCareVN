@@ -286,6 +286,7 @@ class _HrPromoteDemoteAccountListState extends State<HrPromoteDemoteAccountList>
                                   _teamFilter = null;
                                   _roleFilter = null;
                                   _accounts.clear();
+                                  _currentPromoteId = 0;
                                   _maxPages = _currentPage = 0;
                                 });
                                 _refreshController.resetNoData();

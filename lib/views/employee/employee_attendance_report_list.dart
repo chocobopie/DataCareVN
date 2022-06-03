@@ -629,8 +629,6 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
       _absentCount = null;
     });
 
-    _getCountAvailableApprovedAbsence();
-
     for(int i = 0; i < 5; i++){
       int? result = await AttendanceViewModel().getCountAttendance(accountId: _currentAccount.accountId!, fromDate: _fromDate!, toDate: _toDate!, attendanceStatusId: i);
       setState(() {
@@ -642,6 +640,7 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
       });
     }
 
+    _getCountAvailableApprovedAbsence();
     _getAvailableApprovedLate();
 
   }
@@ -652,10 +651,18 @@ class _EmployeeAttendanceReportListState extends State<EmployeeAttendanceReportL
     });
 
     int? result = await AttendanceViewModel().getCountAvailableApprovedAbsence(accountId: _currentAccount.accountId!, fromDate: _fromDate!);
-
-    setState(() {
-      _availableApprovedAbsenceCount = result;
-    });
+    if(result != null){
+      int num = result - _dayOffAcceptedCount!;
+      if(num >= 0){
+        setState(() {
+          _availableApprovedAbsenceCount = num;
+        });
+      }else{
+        setState(() {
+          _availableApprovedAbsenceCount = 0;
+        });
+      }
+    }
   }
 
   void _getAvailableApprovedLate() async {

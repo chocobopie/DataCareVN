@@ -526,7 +526,7 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
                                 CustomListTile(listTileLabel: 'KPI', alertDialogLabel: 'Cập nhật KPI', value: saleKPIController.text.isEmpty ? _sale!.kpi.toString() : saleKPIController.text ,numberEditController: saleKPIController, readOnly: _readOnlyKPI,),
                                 ListTile(
                                   title: const Text('Phần trăm đạt KPI', style: TextStyle(fontSize: 12.0,),),
-                                  trailing: Text( _totalRevenue > 0 ? '${((_totalRevenue / _sale!.kpi) * 100).round()} %' : '0%', style: const TextStyle(fontSize: 12.0,),),
+                                  trailing: Text( _totalRevenue > 0 ? '${((_totalRevenue / _sale!.kpi) * 100).toStringAsFixed(2)} %' : '0%', style: const TextStyle(fontSize: 12.0,),),
                                 ),
                                 ListTile(
                                   title: const  Text('Doanh thu đạt được',
@@ -980,7 +980,6 @@ class _HrManagerPayrollDetailState extends State<HrManagerPayrollDetail> {
         _totalRevenue = _sale!.adsSales + _sale!.newSignWebsiteContentSales + _sale!.newSignEducationSales + _sale!.newSignFacebookContentSales
             + _sale!.renewedWebsiteContentSales + _sale!.renewedEducationSales + _sale!.renewedFacebookContentSales;
       });
-      print(_sale!.saleId);
       _getDealListBySaleId(isRefresh: true);
     }else{
       setState(() {
